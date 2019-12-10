@@ -6,7 +6,25 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      loginForm: {
+        username: 'admin',
+        password: '123456'
+      }
+    }
+  },
+  methods: {
+    login () {
+      this.$store.dispatch('user/login', this.loginForm).then(() => {
+        this.$router.push({ path: this.redirect || '/' })
+      })
+    }
+  },
+  mounted () {
+    this.login()
+  }
 }
 </script>
 
