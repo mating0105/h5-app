@@ -1,12 +1,10 @@
 <template>
-    <div>
+    <div id="nav">
         <van-nav-bar
                 :title="$route.meta.title || ''"
                 left-text="返回"
-                right-text="按钮"
                 left-arrow
                 @click-left="onClickLeft"
-                @click-right="onClickRight"
         />
     </div>
 </template>
@@ -21,14 +19,13 @@
     methods: {
       onClickLeft () {
         this.$router.back(-1)
-      },
-      onClickRight () {
-
       }
     }
   }
 </script>
 
 <style scoped>
-
+    #nav {
+        height: 50px;
+    }
 </style>

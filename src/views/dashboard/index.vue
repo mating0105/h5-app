@@ -1,6 +1,5 @@
 <template>
-    <div class="dashboard-container">
-        <NavBar></NavBar>
+    <ViewPage>
         <van-button type="default">默认按钮</van-button>
         <van-button type="primary">主要按钮</van-button>
         <van-button type="info">信息按钮</van-button>
@@ -22,12 +21,13 @@
                     :title="item.display_time"
             />
         </van-list>
-    </div>
+    </ViewPage>
+
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import NavBar from '@/layout/components/NavBar';
+  import ViewPage from '@/layout/components/ViewPage';
   import Vue from 'vue'
   import { Button, Checkbox, Field, Cell, CellGroup, List } from 'vant';
   import { getList } from '@/api/table'
@@ -41,8 +41,9 @@
   export default {
     name: 'Dashboard',
     components: {
+      ViewPage
       // van-button
-      NavBar
+      // NavBar
     },
     computed: {
       ...mapGetters([
@@ -62,7 +63,6 @@
       async getList () {
         const response = await getList()
         this.dataList = response.data.items
-        console.log(this.dataList.items)
         this.finished = true
       }
     },

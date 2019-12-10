@@ -11,8 +11,12 @@ export default {
 </script>
 
 <style lang="scss">
+    html, body, #app {
+        height: 100%
+    }
     #app {
         min-width: 100vw;
+        overflow: auto;
         color: #323233;
         font-family: 'PingFang SC', Helvetica, 'STHeiti STXihei', 'Microsoft YaHei', Tohoma, Arial, sans-serif;
         line-height: 1;
