@@ -1,6 +1,6 @@
 <template>
     <div class="card is-always-shadow">
-        <div class="card__header">
+        <div class="card__header" v-if="$slots.header">
             <slot name="header"></slot>
         </div>
         <div class="card__body">
@@ -29,13 +29,13 @@
         transition: .3s;
 
         .card__header {
-            /*padding: 10px;*/
+            padding: 10px;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
         }
 
         .card__body {
-            /*padding: 10px;*/
+            padding: 10px;
         }
     }
 
