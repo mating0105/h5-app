@@ -37,7 +37,7 @@ export const constantRoutes = [
   },
   {
     path: '/lendProcess',
-    name: 'Project',
+    name: 'lendProcess',
     component: () => import('@/views/lendProcess/index'),
     meta: {title: '发起做单', icon: 'dashboard'}
   },
