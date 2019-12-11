@@ -19,7 +19,14 @@ export const constantRoutes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/dashboard/index'),
-    meta: {title: 'Dashboard', icon: 'dashboard'}
+    meta: {title: 'Dashboard'}
+  },
+
+  {
+    path: '/reNewCredit',
+    name: 'ReNewCredit',
+    component: () => import('@/views/credit/reNewCredit'),
+    meta: {title: '征信申请'}
   },
 
   {

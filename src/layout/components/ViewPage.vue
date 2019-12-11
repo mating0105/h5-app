@@ -2,7 +2,7 @@
     <div id="view-page">
         <NavBar></NavBar>
         <div class="wrapper" ref="wrapper">
-            <div>
+            <div class="content">
                 <slot></slot>
             </div>
         </div>
@@ -34,14 +34,14 @@
         height: calc(100% - 50px);
         overflow-x: hidden;
         overflow-y: auto;
-        .desc {
+        >.desc {
             padding: 10px;
             margin: 10px 0;
             line-height: 20px;
             font-size: 14px;
         }
-        .content {
-            margin: 10px
+        >.content {
+            margin: 10px;
         }
     }
 
