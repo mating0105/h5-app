@@ -35,6 +35,12 @@ export const constantRoutes = [
     component: () => import('@/views/project/index'),
     meta: {title: 'Project', icon: 'dashboard'}
   },
+  {
+    path: '/lendProcess',
+    name: 'Project',
+    component: () => import('@/views/lendProcess/index'),
+    meta: {title: '发起做单', icon: 'dashboard'}
+  },
 
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
