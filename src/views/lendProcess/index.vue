@@ -2,58 +2,43 @@
     <ViewPage>
         <van-tabs v-model="active">
             <van-tab title="做单基本信息" class="tabBox">
-                <OrdinaryCard :title='title'>
-                    <van-row>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >业务员：</van-col>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >张三</van-col>
-                    </van-row>
-                    <van-row>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-text-right"
-                        >报单时间：</van-col>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-text-right"
-                        >2019-12-03 10:30:30</van-col>
-                    </van-row>
-                    <van-row>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >垫款编号：</van-col>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >XH20191203001</van-col>
-                    </van-row>
-                    <van-row>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >制单人员：</van-col>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >王丹</van-col>
-                    </van-row>
-                    <van-row>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >走款模式：</van-col>
-                        <van-col
-                            span="12"
-                            class="xh-top-10 xh-ellipsis"
-                        >快垫</van-col>
-                    </van-row>
-                </OrdinaryCard>
+                <Card>
+                    <template v-slot:header>
+                        项目信息
+                    </template>
+                    <div>
+                        <van-row>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >业务员：</van-col>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >张三</van-col>
+                        </van-row>
+                        <van-row>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >业务员：</van-col>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >张三</van-col>
+                        </van-row>
+                        <van-row>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >业务员：</van-col>
+                            <van-col
+                                span="12"
+                                class="xh-top-10 xh-ellipsis"
+                            >张三</van-col>
+                        </van-row>
+                    </div>
+                </Card>
             </van-tab>
             <van-tab title="征信信息">
                 
@@ -69,7 +54,7 @@
   import Vue from 'vue';
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
-  import OrdinaryCard from '@/layout/components/OrdinaryCard';
+  import Card from '@/components/card/index'
   import { Tab, Tabs, Row, Col  } from 'vant';
 
   const Components = [Tab, Tabs, Row, Col ]
@@ -82,7 +67,7 @@
     name: 'lendProcess',
     components: {
       ViewPage,
-      OrdinaryCard
+      Card
     },
     computed: {
       ...mapGetters([
