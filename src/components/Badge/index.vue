@@ -6,7 +6,6 @@
 
 <script>
 export default {
-  data() {},
   props: {
     isNumber: {
       type: Boolean,

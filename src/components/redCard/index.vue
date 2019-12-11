@@ -17,7 +17,6 @@ import { Row, Col } from "vant";
 Vue.use(Row).use(Col);
 
 export default {
-  data() {},
   props: {
     dataObj: {
       type: Object,
