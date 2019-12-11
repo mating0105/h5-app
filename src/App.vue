@@ -17,9 +17,10 @@ export default {
   },
   methods: {
     login () {
-      this.$store.dispatch('user/login', this.loginForm).then(() => {
-        this.$router.push({ path: this.redirect || '/' })
-      })
+      this.$store.dispatch('user/login', this.loginForm)
+      // this.$store.dispatch('user/login', this.loginForm).then(() => {
+      //   this.$router.push({ path: this.redirect || '/' })
+      // })
     }
   },
   mounted () {
