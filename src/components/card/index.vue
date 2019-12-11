@@ -3,8 +3,11 @@
         <div class="card__header" v-if="$slots.header">
             <slot name="header"></slot>
         </div>
-        <div class="card__body">
+        <div class="card__body" v-if="$slots.default">
             <slot></slot>
+        </div>
+        <div class="card__footer" v-if="$slots.footer">
+            <slot name="footer"></slot>
         </div>
     </div>
 </template>
@@ -29,11 +32,16 @@
         transition: .3s;
 
         .card__header {
-            padding: 10px;
+            padding: 15px;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
             color: rgb(196,37,42);
-            font-size: 12px;
+        }
+
+        .card__footer {
+            padding: 15px;
+            border-top: 1px solid #ebeef5;
+            box-sizing: border-box;
         }
 
         .card__body {

@@ -42,6 +42,13 @@ export const constantRoutes = [
     meta: {title: '发起做单', icon: 'dashboard'}
   },
 
+  {
+    path: '/projectInfo',
+    name: 'ProjectInfo',
+    component: () => import('@/views/basicInfo/projectInfo/index'),
+    meta: {title: 'ProjectInfo', icon: 'dashboard'}
+  },
+
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ]
