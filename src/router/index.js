@@ -49,6 +49,32 @@ export const constantRoutes = [
     meta: {title: 'ProjectInfo', icon: 'dashboard'}
   },
 
+  { 
+    path: '/clientIndex',
+    name: 'ClientIndex',
+    component: () => import('@/views/basicInfo/client/index'),
+    meta: {title: 'ClientIndex', icon: 'dashboard'}
+  },
+
+  { 
+    path: '/contactPerson',
+    name: 'ContactPerson',
+    component: () => import('@/views/basicInfo/contact/index'),
+    meta: {title: 'ContactPerson', icon: 'dashboard'}
+  }, 
+  { 
+    path: '/houseUser',
+    name: 'HouseUser',
+    component: () => import('@/views/basicInfo/house/user'),
+    meta: {title: '新增房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/houseGuarantor',
+    name: 'HouseGuarantor',
+    component: () => import('@/views/basicInfo/house/guarantor'),
+    meta: {title: '房产担保人', icon: 'dashboard'}
+  },
+
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ]

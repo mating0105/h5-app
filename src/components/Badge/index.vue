@@ -43,7 +43,7 @@ export default {
   position: absolute;
   transform: translateY(-50%) translateX(100%);
   .xh-badge-number{
-    background-color: #f56c6c;
+    background-color: red;
     border-radius: 10px;
     color: #fff;
     display: inline-block;
@@ -56,7 +56,7 @@ export default {
     border: 1px solid #fff;
   }
   .xh-badge-dot {
-    background-color: #f56c6c;
+    background-color: red;
     color: #fff;
     display: inline-block;
     font-size: 12px;
@@ -65,8 +65,8 @@ export default {
     text-align: center;
     white-space: nowrap;
     border: 1px solid #fff;
-    height: 10px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
     padding: 0;
     border-radius: 50%;
   }

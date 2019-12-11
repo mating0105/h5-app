@@ -1,72 +1,77 @@
 <template>
-<!-- 所有基本信息入口 -->
-  <div class="xh-body">
-    <div id="app" v-cloak>
-      <div class="xh-page-body">
-        <div class="xh-page-mian xh-card-box">
-          <red-card label="客户基本信息">
-            <template slot="cardBody">
-              <div>
-                <van-row>
-                  <van-col
-                    span="12"
-                    class="xh-top-10 xh-ellipsis"
-                  >{{ params.customerName?"客户姓名：" + params.customerName:""}}</van-col>
-                  <van-col
-                    span="12"
-                    class="xh-top-10 xh-text-right"
-                  >{{ params.contactPhone?"联系电话：" + params.contactPhone:"" }}</van-col>
-                </van-row>
-                <van-row>
-                  <van-col
-                    span="24"
-                    class="xh-top-10 xh-ellipsis"
-                  >{{ params.certificateNum?"证件号码：" + params.certificateNum+" | 身份证":"" }}</van-col>
-                </van-row>
-              </div>
-            </template>
-          </red-card>
-          <van-row class="xh-page-body">
-            <van-col
-              span="6"
-              class="xh-meun"
-              v-for="i in meunRow"
-              :key="i.id"
-              @click="meunList(i)"
-            >
-              <div class="xh-icon">
-                <img :src="require('./../../assets/old_images/'+i.icon)" alt />
-              </div>
-              <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
-              <!-- 徽章 -->
-              <xh-badge toTop="15" toRight="30"></xh-badge>
-            </van-col>
-          </van-row>
+  <!-- 所有基本信息入口 -->
+  <ViewPage>
+    <van-tabs v-model="activeName">
+      <van-tab title="项目信息" name="1">
+        <div class="xh-page-body">
+          <div class="xh-page-mian xh-card-box">
+            <red-card label="客户基本信息">
+              <template slot="cardBody">
+                <div>
+                  <van-row>
+                    <van-col
+                      span="12"
+                      class="xh-top-10 xh-ellipsis"
+                    >{{ params.customerName?"客户姓名：" + params.customerName:""}}</van-col>
+                    <van-col
+                      span="12"
+                      class="xh-top-10 xh-text-right"
+                    >{{ params.contactPhone?"联系电话：" + params.contactPhone:"" }}</van-col>
+                  </van-row>
+                  <van-row>
+                    <van-col
+                      span="24"
+                      class="xh-top-10 xh-ellipsis"
+                    >{{ params.certificateNum?"证件号码：" + params.certificateNum+" | 身份证":"" }}</van-col>
+                  </van-row>
+                </div>
+              </template>
+            </red-card>
+            <van-row class="xh-page-body">
+              <van-col
+                span="6"
+                class="xh-meun"
+                v-for="i in meunRow"
+                :key="i.id"
+                @click="meunList(i)"
+              >
+                <div class="xh-icon">
+                  <img :src="require('./../../assets/old_images/'+i.icon)" alt />
+                </div>
+                <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
+                <!-- 徽章 -->
+                <xh-badge toTop="15" toRight="30"></xh-badge>
+              </van-col>
+            </van-row>
+          </div>
         </div>
-        <van-dialog
-          v-model="showQRCode"
-          :show-confirm-button="false"
-          :show-cancel-button="false"
-          :close-on-popstate="true"
-          :close-on-click-overlay="true"
-        >
-          <!-- <van-loading /> -->
-          <img width="100%" height="100%" :src="qrCodeUrl" />
-        </van-dialog>
-      </div>
-      <!-- 提交按钮 -->
-      <div class="xh-submit" style="padding: 0 10px;">
-        <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">提 交</van-button>
-      </div>
-    </div>
-  </div>
+        <!-- 提交按钮 -->
+        <div class="xh-submit" style="padding: 0 10px;">
+          <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">提 交</van-button>
+        </div>
+      </van-tab>
+      <van-tab title="征信信息" name="2"></van-tab>
+      <van-tab title="审批记录" name="3"></van-tab>
+    </van-tabs>
+    <van-dialog
+      v-model="showQRCode"
+      :show-confirm-button="false"
+      :show-cancel-button="false"
+      :close-on-popstate="true"
+      :close-on-click-overlay="true"
+    >
+      <!-- <van-loading /> -->
+      <img width="100%" height="100%" :src="qrCodeUrl" />
+    </van-dialog>
+  </ViewPage>
 </template>
 <script>
 import Vue from "vue";
-import { Dialog, Button, Row, Col } from "vant";
+import { Dialog, Button, Row, Col, Tab, Tabs } from "vant";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
-const Components = [Dialog, Button, Row, Col];
+import ViewPage from '@/layout/components/ViewPage';
+const Components = [Dialog, Button, Row, Col, Tab, Tabs];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -75,10 +80,12 @@ Components.forEach(item => {
 export default {
   components: {
     xhBadge,
-    redCard
+    redCard,
+    ViewPage
   },
   data() {
     return {
+      activeName: "1",
       selected: 1,
       meunRow: [
         {
@@ -91,19 +98,19 @@ export default {
           name: "客户及配偶",
           key: 2,
           icon: "icon-spouse.png",
-          url: "clientDetail/index.html"
+          url: "/clientIndex"
         },
         {
           name: "紧急联系人",
           key: 3,
           icon: "icon-contact.png",
-          url: "urgentContact/index.html"
+          url: "/contactPerson"
         },
         {
           name: "新增房产信息",
           key: 4,
           icon: "icon-house.png",
-          url: "property/list.html"
+          url: "/houseUser"
         },
         {
           name: "家庭收入",
@@ -127,7 +134,7 @@ export default {
           name: "担保人房产",
           key: 8,
           icon: "icon-guarantor.png",
-          url: "guaranteeHouseInfo/houseList.html"
+          url: "/houseGuarantor"
         },
         {
           name: "担保人收入信息",
@@ -146,25 +153,12 @@ export default {
           key: 11,
           icon: "icon-filed.png",
           url: "documents/index.html"
-        },
-        {
-          name: "征信信息",
-          key: 12,
-          icon: "icon-creditreporting.png",
-          url: "detailsCredit.html"
-        },
-        {
-          name: "审批过程",
-          key: 13,
-          icon: "icon-process.png",
-          url: "approvalProcess.html"
         }
-        // { name: '生活号', key: 14, icon: 'icon-qrcode.png', url: '' },
       ],
       params: {
-        customerName: '大范甘迪', //客户姓名
-        contactPhone: '444', //客户身份证
-        certificateNum: '33333', //客户手机号码
+        customerName: "大范甘迪", //客户姓名
+        contactPhone: "444", //客户身份证
+        certificateNum: "33333" //客户手机号码
       },
       certificateNum: "",
       projProjectInfo: {},
@@ -347,7 +341,6 @@ export default {
       // }
       // bridge.loadurlwithmobile({ url: urls });
 
-
       this.$router.push(row.url);
     },
     getQRCode(custId, projId) {
@@ -369,11 +362,6 @@ export default {
     }
   },
   mounted() {
-    // this.params = commonFun.urlParam(location.search);
-    // token = this.params.token;
-    // this.certificateNum = this.params.certificateNum
-    // this.loadData(this.params);
-    // this.getQRCode(this.params.customerId, this.params.projectId)
   }
 };
 </script>
@@ -386,14 +374,14 @@ export default {
 }
 .xh-meun {
   text-align: center;
-  padding: 15px 0;
+  padding: 30px 0;
   position: relative;
   vertical-align: middle;
   display: inline-block;
 }
 .xh-icon {
   width: 100%;
-  height: 40px;
+  height: 30px;
 }
 .xh-icon img {
   margin: auto;
@@ -454,20 +442,20 @@ export default {
 .xh-submit {
   margin-top: 35px;
 }
-.xh-submit .van-button{
+.xh-submit .van-button {
   border-radius: 8px;
-  color: rgb(255,255,255);
+  color: rgb(255, 255, 255);
 }
 .xh-bg-main {
-  background-color: rgb(196,37,42);
+  background-color: rgb(196, 37, 42);
 }
 .xh-bg-maingray {
-  background-color: rgb(246,246,246);
+  background-color: rgb(246, 246, 246);
 }
 .xh-bg-gray {
-  background-color: rgb(204,204,204);
+  background-color: rgb(204, 204, 204);
 }
 .xh-bg-subgray {
-  background-color: rgb(238,238,238);
+  background-color: rgb(238, 238, 238);
 }
 </style>

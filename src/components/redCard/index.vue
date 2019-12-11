@@ -28,20 +28,12 @@ export default {
       type: String,
       default: '我是标题'
     }
-  },
-  methods: {}
+  }
 };
 </script>
 
 <style lang="scss">
 /* 红色渐变卡片 */
-.xh-card-box {
-  -moz-box-shadow: 0 0 10px #CCC;
-  -webkit-box-shadow: 0 0 10px #CCC;
-  box-shadow: 0 0 6px #CCC;
-  color: #666;
-  background-color: #fff;
-}
 .xh-card-bg {
   background: -webkit-linear-gradient(left, rgb(253,86,92), rgb(196,37,42)); /* Safari 5.1 - 6.0 */
   background: -o-linear-gradient(left, rgb(253,86,92), rgb(196,37,42)); /* Opera 11.1 - 12.0 */
