@@ -32,6 +32,8 @@
             padding: 10px;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
+            color: rgb(196,37,42);
+            font-size: 12px;
         }
 
         .card__body {

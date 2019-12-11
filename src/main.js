@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import './rem'
 
 import '@/styles/index.scss' // global css
 

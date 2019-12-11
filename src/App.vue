@@ -42,4 +42,7 @@ export default {
         background-color: #f7f8fa;
         -webkit-font-smoothing: antialiased;
     }
+    *{
+        font-size: 1.2rem;
+    }
 </style>
