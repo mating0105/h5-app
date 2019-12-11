@@ -1,20 +1,27 @@
 <template>
     <div id="view-page">
         <NavBar></NavBar>
-        <div class="wrapper">
-            <slot></slot>
+        <div class="wrapper" ref="wrapper">
+            <div>
+                <slot></slot>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
   import NavBar from './NavBar';
+  import BScroll from 'better-scroll'
 
   export default {
     name: "ViewPage",
     components: {
       NavBar
     },
+    mounted () {
+      let wrapper = this.$refs['wrapper']
+      let scroll = new BScroll(wrapper)
+    }
   }
 </script>
 
