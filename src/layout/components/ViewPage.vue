@@ -19,8 +19,10 @@
       NavBar
     },
     mounted () {
-      // let wrapper = this.$refs['wrapper']
-      // let scroll = new BScroll(wrapper)
+      let wrapper = this.$refs['wrapper']
+      let scroll = new BScroll(wrapper, {
+        click: true
+      })
     }
   }
 </script>
