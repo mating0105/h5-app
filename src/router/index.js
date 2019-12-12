@@ -33,7 +33,7 @@ export const constantRoutes = [
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
-    meta: {title: 'Project', icon: 'dashboard'}
+    meta: {title: '项目报单', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -46,26 +46,32 @@ export const constantRoutes = [
     path: '/projectInfo',
     name: 'ProjectInfo',
     component: () => import('@/views/basicInfo/projectInfo/index'),
-    meta: {title: 'ProjectInfo', icon: 'dashboard'}
+    meta: {title: '新建报单', icon: 'dashboard'}
   },
 
   { 
     path: '/clientIndex',
     name: 'ClientIndex',
     component: () => import('@/views/basicInfo/client/index'),
-    meta: {title: 'ClientIndex', icon: 'dashboard'}
+    meta: {title: '客户及配偶', icon: 'dashboard'}
   },
 
   { 
     path: '/contactPerson',
     name: 'ContactPerson',
     component: () => import('@/views/basicInfo/contact/index'),
-    meta: {title: 'ContactPerson', icon: 'dashboard'}
+    meta: {title: '紧急联系人', icon: 'dashboard'}
   }, 
   { 
     path: '/houseUser',
     name: 'HouseUser',
     component: () => import('@/views/basicInfo/house/user'),
+    meta: {title: '房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/addHouseUser',
+    name: 'AddHouseUser',
+    component: () => import('@/views/basicInfo/house/addUser'),
     meta: {title: '新增房产信息', icon: 'dashboard'}
   },
   { 
@@ -73,6 +79,12 @@ export const constantRoutes = [
     name: 'HouseGuarantor',
     component: () => import('@/views/basicInfo/house/guarantor'),
     meta: {title: '房产担保人', icon: 'dashboard'}
+  },
+  { 
+    path: '/addHouseGuarantor',
+    name: 'AddHouseGuarantor',
+    component: () => import('@/views/basicInfo/house/addGuarantor'),
+    meta: {title: '新增房产担保人', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!

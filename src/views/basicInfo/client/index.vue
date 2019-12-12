@@ -1,7 +1,7 @@
 <template>
   <!-- 客户及配偶 -->
-  <div class="xh-page-body xh-bg-maingray">
-    <div class="xh-card">
+  <ViewPage>
+    <div class="xh-card-box xh-radius">
       <van-row>
         <van-col :span="24">
           <van-cell-group>
@@ -266,7 +266,7 @@
         @click.native="custSubmit"
       >保 存</van-button>
     </div>
-  </div>
+  </ViewPage>
 </template>
 
 <script>
@@ -283,6 +283,7 @@ import {
   Area,
   Picker
 } from "vant";
+import ViewPage from "@/layout/components/ViewPage";
 const Components = [
   Dialog,
   Button,
@@ -301,6 +302,9 @@ Components.forEach(item => {
 });
 
 export default {
+  components: {
+    ViewPage
+  },
   data() {
     return {
       fromData: {

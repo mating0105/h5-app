@@ -1,29 +1,32 @@
 <template>
   <ViewPage>
     <div class="xh-card-box xh-radius">
-      <div class="xh-contact-body">
+      <div>
         <section>
-          <van-cell title="是否有房产:"  value="list.isHasHouse == '1'?'有房产':'没有房产'"/>
+          <van-cell title="是否有房产:" value="list.isHasHouse == '1'?'有房产':'没有房产'" />
         </section>
         <section>
-          <van-cell title="担保人:"  value="list.cuGuaranteeName"/>
+          <van-cell title="担保人:" value="list.cuGuaranteeName" />
         </section>
         <section>
-          <van-cell title="房产性质:" value="list.houseTypeDesc"/>
+          <van-cell title="房产性质:" value="list.houseTypeDesc" />
         </section>
         <section>
-          <van-cell title="省市区:"  value="list.provCityZon"/>
+          <van-cell title="省市区:" value="list.provCityZon" />
         </section>
         <section>
-            <van-cell title="详细地址:" value="list.specificAddress" />
+          <van-cell title="详细地址:" value="list.specificAddress" />
         </section>
         <section>
-            <van-cell title="房权所有人:"  value="list.ownerProperty"/>
+          <van-cell title="房权所有人:" value="list.ownerProperty" />
         </section>
         <section>
           <div class="van-cell">
-            <div span="8" class="van-cell__title">房产面积(m<sup>2</sup>)：</div>
-            <div span="16" class="van-cell__value">list.houseArea</div>
+            <div class="van-cell__title">
+              房产面积(m
+              <sup>2</sup>)：
+            </div>
+            <div class="van-cell__value">list.houseArea</div>
           </div>
         </section>
       </div>
@@ -33,26 +36,16 @@
 
 <script>
 import Vue from "vue";
-import ViewPage from '@/layout/components/ViewPage';
-import {
-  Cell
-} from "vant";
+import ViewPage from "@/layout/components/ViewPage";
+import { Cell } from "vant";
 
 Vue.use(Cell);
 export default {
   data() {
-    return {}
+    return {};
   },
   components: {
     ViewPage
   }
-}
+};
 </script>
-
-<style lang="scss">
-  .xh-sup {
-
-  }
-</style>
-
-

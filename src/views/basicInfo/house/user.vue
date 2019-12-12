@@ -1,7 +1,7 @@
 <template>
   <ViewPage>
     <div class="xh-card-box xh-radius">
-      <div class="xh-contact-body">
+      <div>
         <section>
           <van-cell title="是否有房产:" value="list.isHasHouse == '1'?'有房产':'没有房产'" />
         </section>
@@ -9,10 +9,10 @@
           <van-cell title="房产所有人:"  value="list.ownerProperty"/>
         </section>
         <section>
-          <van-row class="xh-sup van-cell">
-            <van-col span="8" class="van-cell__title">房产面积(m<sup>2</sup>)：</van-col>
-            <van-col span="16" class="van-cell__value">list.houseArea</van-col>
-          </van-row>
+          <div class="van-cell">
+            <div class="van-cell__title">房产面积(m<sup>2</sup>)：</div>
+            <div class="van-cell__value">list.houseArea</div>
+          </div>
         </section>
         <section>
           <van-cell title="房产所在地:"  value="list.provCityZon"/>
@@ -45,11 +45,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-  .xh-sup {
-
-  }
-</style>
-
-
