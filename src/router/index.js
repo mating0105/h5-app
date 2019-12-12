@@ -36,6 +36,13 @@ export const constantRoutes = [
     meta: {title: '项目报单', icon: 'dashboard'}
   },
   {
+    path: '/vehicle',
+    name: 'vehicle',
+    component: () => import('@/views/credit/vehicle'),
+    meta: {title: '新增车辆'},
+  },
+
+  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
@@ -106,7 +113,7 @@ export const constantRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  {path: '*', redirect: '/404', hidden: true}
+  // {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({
