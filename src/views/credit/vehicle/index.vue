@@ -1,37 +1,47 @@
 <template>
     <ViewPage>
         <Card>
-            <van-cell-group>
-                <van-cell title="车辆类别：" required is-link value="" />
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="车辆性质：" required>
-                    <radio v-model="form.property">
-                        <radio-item :label="1">新车</radio-item>
-                        <radio-item :label="2">二手车</radio-item>
-                    </radio>
-                </van-cell>
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="车辆来源：" required>
-                    <radio></radio>
-                </van-cell>
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="车辆规格：" required is-link value="" />
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="车辆品牌型号：" required is-link value="" />
-            </van-cell-group>
-            <van-cell-group>
-                <van-field v-model="form.creditPersonName" required clearable input-align="right" label="销售价(元)："
+            <van-cell title="车辆类别：" :border="false" required is-link value=""/>
+            <van-cell title="车辆性质：" :border="false" required>
+                <radio v-model="form.property" disabled>
+                    <radio-item :label="1">新车</radio-item>
+                    <radio-item :label="2">二手车</radio-item>
+                </radio>
+            </van-cell>
+            <van-cell title="车辆来源：" :border="false" required>
+                <radio v-model="form.source">
+                    <radio-item :label="1">中规车</radio-item>
+                    <radio-item :label="2">平行进口车</radio-item>
+                </radio>
+            </van-cell>
+            <van-cell title="车辆规格：" :border="false" required is-link value=""/>
+            <van-cell v-if="form.property === 2" title="车架号：" :border="false" required is-link value=""/>
+            <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link value=""/>
+            <van-field v-if="form.property === 1" :border="false" v-model="form.creditPersonName" required clearable input-align="right" label="销售价(元)："
+                       placeholder="请输入"/>
+            <template v-else>
+                <van-cell title="车牌所在地：" :border="false" is-link value=""/>
+                <van-cell title=" 首次上牌日：" :border="false" is-link value=""/>
+                <van-field v-model="form.remarks" :border="false" clearable input-align="right" label="行驶里程（万公里）："
                            placeholder="请输入"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-field v-model="form.remarks" required clearable input-align="right" label="备注："
+                <van-field v-model="form.remarks" :border="false" clearable input-align="right" label="发动机号："
                            placeholder="请输入"/>
-            </van-cell-group>
+            </template>
+            <van-field v-model="form.remarks" :border="false" clearable input-align="right" label="备注："
+                       placeholder="请输入"/>
         </Card>
+        <Card style="margin-top: 10px;">
+            <template v-slot:header>
+                车辆照片
+            </template>
+        </Card>
+        <!-- 提交按钮 -->
+        <div style="margin-top: 45px;display: flex; flex-direction: row;">
+            <van-button size="large"
+                        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
+            >保存
+            </van-button>
+        </div>
     </ViewPage>
 </template>
 
@@ -59,8 +69,14 @@
     data () {
       return {
         form: {
-          property: 1
+          property: 1,
+          source: 1
         }
+      }
+    },
+    methods: {
+      selectBrand () {
+        this.$router.push("/brand");
       }
     }
   }

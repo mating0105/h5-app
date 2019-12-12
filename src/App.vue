@@ -1,42 +1,46 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+    <div id="app">
+        <transition name="page-move">
+            <router-view/>
+        </transition>
+    </div>
 </template>
 
 <script>
   import { getToken } from '@/utils/auth'
+
   export default {
-  name: 'App',
-  data() {
-    return {
-      loginForm: {
-        username: 'admin',
-        password: '123456'
+    name: 'App',
+    data () {
+      return {
+        loginForm: {
+          username: 'admin',
+          password: '123456'
+        }
+      }
+    },
+    methods: {
+      login () {
+        this.$store.dispatch('user/login', this.loginForm)
+        // this.$store.dispatch('user/login', this.loginForm).then(() => {
+        //   this.$router.push({ path: this.redirect || '/' })
+        // })
+      }
+    },
+    mounted () {
+      const hasToken = getToken()
+      if (!hasToken) {
+        this.login()
       }
     }
-  },
-  methods: {
-    login () {
-      this.$store.dispatch('user/login', this.loginForm)
-      // this.$store.dispatch('user/login', this.loginForm).then(() => {
-      //   this.$router.push({ path: this.redirect || '/' })
-      // })
-    }
-  },
-  mounted () {
-    const hasToken = getToken()
-    if (!hasToken) {
-      this.login()
-    }
   }
-}
 </script>
 
 <style lang="scss">
     html, body, #app {
         height: 100%
     }
+
     #app {
         min-width: 100vw;
         overflow: auto;
@@ -46,7 +50,16 @@
         background-color: #f7f8fa;
         -webkit-font-smoothing: antialiased;
     }
-    *{
+
+    * {
         font-size: 1.4rem;
+    }
+
+    .page-move-enter, .page-move-leave-active {
+        transform: translate(100%, 0)
+    }
+
+    .page-move-enter-active, .page-move-leave-active {
+        transition: transform .3s
     }
 </style>
