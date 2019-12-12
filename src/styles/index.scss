@@ -76,7 +76,21 @@ div:focus {
   white-space: nowrap;
   min-width: 50px;
 }
+// 全局圆角
+.xh-radius {
+  border-radius: 6px;
+  overflow: hidden;
+}
+// 卡片阴影
+.xh-card-box {
+  -moz-box-shadow: 0 0 10px #CCC;
+  -webkit-box-shadow: 0 0 10px #CCC;
+  box-shadow: 0 0 6px #CCC;
+  color: #666;
+  background-color: #fff;
+}
 
 .xh-top-10 {
   margin-top: 10px;
 }
+
