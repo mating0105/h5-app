@@ -1,7 +1,18 @@
 <template>
   <ViewPage>
     <Card>
-      <template v-slot:header>豆腐干豆腐</template>
+      <template v-slot:header>
+        <section class="xh-plus">
+          <van-cell title="紧急联系人">
+            <van-icon
+              slot="right-icon"
+              name="plus"
+              style="line-height: inherit;"
+              @click="pathAdd"
+            />
+          </van-cell>
+        </section>
+      </template>
       <div class="xh-contact-body">
         <section>
           <van-cell title="紧急联系人名称：" value="i.emgrCtcpsnNm" />
@@ -19,10 +30,21 @@
 
 <script>
 import Vue from "vue";
-import { Cell, CellGroup } from "vant";
 import Card from "@/components/card/index";
-import ViewPage from "@/layout/components/ViewPage";
-const Components = [Cell, CellGroup];
+import ViewPage from '@/layout/components/ViewPage';
+import {
+  Row,
+  Col,
+  Icon,
+  Cell
+} from "vant";
+
+const Components = [
+  Row,
+  Col,
+  Icon,
+  Cell
+];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -60,6 +82,9 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    pathAdd() {
+      
     }
   },
   mounted() {}

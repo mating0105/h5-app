@@ -30,6 +30,19 @@ export const constantRoutes = [
   },
 
   {
+    path: '/projectList',
+    name: 'ProjectList',
+    component: () => import('@/views/project/list'),
+    meta: {title: '项目报单', icon: 'dashboard'}
+  },
+  {
+    path: '/vehicle',
+    name: 'vehicle',
+    component: () => import('@/views/credit/vehicle'),
+    meta: {title: '新增车辆'},
+  },
+
+  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
@@ -92,8 +105,21 @@ export const constantRoutes = [
     component: () => import('@/views/payment/applyPayment'),
     meta: {title: '缴费走款申请', icon: 'dashboard'}
   },
+  { 
+    path: '/incomeFamily',
+    name: 'IncomeFamily',
+    component: () => import('@/views/basicInfo/income/family.vue'),
+    meta: {title: '家庭收入', icon: 'dashboard'}
+  },
+  { 
+    path: '/vehicleList',
+    name: 'VehicleList',
+    component: () => import('@/views/basicInfo/vehicle/list.vue'),
+    meta: {title: '名下车辆', icon: 'dashboard'}
+  },
+
   // 404 page must be placed at the end !!!
-  {path: '*', redirect: '/404', hidden: true}
+  // {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({

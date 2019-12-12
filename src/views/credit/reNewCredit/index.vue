@@ -20,10 +20,10 @@
                 <van-cell title="征信对象类型:" value="借款人"/>
             </van-cell-group>
             <van-cell-group>
-                <van-cell title="银行：" required is-link v-model="form.bank" @click="showPickerFn"/>
+                <van-cell title="银行：" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
             </van-cell-group>
             <van-cell-group>
-                <van-field class="label_plus" v-model="form.telephone" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
+                <van-field class="label_plus" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
                            placeholder="请输入"/>
             </van-cell-group>
             <van-cell-group>
@@ -31,7 +31,7 @@
                            :autosize='autosize' class="zh-textarea"/>
             </van-cell-group>
         </Card>
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 10px;" @click.native="addVehicle">
             <template v-slot:header>
                 新增车辆信息
                 <div class="card-icon">
@@ -49,7 +49,7 @@
         </Card>
         <!-- 提交按钮 -->
         <div style="margin-top: 45px;display: flex; flex-direction: row;">
-            <van-button v-show="canTermin == 'true'" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
+            <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
             <van-button size="large"
@@ -64,6 +64,7 @@
                     :columns="columns"
                     @cancel="showPicker = false"
                     @confirm="onConfirm"
+                    @change="onChange"
             />
         </van-popup>
     </ViewPage>
@@ -73,18 +74,13 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank } from '@/api/credit'
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast } from 'vant';
+  import { getBank, getCreditInfo } from '@/api/credit'
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify } from 'vant';
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast]
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify]
   Components.forEach(item => {
     Vue.use(item)
   })
-
-  const citys = {
-    '浙江': ['杭州', '宁波', '温州', '嘉兴', '湖州'],
-    '福建': ['福州', '厦门', '莆田', '三明', '泉州']
-  };
 
   export default {
     name: "reNewCredit",
@@ -108,45 +104,61 @@
         showPicker: false,
         bankArr: [],//银行数组
         bankList: {},
-        columns: [
-          {
-            values: Object.keys(citys),
-            className: 'column1'
-          },
-          {
-            values: citys['浙江'],
-            className: 'column2',
-            defaultIndex: 2
-          }
-        ]
+        columns: [],
+        isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
+        perInfoList: [], //客户下面的其他客户数据
+        errorMsg: { //必填list
+          loanPersonName: '',
+          telephone: '',// 手机号码验证
+          lpCertificateNum: '',
+        },
       }
     },
     methods: {
       selectList () {
 
       },
-      onConfirm () {
+      onConfirm (value) {
         this.showPicker = false;
-      },
-      showPickerFn() {
-        this.showPicker = true;
-        this.columns = [
-          {
-            values: Object.keys(this.bankList),
-            className: 'column1'
-          },
-          {
-            values: this.bankList[this.bankArr[0].orgName],
-            className: 'column2',
-            defaultIndex: 0
+        let tempcompany = this.bankArr.filter(e => {
+          if (e.orgName == value[0]) {
+            return e;
           }
-        ]
+        })[0];
+        let tempBank = tempcompany.children.filter(e => {
+          if (e.dsbrPltfrmNm == value[1]) {
+            return e;
+          }
+        })[0];
+        this.dataList.investigateBank = tempBank.id
+        this.dataList.investigateBankName = value[0] + '-' + value[1];
+        this.dataList.bankCode = tempBank.bankCode;
+      },
+      onChange (picker, values) {
+        picker.setColumnValues(1, this.bankList[values[0]]);
+      },
+      showPickerFn () {
+        this.showPicker = true;
+        if (this.bankArr.length) {
+          this.columns = [
+            {
+              values: Object.keys(this.bankList),
+              className: 'column1'
+            },
+            {
+              values: this.bankList[this.bankArr[0].orgName],
+              className: 'column2',
+              defaultIndex: 0
+            }
+          ]
+          console.log(this.columns)
+        }
       },
       async getBank () {
         try {
           //银行列表
           const res = await getBank()
-          this.bankArr = res.data.data;
+          this.bankArr = res.data;
           this.bankArr.forEach((item, index) => {
             this.bankList[item.orgName] = item.children.map(e => {
               return e.dsbrPltfrmNm
@@ -155,10 +167,62 @@
         } catch (e) {
           console.log(e)
         }
+      },
+      async getCreditInfo () {
+        try {
+          //银行列表
+          const res = await getCreditInfo()
+          if (res.code === 200) {
+            this.dataList = res.data.cuCreditRegister;
+
+            // 判断征信终止按钮隐藏和显示
+            if (this.isInternet == '0' && this.dataList.status == "05") {
+              this.canTermin = true
+            } else {
+              this.canTermin = false
+            }
+
+            if (this.isInternet != '1') {
+              if (this.dataList.isSCICBC == '1') {
+                this.isInternet = '2'
+              } else if (this.dataList.isSCICBC == '2') {
+                this.isInternet = '3'
+              }
+            }
+
+            if (!this.dataList.isSCICBC) {
+              this.dataList.isSCICBC = '0';
+            }
+
+            res.data.cuCreditRegister.surDtlList.forEach(e => {
+              if (e.creditObjectType == 'borrower') {
+                this.form = e;
+              } else {
+                this.perInfoList.push(e);
+              }
+            })
+            if (!this.form.relation) {
+              this.form.relation = '1';
+            }
+            if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
+              this.form.isSupplement = '0'
+            }
+          } else {
+            this.$notify(res.msg)
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      },
+      addVehicle () {
+        this.$router.push({
+          path: '/vehicle'
+        })
       }
     },
     mounted () {
-        // this.getBank()
+      this.getBank()
+      this.getCreditInfo()
     }
   }
 </script>

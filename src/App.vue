@@ -5,7 +5,8 @@
 </template>
 
 <script>
-export default {
+  import { getToken } from '@/utils/auth'
+  export default {
   name: 'App',
   data() {
     return {
@@ -24,7 +25,10 @@ export default {
     }
   },
   mounted () {
-    this.login()
+    const hasToken = getToken()
+    if (!hasToken) {
+      this.login()
+    }
   }
 }
 </script>
@@ -43,6 +47,6 @@ export default {
         -webkit-font-smoothing: antialiased;
     }
     *{
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
 </style>
