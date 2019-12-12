@@ -4,7 +4,7 @@
     <div class="xh-card-box xh-radius">
       <van-row>
         <van-col :span="24">
-          <van-cell-group>
+          <section>
             <van-field
               name="customerName"
               v-model="customerName"
@@ -16,8 +16,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.customerName"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="certificateNum"
               v-model="certificateNum"
@@ -30,8 +30,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.certificateNum"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="contactPhone"
               v-model="contactPhone"
@@ -43,8 +43,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.contactPhone"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="婚姻状况："
               required
@@ -52,8 +52,8 @@
               :value="fromData.marriageDesc"
               @click.native="loadList('婚姻状况')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="文化程度："
               required
@@ -61,8 +61,8 @@
               :value="fromData.levelEducationDesc"
               @click.native="loadList('文化程度')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="单位性质："
               required
@@ -70,8 +70,8 @@
               :value="fromData.unitCharDesc"
               @click.native="loadList('单位性质')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="primarySchool"
               v-model="fromData.primarySchool"
@@ -83,8 +83,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.primarySchool"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="户籍地址："
               required
@@ -92,8 +92,8 @@
               :value="fromData.pProvCityZon"
               @click.native="loadList('户籍地址')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="居住地："
               required
@@ -101,8 +101,8 @@
               :value="fromData.rProvCityZon"
               @click.native="loadList('居住地')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="spsRsdncDtlAdr"
               v-model="fromData.spsRsdncDtlAdr"
@@ -114,8 +114,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsRsdncDtlAdr"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="子女情况："
               required
@@ -123,8 +123,8 @@
               :value="fromData.childrenSituationDesc"
               @click.native="loadList('子女情况')"
             />
-          </van-cell-group>
-          <van-cell-group v-if="fromData.childrenSituationDesc != '无' ">
+          </section>
+          <section v-if="fromData.childrenSituationDesc != '无' ">
             <van-cell
               title="子女上学情况："
               required
@@ -132,8 +132,8 @@
               :value="fromData.schoolSituationDesc"
               @click.native="loadList('子女上学情况')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="localResidence"
               v-model="fromData.localResidence"
@@ -146,8 +146,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.localResidence"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="remark"
               v-model="fromData.remark"
@@ -156,7 +156,7 @@
               rows="1"
               autosize
             />
-          </van-cell-group>
+          </section>
 
           <!-- 下拉选择器 -->
           <van-action-sheet v-model="selectShow" class="xh-list">
@@ -188,7 +188,7 @@
     <div class="xh-card car2" v-if="spouseShow">
       <van-row style="background: white;">
         <van-col :span="21">
-          <van-cell-group>
+          <section>
             <van-field
               name="spsNm"
               v-model="spsNm"
@@ -200,7 +200,7 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsNm"
             />
-          </van-cell-group>
+          </section>
         </van-col>
         <van-col :span="3">
           <div style="height: 35.38px;background: white;text-align: center;" @click="OCRScan">
@@ -208,7 +208,7 @@
           </div>
         </van-col>
         <van-col :span="24">
-          <van-cell-group>
+          <section>
             <van-field
               name="spsCrdtNo"
               v-model="spsCrdtNo"
@@ -220,8 +220,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCrdtNo"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-field
               name="spsCtcTel"
               v-model="spsCtcTel"
@@ -233,8 +233,8 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCtcTel"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="配偶文化程度："
               required
@@ -242,8 +242,8 @@
               :value="fromData.spsCltrDgrDesc"
               @click.native="loadList('配偶文化程度')"
             />
-          </van-cell-group>
-          <van-cell-group>
+          </section>
+          <section>
             <van-cell
               title="配偶单位性质："
               required
@@ -251,7 +251,7 @@
               :value="fromData.spsUnitCharDesc"
               @click.native="loadList('配偶单位性质')"
             />
-          </van-cell-group>
+          </section>
         </van-col>
       </van-row>
     </div>

@@ -116,13 +116,13 @@ export default {
           name: "家庭收入",
           key: 5,
           icon: "icon-income.png",
-          url: "underVehicle/list.html"
+          url: "/incomeFamily"
         },
         {
           name: "名下车辆",
           key: 6,
           icon: "icon-carinfo.png",
-          url: "infoIncome/list.html"
+          url: "/vehicleList"
         },
         {
           name: "担保人信息",
@@ -437,25 +437,5 @@ export default {
 }
 .xh-text-right {
   text-align: right;
-}
-/* 灰色提交按钮 */
-.xh-submit {
-  margin-top: 35px;
-}
-.xh-submit .van-button {
-  border-radius: 8px;
-  color: rgb(255, 255, 255);
-}
-.xh-bg-main {
-  background-color: rgb(196, 37, 42);
-}
-.xh-bg-maingray {
-  background-color: rgb(246, 246, 246);
-}
-.xh-bg-gray {
-  background-color: rgb(204, 204, 204);
-}
-.xh-bg-subgray {
-  background-color: rgb(238, 238, 238);
 }
 </style>
