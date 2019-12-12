@@ -43,12 +43,16 @@ module.exports = {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
+      // '/api': {
+      //   target: `http://127.0.0.1:${port}/mock`,
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^/api']: ''
+      //   }
+      // },
       '/api': {
-        target: `http://127.0.0.1:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
-          ['^/api']: ''
-        }
+        target: `http://172.16.20.100:8085/api`,//测试
+        changeOrigin: true
       }
     },
     after: require('./mock/mock-server.js')
