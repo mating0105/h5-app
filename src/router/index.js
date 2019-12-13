@@ -43,6 +43,31 @@ export const constantRoutes = [
   },
 
   {
+    path: '/brand',
+    name: 'brand',
+    component: () => import('@/views/carBrand/brand'),
+    meta:{
+      title: '选择品牌'
+    }
+  },
+  {
+    path: '/carSeries',
+    name: 'carSeries',
+    component: () => import('@/views/carBrand/carModel'),
+    meta:{
+      title: '选择车系'
+    }
+  },
+  {
+    path: '/carModel',
+    name: 'carModel',
+    component: () => import('@/views/carBrand/carSeries'),
+    meta:{
+      title: '选择车型'
+    }
+  },
+
+  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
@@ -98,6 +123,12 @@ export const constantRoutes = [
     name: 'AddHouseGuarantor',
     component: () => import('@/views/basicInfo/house/addGuarantor'),
     meta: {title: '新增房产担保人', icon: 'dashboard'}
+  },
+  {
+    path: '/applyPayment',
+    name: 'ApplyPayment',
+    component: () => import('@/views/payment/applyPayment'),
+    meta: {title: '缴费走款申请', icon: 'dashboard'}
   },
   { 
     path: '/incomeFamily',

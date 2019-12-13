@@ -4,33 +4,20 @@
             <template v-slot:header>
                 客户信息
             </template>
-            <van-cell-group>
-                <van-field v-model="form.creditPersonName" required clearable input-align="right" label="客户名称："
-                           placeholder="请输入客户名称"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-field v-model="form.cpCertificateNum" required clearable input-align="right" label="证件号码："
-                           placeholder="请输入证件号码"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-field v-model="form.telephone" type="tel" required clearable input-align="right" label="电话号码："
-                           placeholder="请输入电话号码"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="征信对象类型:" value="借款人"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-cell title="银行：" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-field class="label_plus" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
-                           placeholder="请输入"/>
-            </van-cell-group>
-            <van-cell-group>
-                <van-field v-model="dataList.remarks" type="textarea" placeholder="输入说明" rows="1"
-                           :autosize='autosize' class="zh-textarea"/>
-            </van-cell-group>
+            <van-field v-model="form.creditPersonName" :border="false" required clearable input-align="right" label="客户名称："
+                       placeholder="请输入客户名称"/>
+            <van-field v-model="form.cpCertificateNum" :border="false" required clearable input-align="right" label="证件号码："
+                       placeholder="请输入证件号码"/>
+            <van-field v-model="form.telephone" :border="false" type="tel" required clearable input-align="right" label="电话号码："
+                       placeholder="请输入电话号码"/>
+            <van-cell title="征信对象类型:" :border="false" value="借款人"/>
+            <van-cell title="银行：" :border="false" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
+            <van-field class="label_plus" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
+                       placeholder="请输入"/>
+            <van-field v-model="dataList.remarks" :border="false" type="textarea" placeholder="输入说明" rows="1"
+                       :autosize='autosize' class="zh-textarea"/>
         </Card>
+
         <Card style="margin-top: 10px;" @click.native="addVehicle">
             <template v-slot:header>
                 新增车辆信息

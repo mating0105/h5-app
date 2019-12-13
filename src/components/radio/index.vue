@@ -12,7 +12,12 @@
     componentName: "radio",
     mixins: [Emitter],
     props: {
-      value: {}
+      value: {},
+      disabled: false
+    },
+    model: {
+      prop: 'value',
+      event: 'change'
     },
     created () {
       this.$on('changeRadio', value => {
@@ -25,12 +30,11 @@
 <style lang="scss">
 
     .xh-radio-group {
-        width: 100%;
         display: flex;
     }
 
     .xh-radio {
-        padding: 10px 15px;
+        padding: 10px 10px;
         flex: 1;
         line-height: 1;
         border: 1px solid #dcdfe6;
@@ -41,6 +45,8 @@
         cursor: pointer;
         transition: all .3s cubic-bezier(.645, .045, .355, 1);
         font-size: 14px;
+        white-space: nowrap;
+        vertical-align: middle;
 
         &.active {
             background: #C4252A;
