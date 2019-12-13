@@ -53,7 +53,7 @@ export const constantRoutes = [
   {
     path: '/carSeries',
     name: 'carSeries',
-    component: () => import('@/views/carBrand/carModel'),
+    component: () => import('@/views/carBrand/carSeries'),
     meta:{
       title: '选择车系'
     }
@@ -61,7 +61,7 @@ export const constantRoutes = [
   {
     path: '/carModel',
     name: 'carModel',
-    component: () => import('@/views/carBrand/carSeries'),
+    component: () => import('@/views/carBrand/carModel'),
     meta:{
       title: '选择车型'
     }
