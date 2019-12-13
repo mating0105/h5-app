@@ -74,6 +74,12 @@ export const constantRoutes = [
     meta: {title: '项目报单', icon: 'dashboard'}
   },
   {
+    path: '/lendProcessList',
+    name: 'lendProcessList',
+    component: () => import('@/views/lendProcess/list'),
+    meta: {title: '银行放款', icon: 'dashboard'}
+  },
+  {
     path: '/lendProcess',
     name: 'lendProcess',
     component: () => import('@/views/lendProcess/index'),
