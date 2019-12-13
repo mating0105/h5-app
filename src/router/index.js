@@ -106,10 +106,22 @@ export const constantRoutes = [
     meta: {title: '家庭收入', icon: 'dashboard'}
   },
   { 
+    path: '/incomeGuarantor',
+    name: 'IncomeGuarantor',
+    component: () => import('@/views/basicInfo/income/guarantor.vue'),
+    meta: {title: '担保人收入', icon: 'dashboard'}
+  },
+  { 
     path: '/vehicleList',
     name: 'VehicleList',
     component: () => import('@/views/basicInfo/vehicle/list.vue'),
     meta: {title: '名下车辆', icon: 'dashboard'}
+  },
+  { 
+    path: '/survey',
+    name: 'Survey',
+    component: () => import('@/views/basicInfo/survey/index.vue'),
+    meta: {title: '调查结论', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!

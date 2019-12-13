@@ -147,12 +147,14 @@
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
+              @click="pullCars"
               v-if="projProjectInfo.isAses == '1' ? false : true"
             /> -->
             <van-icon
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
+              @click="pullCars"
             />
           </van-cell>
         </section>
@@ -572,6 +574,11 @@ export default {
       // SubDicForText: SubDicForText,
       che300List: [],// 车三百评估列表
       platformId: '',//
+    }
+  },
+  methods: {
+    pullCars() {
+      this.$router.push('/vehicle');
     }
   }
 }

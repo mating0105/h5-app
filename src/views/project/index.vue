@@ -140,19 +140,19 @@ export default {
           name: "担保人收入信息",
           key: 9,
           icon: "icon-guarantorhouse.png",
-          url: "guaranteeIncomeInfo/incomeList.html"
+          url: "/incomeGuarantor"
         },
         {
           name: "调查结论",
           key: 10,
           icon: "icon-findings.png",
-          url: "survey/index.html"
+          url: "/survey"
         },
         {
           name: "相关文档",
           key: 11,
           icon: "icon-filed.png",
-          url: "documents/index.html"
+          url: "/documents"
         }
       ],
       params: {
@@ -434,8 +434,5 @@ export default {
   font-size: 1rem;
   border: 0;
   border-top: 1px solid #e6e6e6;
-}
-.xh-text-right {
-  text-align: right;
 }
 </style>

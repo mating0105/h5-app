@@ -18,16 +18,22 @@
   },
   methods: {
     login () {
-      this.$store.dispatch('user/login', this.loginForm)
-      // this.$store.dispatch('user/login', this.loginForm).then(() => {
-      //   this.$router.push({ path: this.redirect || '/' })
-      // })
+      // this.$store.dispatch('user/login', this.loginForm)
+      this.$store.dispatch('user/login', this.loginForm).then(res => {
+        // this.$router.push({ path: this.redirect || '/' })
+        // if(res) {
+
+        // }
+        this.$store.dispatch("user/getWordBook");
+      })
     }
   },
   mounted () {
     const hasToken = getToken()
     if (!hasToken) {
       this.login()
+    } else {
+      this.$store.dispatch("user/getWordBook");
     }
   }
 }

@@ -49,12 +49,13 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    // if (res.code !== 20000) {
+    if (res.code !== 200) {
+      Notify({ type: 'danger', message: res.msg + '' });
     //
     //   return Promise.reject(new Error(res.message || 'Error'))
-    // } else {
+    } else {
       return res
-    // }
+    }
   },
   error => {
     console.log('err' + error) // for debug
