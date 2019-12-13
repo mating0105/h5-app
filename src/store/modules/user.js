@@ -114,11 +114,14 @@ const actions = {
       "vehicle_specifications", // 车辆规格
       "ON_HOUSE_TYPE", // 上户类型
       "DOWN_PAYMENT", // 首付比例
+      "business_origin", // 业务来源
+      "business_mode", // 业务模式
+      "yes_no", // 是否
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {
         const { data } = response
-        commit('SET_WORDBOOK', data && data.token)
+        commit('SET_WORDBOOK', data )
         resolve()
       }).catch(error => {
         reject(error)
