@@ -43,35 +43,16 @@ export const constantRoutes = [
   },
 
   {
-    path: '/brand',
-    name: 'brand',
-    component: () => import('@/views/carBrand/brand'),
-    meta:{
-      title: '选择品牌'
-    }
-  },
-  {
-    path: '/carSeries',
-    name: 'carSeries',
-    component: () => import('@/views/carBrand/carSeries'),
-    meta:{
-      title: '选择车系'
-    }
-  },
-  {
-    path: '/carModel',
-    name: 'carModel',
-    component: () => import('@/views/carBrand/carModel'),
-    meta:{
-      title: '选择车型'
-    }
-  },
-
-  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
     meta: {title: '项目报单', icon: 'dashboard'}
+  },
+  {
+    path: '/lendProcessList',
+    name: 'lendProcessList',
+    component: () => import('@/views/lendProcess/list'),
+    meta: {title: '银行放款', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -153,6 +134,12 @@ export const constantRoutes = [
     name: 'ApplyPaymentList',
     component: () => import('@/views/payment/list'),
     meta: {title: '缴费走款', icon: 'dashboard'}
+  },
+  {
+    path: '/paymentSure',
+    name: 'PaymentSure',
+    component: () => import('@/views/payment/paymentSure'),
+    meta: {title: '走款确认', icon: 'dashboard'}
   },
   { 
     path: '/survey',

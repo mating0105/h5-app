@@ -1,10 +1,10 @@
 <template>
     <div id="nav">
         <van-nav-bar
-                :title="$route.meta.title || ''"
+                :title="title || $route.meta.title || ''"
                 left-text="返回"
                 left-arrow
-                @click-left="onClickLeft"
+                @click-left="backFn ? backFn() : onClickLeft()"
         />
     </div>
 </template>
@@ -20,6 +20,10 @@
       onClickLeft () {
         this.$router.back(-1)
       }
+    },
+    props: {
+      backFn: Function,
+      title: ''
     }
   }
 </script>
