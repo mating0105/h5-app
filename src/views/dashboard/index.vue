@@ -9,18 +9,18 @@
         <van-cell-group>
             <van-field v-model="value" placeholder="请输入用户名"/>
         </van-cell-group>
-        <van-list
-                v-model="loading"
-                :finished="finished"
-                finished-text="没有更多了"
-                @load="getList"
-        >
-            <van-cell
-                    v-for="item in dataList"
-                    :key="item.id"
-                    :title="item.display_time"
-            />
-        </van-list>
+<!--        <van-list-->
+<!--                v-model="loading"-->
+<!--                :finished="finished"-->
+<!--                finished-text="没有更多了"-->
+<!--                @load="getList"-->
+<!--        >-->
+<!--            <van-cell-->
+<!--                    v-for="item in dataList"-->
+<!--                    :key="item.id"-->
+<!--                    :title="item.display_time"-->
+<!--            />-->
+<!--        </van-list>-->
     </ViewPage>
 
 </template>

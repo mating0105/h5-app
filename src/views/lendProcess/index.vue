@@ -2,29 +2,205 @@
     <ViewPage>
         <van-tabs v-model="active">
             <van-tab title="做单基本信息" class="tabBox">
-                <Card>
-                    <template v-slot:header>
-                        项目信息
-                    </template>
-                    <div>
-                        <van-cell-group>
-                            <van-cell title="业务员：" value="张三" />
-                        </van-cell-group>
-                        <van-cell-group>
-                            <van-cell title="报单时间：" value="2019-12-03 10:30:30" />
-                        </van-cell-group>
-                        <van-cell-group>
-                            <van-cell title="垫款编号：" value="XH20191203001" />
-                        </van-cell-group>
-                        <van-cell-group>
-                            <van-cell title="制单人员：" value="王丹" />
-                        </van-cell-group>
-                        <van-cell-group>
-                            <van-cell title="走款模式：" is-link v-model="chineseForm.pyfMod"
-                            @click="showPopupType('pyfMod')" />
-                        </van-cell-group>
-                    </div>
-                </Card>
+                <div v-show="stepIndex==1">
+                    <Card>
+                        <template v-slot:header>
+                            项目信息
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-cell title="业务员：" value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="报单时间：" value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="垫款编号：" value="XH20191203001" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="制单人员：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="走款模式：" is-link v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <Card style="margin-top:15px;">
+                        <template v-slot:header>
+                            借款人信息
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-cell title="主借人姓名：" required value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人身份证：" required value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人电话：" required value="XH20191203001" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人性别：" is-link v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人年龄：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人月收入（元）：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="主借人家庭人数：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="还款来源：" is-link v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="职务：" is-link v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="户籍地址：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="户籍详细地址：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="家庭地址：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="家庭详细地址：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="工作单位名称：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="工作单位地址：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="工作单位详细地址：" value="王丹" />
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <Card style="margin-top:15px;">
+                        <template v-slot:header>
+                            车辆信息
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-cell title="车辆类别：" is-link required v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="车辆性质：" is-link required v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="车辆规格：" is-link required v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="车辆来源" is-link required v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="品牌型号：" is-link required v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="实际开票价（元）：" required value="XH20191203001" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="送行车价（元）：" required value="王丹" />
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">下一步</van-button>
+                </div>
+                <div v-show="stepIndex==2">
+                    <Card>
+                        <template v-slot:header>
+                            贷款信息
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-cell title="贷款金额（元）：" required value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="刷卡金额（元）：" required value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="评估金额（元）：" required required value="XH20191203001" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="贷款产品：" required value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="贷款银行：" required value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="贷款年限：" required value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="贷款期数：" required is-link v-model="projectForm.payType"
+                                @click="showPopupType('payType')" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="贷款成数：" required value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="客户利率：" required value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="浮息利率：" value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="公司收费利率：" required value="XH20191203001" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="保费金额（元）：" value="王丹" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="业务选融费用（元）：" required value="张三" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="资料费（元）：" required value="2019-12-03 10:30:30" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="车款金额合计（元）：" required value="XH20191203001" />
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <Card style="margin-top:15px;">
+                        <template v-slot:header>
+                            收款人信息
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-cell title="收款人姓名：" required value="刘才军" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="收款人账号：" required value="61201531321453612315" />
+                            </van-cell-group>
+                            <van-cell-group>
+                                <van-cell title="收款人银行：" required value="中国工商银行" />
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <Card style="margin-top:15px;">
+                        <template v-slot:header>
+                            意见描述
+                        </template>
+                        <div>
+                            <van-cell-group>
+                                <van-field v-model="message" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit/>
+                            </van-cell-group>
+                        </div>
+                    </Card>
+                    <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">提交</van-button>
+                </div>
             </van-tab>
             <van-tab title="征信信息">
                 
@@ -47,9 +223,9 @@
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index'
-  import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker  } from 'vant';
+  import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field } from 'vant';
 
-  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker ]
+  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field ]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -68,13 +244,17 @@
     },
     data() {
         return {
+            //---tab:0--项目信息
             active: 0,
             columns: [],
-            show:1,
-            chineseForm: {},
+            projectForm:{},//项目信息
+            borrowerForm: {},//借款人信息
             popupShow: false,
             title1:'',
             loading: false,
+            payTypeShow: false,//走款模式判断显示，
+            stepIndex:1,
+            message:'',
         };
     },
     methods: {
@@ -83,18 +263,11 @@
             this.popupShow = true
             this.popupSign = type
             switch (type) {
-            case 'pyfMod':
-                this.title1 = '请选择缴费方式'
-                this.columns = [
-                { text: '现金', key: '1' },
-                { text: '转账', key: '2' }
-                ]
-                break;
             case 'payType':
                 this.title1 = '请选择走款模式'
                 this.columns = [
-                { text: '刷卡', key: '1' },
-                { text: '转账', key: '2' }
+                { text: '快垫', key: '1' },
+                { text: '传统', key: '2' }
                 ]
                 break;
             case 'payWay':
@@ -107,7 +280,6 @@
             case 'payeeFullName':
                 this.title1 = '请选择收款人名称'
                 this.columns = [];
-                console.log(this.form.cost.payWay);
                 if (this.form.cost.payWay == 1) {
                 this.payee.forEach(e => {
                     this.columns.push({
@@ -130,54 +302,29 @@
         onCancel() {
             this.popupShow = false
         },
-        // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
-        addCount() {
-            let estimateCharges = parseFloat(this.form.cost.estimateCharges) || 0 // 评估费
-            let investigateCharges = parseFloat(this.form.cost.investigateCharges) || 0 //调查费
-            let gpsCharges = parseFloat(this.form.cost.gpsCharges) || 0 //GPS费用
-            let agreeBail = parseFloat(this.form.cost.agreeBail) || 0//履约保证金
-            let collectCarDealer = parseFloat(this.form.cost.collectCarDealer) || 0//实收车商
-            let notarialFees = parseFloat(this.form.cost.notarialFees) || 0//公证费
-            let allopatryCharges = parseFloat(this.form.cost.allopatryCharges) || 0//异地上户费
-            let colligateCharges = parseFloat(this.form.cost.colligateCharges) || 0//综合服务费
-            // let srchrgUse = parseFloat(this.form.cost.srchrgUse) || 0//附加费用
-            let doolBail = parseFloat(this.form.cost.doolBail) || 0//上户保证金
-            // let rentingAmtGps = parseFloat(this.form.proj.rentingAmtGps) || 0//加融金额(含GPS加融费用)
-            return estimateCharges + investigateCharges + agreeBail + collectCarDealer + notarialFees + allopatryCharges + colligateCharges + doolBail + gpsCharges;
-        },
-        actualCount() {
-            let dcnAmt = parseFloat(this.form.cost.dcnAmt) || 0
-            return this.addCount - dcnAmt;
-        },
         onConfirm(value) {
             this.popupShow = false
             switch (this.popupSign) {
-            case 'pyfMod':
-                this.form.cost.pyfMod = value.key;
-                this.chineseForm.pyfMod = value.text
-                break;
-            case 'payType':
-                this.form.cost.payType = value.key;
-                this.chineseForm.payType = value.text
-                if (this.form.cost.payType == '1') {
-                this.payTypeShow = false
-                } else {
-                this.payTypeShow = true
+                case 'payType':
+                    this.projectForm.payType = value.text;
+                    break;
+                case 'payWay':
+                    this.form.cost.payWay = value.key;
+                    this.chineseForm.payWay = value.text
+                    this.form.cost.payeeFullName = '';
+                    this.form.cost.payeeBank = '';
+                    this.form.cost.payeeAccount = '';
+                    break;
+                case 'payeeFullName':
+                    this.form.cost.payeeFullName = value.text;
+                    this.form.cost.payeeBank = value.rppdbnk;
+                    this.form.cost.payeeAccount = value.rcvpymtpsAcc
                 }
-                break;
-            case 'payWay':
-                this.form.cost.payWay = value.key;
-                this.chineseForm.payWay = value.text
-                this.form.cost.payeeFullName = '';
-                this.form.cost.payeeBank = '';
-                this.form.cost.payeeAccount = '';
-                break;
-            case 'payeeFullName':
-                this.form.cost.payeeFullName = value.text;
-                this.form.cost.payeeBank = value.rppdbnk;
-                this.form.cost.payeeAccount = value.rcvpymtpsAcc
-            }
         },
+        //下一步
+        nextStep(){
+            this.stepIndex=2;
+        }
       
     },
     mounted () {

@@ -76,7 +76,76 @@ div:focus {
   white-space: nowrap;
   min-width: 50px;
 }
-
+// 全局圆角
+.xh-radius {
+  border-radius: 6px;
+  overflow: hidden;
+}
+// 卡片阴影
+.xh-card-box {
+  -moz-box-shadow: 0 0 10px #CCC;
+  -webkit-box-shadow: 0 0 10px #CCC;
+  box-shadow: 0 0 6px #CCC;
+  color: #666;
+  background-color: #fff;
+}
+// 外间距 10px
 .xh-top-10 {
   margin-top: 10px;
 }
+
+/* 提交按钮 */
+.xh-submit {
+  margin-top: 35px;
+  .xh-bg-main {
+    background-color: rgb(196, 37, 42);
+  }
+  .xh-bg-maingray {
+    background-color: rgb(246, 246, 246);
+  }
+}
+.xh-submit .van-button {
+  border-radius: 8px;
+  color: rgb(255, 255, 255);
+}
+.xh-bg-main {
+  background-color: rgb(196, 37, 42);
+}
+.xh-bg-maingray {
+  background-color: rgb(246, 246, 246);
+}
+.xh-bg-gray {
+  background-color: rgb(204, 204, 204);
+}
+.xh-bg-subgray {
+  background-color: rgb(238, 238, 238);
+}
+// 卡片头有图标按钮的
+.xh-plus {
+  .van-cell {
+    padding: 0;
+  }
+  .van-icon {
+    font-size: 20px;
+    font-weight: 700;
+    color: #c4252a;
+  }
+}
+// 卡片多个列
+.xh-row {
+  .xh-row-col {
+    padding: 10px 0;
+    border-bottom: 1px solid #ebeef5;
+  }
+  .xh-row-col:last-child {
+    border-bottom: 0;
+  }
+  .van-cell {
+    padding: 10px 0;
+  }
+}
+// 文字内容靠右
+.xh-text-right {
+  text-align: right;
+}
+

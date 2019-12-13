@@ -6,4 +6,12 @@ export function login(params) {
     method: 'post',
     params
   })
+} 
+
+export function setBookObj(params) {
+  return request({
+    url: '/manage/dict/getDictByTypes',
+    method: 'post',
+    data: params
+  })
 }

@@ -8,7 +8,7 @@ Vue.use(Notify);
 
 // create an axios instance
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -49,16 +49,17 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    // if (res.code !== 20000) {
+    if (res.code !== 200) {
+      Notify({ type: 'danger', message: res.msg + '' });
     //
     //   return Promise.reject(new Error(res.message || 'Error'))
-    // } else {
+    } else {
       return res
-    // }
+    }
   },
   error => {
     console.log('err' + error) // for debug
-    Notify({ type: 'danger', message: error });
+    Notify({ type: 'danger', message: error + '' });
     return Promise.reject(error)
   }
 )

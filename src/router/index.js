@@ -30,10 +30,48 @@ export const constantRoutes = [
   },
 
   {
+    path: '/projectList',
+    name: 'ProjectList',
+    component: () => import('@/views/project/list'),
+    meta: {title: '项目报单', icon: 'dashboard'}
+  },
+  {
+    path: '/vehicle',
+    name: 'vehicle',
+    component: () => import('@/views/credit/vehicle'),
+    meta: {title: '新增车辆'},
+  },
+
+  {
+    path: '/brand',
+    name: 'brand',
+    component: () => import('@/views/carBrand/brand'),
+    meta:{
+      title: '选择品牌'
+    }
+  },
+  {
+    path: '/carSeries',
+    name: 'carSeries',
+    component: () => import('@/views/carBrand/carModel'),
+    meta:{
+      title: '选择车系'
+    }
+  },
+  {
+    path: '/carModel',
+    name: 'carModel',
+    component: () => import('@/views/carBrand/carSeries'),
+    meta:{
+      title: '选择车型'
+    }
+  },
+
+  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
-    meta: {title: 'Project', icon: 'dashboard'}
+    meta: {title: '项目报单', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -46,11 +84,85 @@ export const constantRoutes = [
     path: '/projectInfo',
     name: 'ProjectInfo',
     component: () => import('@/views/basicInfo/projectInfo/index'),
-    meta: {title: 'ProjectInfo', icon: 'dashboard'}
+    meta: {title: '新建报单', icon: 'dashboard'}
+  },
+
+  { 
+    path: '/clientIndex',
+    name: 'ClientIndex',
+    component: () => import('@/views/basicInfo/client/index'),
+    meta: {title: '客户及配偶', icon: 'dashboard'}
+  },
+
+  { 
+    path: '/contactPerson',
+    name: 'ContactPerson',
+    component: () => import('@/views/basicInfo/contact/index'),
+    meta: {title: '紧急联系人', icon: 'dashboard'}
+  }, 
+  { 
+    path: '/houseUser',
+    name: 'HouseUser',
+    component: () => import('@/views/basicInfo/house/user'),
+    meta: {title: '房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/addHouseUser',
+    name: 'AddHouseUser',
+    component: () => import('@/views/basicInfo/house/addUser'),
+    meta: {title: '新增房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/houseGuarantor',
+    name: 'HouseGuarantor',
+    component: () => import('@/views/basicInfo/house/guarantor'),
+    meta: {title: '房产担保人', icon: 'dashboard'}
+  },
+  { 
+    path: '/addHouseGuarantor',
+    name: 'AddHouseGuarantor',
+    component: () => import('@/views/basicInfo/house/addGuarantor'),
+    meta: {title: '新增房产担保人', icon: 'dashboard'}
+  },
+  { 
+    path: '/incomeFamily',
+    name: 'IncomeFamily',
+    component: () => import('@/views/basicInfo/income/family.vue'),
+    meta: {title: '家庭收入', icon: 'dashboard'}
+  },
+  { 
+    path: '/incomeGuarantor',
+    name: 'IncomeGuarantor',
+    component: () => import('@/views/basicInfo/income/guarantor.vue'),
+    meta: {title: '担保人收入', icon: 'dashboard'}
+  },
+  { 
+    path: '/vehicleList',
+    name: 'VehicleList',
+    component: () => import('@/views/basicInfo/vehicle/list.vue'),
+    meta: {title: '名下车辆', icon: 'dashboard'}
+  },
+  {
+    path: '/applyPayment',
+    name: 'ApplyPayment',
+    component: () => import('@/views/payment/applyPayment'),
+    meta: {title: '缴费走款申请', icon: 'dashboard'}
+  },
+  {
+    path: '/applyPaymentList',
+    name: 'ApplyPaymentList',
+    component: () => import('@/views/payment/list'),
+    meta: {title: '缴费走款', icon: 'dashboard'}
+  },
+  { 
+    path: '/survey',
+    name: 'Survey',
+    component: () => import('@/views/basicInfo/survey/index.vue'),
+    meta: {title: '调查结论', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!
-  {path: '*', redirect: '/404', hidden: true}
+  // {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({
