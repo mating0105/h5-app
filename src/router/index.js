@@ -99,12 +99,6 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/house/addGuarantor'),
     meta: {title: '新增房产担保人', icon: 'dashboard'}
   },
-  {
-    path: '/applyPayment',
-    name: 'ApplyPayment',
-    component: () => import('@/views/payment/applyPayment'),
-    meta: {title: '缴费走款申请', icon: 'dashboard'}
-  },
   { 
     path: '/incomeFamily',
     name: 'IncomeFamily',
@@ -116,6 +110,18 @@ export const constantRoutes = [
     name: 'VehicleList',
     component: () => import('@/views/basicInfo/vehicle/list.vue'),
     meta: {title: '名下车辆', icon: 'dashboard'}
+  },
+  {
+    path: '/applyPayment',
+    name: 'ApplyPayment',
+    component: () => import('@/views/payment/applyPayment'),
+    meta: {title: '缴费走款申请', icon: 'dashboard'}
+  },
+  {
+    path: '/applyPaymentList',
+    name: 'ApplyPaymentList',
+    component: () => import('@/views/payment/list'),
+    meta: {title: '缴费走款', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!
