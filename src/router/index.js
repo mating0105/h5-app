@@ -154,6 +154,12 @@ export const constantRoutes = [
     component: () => import('@/views/payment/list'),
     meta: {title: '缴费走款', icon: 'dashboard'}
   },
+  {
+    path: '/paymentSure',
+    name: 'PaymentSure',
+    component: () => import('@/views/payment/paymentSure'),
+    meta: {title: '走款确认', icon: 'dashboard'}
+  },
   { 
     path: '/survey',
     name: 'Survey',
