@@ -35,6 +35,37 @@
               </div>
             </div>
           </div>
+          <div v-show="stepVal ==1">
+            <card>
+              <template slot="header">产品费用</template>
+              <van-row>
+                <van-cell-group :border="false">
+                  <van-cell title="产品名称" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="产品性质" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="贷款金额(元)" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="贷款期数" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="放款平台" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="公司利率" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="客户利率" :value="paymentList.name" />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell title="担保费率" :value="paymentList.name" />
+                </van-cell-group>
+              </van-row>
+            </card>
+          </div>
         </div>
       </van-tab>
       <van-tab title="项目信息" name="project">内容 2</van-tab>
@@ -43,17 +74,19 @@
 </template>
 <script>
 import Vue from "vue";
-import { Button, Row, Col, Tab, Tabs } from "vant";
+import { Button, Row, Col, Tab, Tabs, Cell, CellGroup } from "vant";
 import redCard from "@/components/redCard/index";
+import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
-const Components = [Button, Row, Col, Tab, Tabs];
+const Components = [Button, Row, Col, Tab, Tabs, Cell, CellGroup];
 Components.forEach(item => {
   Vue.use(item);
 });
 export default {
   components: {
     redCard,
-    ViewPage
+    ViewPage,
+    card
   },
   data() {
     return {
@@ -63,8 +96,14 @@ export default {
         { name: "走款信息", key: 2 },
         { name: "上传图片", key: 3 }
       ],
-      stepVal: 1
+      stepVal: 1,
+      paymentList:{},
     };
+  },
+  methods: {
+    stepVhange(val) {
+      this.stepVal = val;
+    }
   }
 };
 </script>
