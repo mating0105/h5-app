@@ -43,31 +43,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/brand',
-    name: 'brand',
-    component: () => import('@/views/carBrand/brand'),
-    meta:{
-      title: '选择品牌'
-    }
-  },
-  {
-    path: '/carSeries',
-    name: 'carSeries',
-    component: () => import('@/views/carBrand/carSeries'),
-    meta:{
-      title: '选择车系'
-    }
-  },
-  {
-    path: '/carModel',
-    name: 'carModel',
-    component: () => import('@/views/carBrand/carModel'),
-    meta:{
-      title: '选择车型'
-    }
-  },
-
-  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),

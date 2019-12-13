@@ -1,29 +1,61 @@
 <template>
     <div id="view-page">
-        <NavBar></NavBar>
+        <div>
+            <NavBar :title="title" :backFn="backFn"></NavBar>
+            <slot name="head"></slot>
+        </div>
         <div class="wrapper" ref="wrapper">
             <div :class="{'content': margin}">
                 <slot></slot>
             </div>
         </div>
+<!--        <van-overlay :show="loading">-->
+<!--        </van-overlay>-->
     </div>
 </template>
 
 <script>
   import NavBar from './NavBar';
   import BScroll from 'better-scroll'
+  import { Overlay, Loading, Toast } from 'vant';
+  import Vue from 'vue'
+
+  Vue.use(Overlay).use(Loading);
 
   export default {
     name: "ViewPage",
+    data () {
+      return {
+        toast: null
+      }
+    },
     props: {
       scroll: true,
-      margin: true
+      margin: true,
+      backFn: Function,
+      loading: false,
+      title: ''
     },
     components: {
       NavBar
     },
+    watch: {
+      loading (value) {
+        if (value) {
+          this.toast = Toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+            duration: 0,
+            loadingType: 'spinner',
+            overlay: true
+          });
+        } else {
+          Toast.clear(this.toast);
+        }
+      }
+    },
     mounted () {
-      if(this.scroll) {
+      if (this.scroll) {
         let wrapper = this.$refs['wrapper']
         let scroll = new BScroll(wrapper, {
           click: true
@@ -36,20 +68,24 @@
 <style scoped lang="scss">
     #view-page {
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .wrapper {
-        height: calc(100% - 50px);
+        /*height: calc(100% - 50px);*/
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
-        >.desc {
+
+        > .desc {
             padding: 10px;
             margin: 10px 0;
             line-height: 20px;
             font-size: 14px;
         }
-        >.content {
+
+        > .content {
             margin: 10px;
         }
     }

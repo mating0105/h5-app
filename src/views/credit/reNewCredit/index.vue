@@ -1,5 +1,5 @@
 <template>
-    <ViewPage>
+    <ViewPage :loading="loading">
         <Card>
             <template v-slot:header>
                 客户信息
@@ -35,7 +35,7 @@
             </template>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin-top: 45px;display: flex; flex-direction: row;">
+        <div style="margin-top: 45px; margin-bottom: 30px;display: flex; flex-direction: row;">
             <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
@@ -82,6 +82,7 @@
           investigateBankName: '',
           isInternetCredit: '',
         },
+        loading: false,
         form: {},
         autosize: {
           maxHeight: 100,
@@ -157,47 +158,45 @@
       },
       async getCreditInfo () {
         try {
-          //银行列表
+          this.loading = true
           const res = await getCreditInfo()
-          if (res.code === 200) {
-            this.dataList = res.data.cuCreditRegister;
-
-            // 判断征信终止按钮隐藏和显示
-            if (this.isInternet == '0' && this.dataList.status == "05") {
-              this.canTermin = true
-            } else {
-              this.canTermin = false
-            }
-
-            if (this.isInternet != '1') {
-              if (this.dataList.isSCICBC == '1') {
-                this.isInternet = '2'
-              } else if (this.dataList.isSCICBC == '2') {
-                this.isInternet = '3'
-              }
-            }
-
-            if (!this.dataList.isSCICBC) {
-              this.dataList.isSCICBC = '0';
-            }
-
-            res.data.cuCreditRegister.surDtlList.forEach(e => {
-              if (e.creditObjectType == 'borrower') {
-                this.form = e;
-              } else {
-                this.perInfoList.push(e);
-              }
-            })
-            if (!this.form.relation) {
-              this.form.relation = '1';
-            }
-            if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
-              this.form.isSupplement = '0'
-            }
+          this.loading = false
+          this.dataList = res.data.cuCreditRegister;
+          // 判断征信终止按钮隐藏和显示
+          if (this.isInternet == '0' && this.dataList.status == "05") {
+            this.canTermin = true
           } else {
-            this.$notify(res.msg)
+            this.canTermin = false
           }
+
+          if (this.isInternet != '1') {
+            if (this.dataList.isSCICBC == '1') {
+              this.isInternet = '2'
+            } else if (this.dataList.isSCICBC == '2') {
+              this.isInternet = '3'
+            }
+          }
+
+          if (!this.dataList.isSCICBC) {
+            this.dataList.isSCICBC = '0';
+          }
+
+          res.data.cuCreditRegister.surDtlList.forEach(e => {
+            if (e.creditObjectType == 'borrower') {
+              this.form = e;
+            } else {
+              this.perInfoList.push(e);
+            }
+          })
+          if (!this.form.relation) {
+            this.form.relation = '1';
+          }
+          if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
+            this.form.isSupplement = '0'
+          }
+
         } catch (e) {
+          this.loading = false
           console.log(e)
         }
       },
