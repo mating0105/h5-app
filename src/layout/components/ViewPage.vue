@@ -2,7 +2,7 @@
     <div id="view-page">
         <NavBar></NavBar>
         <div class="wrapper" ref="wrapper">
-            <div class="content">
+            <div :class="{'content': margin}">
                 <slot></slot>
             </div>
         </div>
@@ -15,14 +15,20 @@
 
   export default {
     name: "ViewPage",
+    props: {
+      scroll: true,
+      margin: true
+    },
     components: {
       NavBar
     },
     mounted () {
-      let wrapper = this.$refs['wrapper']
-      let scroll = new BScroll(wrapper, {
-        click: true
-      })
+      if(this.scroll) {
+        let wrapper = this.$refs['wrapper']
+        let scroll = new BScroll(wrapper, {
+          click: true
+        })
+      }
     }
   }
 </script>
@@ -36,6 +42,7 @@
         height: calc(100% - 50px);
         overflow-x: hidden;
         overflow-y: auto;
+        position: relative;
         >.desc {
             padding: 10px;
             margin: 10px 0;
