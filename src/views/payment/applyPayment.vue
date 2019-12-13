@@ -68,7 +68,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style>
 .xh-pay-content {
   margin: 10px 0;
 }
