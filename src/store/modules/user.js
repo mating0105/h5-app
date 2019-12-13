@@ -112,11 +112,14 @@ const actions = {
       "car_nature", // 车辆性质
       "Margin_Ratio", // 保证金比例
       "vehicle_specifications", // 车辆规格
+      "CAR_SOURCE", // 车辆来源
       "ON_HOUSE_TYPE", // 上户类型
       "DOWN_PAYMENT", // 首付比例
       "business_origin", // 业务来源
       "business_mode", // 业务模式
       "yes_no", // 是否
+      "apply_status", // 报单流程状态
+      "is_Access_Car", // 是否准入
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

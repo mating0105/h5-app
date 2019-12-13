@@ -155,11 +155,7 @@ export default {
           url: "/documents"
         }
       ],
-      params: {
-        customerName: "大范甘迪", //客户姓名
-        contactPhone: "444", //客户身份证
-        certificateNum: "33333" //客户手机号码
-      },
+      params: {},
       certificateNum: "",
       projProjectInfo: {},
       showQRCode: false,
@@ -220,128 +216,7 @@ export default {
       // location.href = 'zhgjApp/page/projectDeclaration/approvalEnd.html'
     },
     meunList(row) {
-      // var urls, dataList;
-      // switch (row.key) {
-      //   case 1: //项目基本信息
-      //     dataList = "projectId=" + this.params.projectId;
-      //     break;
-      //   case 2: //客户及配偶
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerId=" +
-      //       this.params.customerId +
-      //       "&customerNum=" +
-      //       this.params.customerNum +
-      //       "&id=" +
-      //       this.params.customerId +
-      //       "&isChangeProj=" +
-      //       this.projProjectInfo.isChangeProj;
-      //     // dataList = 'projectId='+'180904323373'+'&customerId='+'180904323344'+'&customerNum='+ 'KH180904323344'+'&id='+'180904323344';
-
-      //     break;
-      //   case 3: //紧急联系人
-      //     dataList = "customerId=" + this.params.customerId;
-      //     // dataList = 'customerId='+ '180905324419';
-      //     break;
-      //   case 4: //新增房产信息
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerId=" +
-      //       this.params.customerId +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-      //     // dataList = 'projectId='+'180905324433'+'&customerId='+'180905324419'+'&customerNum='+ 'KH180905324419';
-
-      //     break;
-      //   case 5: //家庭收入
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerId=" +
-      //       this.params.customerId +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-      //     // dataList = 'projectId='+'180905324433'+'&customerId='+'180905324419'+'&customerNum='+ 'KH180905324419';
-
-      //     break;
-      //   case 6: //名下车辆
-      //     dataList =
-      //       "customerId=" +
-      //       this.params.customerId +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-      //     // dataList = 'customerId='+'180905324419'+'&customerNum='+ 'KH180905324419';
-      //     break;
-      //   case 7: //担保人信息
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-
-      //     break;
-      //   case 8: //担保人房产
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-      //     break;
-      //   case 9: //担保人收入信息
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerNum=" +
-      //       this.params.customerNum; //---
-      //     break;
-      //   case 10: //调查结论
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&customerId=" +
-      //       this.params.customerId;
-      //     break;
-      //   case 11: //相关文档
-      //     dataList =
-      //       "customerNum=" +
-      //       this.params.customerNum +
-      //       "&bizNum=" +
-      //       this.params.projectNo +
-      //       "&bizId=" +
-      //       this.params.projectId +
-      //       "&customerId=" +
-      //       this.params.customerId;
-      //     break;
-      //   case 12: //征信信息
-      //     dataList =
-      //       "projectId=" +
-      //       this.params.projectId +
-      //       "&certificateNum=" +
-      //       this.certificateNum +
-      //       "&customerNum=" +
-      //       this.params.customerNum;
-      //     break;
-      //   case 13: //审批过程
-      //     dataList = "businessType=" + this.params.projectId;
-      //     break;
-      //   // case 14:
-      //   //   this.showQRCode = true
-      //   //   break;
-      //   default:
-      //     return;
-      // }
-      // if (row.key == 12) {
-      //   urls = "zhgjApp/page/creditReporting/" + row.url + "?" + dataList;
-      // } else if (row.key == 1 || row.key == 13) {
-      //   urls = "zhgjApp/page/projectDeclaration/" + row.url + "?" + dataList;
-      // } else {
-      //   urls = "zhgjApp/page/zy/" + row.url + "?" + dataList;
-      // }
-      // bridge.loadurlwithmobile({ url: urls });
-
-      this.$router.push(row.url);
+      this.$router.push({ path: row.url, query: this.params });
     },
     getQRCode(custId, projId) {
       requestUrl
@@ -362,6 +237,7 @@ export default {
     }
   },
   mounted() {
+    this.params = this.$route.query;
   }
 };
 </script>
