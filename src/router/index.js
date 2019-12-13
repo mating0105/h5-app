@@ -43,6 +43,31 @@ export const constantRoutes = [
   },
 
   {
+    path: '/brand',
+    name: 'brand',
+    component: () => import('@/views/carBrand/brand'),
+    meta:{
+      title: '选择品牌'
+    }
+  },
+  {
+    path: '/carSeries',
+    name: 'carSeries',
+    component: () => import('@/views/carBrand/carModel'),
+    meta:{
+      title: '选择车系'
+    }
+  },
+  {
+    path: '/carModel',
+    name: 'carModel',
+    component: () => import('@/views/carBrand/carSeries'),
+    meta:{
+      title: '选择车型'
+    }
+  },
+
+  {
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
@@ -106,6 +131,12 @@ export const constantRoutes = [
     meta: {title: '家庭收入', icon: 'dashboard'}
   },
   { 
+    path: '/incomeGuarantor',
+    name: 'IncomeGuarantor',
+    component: () => import('@/views/basicInfo/income/guarantor.vue'),
+    meta: {title: '担保人收入', icon: 'dashboard'}
+  },
+  { 
     path: '/vehicleList',
     name: 'VehicleList',
     component: () => import('@/views/basicInfo/vehicle/list.vue'),
@@ -122,6 +153,12 @@ export const constantRoutes = [
     name: 'ApplyPaymentList',
     component: () => import('@/views/payment/list'),
     meta: {title: '缴费走款', icon: 'dashboard'}
+  },
+  { 
+    path: '/survey',
+    name: 'Survey',
+    component: () => import('@/views/basicInfo/survey/index.vue'),
+    meta: {title: '调查结论', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!

@@ -1,24 +1,24 @@
 <template>
-    <div class="xh-radio" :class="{active: value === label}">
+    <div class="xh-radio" :class="[{active: value === label}, { 'is-disabled': isDisabled }]" @click="changeRadio">
         <slot></slot>
-        <input
-                class="radio-button__orig-radio"
-                :value="label"
-                type="radio"
-                v-model="value"
-                @change="changeRadio"
-                :disabled="isDisabled"
-        >
         <template v-if="!$slots.default">{{label}}</template>
     </div>
 </template>
 
 <script>
+  import Emitter from '@/utils/emitter';
+
   export default {
     name: "radioItem",
+    mixins: [Emitter],
     props: {
       label: {},
-      isDisabled: false
+      disabled: Boolean
+    },
+    data () {
+      return {
+        focus: false
+      }
     },
     computed: {
       value: {
@@ -29,7 +29,7 @@
           this._radioGroup.$emit('input', value);
         }
       },
-      _radioGroup() {
+      _radioGroup () {
         let parent = this.$parent;
         while (parent) {
           if (parent.$options.componentName !== 'radio') {
@@ -40,11 +40,14 @@
         }
         return false;
       },
+      isDisabled () {
+        return this.disabled || this._radioGroup.disabled;
+      },
     },
     methods: {
       changeRadio () {
         this.$nextTick(() => {
-          this.dispatch('radio', 'changeRadio', this.value);
+          this.dispatch('radio', 'changeRadio', this.label);
         });
       }
     },
@@ -53,13 +56,6 @@
   }
 </script>
 
-<style scoped>
-
-    .radio-button__orig-radio {
-        opacity: 0;
-        outline: none;
-        position: absolute;
-        z-index: -1;
-    }
+<style scoped lang="scss">
 
 </style>
