@@ -46,7 +46,7 @@
       carModel
     },
     props: {
-      visible: false
+      visible: Boolean
     },
     data () {
       return {

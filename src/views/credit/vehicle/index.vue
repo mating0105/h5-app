@@ -34,7 +34,7 @@
             <template v-slot:header>
                 车辆照片
             </template>
-            <imageList></imageList>
+            <imageList :dataList="dataList"></imageList>
         </Card>
         <!-- 提交按钮 -->
         <div style="margin-top: 45px; margin-bottom: 30px; display: flex; flex-direction: row;">
@@ -83,6 +83,34 @@
         },
         showBrand: false,
         loading: false,
+        dataList: [
+          {
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '身份证正面',
+            deletable: false,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '身份证反面',
+            deletable: false,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '银行征信查询授权书',
+            deletable: true,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '大数据征信查询授权书',
+            deletable: true,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '银行卡正反面',
+            deletable: true,
+            isRequire: true
+          },
+        ]
       }
     },
     methods: {

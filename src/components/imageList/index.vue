@@ -4,67 +4,44 @@
             <slot name="header"></slot>
         </div>
         <div class="xh-image-list">
-            <div class="image-item">
+            <div class="image-item" v-for="(item, index) in dataList" :key="index" v-if="index<=3">
                 <van-image
                         lazy-load
                         height="7rem"
-                        src="https://img.yzcdn.cn/vant/cat.jpeg"
+                        :src="item.url"
                 />
-                <div class="xh-image-sm">
-                    图片说明
+                <div class="xh-image-sm" v-if="index === 3" @click="showImageUpload = true">
+                    {{view ? '查看全部' : '上传更多'}}
                 </div>
-            </div>
-            <div class="image-item">
-                <van-image
-                        lazy-load
-                        height="7rem"
-                        src="https://img.yzcdn.cn/vant/cat.jpeg"
-                />
-                <div class="xh-image-sm">
-                    图片说明
-                </div>
-            </div>
-            <div class="image-item">
-                <van-image
-                        lazy-load
-                        height="7rem"
-                        src="https://img.yzcdn.cn/vant/cat.jpeg"
-                />
-                <div class="xh-image-sm">
-                    图片说明
-                </div>
-            </div>
-            <div class="image-item" @click="showImageUpload = true">
-                <van-image
-                        lazy-load
-                        height="7rem"
-                        src="https://img.yzcdn.cn/vant/cat.jpeg"
-                />
-                <div class="xh-image-sm">
-                    上传更多
+                <div class="xh-image-sm" v-else>
+                    {{item.declare}}
                 </div>
             </div>
         </div>
         <transition name="page-move">
-            <imageUpload :visible.sync="showImageUpload" v-if="showImageUpload"></imageUpload>
+            <imageUpload :visible.sync="showImageUpload" v-if="showImageUpload" :dataList="dataList"></imageUpload>
         </transition>
     </div>
 </template>
 
 <script>
   import Vue from 'vue';
-  import imageUpload from './imageUpload'
+  import imageUpload from './upload'
   import { Uploader, Image } from 'vant';
 
   Vue.use(Uploader).use(Image);
   export default {
     name: "imageList",
+    props: {
+      dataList: Array
+    },
     components: {
       imageUpload
     },
     data () {
       return {
-        showImageUpload: false
+        showImageUpload: false,
+        view: false
       }
     },
     methods: {
@@ -111,6 +88,7 @@
             white-space: nowrap;
             text-align: center;
             overflow: hidden;
+            text-overflow:ellipsis;
         }
     }
 

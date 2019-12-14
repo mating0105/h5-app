@@ -33,7 +33,7 @@
       ViewPage
     },
     props: {
-      visible: false,
+      visible: Boolean,
       brandId: {}
     },
     data () {

@@ -32,7 +32,7 @@
       ViewPage
     },
     props: {
-      visible: false,
+      visible: Boolean,
       carSeriesId: {}
     },
     data () {

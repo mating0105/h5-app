@@ -50,7 +50,11 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      }
+      },
+      '/document': {
+        target: `http://119.3.165.2:8085`,
+        changeOrigin: true
+      },
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
