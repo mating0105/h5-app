@@ -51,14 +51,20 @@ export const constantRoutes = [
   {
     path: '/lendProcessList',
     name: 'lendProcessList',
-    component: () => import('@/views/lendProcess/list'),
+    component: () => import('@/views/makeLoan/loadList/index'),
     meta: {title: '银行放款', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
     name: 'lendProcess',
-    component: () => import('@/views/lendProcess/index'),
+    component: () => import('@/views/makeLoan/lendProcess/index'),
     meta: {title: '发起做单', icon: 'dashboard'}
+  },
+  {
+    path: '/bankLend',
+    name: 'bankLend',
+    component: () => import('@/views/makeLoan/bankLend/index'),
+    meta: {title: '银行放款', icon: 'dashboard'}
   },
 
   {

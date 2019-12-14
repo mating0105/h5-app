@@ -202,12 +202,11 @@
                     </Card>
                     <Card style="margin-top:15px;">
                         <template v-slot:header>
-                            <div style="display:flex;justify-content:space-between;">
+                            <div class="notice">
                                 <p>通知业务员补充资料</p>
+                                <van-cell v-model="noticeName"  is-link @click="showPopupType('notice')"/>
                             </div>
                         </template>
-                        <!-- title="通知业务员补充资料" -->
-                        <van-cell v-model="noticeName" is-link @click="showPopupType('notice')" />
                     </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">提交</van-button>
                 </div> 
@@ -265,7 +264,7 @@
             payTypeShow: false,//走款模式判断显示，
             stepIndex:1,
             message:'',
-            noticeName:'王力-业务员'
+            noticeName:'请选择'
         };
     },
     methods: {
@@ -365,5 +364,19 @@
 }
 .rowBox{
     margin: 10px 0;
+}
+.notice{
+    display:flex;
+    align-items: baseline;
+}
+.notice>p{
+    margin:0;
+    width:70%;
+}
+.notice>.van-cell{
+    padding: 0;
+}
+.van-cell__value--alone{
+    text-align: right;
 }
 </style>
