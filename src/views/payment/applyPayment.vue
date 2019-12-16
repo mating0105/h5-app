@@ -182,7 +182,7 @@ import { Button, Row, Col, Tab, Tabs, Cell, CellGroup } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
-import ProjectInfo from "@/views/basicInfo/projectInfo/index";
+import ProjectInfo from "@/views/basicInfo/projectInfo/info";
 const Components = [Button, Row, Col, Tab, Tabs, Cell, CellGroup];
 Components.forEach(item => {
   Vue.use(item);
