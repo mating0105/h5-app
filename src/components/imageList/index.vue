@@ -9,7 +9,7 @@
                         lazy-load
                         height="75px"
                         :src="item.documentRoute"
-                        @click="openImagePreview"
+                        @click="openImagePreview(index)"
                 />
                 <div class="xh-image-sm" v-if="index === 3" @click="showImageUpload = true">
                     {{view ? '查看全部' : '上传更多'}}
@@ -58,9 +58,12 @@
       }
     },
     methods: {
-      openImagePreview () {
+      openImagePreview (index) {
         const list = this.list.map(item => item.documentRoute)
-        ImagePreview(list);
+        ImagePreview({
+          images: list,
+          startPosition: index
+        });
       }
     }
   }
