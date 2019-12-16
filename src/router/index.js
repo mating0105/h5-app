@@ -30,6 +30,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/creditNextStep',
+    name: 'creditNextStep',
+    component: () => import('@/views/credit/creditNextStep'),
+    meta: {title: '征信申请'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
