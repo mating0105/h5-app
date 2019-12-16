@@ -1,7 +1,7 @@
 <template>
     <div id="view-page">
         <div>
-            <NavBar :title="title" :backFn="backFn"></NavBar>
+            <NavBar :title="title" :backFn="backFn" :rightFn='rightFn'></NavBar>
             <slot name="head"></slot>
         </div>
         <div class="wrapper" ref="wrapper">
@@ -34,7 +34,8 @@
       margin: true,
       backFn: Function,
       loading: false,
-      title: ''
+      title: '',
+      rightFn:Function
     },
     components: {
       NavBar

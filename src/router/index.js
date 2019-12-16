@@ -153,6 +153,12 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/survey/index.vue'),
     meta: {title: '调查结论', icon: 'dashboard'}
   },
+  { 
+    path: '/proDocument',
+    name: 'ProDocment',
+    component: () => import('@/views/basicInfo/documents/index.vue'),
+    meta: {title: '调查结论', icon: 'dashboard'}
+  },
 
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
