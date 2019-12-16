@@ -1,8 +1,8 @@
 <template>
-    <ViewPage>
+    <ViewPage :rightFn='rightFn' :backFn='backFn'>
         <van-tabs v-model="activeName">
             <van-tab title="做单基本信息" name="1" class="tabBox">
-                <div v-show="stepIndex==1">
+                <div v-show="stepIndex==1" style="margin-top:10px;">
                     <Card>
                         <template v-slot:header>
                             项目信息
@@ -120,8 +120,8 @@
                     </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">下一步</van-button>
                 </div>
-                <div v-show="stepIndex==2">
-                     <Card>
+                <div v-show="stepIndex==2" style="margin-top:10px;">
+                    <Card>
                         <template v-slot:header>
                             贷款信息
                         </template>
@@ -211,11 +211,11 @@
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">提交</van-button>
                 </div> 
             </van-tab>
-            <van-tab title="征信信息" name="2">
+            <van-tab title="征信信息" name="2" class="tabBox">
                 
             </van-tab>
-            <van-tab title="审批记录" name="3">
-                
+            <van-tab title="审批记录" name="3" class="tabBox">
+                <ApprovalRecord :recordList='recordList'></ApprovalRecord>
             </van-tab>
         </van-tabs>
 
@@ -224,6 +224,12 @@
             <van-picker show-toolbar :title="title1" :columns="columns" :loading="loading" @cancel="onCancel"
             @confirm="onConfirm" />
         </van-popup>
+
+        <div v-if="rightBoxShow" ref="box" class="rightButtonBox" name="rightButtonBox">
+            <div class="sanjiao"></div>
+            <div>1111</div>
+        </div>
+        
     </ViewPage>
 </template>
 
@@ -232,6 +238,7 @@
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index';
+  import ApprovalRecord from '@/views/basicInfo/approvalRecord/index'
   import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field } from 'vant';
 
   const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field ]
@@ -245,6 +252,7 @@
     components: {
       ViewPage,
       Card,
+      ApprovalRecord
     },
     computed: {
       ...mapGetters([
@@ -263,11 +271,40 @@
             loading: false,
             payTypeShow: false,//走款模式判断显示，
             stepIndex:1,
+            rightIcon:true,
             message:'',
-            noticeName:'请选择'
+            noticeName:'请选择',
+            recordList:[{
+                name:'名字',
+                processedRole:'角色',
+                createDate:'创建时间',
+                businessType:'类型',
+                commentsDesc:'描述'
+            },{
+                name:'名字',
+                processedRole:'角色',
+                createDate:'创建时间',
+                businessType:'类型',
+                commentsDesc:'描述'
+            }],
+            rightBoxShow:false,
         };
     },
     methods: {
+        //导航右上角的按钮
+        rightFn(){
+            this.rightBoxShow=true;
+            console.log(11111)
+        },
+        //返回按钮
+        backFn(){
+            if(this.stepIndex==1){
+                this.$router.back(-1)
+            }else{
+                this.stepIndex=1;
+            }
+
+        },
         //显示选择弹框
         showPopupType(type) {
             this.popupShow = true
@@ -353,6 +390,16 @@
         }
       
     },
+    created(){
+        document.addEventListener('click',(e)=>{
+            if(this.rightBoxShow==true){
+                if(!this.$refs.box.contains(e.target)){
+                    this.rightBoxShow=false;
+                }
+            }
+        })
+
+    },
     mounted () {
     }
   }
@@ -378,5 +425,30 @@
 }
 .van-cell__value--alone{
     text-align: right;
+}
+.rightButtonBox{
+    position: fixed;
+    top: 46px;
+    right: 15px;
+    width:120px;
+    padding: 10px;
+    background-color:#12ad2a;
+    z-index: 999;
+}
+.sanjiao{
+    position:absolute;
+    top:-16px;
+    right:5px;
+    border:1px solid red;
+    width:0; 
+    height:0;
+    overflow: hidden;
+    font-size: 0;
+    line-height: 0;
+    border-color:transparent;
+    border-bottom-color: #12ad2a;
+    border-style:solid;
+    border-width:10px;
+
 }
 </style>
