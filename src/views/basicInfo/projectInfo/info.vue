@@ -151,7 +151,7 @@
               title="业务来源:"
               required
               is-link
-              :value="projProjectInfo.bsnSrcName + ' | ' + projProjectInfo.isAccessCarName"
+              :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
               @click="loadList('business_origin','业务来源','bsnSrc')"
             />
           </section>
@@ -239,7 +239,7 @@
       </template>
       <van-row class="xh-swipe-button">
         <van-col span="24" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="isCreditAdd == '1'?true:false">
+          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
             <section>
               <van-cell title="车辆类别:" :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)" />
             </section>
@@ -310,7 +310,7 @@
               required
               is-link
               :value="projProjectInfo.businessModelName"
-              @click="loadList('business_mode','业务模式','businessModelName')"
+              @click="loadType('业务模式','businessModel')"
             />
           </section>
           <section>
@@ -330,15 +330,6 @@
               is-link
               :value="projProjectInfo.dsbrPltfrmNm"
               @click="loadType('放款平台','platform')"
-            />
-          </section>
-          <section v-if="projProjectInfo.businessModelId == 5">
-            <van-cell
-              title="上户类型:"
-              required
-              is-link
-              :value="projProjectInfo.onHouseTypeName"
-              @click="loadList('ON_HOUSE_TYPE','上户类型', 'onHouseType')"
             />
           </section>
           <section>
@@ -373,7 +364,7 @@
             />
           </section>
           <!-- 中建投 -->
-          <div v-if="projProjectInfo.businessModelId==4">
+          <div v-if="projProjectInfo.businessModel==4">
             <section>
               <van-cell title="客户首付成数:" :value="projProjectInfo.paymentNumberName" />
             </section>
@@ -381,7 +372,7 @@
               <van-cell title="客户保证金(%):" :value="projProjectInfo.customerBond" />
             </section>
           </div>
-          <div v-if="projProjectInfo.businessModelId != 4">
+          <div v-if="projProjectInfo.businessModel != 4">
             <section>
               <van-cell
                 title="盗抢险:"
@@ -400,15 +391,6 @@
                 @click="loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
               />
             </section>
-            <!-- 嘉易融产品 -->
-            <div v-if="projProjectInfo.businessModelId == 5">
-              <section>
-                <van-cell title="首付比例:" required :value="projProjectInfo.downPaymentName" />
-              </section>
-              <section>
-                <van-cell title=" 是否挂靠:" required :value="projProjectInfo.isAffiliatedName" />
-              </section>
-            </div>
             <section>
               <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
             </section>
@@ -424,7 +406,7 @@
           </section>
 
           <!-- 是联合贷 -->
-          <div v-if="projProjectInfo.businessModelId==2">
+          <div v-if="projProjectInfo.businessModel==2">
             <section>
               <van-field
                 v-model="projProjectInfo.rentingCarRatio"
@@ -498,53 +480,7 @@
               @click="loadList('yes_no','是否t+0','isTandzero')"
             />
           </section>
-          <!-- 嘉易融产品 -->
-          <div v-if="projProjectInfo.businessModelId == 5">
-            <section>
-              <van-field
-                v-model="projProjectInfo.gpsMeltingCharge"
-                required
-                type="number"
-                clearable
-                label="GPS加融费用(元):"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.purchaseTaxCharge"
-                required
-                type="number"
-                clearable
-                label="购置税加融金额(元):"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.insuranceCharge"
-                required
-                type="number"
-                clearable
-                label="保险加融费用(元):"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.totalCharge"
-                type="number"
-                clearable
-                label="加融总金额(元):"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-          </div>
-          <section v-if="projProjectInfo.businessModelId != 5">
+          <section>
             <van-field
               v-model="projProjectInfo.rentingAmtGps"
               type="number"
@@ -556,7 +492,7 @@
           </section>
 
           <div
-            v-if="projProjectInfo.businessModelId==1 || projProjectInfo.businessModelId==2 || projProjectInfo.businessModelId==3"
+            v-if="projProjectInfo.businessModel==1 || projProjectInfo.businessModel==2 || projProjectInfo.businessModel==3"
           >
             <section>
               <van-cell
@@ -564,7 +500,7 @@
                 :value="projProjectInfo.marginRatioName"
                 title="保证金比例(%):"
                 @click="loadList('Margin_Ratio','保证金比例','marginRatio')"
-                :disabled="projProjectInfo.businessModelId==2?true:false"
+                :disabled="projProjectInfo.businessModel==2?true:false"
               />
             </section>
             <section>
@@ -575,7 +511,7 @@
                 label="留购价(元):"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="projProjectInfo.businessModelId=='2'?true:false"
+                :disabled="projProjectInfo.businessModel=='2'?true:false"
               />
             </section>
             <section>
@@ -664,7 +600,7 @@
 
 <script>
 import Vue from "vue";
-import { getProjectInfo, getProjectCustomer } from "@/api/project";
+import { getProjectInfo, getProjectCustomer, getProductTypeList, getLoanPlatformTree } from "@/api/project";
 // 自定义组件
 import redCard from "@/components/redCard/index";
 import Card from "@/components/card/index";
@@ -727,6 +663,9 @@ export default {
       valueId: '', // 下拉选择取的哪个value值
       thiefRescueList: [], // 盗抢险组数
       isWordbook: true, // 是否从字典获取
+      businessModellist: [], //业务模式
+      termList: [], //贷款期限
+      platform: [], //放款平台
 
       isNum: "",
       isVal: "",
@@ -774,7 +713,7 @@ export default {
         loanPlatfomrId: '',
         productId: '',
         thiefRescue: '',
-        businessModelId: '',
+        businessModel: '',
         businessModelName: '',
         rbrinsPltfrmNmId: '',
         rbrinsPltfrmNmName: '', // 盗抢险购买平台
@@ -809,11 +748,7 @@ export default {
         cars: [],
       },
       lpmsBusinessSource: [], //业务来源
-      businessModellist: [], //业务模式
-      loanCountList: [], //贷款期限
-      // businessModellist:[],//业务模式
       getProductCategory: [], //产品类别
-      platform: [], //放款平台
       pattern: [], //产品名称
       payInsurance: [], //盗抢险
       loanRegion: "", //贷款区间
@@ -883,22 +818,21 @@ export default {
       return name;
     },
     // 获取车商
-    getCustomer(num, state) {
-      let list = {
-        belongGroupId: this.projProjectInfo.businessGroupIds,
-        state: this.projProjectInfo.isAccessCar
+    getCustomer() {
+      if(this.projProjectInfo.businessGroupIds && this.projProjectInfo.isAccessCar) {
+        let list = {
+          belongGroupId: this.projProjectInfo.businessGroupIds,
+          state: this.projProjectInfo.isAccessCar
+        }
+        getProjectCustomer(list)
+          .then(res => {
+            if (res.code == 200) {
+              this.customerList = res.data.data;
+            } else {
+              this.$notify({ type: 'danger', message: res.msg });
+            }
+          })
       }
-      getProjectCustomer("/customer/cs/carDealer/getAllCarDealers", list)
-        .then(res => {
-          if (res.data.code == 200) {
-            this.customerList = res.data.data;
-          }
-        })
-      // .catch((res) => {
-      //   setTimeout(() => {
-      //     this.loading = false;
-      //   }, 500);
-      // });
     },
     // 字典获取数据
     loadList(state, title, field) {
@@ -927,10 +861,32 @@ export default {
           this.getCustomer();
           break;
         case '贷款期限':
-          
+          if(this.termList == 0) {
+            return
+          }
+          this.valueKey = 'loanCount';
+          this.valueId = 'loanCount';
+          this.fieldName = 'loanTerm';
+          this.options = this.termList;
+          this.show3 = true;
           break;
         case '放款平台':
-          
+          if(this.platform.length == 0) {
+            return
+          }
+          console.log(this.platform);
+          this.valueKey = 'orgName';
+          this.valueId = 'id';
+          this.fieldName = 'isRoot';
+          this.options = this.platform;
+          this.show3 = true;
+          break;
+        case '业务模式':
+          this.valueKey = 'businessModeDesc';
+          this.valueId = 'businessMode';
+          this.fieldName = 'businessModel';
+          this.options = this.businessModellist;
+          this.show3 = true;
           break;
         case '产品类别':
           
@@ -955,12 +911,57 @@ export default {
     },
     // 字典选择确认
     confirm(row) {
+      console.log(row);
       if(this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName+'Name'] = row.label;
       } else {
         this.projProjectInfo[this.fieldName] = row[this.valueId];
         this.projProjectInfo[this.fieldName+'Name'] = row[this.valueKey];
+      }
+      switch (this.selectName) {
+        case '业务来源':
+          if(this.fieldName == 'bsnSrc') {
+            this.fieldName = 'isAccessCar';
+            this.options = this.wordbook.is_Access_Car;
+            return
+          }
+          break;
+        case '业务模式':
+          this.productTypeList({
+            type: 2,
+            carType: this.carType,
+            carNature: this.carNature,
+            companyId: this.projProjectInfo.companyId,
+            businessMode: this.projProjectInfo.businessModel
+          });
+          break;
+        case '贷款期限':
+          this.loanPlatformTree();
+          break;
+        case '放款平台':
+          if(this.fieldName == 'isRoot') {
+            this.valueKey = 'dsbrPltfrmNm';
+            this.valueId = 'id';
+            this.fieldName = 'loanPlatfomrId';
+            this.options = row.children;
+            return
+          } else {
+            this.bankRate = row.intrt;
+            this.projProjectInfo.bankNewRate = row.intrt;
+            this.projProjectInfo.dsbrPltfrmNm = row.dsbrPltfrmNm;
+            this.projProjectInfo.loanPlatfomrId = row.id;
+          }
+          break;
+        case '产品类别':
+          
+          break;
+        case '产品名称':
+          
+          break;
+      
+        default:
+          break;
       }
       this.show3 = false;
     },
@@ -984,6 +985,14 @@ export default {
           break;
       }
       return val;
+    },
+    // 放款平台转换
+    loanPlatfomrsReturn(t, f) {
+      let ar = [];
+      if (t && f) {
+        ar = [t, f];
+      }
+      return ar;
     },
     // 获取报单数据
     loanData() {
@@ -1028,7 +1037,7 @@ export default {
               spsCltrDgr: '',
               spsUnitChar: '',
             };
-            console.log(customer);
+            
             let clientManager = row.clientManager ? row.clientManager : {
               groupName: '',
               businessGroupIds: ''
@@ -1046,15 +1055,12 @@ export default {
             if (Array.isArray(cars) && cars.length > 0) {
               this.carType = cars[0].carType + '-' + cars[0].carType2;
               this.carNature = cars[0].carNature;
-              // this.productTypeList({
-              //   type: 1,
-              //   carType: cars[0].carType + '-' + cars[0].carType2,
-              //   carNature: cars[0].carNature,
-              //   companyId: row.companyId
-              // });
-            }
-            if (clientManager.businessGroupIds && loanProductModel.isAccessCar) {
-              this.getCustomer(clientManager.businessGroupIds, loanProductModel.isAccessCar);
+              this.productTypeList({
+                type: 1,
+                carType: cars[0].carType + '-' + cars[0].carType2,
+                carNature: cars[0].carNature,
+                companyId: row.companyId
+              });
             }
 
             this.projProjectInfo = {
@@ -1088,7 +1094,7 @@ export default {
               rbrinsPltfrmNmId: this.returnVal(row.rbrinsPltfrmNmId, 'number'),
               productCategoryId: this.returnVal(row.productCategoryId),
               loanPlatfomrId: this.returnVal(loanPlatfomr.id),
-              // loanPlatfomrs: this.returnVal(row.loanPlatId, 'number') ? this.loanPlatfomrsReturn(this.returnVal(loanPlatfomr.blngInstid, 'number'), this.returnVal(row.loanPlatId, 'number')) : [],
+              loanPlatfomrs: this.returnVal(row.loanPlatId, 'number') ? this.loanPlatfomrsReturn(this.returnVal(loanPlatfomr.blngInstid, 'number'), this.returnVal(row.loanPlatId, 'number')) : [],
               companyName: this.returnVal(row.companyName),
               officeName: this.returnVal(row.officeName),
               counterGuaranteeStatus: this.returnVal(row.counterGuaranteeStatus),
@@ -1096,7 +1102,7 @@ export default {
               blRsn: this.returnVal(row.blRsn),
               addressDetail: this.returnVal(row.addressDetail),
               // sngldayPrd: this.custData.type === 'NEWOBL' ? utils.formatDate.format(new Date(), 'yyyyMMdd') : this.returnVal(row.sngldayPrd),
-              businessModelId: this.returnVal(row.businessModelId),
+              businessModel: this.returnVal(row.businessModelId),
               businessModelName: this.returnVal(row.businessModelName),
               rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
               loanTerm: this.returnVal(row.loanTerm),
@@ -1149,6 +1155,7 @@ export default {
               isTandzeroName: this.returnText('yes_no', customer.isTandzero),
               marginRatioName: this.returnText('Margin_Ratio', customer.marginRatio)
             }
+            this.getCustomer();
           }, 500);
         } else {
           this.$notify({ type: 'danger', message: msg });
@@ -1157,9 +1164,76 @@ export default {
         }
       });
     },
-    // 获取产品信息
-    productTypeList() {
+    // 查询放款平台
+    loanPlatformTree() {
+      let obj = {
+        loanCount: this.projProjectInfo.loanTerm,
+        businessMode: this.projProjectInfo.businessModel
+      }
+      getLoanPlatformTree()
+        .then(res => {
+          if (res.code == 200) {
+            this.platform = res.data;
+          } else {
+            this.$notify({ type: 'danger', message: res.msg });
+          }
+        })
+    },
+    // 查询产品类别、名称、放款平台
+    productTypeList(dataList) {
+      getProductTypeList(dataList)
+        .then(res => {
+          if (res.code == 200) {
+            let list = res.data;
+            // 1-查询业务模式，2-查询贷款期限，3-查询产品类别，4-查询产品列表，5-查询产品详细信息
+            switch (dataList.type) {
+              case 1:
+                this.businessModellist = list;
+                break;
+              case 2:
+                this.termList = list;
+                break;
+              case 3:
+                this.productTypeRows = list;
+                break;
+              case 4:
+                this.productTypeName = list;
+                this.changeRows(this.projProjectInfo);
+                break;
+              case 5:
+                let datas = list[0];
+                this.projProjectInfo.rebateStandard = datas.rebateStandard;
+                this.projProjectInfo.loanRegion = datas.businessMode === 1 || datas.businessMode === 3 ? datas.loanRegionForUnion : datas.loanRegion;
+                this.projProjectInfo.customerRate = datas.customerRate;
+                this.projProjectInfo.bankGuaranteeRate = datas.bankGuaranteeRate;
+                this.bankGuaranteeRate = datas.bankGuaranteeRate;
+                if (this.projProjectInfo.businessModel == '4') {
+                  this.projProjectInfo.paymentNumber = datas.paymentNumber;
+                  this.projProjectInfo.paymentNumberDesc = datas.paymentNumberDesc;
+                  this.projProjectInfo.customerBond = datas.customerBond;
+                }
+                let n = datas.thiefRescue.split(',');
+                let p = datas.thiefRescueDesc.split(',');
+                let ar = [];
+                n.forEach((i, ins) => {
+                  p.forEach((t, int) => {
+                    if (ins === int) {
+                      ar.push({
+                        id: i,
+                        name: t
+                      });
+                    }
+                  });
+                });
+                this.thiefRescueList = ar;
+                this.dataList.guaranteeRate = this.bankTotal.toFixed(2); // 
+                break;
 
+              default:
+                break;
+            }
+          }
+        })
     },
     // 保存信息
     submitProject() {
