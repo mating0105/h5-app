@@ -24,18 +24,20 @@
     }
 
     .card {
-        border-radius: 4px;
+        border-radius: 5px;
         border: 1px solid #ebeef5;
         background-color: #fff;
         overflow: hidden;
         color: #303133;
         transition: .3s;
+        margin: 1rem;
 
         .card__header {
             padding: 15px;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
-            color: rgb(196,37,42);
+            color: #C4252A;
+            font-weight: Bold;
         }
 
         .card__footer {
@@ -45,7 +47,7 @@
         }
 
         .card__body {
-            padding: 10px;
+            /*padding: 10px;*/
         }
     }
 

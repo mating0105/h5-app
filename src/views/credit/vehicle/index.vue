@@ -57,6 +57,7 @@
   import radioItem from '@/components/radio/radioItem'
   import brand from '@/components/carBrand/brand'
   import Vue from 'vue';
+  import { getDocumentByType } from '@/api/document'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify } from 'vant';
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify]
@@ -83,34 +84,21 @@
         },
         showBrand: false,
         loading: false,
-        dataList: [
-          {
-            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-            declare: '身份证正面',
-            deletable: false,
-            isRequire: true
-          },{
-            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-            declare: '身份证反面',
-            deletable: false,
-            isRequire: true
-          },{
-            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-            declare: '银行征信查询授权书',
-            deletable: true,
-            isRequire: true
-          },{
-            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-            declare: '大数据征信查询授权书',
-            deletable: true,
-            isRequire: true
-          },{
-            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-            declare: '银行卡正反面',
-            deletable: true,
-            isRequire: true
-          },
-        ]
+        dataList: []
+      }
+    },
+    computed: {
+      wordbook () {
+        return this.$store.state.user.wordbook
+      },
+      documentType () {
+        let obj = {}
+        if (this.wordbook.document_type && this.wordbook.document_type.length) {
+          this.wordbook.document_type.forEach(item => {
+            obj[item.value] = item
+          })
+        }
+        return obj
       }
     },
     methods: {
@@ -119,9 +107,44 @@
       },
       changeBrand (carBrand) {
         this.form.brand = carBrand.model.name
+      },
+      async getDocumentByType (documentType) {
+        try {
+          const params = {
+            customerNum: 'KH190531250007',
+            documentType: documentType
+          }
+          const {data} = await getDocumentByType(params)
+          const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
+          data.forEach(item => {
+            item.declare = declare;
+          })
+          this.dataList.push({
+            declare: declare,//图片描述
+            isRequire: true,//*是否必须
+            deletable: true,//是否可以操作-上传和删除
+            documentType: documentType,
+            customerNum: 'KH190531250007',
+            customerId: '190531250007',
+            kind: '1',
+            fileList: data
+          })
+        } catch (e) {
+          console.log(e)
+        }
+      },
+      async initImage () {
+        try {
+          await this.getDocumentByType('7777')
+          this.getDocumentByType('8888')
+          this.getDocumentByType('9999')
+        }catch (e) {
+          console.log(e)
+        }
       }
     },
     mounted () {
+      this.initImage()
       // this.loading = true
     }
   }

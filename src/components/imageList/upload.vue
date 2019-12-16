@@ -1,10 +1,12 @@
 <template>
-    <ViewPage class="xh-page" :backFn="backFn" title="全部照片">
+    <ViewPage class="xh-page" :backFn="backFn" title="全部照片" :loading="loading">
         <Card>
             <template v-slot:header>
                 照片
             </template>
-            <imageItem :data="item" :key="index" v-for="(item, index) in dataList"></imageItem>
+            <div style="padding: 10px;">
+                <imageItem :data="item" :loading.sync="loading" :key="index" v-for="(item, index) in dataList"></imageItem>
+            </div>
         </Card>
     </ViewPage>
 </template>
@@ -20,6 +22,11 @@
       ViewPage,
       Card,
       imageItem
+    },
+    data() {
+      return {
+        loading: false
+      }
     },
     props: {
       visible: {},
