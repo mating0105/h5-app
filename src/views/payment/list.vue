@@ -9,7 +9,7 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-        <div v-for="item in list" :key="item" :title="item">
+        <div v-for="(item,index) in list" :key="index" :title="item">
           <Card class="xh-top-10">
             <template v-slot:header>
               <section class="xh-plus">
@@ -43,6 +43,7 @@
 import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
+import { paymentList } from "@/api/payment";
 // 其他组件
 import { Row, Col, Icon, Cell, Button, List } from "vant";
 const Components = [Row, Col, Icon, Cell, Button, List];
@@ -60,28 +61,49 @@ export default {
       list: [],
       loading: false,
       error: false,
-      finished: false
+      finished: false,
+      params: {
+        pageIndex: 1,
+        pageSize: 10
+      }
     };
   },
   methods: {
     onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
+      this.loading = true;
+      paymentList(this.params).then(res =>{
+        console.log(res)
+        if(res.code == 200){
+          setTimeout(() => {
+            res.data.result.forEach(t => {
+              this.list.push(t);
+            });
+            // 加载状态结束
+            this.loading = false;
+            this.params.pageIndex ++;
+            // 数据全部加载完成
+            if (this.list.length == res.data.totalCount) {
+              this.finished = true;
+            } else {
+              this.finished = false;
+            }
+          }, 500);
+        }else{
+          this.$notify({ type: 'danger', message: msg });
+          this.loading = false;
         }
-        // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 500);
+      })
     },
     // 发起走款
     applyPay() {
       this.$router.push("/");
     },
+    loadData(){
+      
+    }
+  },
+  mounted(){
+    this.onLoad();
   }
 };
 </script>
