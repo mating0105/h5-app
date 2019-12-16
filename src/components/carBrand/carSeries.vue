@@ -1,22 +1,21 @@
 <template>
-    <ViewPage :scroll="false" :margin="false">
-        <div style="overflow: hidden">
+    <ViewPage class="xh-car-series" :loading="loading" title="选择车系" :scroll="false" :backFn="backFn" :margin="false" v-if="visible">
+        <template v-slot:head>
             <van-search
-                    class="xh-search-input"
                     v-model="searchValue"
                     placeholder="请输入搜索关键词"
                     show-action
                     @input="searchFn"
             />
-            <van-index-bar :sticky-offset-top="40" :index-list="[]" style="margin-top: 4.5rem;">
-                <div v-for="(item, index) in carSeries" :key="index">
-                    <van-index-anchor :index="item.name"/>
-                    <div v-for="(it, i) in item.items" :key="i" style="display: flex" @click="selectItem(it)">
-                        <van-cell :title="it.name"/>
-                    </div>
+        </template>
+        <van-index-bar style="margin-top: 10px" :index-list="[]">
+            <div v-for="(item, index) in carSeries" :key="index">
+                <van-index-anchor :index="item.name"/>
+                <div v-for="(it, i) in item.items" :key="i" style="display: flex" @click="selectItem(it)">
+                    <van-cell :title="it.name"/>
                 </div>
-            </van-index-bar>
-        </div>
+            </div>
+        </van-index-bar>
     </ViewPage>
 </template>
 
@@ -33,37 +32,48 @@
     components: {
       ViewPage
     },
+    props: {
+      visible: Boolean,
+      brandId: {}
+    },
     data () {
       return {
         carSeries: [],
         dataList: [],
-        searchValue: ''
+        searchValue: '',
+        loading: false
       }
     },
     methods: {
+      backFn () {
+        this.$emit('update:visible', false)
+      },
       selectItem (item) {
-        this.$router.push({name: 'carModel', query: {carSeriesId: item.id}})
+        this.$emit('change', item)
       },
       /**
        * 获取车品牌列表
        */
       async get (brandId) {
         try {
+          this.loading = true
           const params = {
             masterid: brandId,
           }
           const {data} = await getCarSeries(params);
           this.dataList = data
           this.init(data)
+          this.loading = false
         } catch (e) {
           console.log(e)
+          this.loading = false
         }
       },
       /**
        * 初始化数据
        */
       init (data) {
-        this.carSeries = _.chain(data).groupBy(item => item.brandName).map((values, key)=>{
+        this.carSeries = _.chain(data).groupBy(item => item.brandName).map((values, key) => {
           const valueBean = values.map(item => {
             return {
               name: item.seriesName,
@@ -87,26 +97,29 @@
         this.init(list)
       }
     },
+    watch: {
+      visible (value) {
+        if (value) {
+          this.get(this.brandId)
+        }
+      }
+    },
     mounted () {
-      this.get(this.$route.query.brandId)
+      this.get(this.brandId)
     }
   }
 </script>
 
 <style scoped lang="scss">
-    .car-img {
-        background: white;
-        width: 50px;
 
-        img {
-            width: 100%;
-        }
-    }
-
-    .xh-search-input {
+    .xh-car-series {
         position: fixed;
-        width: 100%;
-        z-index: 2;
-        top: 3.8rem;
+        z-index: 11;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: #f7f8fa;
     }
+
 </style>

@@ -1,7 +1,7 @@
 <template>
     <ViewPage>
-        <van-tabs v-model="active">
-            <van-tab title="做单基本信息" class="tabBox">
+        <van-tabs v-model="activeName">
+            <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1">
                     <Card>
                         <template v-slot:header>
@@ -26,6 +26,7 @@
                             </van-cell-group>
                         </div>
                     </Card>
+                    
                     <Card style="margin-top:15px;">
                         <template v-slot:header>
                             借款人信息
@@ -120,7 +121,7 @@
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">下一步</van-button>
                 </div>
                 <div v-show="stepIndex==2">
-                    <Card>
+                     <Card>
                         <template v-slot:header>
                             贷款信息
                         </template>
@@ -199,13 +200,21 @@
                             </van-cell-group>
                         </div>
                     </Card>
+                    <Card style="margin-top:15px;">
+                        <template v-slot:header>
+                            <div class="notice">
+                                <p>通知业务员补充资料</p>
+                                <van-cell v-model="noticeName"  is-link @click="showPopupType('notice')"/>
+                            </div>
+                        </template>
+                    </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">提交</van-button>
-                </div>
+                </div> 
             </van-tab>
-            <van-tab title="征信信息">
+            <van-tab title="征信信息" name="2">
                 
             </van-tab>
-            <van-tab title="审批记录">
+            <van-tab title="审批记录" name="3">
                 
             </van-tab>
         </van-tabs>
@@ -222,7 +231,7 @@
   import Vue from 'vue';
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
-  import Card from '@/components/card/index'
+  import Card from '@/components/card/index';
   import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field } from 'vant';
 
   const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field ]
@@ -235,7 +244,7 @@
     name: 'lendProcess',
     components: {
       ViewPage,
-      Card
+      Card,
     },
     computed: {
       ...mapGetters([
@@ -245,7 +254,7 @@
     data() {
         return {
             //---tab:0--项目信息
-            active: 0,
+            activeName: "1",
             columns: [],
             projectForm:{},//项目信息
             borrowerForm: {},//借款人信息
@@ -255,6 +264,7 @@
             payTypeShow: false,//走款模式判断显示，
             stepIndex:1,
             message:'',
+            noticeName:'请选择'
         };
     },
     methods: {
@@ -268,6 +278,14 @@
                 this.columns = [
                 { text: '快垫', key: '1' },
                 { text: '传统', key: '2' }
+                ]
+                break;
+            case 'notice':
+                this.title1 = '请选择业务员补充资料'
+                this.columns = [
+                { text: '张三', key: '1' },
+                { text: '李四', key: '2' },
+                { text: '王五', key: '3' }
                 ]
                 break;
             case 'payWay':
@@ -308,6 +326,9 @@
                 case 'payType':
                     this.projectForm.payType = value.text;
                     break;
+                case 'notice':
+                    this.noticeName = value.text;
+                    break;
                 case 'payWay':
                     this.form.cost.payWay = value.key;
                     this.chineseForm.payWay = value.text
@@ -324,6 +345,11 @@
         //下一步
         nextStep(){
             this.stepIndex=2;
+        },
+        //改变接收人
+        changePeople(val){
+            console.log(val,'val')
+
         }
       
     },
@@ -339,5 +365,18 @@
 .rowBox{
     margin: 10px 0;
 }
-   
+.notice{
+    display:flex;
+    align-items: baseline;
+}
+.notice>p{
+    margin:0;
+    width:70%;
+}
+.notice>.van-cell{
+    padding: 0;
+}
+.van-cell__value--alone{
+    text-align: right;
+}
 </style>

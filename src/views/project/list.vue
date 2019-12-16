@@ -1,6 +1,7 @@
 <template>
   <ViewPage>
     <van-list
+      class="xh-page-body"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
@@ -8,17 +9,17 @@
       error-text="请求失败，点击重新加载"
       @load="onLoad"
     >
-      <div v-for="item in list" :key="item" :title="item">
+      <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
         <Card class="xh-top-10">
           <template v-slot:header>
             <section class="xh-plus">
-              <van-cell title="xh201903884521223" value="项目未报单" icon="notes-o"></van-cell>
+              <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
             </section>
           </template>
           <van-row>
-            <van-col span="24">客户名称：张三三</van-col>
-            <van-col span="24" class="xh-top-10">身份证：101011252252152522</van-col>
-            <van-col span="24" class="xh-top-10">手机号码：18985458888</van-col>
+            <van-col span="24">客户名称：{{ item.customerName }}</van-col>
+            <van-col span="24" class="xh-top-10">身份证：{{ item.certificateNum }}</van-col>
+            <van-col span="24" class="xh-top-10">手机号码：{{ item.contactPhone }}</van-col>
           </van-row>
           <template v-slot:footer>
             <div style="text-align:right;">
@@ -27,7 +28,7 @@
                 type="danger"
                 class="xh-radius"
                 style="border-radius: 6px;"
-                @click="startForm"
+                @click="startForm(item)"
               >发起报单</van-button>
             </div>
           </template>
@@ -61,6 +62,7 @@ const Components = [Row, Col, Icon, Cell, Button, List];
 Components.forEach(item => {
   Vue.use(item);
 });
+import { mapState } from "vuex";
 export default {
   components: {
     ViewPage,
@@ -78,28 +80,58 @@ export default {
       }
     };
   },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook,
+    })
+  },
   methods: {
+    // 字典转换
+    returnText(val) {
+      let name;
+      this.wordbook.apply_status.forEach(e => {
+        if(e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
     onLoad() {
-      // getProjectList(this.parms).then(res => {
-      //   console.log(res);
-      // });
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
+      this.loading = true;
+      getProjectList(this.parms).then(res => {
+        const { code, data, msg } = res;
+        if(code == 200) {
+          setTimeout(() => {
+            data.result.forEach(t => {
+              this.list.push(t);
+            });
+            // 加载状态结束
+            this.loading = false;
+            this.parms.pageIndex ++;
+            // 数据全部加载完成
+            if (this.list.length == data.totalCount) {
+              this.finished = true;
+            } else {
+              this.finished = false;
+            }
+          }, 500);
+        } else {
+          this.$notify({ type: 'danger', message: msg });
+          this.loading = false;
         }
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 500);
+      });
     },
     // 发起报单
-    startForm() {
-      this.$router.push("/xhProject");
+    startForm(rows) {
+      this.$router.push({ path: '/xhProject', query: {
+        customerName: rows.customerName, //客户姓名
+        contactPhone: rows.contactPhone, //客户身份证
+        certificateNum: rows.certificateNum, //客户手机号码
+        id: rows.projectId,
+        customerId: rows.customerId,
+        projectNo: rows.projectNo
+      }});
     },
     // 新建客户
     addClint() {}

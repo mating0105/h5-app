@@ -1,5 +1,5 @@
 <template>
-    <ViewPage>
+    <ViewPage :loading="loading">
         <Card>
             <van-cell title="车辆类别：" :border="false" required is-link value=""/>
             <van-cell title="车辆性质：" :border="false" required>
@@ -16,7 +16,7 @@
             </van-cell>
             <van-cell title="车辆规格：" :border="false" required is-link value=""/>
             <van-cell v-if="form.property === 2" title="车架号：" :border="false" required is-link value=""/>
-            <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link value=""/>
+            <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link :value="form.brand"/>
             <van-field v-if="form.property === 1" :border="false" v-model="form.creditPersonName" required clearable input-align="right" label="销售价(元)："
                        placeholder="请输入"/>
             <template v-else>
@@ -34,14 +34,18 @@
             <template v-slot:header>
                 车辆照片
             </template>
+            <imageList :dataList="dataList"></imageList>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin-top: 45px;display: flex; flex-direction: row;">
+        <div style="margin-top: 45px; margin-bottom: 30px; display: flex; flex-direction: row;">
             <van-button size="large"
                         style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
             >保存
             </van-button>
         </div>
+        <transition name="page-move">
+            <brand :visible.sync="showBrand" v-if="showBrand" @change="changeBrand"></brand>
+        </transition>
     </ViewPage>
 </template>
 
@@ -49,7 +53,9 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import radio from '@/components/radio'
+  import imageList from '@/components/imageList'
   import radioItem from '@/components/radio/radioItem'
+  import brand from '@/components/carBrand/brand'
   import Vue from 'vue';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify } from 'vant';
 
@@ -64,20 +70,59 @@
       ViewPage,
       Card,
       radio,
-      radioItem
+      radioItem,
+      brand,
+      imageList
     },
     data () {
       return {
         form: {
           property: 1,
-          source: 1
-        }
+          source: 1,
+          brand: ''
+        },
+        showBrand: false,
+        loading: false,
+        dataList: [
+          {
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '身份证正面',
+            deletable: false,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '身份证反面',
+            deletable: false,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '银行征信查询授权书',
+            deletable: true,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '大数据征信查询授权书',
+            deletable: true,
+            isRequire: true
+          },{
+            url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+            declare: '银行卡正反面',
+            deletable: true,
+            isRequire: true
+          },
+        ]
       }
     },
     methods: {
       selectBrand () {
-        this.$router.push("/brand");
+        this.showBrand = true
+      },
+      changeBrand (carBrand) {
+        this.form.brand = carBrand.model.name
       }
+    },
+    mounted () {
+      // this.loading = true
     }
   }
 </script>
