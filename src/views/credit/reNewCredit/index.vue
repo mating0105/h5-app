@@ -101,7 +101,7 @@
         vehicleForm: {
           type: '测试数据'
         },
-        vehicle: false,
+        vehicle: true,
         loading: false,
         form: {},
         autosize: {

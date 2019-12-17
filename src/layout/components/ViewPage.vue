@@ -87,7 +87,7 @@
         }
 
         > .content {
-            margin: 10px;
+            margin: 1rem;
         }
     }
 

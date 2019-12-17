@@ -33,10 +33,10 @@
 <script>
   import Vue from 'vue';
   import imageUpload from './upload'
-  import { Uploader, Image, Icon, ImagePreview } from 'vant';
+  import { Uploader, Image, Icon, ImagePreview, Lazyload } from 'vant';
   import _ from 'lodash'
 
-  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview);
+  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview).use(Lazyload);
   export default {
     name: "imageList",
     props: {
@@ -120,8 +120,8 @@
     .xh-no-image {
         height: 75px;
         background: white;
-        border:1px dashed rgba(230,230,230,1);
-        border-radius:6px;
+        border: 1px dashed rgba(230, 230, 230, 1);
+        border-radius: 6px;
     }
 
     .xh-image-icon {
