@@ -45,26 +45,24 @@
             </van-row>
           </div>
         </div>
-        <div class="xh-page-body">
-          <Card>
-            <template v-slot:header>意见描述</template>
-            <section>
-              <van-cell-group :border="false">
-                <van-field
-                  v-model="message"
-                  rows="2"
-                  autosize
-                  label-width="0"
-                  :border="false"
-                  type="textarea"
-                  maxlength="200"
-                  placeholder="请输入"
-                  show-word-limit
-                />
-              </van-cell-group>
-            </section>
-          </Card>
-        </div>
+        <Card>
+          <template v-slot:header>意见描述</template>
+          <section>
+            <van-cell-group :border="false">
+              <van-field
+                v-model="message"
+                rows="2"
+                autosize
+                label-width="0"
+                :border="false"
+                type="textarea"
+                maxlength="200"
+                placeholder="请输入"
+                show-word-limit
+              />
+            </van-cell-group>
+          </section>
+        </Card>
         <!-- 提交按钮 -->
         <div class="xh-submit" style="padding: 0 10px;">
           <van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button>

@@ -1,6 +1,6 @@
 <template>
-  <div class="xh-page-body">
-    <redCard label="客户基本信息">
+  <div>
+    <redCard label="客户基本信息" class="xh-page-body">
       <template slot="cardBody">
         <div class="xh-card-user">
           <!-- 客户信息 -->
