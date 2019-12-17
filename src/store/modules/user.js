@@ -115,7 +115,6 @@ const actions = {
       "CAR_SOURCE", // 车辆来源
       "ON_HOUSE_TYPE", // 上户类型
       "DOWN_PAYMENT", // 首付比例
-      "business_origin", // 业务来源
       "business_mode", // 业务模式
       "yes_no", // 是否
       "apply_status", // 报单流程状态
