@@ -38,8 +38,6 @@
                   <img :src="require('./../../assets/old_images/'+i.icon)" alt />
                 </div>
                 <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
-                <!-- 徽章 -->
-                <xh-badge toTop="15" toRight="30"></xh-badge>
               </van-col>
             </van-row>
         </div>
@@ -98,13 +96,13 @@ export default {
           name: "费用信息",
           key: 2,
           icon: "icon-pay.png",
-          url: "/clientIndex"
+          url: "/costDetail"
         },
         {
           name: "走款信息",
           key: 3,
           icon: "icon-payment.png",
-          url: "/contactPerson"
+          url: "/walkInformation"
         },
         {
           name: "相关文档",
@@ -116,7 +114,7 @@ export default {
           name: "风控措施",
           key: 5,
           icon: "icon-control.png",
-          url: "/incomeFamily"
+          url: "/controlMeasure"
         },
         {
           name: "GPS安装信息",
@@ -127,7 +125,11 @@ export default {
       ]
     };
   },
-  methods: {}
+  methods: {
+    meunList(row){
+      this.$router.push({ path: row.url, query: this.params });
+    }
+  }
 };
 </script>
 <style >
