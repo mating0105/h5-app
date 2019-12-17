@@ -120,6 +120,7 @@ const actions = {
       "apply_status", // 报单流程状态
       "is_Access_Car", // 是否准入
       "document_type", // 文档类型
+      "cu_credit_status", //征信调查状态
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

@@ -4,13 +4,16 @@
             <template v-slot:header>
                 客户信息
             </template>
-            <van-field v-model="form.creditPersonName" :border="false" required clearable input-align="right" label="客户名称："
-                       placeholder="请输入客户名称"/>
-            <van-field v-model="form.cpCertificateNum" :border="false" required clearable input-align="right" label="证件号码："
-                       placeholder="请输入证件号码"/>
-            <van-field v-model="form.telephone" :border="false" type="tel" required clearable input-align="right" label="电话号码："
-                       placeholder="请输入电话号码"/>
-            <van-cell title="征信对象类型:" :border="false" value="借款人"/>
+            <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName"/>
+            <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum"/>
+            <van-cell title="电话号码:" required :border="false" :value="form.telephone"/>
+            <!--            <van-field v-model="form.creditPersonName" :border="false" required clearable input-align="right" label="客户名称："-->
+            <!--                       placeholder="请输入客户名称"/>-->
+            <!--            <van-field v-model="form.cpCertificateNum" :border="false" required clearable input-align="right" label="证件号码："-->
+            <!--                       placeholder="请输入证件号码"/>-->
+            <!--            <van-field v-model="form.telephone" :border="false" type="tel" required clearable input-align="right" label="电话号码："-->
+            <!--                       placeholder="请输入电话号码"/>-->
+            <van-cell title="征信对象类型:" required :border="false" value="借款人"/>
             <van-cell title="银行：" :border="false" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
             <van-field class="label_plus" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
                        placeholder="请输入"/>
@@ -18,29 +21,36 @@
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
-        <Card style="margin-top: 10px;" @click.native="addVehicle" v-if="vehicle">
-            <template v-slot:header>
-                新增车辆信息
-                <div class="card-icon">
-                    <van-icon name="add-o"/>
-                </div>
-            </template>
-        </Card>
-        <Card style="margin-top: 10px;" v-else>
+        <Card style="margin-top: 10px;">
             <template v-slot:header>
                 车辆信息
-                <div class="card-icon">
+                <div class="card-icon" @click="addVehicle">
                     <van-icon name="add-o"/>
                 </div>
             </template>
-            <van-cell title="车辆类别:" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="车辆性质:" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="车辆规格:" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="车辆来源:" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="车辆品牌型号:" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="销售价(元):" :border="false" :value="vehicleForm.type"/>
-            <van-cell title="备注:" :border="false" :value="vehicleForm.type"/>
+            <van-swipe-cell v-for="(item, index) in dataList.carInfos" :key="index">
+                <van-cell title="车辆类别:" :border="false" :value="returnText(item.carType, 'car_type') + returnText(item.carType2, 'carType2')"/>
+                <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
+                <van-cell title="车辆规格:" :border="false" :value="returnText(item.carSpecifications, 'vehicle_specifications')"/>
+                <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
+                <van-cell title="车辆品牌型号:" :border="false" :value="item.brndNm + item.carSeries + item.carModel"/>
+                <van-cell title="销售价(元):" :border="false" :value="item.salePrice"/>
+                <van-cell title="备注:" :border="false" :value="item.remarks"/>
+                <div slot="right" style="height: 100%">
+                    <van-button
+                            type="warning"
+                            style="height:100%;border-radius: 0;"
+                    >修改
+                    </van-button>
+                    <van-button
+                            type="danger"
+                            style="height:100%;border-radius: 0;"
+                    >删除
+                    </van-button>
+                </div>
+            </van-swipe-cell>
         </Card>
+
 
         <Card style="margin-top: 10px;">
             <template v-slot:header>
@@ -78,6 +88,7 @@
   import Card from '@/components/card'
   import Vue from 'vue';
   import { getBank, getCreditInfo } from '@/api/credit'
+  import { getValue, setValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell } from 'vant';
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell]
@@ -113,7 +124,7 @@
         bankArr: [],//银行数组
         bankList: {},
         columns: [],
-        isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
+        // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
         perInfoList: [], //客户下面的其他客户数据
         errorMsg: { //必填list
           loanPersonName: '',
@@ -122,9 +133,27 @@
         },
       }
     },
+    computed: {
+      // 所有字典
+      wordbook () {
+        return this.$store.state.user.wordbook
+      }
+    },
     methods: {
       selectList () {
 
+      },
+      // 字典转换
+      returnText (val, key) {
+        let name = '';
+        if (this.wordbook[key]) {
+          this.wordbook[key].forEach(e => {
+            if (e.value === val) {
+              name = e.label;
+            }
+          });
+        }
+        return name;
       },
       onConfirm (value) {
         this.showPicker = false;
@@ -145,21 +174,25 @@
       onChange (picker, values) {
         picker.setColumnValues(1, this.bankList[values[0]]);
       },
-      showPickerFn () {
+      async showPickerFn () {
         this.showPicker = true;
-        if (this.bankArr.length) {
-          this.columns = [
-            {
-              values: Object.keys(this.bankList),
-              className: 'column1'
-            },
-            {
-              values: this.bankList[this.bankArr[0].orgName],
-              className: 'column2',
-              defaultIndex: 0
-            }
-          ]
-          console.log(this.columns)
+        try {
+          await this.getBank()
+          if (this.bankArr.length) {
+            this.columns = [
+              {
+                values: Object.keys(this.bankList),
+                className: 'column1'
+              },
+              {
+                values: this.bankList[this.bankArr[0].orgName],
+                className: 'column2',
+                defaultIndex: 0
+              }
+            ]
+          }
+        } catch (e) {
+          console.log(e)
         }
       },
       async getBank () {
@@ -179,41 +212,49 @@
       async getCreditInfo () {
         try {
           this.loading = true
-          const res = await getCreditInfo()
-          this.loading = false
-          this.dataList = res.data.cuCreditRegister;
-          // 判断征信终止按钮隐藏和显示
-          if (this.isInternet == '0' && this.dataList.status == "05") {
-            this.canTermin = true
+          if(getValue("credit")) {
+            this.dataList = JSON.parse(getValue("credit"))
           } else {
-            this.canTermin = false
-          }
-
-          if (this.isInternet != '1') {
-            if (this.dataList.isSCICBC == '1') {
-              this.isInternet = '2'
-            } else if (this.dataList.isSCICBC == '2') {
-              this.isInternet = '3'
+            const params = {
+              lpCertificateNum: this.$route.query.lpCertificateNum,
+              id: this.$route.query.id
             }
+            const res = await getCreditInfo(params)
+            this.dataList = res.data.cuCreditRegister;
           }
+          this.loading = false
 
-          if (!this.dataList.isSCICBC) {
-            this.dataList.isSCICBC = '0';
-          }
-
-          res.data.cuCreditRegister.surDtlList.forEach(e => {
+          // 判断征信终止按钮隐藏和显示
+          // if (this.isInternet == '0' && this.dataList.status == "05") {
+          //   this.canTermin = true
+          // } else {
+          //   this.canTermin = false
+          // }
+          //
+          // if (this.isInternet != '1') {
+          //   if (this.dataList.isSCICBC == '1') {
+          //     this.isInternet = '2'
+          //   } else if (this.dataList.isSCICBC == '2') {
+          //     this.isInternet = '3'
+          //   }
+          // }
+          //
+          // if (!this.dataList.isSCICBC) {
+          //   this.dataList.isSCICBC = '0';
+          // }
+          this.dataList.surDtlList.forEach(e => {
             if (e.creditObjectType == 'borrower') {
               this.form = e;
             } else {
               this.perInfoList.push(e);
             }
           })
-          if (!this.form.relation) {
-            this.form.relation = '1';
-          }
-          if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
-            this.form.isSupplement = '0'
-          }
+          // if (!this.form.relation) {
+          //   this.form.relation = '1';
+          // }
+          // if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
+          //   this.form.isSupplement = '0'
+          // }
 
         } catch (e) {
           this.loading = false
@@ -232,8 +273,10 @@
       }
     },
     mounted () {
-      this.getBank()
       this.getCreditInfo()
+    },
+    destroyed () {
+      setValue("credit", JSON.stringify(this.dataList));
     }
   }
 </script>

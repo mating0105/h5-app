@@ -36,7 +36,7 @@
         margin: 1rem;
 
         .card__header {
-            padding: 15px;
+            padding: 1rem;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
             color: #C4252A;
@@ -44,7 +44,7 @@
         }
 
         .card__footer {
-            padding: 15px;
+            padding: 1rem;
             border-top: 1px solid #ebeef5;
             box-sizing: border-box;
         }

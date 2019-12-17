@@ -23,6 +23,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/creditList',
+    name: 'creditList',
+    component: () => import('@/views/credit'),
+    meta: {title: '征信查询'}
+  },
+
+  {
     path: '/reNewCredit',
     name: 'ReNewCredit',
     component: () => import('@/views/credit/reNewCredit'),
