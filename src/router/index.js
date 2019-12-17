@@ -30,6 +30,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/creditNextStep',
+    name: 'creditNextStep',
+    component: () => import('@/views/credit/creditNextStep'),
+    meta: {title: '征信申请'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
@@ -146,6 +153,24 @@ export const constantRoutes = [
     name: 'PaymentSure',
     component: () => import('@/views/payment/paymentSure'),
     meta: {title: '走款确认', icon: 'dashboard'}
+  },
+  {
+    path: '/costDetail',
+    name: 'CostDetail',
+    component: () => import('@/views/payment/costDetail'),
+    meta: {title: '费用信息', icon: 'dashboard'}
+  },
+  {
+    path: '/walkInformation',
+    name: 'WalkInformation',
+    component: () => import('@/views/payment/walkInformation'),
+    meta: {title: '走款信息', icon: 'dashboard'}
+  },
+  {
+    path: '/controlMeasure',
+    name: 'ControlMeasure',
+    component: () => import('@/views/payment/controlMeasure'),
+    meta: {title: '风控措施', icon: 'dashboard'}
   },
   { 
     path: '/survey',

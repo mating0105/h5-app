@@ -5,15 +5,17 @@
                 left-text="返回"
                 left-arrow
                 @click-left="backFn ? backFn() : onClickLeft()"
-        />
+        >
+            <van-icon v-if="rightFn" name="ellipsis" slot="right" @click="rightFn" size="24"/>
+        </van-nav-bar>
     </div>
 </template>
 
 <script>
   import Vue from 'vue'
-  import { NavBar } from 'vant';
+  import { NavBar,Icon  } from 'vant';
 
-  Vue.use(NavBar)
+  Vue.use(NavBar).use(Icon)
   export default {
     name: "NavBar",
     methods: {
@@ -23,7 +25,8 @@
     },
     props: {
       backFn: Function,
-      title: ''
+      title: '',
+      rightFn:Function
     }
   }
 </script>

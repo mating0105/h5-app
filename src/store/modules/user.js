@@ -119,6 +119,7 @@ const actions = {
       "yes_no", // 是否
       "apply_status", // 报单流程状态
       "is_Access_Car", // 是否准入
+      "document_type", // 文档类型
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

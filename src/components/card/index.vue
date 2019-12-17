@@ -3,7 +3,7 @@
         <div class="card__header" v-if="$slots.header">
             <slot name="header"></slot>
         </div>
-        <div class="card__body" v-if="$slots.default">
+        <div :class="{card__body: bodyPadding}" v-if="$slots.default">
             <slot></slot>
         </div>
         <div class="card__footer" v-if="$slots.footer">
@@ -14,7 +14,10 @@
 
 <script>
   export default {
-    name: "card"
+    name: "card",
+    props: {
+      bodyPadding: Boolean
+    }
   }
 </script>
 
@@ -24,18 +27,20 @@
     }
 
     .card {
-        border-radius: 4px;
+        border-radius: 5px;
         border: 1px solid #ebeef5;
         background-color: #fff;
         overflow: hidden;
         color: #303133;
         transition: .3s;
+        margin: 1rem;
 
         .card__header {
             padding: 15px;
             border-bottom: 1px solid #ebeef5;
             box-sizing: border-box;
-            color: rgb(196,37,42);
+            color: #C4252A;
+            font-weight: Bold;
         }
 
         .card__footer {
@@ -45,7 +50,7 @@
         }
 
         .card__body {
-            padding: 10px;
+            padding: 1rem;
         }
     }
 

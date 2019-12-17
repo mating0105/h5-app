@@ -55,6 +55,9 @@ module.exports = {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
+      '/group1': {
+        target: `http://119.3.165.2:8085`,
+      },
       '/customer': {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true

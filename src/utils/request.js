@@ -38,6 +38,7 @@ const responseFulfilled = response => {
   if (res.code !== 200) {
     Notify({ type: 'danger', message: res.msg + '' });
     //
+    return Promise.reject(new Error(res.message || 'Error'))
     //   return Promise.reject(new Error(res.message || 'Error'))
   } else {
     return res

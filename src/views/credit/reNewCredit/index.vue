@@ -18,7 +18,7 @@
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
-        <Card style="margin-top: 10px;" @click.native="addVehicle">
+        <Card style="margin-top: 10px;" @click.native="addVehicle" v-if="vehicle">
             <template v-slot:header>
                 新增车辆信息
                 <div class="card-icon">
@@ -26,6 +26,22 @@
                 </div>
             </template>
         </Card>
+        <Card style="margin-top: 10px;" v-else>
+            <template v-slot:header>
+                车辆信息
+                <div class="card-icon">
+                    <van-icon name="add-o"/>
+                </div>
+            </template>
+            <van-cell title="车辆类别:" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="车辆性质:" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="车辆规格:" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="车辆来源:" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="车辆品牌型号:" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="销售价(元):" :border="false" :value="vehicleForm.type"/>
+            <van-cell title="备注:" :border="false" :value="vehicleForm.type"/>
+        </Card>
+
         <Card style="margin-top: 10px;">
             <template v-slot:header>
                 新增征信客户
@@ -35,11 +51,11 @@
             </template>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin-top: 45px; margin-bottom: 30px;display: flex; flex-direction: row;">
+        <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
             <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
-            <van-button size="large"
+            <van-button size="large" @click="nextStep"
                         style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
             >下一步
             </van-button>
@@ -62,9 +78,9 @@
   import Card from '@/components/card'
   import Vue from 'vue';
   import { getBank, getCreditInfo } from '@/api/credit'
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify } from 'vant';
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell } from 'vant';
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify]
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell]
   Components.forEach(item => {
     Vue.use(item)
   })
@@ -82,6 +98,10 @@
           investigateBankName: '',
           isInternetCredit: '',
         },
+        vehicleForm: {
+          type: '测试数据'
+        },
+        vehicle: true,
         loading: false,
         form: {},
         autosize: {
@@ -203,6 +223,11 @@
       addVehicle () {
         this.$router.push({
           path: '/vehicle'
+        })
+      },
+      nextStep () {
+        this.$router.push({
+          path: '/creditNextStep'
         })
       }
     },
