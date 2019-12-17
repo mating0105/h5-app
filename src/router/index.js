@@ -30,6 +30,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/creditNextStep',
+    name: 'creditNextStep',
+    component: () => import('@/views/credit/creditNextStep'),
+    meta: {title: '征信申请'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
@@ -169,6 +176,12 @@ export const constantRoutes = [
     path: '/survey',
     name: 'Survey',
     component: () => import('@/views/basicInfo/survey/index.vue'),
+    meta: {title: '调查结论', icon: 'dashboard'}
+  },
+  { 
+    path: '/proDocument',
+    name: 'ProDocment',
+    component: () => import('@/views/basicInfo/documents/index.vue'),
     meta: {title: '调查结论', icon: 'dashboard'}
   },
 

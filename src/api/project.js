@@ -23,3 +23,19 @@ export function getProjectCustomer(params) {
     params
   })
 }
+// 查询1-查询业务模式，2-查询贷款期限，3-查询产品类别，4-查询产品列表，5-查询产品详细信息
+export function getProductTypeList(params) {
+  return request({
+    url: '/product/ps/getProductCategory',
+    method: 'get',
+    params
+  })
+}
+// 查询放款平台
+export function getLoanPlatformTree(params) {
+  return request({
+    url: '/cooperation/loanPlatform/getLoanPlatformTree',
+    method: 'get',
+    params
+  })
+}

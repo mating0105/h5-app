@@ -152,7 +152,7 @@ export default {
           name: "相关文档",
           key: 11,
           icon: "icon-filed.png",
-          url: "/documents"
+          url: "/proDocument"
         }
       ],
       params: {},
