@@ -13,22 +13,23 @@
           <Card class="xh-top-10">
             <template v-slot:header>
               <section class="xh-plus">
-                <van-cell title="xh201903884521223" value="审批中" icon="notes-o"></van-cell>
+                <van-cell :title="item.projectNo" :value="item.processStateDesc" icon="notes-o"></van-cell>
               </section>
             </template>
             <van-row>
-              <van-col span="24">客户名称：张三三</van-col>
-              <van-col span="24" class="xh-top-10">身份证：101011252252152522</van-col>
-              <van-col span="24" class="xh-top-10">手机号码：18985458888</van-col>
+              <van-col span="24">客户名称：{{item.coustomerName}}</van-col>
+              <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
+              <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
             </van-row>
-            <template v-slot:footer>
+            <!-- v-if="item.processStateDesc == '未提交'" -->
+            <template v-slot:footer >
               <div style="text-align:right;">
                 <van-button
                   plain
                   type="danger"
                   class="xh-radius"
                   style="border-radius: 6px;"
-                  @click="applyPay"
+                  @click="applyPay(item)"
                 >申请走款</van-button>
               </div>
             </template>
@@ -71,16 +72,15 @@ export default {
   methods: {
     onLoad() {
       this.loading = true;
-      paymentList(this.params).then(res =>{
-        console.log(res)
-        if(res.code == 200){
+      paymentList(this.params).then(res => {
+        if (res.code == 200) {
           setTimeout(() => {
             res.data.result.forEach(t => {
               this.list.push(t);
             });
             // 加载状态结束
             this.loading = false;
-            this.params.pageIndex ++;
+            this.params.pageIndex++;
             // 数据全部加载完成
             if (this.list.length == res.data.totalCount) {
               this.finished = true;
@@ -88,21 +88,19 @@ export default {
               this.finished = false;
             }
           }, 500);
-        }else{
-          this.$notify({ type: 'danger', message: msg });
+        } else {
+          this.$notify({ type: "danger", message: msg });
           this.loading = false;
         }
-      })
+      });
     },
     // 发起走款
-    applyPay() {
-      this.$router.push("/");
+    applyPay(rows) {
+      this.$router.push({ path: "/applyPayment", query: {projectId:rows.projectId} });
     },
-    loadData(){
-      
-    }
+    loadData() {}
   },
-  mounted(){
+  mounted() {
     this.onLoad();
   }
 };
