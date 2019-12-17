@@ -3,7 +3,7 @@
         <div class="card__header" v-if="$slots.header">
             <slot name="header"></slot>
         </div>
-        <div class="card__body" v-if="$slots.default">
+        <div :class="{card__body: bodyPadding}" v-if="$slots.default">
             <slot></slot>
         </div>
         <div class="card__footer" v-if="$slots.footer">
@@ -14,7 +14,10 @@
 
 <script>
   export default {
-    name: "card"
+    name: "card",
+    props: {
+      bodyPadding: Boolean
+    }
   }
 </script>
 
@@ -47,7 +50,7 @@
         }
 
         .card__body {
-            /*padding: 10px;*/
+            padding: 1rem;
         }
     }
 
