@@ -8,3 +8,10 @@ export function getDic(params) {
         data: params
     })
 }
+export function submitCreate(params) {
+    return request({
+        url: '/customer/cs/cuPersonalInfo/insert',
+        method: 'post',
+        data: params
+    })
+}
