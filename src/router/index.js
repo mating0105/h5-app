@@ -203,7 +203,37 @@ export const constantRoutes = [
     component: () => import('@/views/createCustomer/index'),
     meta: {title: '新建客户', icon: 'dashboard'}
   },
-
+  { 
+    path: '/heavyRightSupplement',
+    name: 'HeavyRightSupplement',
+    component: () => import('@/views/heavyRightSupplement/index'),
+    meta: {title: '重权补录', icon: 'dashboard'}
+  },
+  { 
+    path: '/heavyRightManage/:id',
+    name: 'HeavyRightManage',
+    component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
+    meta: {title: '重权管理', icon: 'dashboard'},
+    children:[
+      {
+        path: 'basic',
+        name: 'HeavyRightBasic',
+        component: () => import('@/views/heavyRightSupplement/manage/basic'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'a',
+        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'b',
+        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      }
+    ]
+   
+  },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
 ]
