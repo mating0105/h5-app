@@ -61,6 +61,7 @@ export default {
       });
     },
     confirm(value) {
+      console.log(value)
       let code = [],name =[];
       value.forEach(e =>{
           code.push(e.code);
