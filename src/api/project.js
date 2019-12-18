@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { serviceOther } from '@/utils/request'
 // 报单列表
 export function getProjectList(params) {
   return request({
@@ -7,7 +7,7 @@ export function getProjectList(params) {
     params
   })
 }
-// 保单详情
+// 报单详情
 export function getProjectInfo(params) {
   return request({
     url: '/order/project/getProjectInfo',
@@ -17,8 +17,16 @@ export function getProjectInfo(params) {
 }
 // 获取车商
 export function getProjectCustomer(params) {
-  return request({
+  return serviceOther({
     url: '/customer/cs/carDealer/getAllCarDealers',
+    method: 'get',
+    params
+  })
+}
+// 获取盗抢险购买平台
+export function getAllTpBuyPlatform(params) {
+  return request({
+    url: '/cooperation/tpBuyPlatform/getAllTpBuyPlatform',
     method: 'get',
     params
   })
@@ -37,5 +45,29 @@ export function getLoanPlatformTree(params) {
     url: '/cooperation/loanPlatform/getLoanPlatformTree',
     method: 'get',
     params
+  })
+}
+// 报单保存
+export function setProjectInfo(params) {
+  return request({
+    url: '/order/project/saveProjectInfo',
+    method: 'post',
+    data: params
+  })
+}
+// 报单流程提交返回人
+export function setProjectTask(params) {
+  return request({
+    url: '/order/projProject/createTask',
+    method: 'post',
+    data: params
+  })
+}
+// 报单流程提交
+export function setProjectProcess(params) {
+  return request({
+    url: '/order/projProject/submitTask',
+    method: 'post',
+    data: params
   })
 }

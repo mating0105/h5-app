@@ -1,271 +1,272 @@
 <template>
   <!-- 客户及配偶 -->
   <ViewPage>
-    <div class="xh-card-box xh-radius">
-      <van-row>
-        <van-col :span="24">
-          <section>
-            <van-field
-              name="customerName"
-              v-model="customerName"
-              required
-              clearable
-              label="客户姓名："
-              input-align="right"
-              placeholder="请输入客户姓名"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.customerName"
-            />
-          </section>
-          <section>
-            <van-field
-              name="certificateNum"
-              v-model="certificateNum"
-              required
-              disabled
-              clearable
-              label="证件号码："
-              input-align="right"
-              placeholder="请输入证件号码"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.certificateNum"
-            />
-          </section>
-          <section>
-            <van-field
-              name="contactPhone"
-              v-model="contactPhone"
-              clearable
-              required
-              label="联系电话："
-              input-align="right"
-              placeholder="请输入联系电话"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.contactPhone"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="婚姻状况："
-              required
-              is-link
-              :value="fromData.marriageDesc"
-              @click.native="loadList('婚姻状况')"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="文化程度："
-              required
-              is-link
-              :value="fromData.levelEducationDesc"
-              @click.native="loadList('文化程度')"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="单位性质："
-              required
-              is-link
-              :value="fromData.unitCharDesc"
-              @click.native="loadList('单位性质')"
-            />
-          </section>
-          <section>
-            <van-field
-              name="primarySchool"
-              v-model="fromData.primarySchool"
-              clearable
-              required
-              label="曾就读小学："
-              input-align="right"
-              placeholder="请输入曾就读小学"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.primarySchool"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="户籍地址："
-              required
-              is-link
-              :value="fromData.pProvCityZon"
-              @click.native="loadList('户籍地址')"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="居住地："
-              required
-              is-link
-              :value="fromData.rProvCityZon"
-              @click.native="loadList('居住地')"
-            />
-          </section>
-          <section>
-            <van-field
-              name="spsRsdncDtlAdr"
-              v-model="fromData.spsRsdncDtlAdr"
-              required
-              clearable
-              label="居住地详细地址："
-              input-align="right"
-              placeholder="请输入详细地址"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsRsdncDtlAdr"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="子女情况："
-              required
-              is-link
-              :value="fromData.childrenSituationDesc"
-              @click.native="loadList('子女情况')"
-            />
-          </section>
-          <section v-if="fromData.childrenSituationDesc != '无' ">
-            <van-cell
-              title="子女上学情况："
-              required
-              is-link
-              :value="fromData.schoolSituationDesc"
-              @click.native="loadList('子女上学情况')"
-            />
-          </section>
-          <section>
-            <van-field
-              name="localResidence"
-              v-model="fromData.localResidence"
-              clearable
-              required
-              type="number"
-              label="本地居住年限(年)："
-              input-align="right"
-              placeholder="请输入居住年限"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.localResidence"
-            />
-          </section>
-          <section>
-            <van-field
-              name="remark"
-              v-model="fromData.remark"
-              type="textarea"
-              placeholder="请输入备注"
-              rows="1"
-              autosize
-            />
-          </section>
-
-          <!-- 下拉选择器 -->
-          <van-action-sheet v-model="selectShow" class="xh-list">
-            <van-picker
-              show-toolbar
-              :title="pickerTitle"
-              :columns="columns"
-              :value-key="'label'"
-              @cancel="onCancel"
-              @confirm="onConfirm"
-            />
-          </van-action-sheet>
-
-          <!-- 弹出省市区 -->
-          <van-action-sheet v-model="addressShow" class="xh-list">
-            <div class="xh-list-body">
-              <van-area
-                :area-list="areaList"
-                :title="addressTitle"
-                :loading="selectLoading"
-                @confirm="addressOnCancel"
-                @cancel="addressOnConfirm"
+    <div class="xh-page-body">
+      <div class="xh-card-box xh-radius">
+        <van-row>
+          <van-col :span="24">
+            <section>
+              <van-field
+                name="customerName"
+                v-model="fromData.customerName"
+                required
+                clearable
+                label="客户姓名："
+                input-align="right"
+                placeholder="请输入客户姓名"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.customerName"
               />
+            </section>
+            <section>
+              <van-field
+                name="certificateNum"
+                v-model="fromData.certificateNum"
+                required
+                disabled
+                clearable
+                label="证件号码："
+                input-align="right"
+                placeholder="请输入证件号码"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.certificateNum"
+              />
+            </section>
+            <section>
+              <van-field
+                name="contactPhone"
+                v-model="fromData.contactPhone"
+                clearable
+                required
+                label="联系电话："
+                input-align="right"
+                placeholder="请输入联系电话"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.contactPhone"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="婚姻状况："
+                required
+                is-link
+                :value="fromData.marriageDesc"
+                @click.native="loadList('婚姻状况')"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="文化程度："
+                required
+                is-link
+                :value="fromData.levelEducationDesc"
+                @click.native="loadList('文化程度')"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="单位性质："
+                required
+                is-link
+                :value="fromData.unitCharDesc"
+                @click.native="loadList('单位性质')"
+              />
+            </section>
+            <section>
+              <van-field
+                name="primarySchool"
+                v-model="fromData.primarySchool"
+                clearable
+                required
+                label="曾就读小学："
+                input-align="right"
+                placeholder="请输入曾就读小学"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.primarySchool"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="户籍地址："
+                required
+                is-link
+                :value="fromData.pProvCityZon"
+                @click.native="loadList('户籍地址')"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="居住地："
+                required
+                is-link
+                :value="fromData.rProvCityZon"
+                @click.native="loadList('居住地')"
+              />
+            </section>
+            <section>
+              <van-field
+                name="spsRsdncDtlAdr"
+                v-model="fromData.spsRsdncDtlAdr"
+                required
+                clearable
+                label="居住地详细地址："
+                input-align="right"
+                placeholder="请输入详细地址"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsRsdncDtlAdr"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="子女情况："
+                required
+                is-link
+                :value="fromData.childrenSituationDesc"
+                @click.native="loadList('子女情况')"
+              />
+            </section>
+            <section v-if="fromData.childrenSituationDesc != '无' ">
+              <van-cell
+                title="子女上学情况："
+                required
+                is-link
+                :value="fromData.schoolSituationDesc"
+                @click.native="loadList('子女上学情况')"
+              />
+            </section>
+            <section>
+              <van-field
+                name="localResidence"
+                v-model="fromData.localResidence"
+                clearable
+                required
+                type="number"
+                label="本地居住年限(年)："
+                input-align="right"
+                placeholder="请输入居住年限"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.localResidence"
+              />
+            </section>
+            <section>
+              <van-field
+                name="remark"
+                v-model="fromData.remark"
+                type="textarea"
+                placeholder="请输入备注"
+                rows="1"
+                autosize
+              />
+            </section>
+          </van-col>
+        </van-row>
+        <van-row style="background: white;" v-if="spouseShow">
+          <van-col :span="21">
+            <section>
+              <van-field
+                name="spsNm"
+                v-model="spsNm"
+                clearable
+                required
+                label="配偶姓名："
+                input-align="right"
+                placeholder="请输入配偶姓名"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsNm"
+              />
+            </section>
+          </van-col>
+          <van-col :span="3">
+            <div style="height: 35.38px;background: white;text-align: center;" @click="OCRScan">
+              <!-- <img src="../../../icon/icon-ocr.png" style="height: 15px;padding: 8px 5px;"> -->
             </div>
-          </van-action-sheet>
-        </van-col>
-      </van-row>
+          </van-col>
+          <van-col :span="24">
+            <section>
+              <van-field
+                name="spsCrdtNo"
+                v-model="spsCrdtNo"
+                clearable
+                required
+                label="配偶证件号码："
+                input-align="right"
+                placeholder="请输入配偶证件号码"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsCrdtNo"
+              />
+            </section>
+            <section>
+              <van-field
+                name="spsCtcTel"
+                v-model="spsCtcTel"
+                clearable
+                required
+                label="配偶联系电话："
+                input-align="right"
+                placeholder="请输入配偶联系电话"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsCtcTel"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="配偶文化程度："
+                required
+                is-link
+                :value="fromData.spsCltrDgrDesc"
+                @click.native="loadList('配偶文化程度')"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="配偶单位性质："
+                required
+                is-link
+                :value="fromData.spsUnitCharDesc"
+                @click.native="loadList('配偶单位性质')"
+              />
+            </section>
+          </van-col>
+        </van-row>
+      </div>
+      <!-- 保 存按钮 -->
+      <div class="xh-submit">
+        <van-button
+          size="large"
+          class="xh-bg-main"
+          :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
+          :loading="subLoading"
+          :disabled="subDisabled"
+          @click.native="custSubmit"
+        >保 存</van-button>
+      </div>
+
+      <!-- 下拉选择器 -->
+      <van-action-sheet v-model="selectShow" class="xh-list">
+        <van-picker
+          show-toolbar
+          :title="pickerTitle"
+          :columns="columns"
+          :value-key="'label'"
+          @cancel="onCancel"
+          @confirm="onConfirm"
+        />
+      </van-action-sheet>
+
+      <!-- 弹出省市区 -->
+      <van-action-sheet v-model="addressShow" class="xh-list">
+        <div class="xh-list-body">
+          <van-area
+            :area-list="areaList"
+            :title="addressTitle"
+            :loading="selectLoading"
+            @confirm="addressOnCancel"
+            @cancel="addressOnConfirm"
+          />
+        </div>
+      </van-action-sheet>
     </div>
-    <div class="xh-card car2" v-if="spouseShow">
-      <van-row style="background: white;">
-        <van-col :span="21">
-          <section>
-            <van-field
-              name="spsNm"
-              v-model="spsNm"
-              clearable
-              required
-              label="配偶姓名："
-              input-align="right"
-              placeholder="请输入配偶姓名"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsNm"
-            />
-          </section>
-        </van-col>
-        <van-col :span="3">
-          <div style="height: 35.38px;background: white;text-align: center;" @click="OCRScan">
-            <!-- <img src="../../../icon/icon-ocr.png" style="height: 15px;padding: 8px 5px;"> -->
-          </div>
-        </van-col>
-        <van-col :span="24">
-          <section>
-            <van-field
-              name="spsCrdtNo"
-              v-model="spsCrdtNo"
-              clearable
-              required
-              label="配偶证件号码："
-              input-align="right"
-              placeholder="请输入配偶证件号码"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCrdtNo"
-            />
-          </section>
-          <section>
-            <van-field
-              name="spsCtcTel"
-              v-model="spsCtcTel"
-              clearable
-              required
-              label="配偶联系电话："
-              input-align="right"
-              placeholder="请输入配偶联系电话"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCtcTel"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="配偶文化程度："
-              required
-              is-link
-              :value="fromData.spsCltrDgrDesc"
-              @click.native="loadList('配偶文化程度')"
-            />
-          </section>
-          <section>
-            <van-cell
-              title="配偶单位性质："
-              required
-              is-link
-              :value="fromData.spsUnitCharDesc"
-              @click.native="loadList('配偶单位性质')"
-            />
-          </section>
-        </van-col>
-      </van-row>
-    </div>
-    <!-- 保 存按钮 -->
-    <div class="xh-submit">
-      <van-button
-        size="large"
-        class="xh-bg-main"
-        :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-        :loading="subLoading"
-        :disabled="subDisabled"
-        @click.native="custSubmit"
-      >保 存</van-button>
-    </div>
+
   </ViewPage>
 </template>
 
@@ -283,7 +284,11 @@ import {
   Area,
   Picker
 } from "vant";
+import {
+  getClientInfo
+} from "@/api/client";
 import ViewPage from "@/layout/components/ViewPage";
+import { mapState } from "vuex";
 const Components = [
   Dialog,
   Button,
@@ -304,6 +309,12 @@ Components.forEach(item => {
 export default {
   components: {
     ViewPage
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
   },
   data() {
     return {
@@ -395,12 +406,8 @@ export default {
       spsNm: "", // 客户配偶名字
       spsCtcTel: "", // 客户配偶电话
       spsCrdtNo: "", // 客户配偶证件号码
-      ruleData: {},
-      publicList: {}, // 字典集合
+      ruleData: {}
     };
-  },
-  created() {
-
   },
   methods: {
     OCRScan() {
@@ -409,72 +416,58 @@ export default {
         this.$set(this, "spsCrdtNo", data.ID_NUM);
       });
     },
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
     loadList(val) {
-      this.selectShow = true;
-      setTimeout(() => {
-        this.selectLoading = false;
-      }, 500);
+      this.pickerTitle = val;
       switch (val) {
         case "婚姻状况":
-          this.columns = this.publicList.marriage_type;
-          this.pickerTitle = "婚姻状况";
+          this.selectShow = true;
+          this.columns = this.wordbook.marriage_type;
           break;
         case "文化程度":
-          this.columns = this.publicList.DegreeOfEducation;
-          this.pickerTitle = "文化程度";
+          this.selectShow = true;
+          this.columns = this.wordbook.DegreeOfEducation;
           break;
         case "户籍地址":
           this.addressShow = true;
-          this.selectShow = false;
           this.addressTitle = "户籍地址";
-          this.pickerTitle = "户籍地址";
           break;
         case "居住地":
           this.addressShow = true;
-          this.selectShow = false;
           this.addressTitle = "居住地";
-          this.pickerTitle = "居住地";
           break;
         case "子女情况":
-          this.columns = this.publicList.children;
-          this.pickerTitle = "子女情况";
+          this.selectShow = true;
+          this.columns = this.wordbook.children;
           break;
         case "子女上学情况":
-          this.columns = this.publicList.school_Situation;
-          this.pickerTitle = "子女上学情况";
+          this.selectShow = true;
+          this.columns = this.wordbook.school_Situation;
           break;
         case "配偶文化程度":
-          this.columns = this.publicList.DegreeOfEducation;
-          this.pickerTitle = "配偶文化程度";
+          this.selectShow = true;
+          this.columns = this.wordbook.DegreeOfEducation;
           break;
         case "单位性质":
-          this.columns = this.publicList.unit_Property;
-          this.pickerTitle = "单位性质";
+          this.selectShow = true;
+          this.columns = this.wordbook.unit_Property;
           break;
         case "配偶单位性质":
-          this.columns = this.publicList.unit_Property;
-          this.pickerTitle = "配偶单位性质";
+          this.selectShow = true;
+          this.columns = this.wordbook.unit_Property;
           break;
-      }
-    },
-    unitCharDes(val) {
-      switch (val) {
-        case "1":
-          return "国企/事业单位/机关团体（合同工/正式员工）";
-        case "2":
-          return "私企";
-        case "3":
-          return "个体商户";
-        case "4":
-          return "自由职业";
-        default:
-          return "";
       }
     },
     onConfirm(rows, index) {
-      this.selectShow = false;
-      this.selectLoading = true;
-
       switch (this.pickerTitle) {
         case "婚姻状况":
           this.fromData.marriage = rows.value;
@@ -484,12 +477,6 @@ export default {
           this.fromData.levelEducation = rows.value;
           this.fromData.levelEducationDesc = rows.label;
           break;
-        // case '户籍地址':
-        //   this.fromData.pProvCityZon = this.address;
-        //   break
-        // case '居住地':
-        //   this.fromData.rProvCityZon = this.address;
-        //   break
         case "子女情况":
           this.fromData.childrenSituation = rows.value;
           this.fromData.childrenSituationDesc = rows.label;
@@ -520,6 +507,7 @@ export default {
       } else {
         this.spouseShow = false;
       }
+      this.selectShow = false;
     },
     onCancel() {
       this.selectShow = false;
@@ -528,7 +516,6 @@ export default {
 
     // 省市区选择
     addressOnCancel(list) {
-      this.addressShow = false;
       this.selectLoading = true;
       let a1, a2, a3;
       let name = [];
@@ -558,6 +545,7 @@ export default {
             a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
           break;
       }
+      this.addressShow = false;
     },
     addressOnConfirm() {
       this.addressShow = false;
@@ -567,16 +555,15 @@ export default {
       this.subLoading = true;
       this.subDisabled = true;
 
-      requestUrl
-        .postList("/order/viceProj/saveCustomerInfo", this.subData, "soa")
+      setClientSave(this.subData)
         .then(res => {
           this.subLoading = false;
           this.subDisabled = false;
           if (res.code == 200) {
             this.$toast.success("保存成功");
-            setTimeout(() => {
-              bridge.ReturnVC(1, true);
-            }, 1000);
+            // setTimeout(() => {
+            //   bridge.ReturnVC(1, true);
+            // }, 1000);
           } else {
             this.$toast({
               position: "top",
@@ -584,10 +571,6 @@ export default {
             });
           }
         })
-        .catch(error => {
-          this.subLoading = false;
-          this.subDisabled = false;
-        });
     },
 
     // submit
@@ -633,8 +616,6 @@ export default {
         ? UUserCard(this.fromData.spsCrdtNo, 3)
         : "";
 
-      console.log("fromData：", this.fromData);
-      console.log("subData：", this.subData);
       // 客户信息
 
       if (
@@ -765,7 +746,37 @@ export default {
             this.$toast(res.data.message);
           }
         });
+    },
+    // 获取新信息
+    loadClient() {
+      let obj = {
+        id: this.params.customerId,
+        projectId: this.params.id
+      }
+      getClientInfo(obj).then(res => {
+        const { code, data, msg } = res;
+        if(code == 200) {
+          this.fromData = res.data;
+          let yearBirth = this.fromData.certificateNum.substring(6, 10);
+          let monthBirth = this.fromData.certificateNum.substring(10, 12);
+          let dayBirth = this.fromData.certificateNum.substring(12, 14);
+          this.fromData.birthday = yearBirth + "-" + monthBirth + "-" + dayBirth;
+          this.fromData.marriageDesc = this.returnText('marriage_type', this.fromData.marriage);
+          this.fromData.levelEducationDesc = this.returnText('DegreeOfEducation', this.fromData.levelEducation);
+          this.fromData.childrenSituationDesc = this.returnText('children', this.fromData.childrenSituation);
+          this.fromData.schoolSituationDesc = this.returnText('school_Situation', this.fromData.schoolSituation);
+          this.fromData.spsCltrDgrDesc = this.returnText('DegreeOfEducation', this.fromData.spsCltrDgr);
+          this.fromData.unitCharDesc = this.returnText('unit_Property', this.fromData.unitChar);
+          this.fromData.spsUnitCharDesc = this.returnText('unit_Property', this.fromData.spsUnitChar);
+        } else {
+          this.$notify({ type: "danger", message: msg });
+        }
+      });
     }
+  },
+  created() {
+    this.params = this.$route.query;
+    this.loadClient();
   }
 };
 </script>

@@ -131,13 +131,22 @@
         try {
           await this.getDocumentByType('0103', this.mainUser)// 主借人授权书
           this.getDocumentByType('0104', this.mainUser)//主借人银行征信授权书
+          this.getDocumentByType('2001', this.mainUser)//主借人银行卡正反面
 
           this.getDocumentByType('0105', this.spouse)//主借人配偶身份证正面
           this.getDocumentByType('0106', this.spouse)//主借人配偶身份证反面
           this.getDocumentByType('0107', this.spouse)//主借人配偶授权书
           this.getDocumentByType('0108', this.spouse)//主借人配偶银行征信授权书
+          this.getDocumentByType('2002', this.spouse)//主借人配偶银行卡正反面
 
+          //0120   担保人身份证反面
+          //0117   担保人身份证
+          //0118   担保人授权书
+          //0119   担保人银行征信授权书
+          //2005   担保人银行卡正反面
 
+          //2003   共债人银行卡正反面
+          //2004   共债人配偶英航卡正反面
           // this.getDocumentByType('0109', this.mainUser)//共债人身份证正面
           // this.getDocumentByType('0110', this.mainUser)//共债人身份证反面
           // this.getDocumentByType('0111', this.mainUser)//共债人授权书

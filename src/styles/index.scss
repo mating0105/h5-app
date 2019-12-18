@@ -2,6 +2,7 @@
 @import './mixin.scss';
 @import './transition.scss';
 @import './sidebar.scss';
+@import './global.scss';
 
 body {
   height: 100%;
@@ -64,7 +65,7 @@ div:focus {
 }
 // 内距离
 .xh-page-body {
-  padding: 10px;
+  padding: 1rem;
 }
 // 超出显示省略号
 .xh-ellipsis {

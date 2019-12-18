@@ -45,9 +45,27 @@
             </van-row>
           </div>
         </div>
+        <Card>
+          <template v-slot:header>意见描述</template>
+          <section>
+            <van-cell-group :border="false">
+              <van-field
+                v-model="message"
+                rows="2"
+                autosize
+                label-width="0"
+                :border="false"
+                type="textarea"
+                maxlength="200"
+                placeholder="请输入"
+                show-word-limit
+              />
+            </van-cell-group>
+          </section>
+        </Card>
         <!-- 提交按钮 -->
         <div class="xh-submit" style="padding: 0 10px;">
-          <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">提 交</van-button>
+          <van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button>
         </div>
       </van-tab>
       <van-tab title="征信信息" name="2"></van-tab>
@@ -63,15 +81,33 @@
       <!-- <van-loading /> -->
       <img width="100%" height="100%" :src="qrCodeUrl" />
     </van-dialog>
+    <!-- 弹出选项 -->
+    <van-action-sheet get-container="#app" v-model="showSheet" class="xh-list">
+      <div class="xh-list-body">
+        <van-picker
+          :columns="peopleList"
+          show-toolbar
+          value-key="label"
+          title="下一节点处理人"
+          @confirm="confirm"
+          @cancel="cancel"
+        />
+      </div>
+    </van-action-sheet>
   </ViewPage>
 </template>
 <script>
 import Vue from "vue";
-import { Dialog, Button, Row, Col, Tab, Tabs } from "vant";
+import { Dialog, Button, Row, Col, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
+import {
+  setProjectTask,
+  setProjectProcess
+} from "@/api/project";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
+import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-const Components = [Dialog, Button, Row, Col, Tab, Tabs];
+const Components = [ Dialog, Button, Row, Col, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -81,12 +117,15 @@ export default {
   components: {
     xhBadge,
     redCard,
-    ViewPage
+    ViewPage,
+    Card
   },
   data() {
     return {
       activeName: "1",
       selected: 1,
+      showSheet: false,
+      peopleList: [], // 选人
       meunRow: [
         {
           name: "项目基本信息",
@@ -156,8 +195,15 @@ export default {
         }
       ],
       params: {},
+      message: '',
+      postFrom: {
+        processedBy: "",
+        businessKey: "",
+        commentsDesc: "",
+        conclusionCode: "01"
+      },
+
       certificateNum: "",
-      projProjectInfo: {},
       showQRCode: false,
       qrCodeUrl: "",
       loading: false
@@ -167,53 +213,66 @@ export default {
     handleClose() {
       this.$toast("关闭!");
     },
-    loadData(params) {
-      let dataList = {
-        projectId: params.projectId
-      };
-      requestUrl
-        .getList("/carloan/projectinfo", dataList)
-        .then(res => {
-          if (res.data.code == "SYS.200") {
-            this.projProjectInfo = res.data.data.projectInfo;
-            if (this.projProjectInfo.isChangeProj == "1") {
-              this.projProjectInfo.isChangeProj = "1";
-              this.certificateNum = this.projProjectInfo.customer.certificateNum;
-            } else {
-              this.projProjectInfo.isChangeProj = "0";
-            }
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+    confirm(row) {
+      this.postFrom.processedBy = row.id;
+      this.postProcess();
+      this.showSheet = false;
     },
-    submit() {
-      // let dataList = {
-      //   businessKey: this.params.projectId,
-      //   activityId: this.params.activityId
-      // };
-      // requestUrl.getList('/carloan/projProjectInfo/projectNodeCheck', dataList).then((res) => {
-      //   if(res.data.code == 'SYS.200'){
-      //     bridge.loadurlwithmobile({"url":"zhgjApp/page/projectDeclaration/approvalEnd.html?projectId="+this.params.projectId+'&activityId='+this.params.activityId+'&taskId='+this.params.taskId+'&businessType='+this.params.businesstype});
-      //   } else {
-      //     this.$toast(res.data.message);
-      //   }
-      // }).catch(function (error) {
-      //   this.$toast('提交错误');
-      // });
-      bridge.loadurlwithmobile({
-        url:
-          "zhgjApp/page/projectDeclaration/approvalEnd.html?projectId=" +
-          this.params.projectId +
-          "&activityId=" +
-          this.params.activityId +
-          "&taskId=" +
-          this.params.taskId +
-          "&businessType=" +
-          this.params.businesstype
+    cancel() {
+      this.showSheet = false;
+    },
+    submitTask() {
+      if(this.message == '') {
+        this.message = "同意";
+      }
+      let obj = {
+        conclusionCode: "01",
+        // businessKey: "2019121486",
+        businessKey: this.params.id,
+        commentsDesc: this.message
+      }
+      setProjectTask(obj).then(res => {
+        if(res.code == 200) {
+          let objArr = [];
+          let { data } = res;
+          this.showSheet = true;
+          data.list.forEach(t => {
+            objArr.push({
+              ...t,
+              label: t.companyName+'-'+t.name
+            })
+          });
+          this.peopleList = objArr;
+        } else {
+          this.$notify({
+            type: "danger",
+            message: res.msg
+          });
+        }
       });
-      // location.href = 'zhgjApp/page/projectDeclaration/approvalEnd.html'
+    },
+    // 提交流程
+    postProcess() {
+      if(this.message == '') {
+        this.postFrom.commentsDesc = "同意";
+      } else {
+        this.postFrom.commentsDesc = this.message;
+      }
+      this.postFrom.businessKey = this.params.id;
+      // this.postFrom.businessKey = "2019121486";
+      setProjectProcess(this.postFrom).then(res => {
+        if(res.code == 200) {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+        } else {
+          this.$notify({
+            type: "danger",
+            message: res.msg
+          });
+        }
+      });
     },
     meunList(row) {
       this.$router.push({ path: row.url, query: this.params });

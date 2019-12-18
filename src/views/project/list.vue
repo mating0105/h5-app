@@ -1,7 +1,6 @@
 <template>
   <ViewPage>
     <van-list
-      class="xh-page-body"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
@@ -10,7 +9,7 @@
       @load="onLoad"
     >
       <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-        <Card class="xh-top-10">
+        <Card class="xh-top-10" :bodyPadding='true'>
           <template v-slot:header>
             <section class="xh-plus">
               <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
