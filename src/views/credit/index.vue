@@ -38,10 +38,21 @@
                                银行征信未通过
                             </span>
                         </van-col>
+                        <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
+                            <span class="xh-success-tag">
+                               大数据征信通过
+                            </span>
+                        </van-col>
+                        <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
+                            <span class="xh-danger-tag">
+                               大数据征信未通过
+                            </span>
+                        </van-col>
                     </van-row>
                     <template v-slot:footer>
-                        <div style="text-align:right;">
+                        <div style="text-align:right; min-height: 2rem">
                             <van-button
+                                    v-if="item.status === '01'"
                                     plain
                                     size="small"
                                     type="danger"
@@ -49,6 +60,16 @@
                                     style="border-radius: 6px;"
                                     @click="startForm(item)"
                             >发起征信
+                            </van-button>
+                            <van-button
+                                    v-else-if="item.status === '04' || item.status === '03'"
+                                    plain
+                                    size="small"
+                                    type="danger"
+                                    class="xh-radius"
+                                    style="border-radius: 6px;"
+                                    @click="startForm(item)"
+                            >重新发起征信
                             </van-button>
                         </div>
                     </template>

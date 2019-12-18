@@ -19,7 +19,8 @@ Components.forEach(item => {
 export default {
   name: "mapSheet",
   props: {
-    showMap: Boolean
+    showMap: Boolean,
+    manualClose:Boolean
   },
   data() {
     return {
@@ -61,6 +62,7 @@ export default {
       });
     },
     confirm(value) {
+      console.log(value)
       let code = [],name =[];
       value.forEach(e =>{
           code.push(e.code);
