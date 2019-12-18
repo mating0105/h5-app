@@ -184,6 +184,12 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/documents/index.vue'),
     meta: {title: '调查结论', icon: 'dashboard'}
   },
+  { 
+    path: '/creatCustomer',
+    name: 'CreatCustomer',
+    component: () => import('@/views/createCustomer/index'),
+    meta: {title: '新建客户', icon: 'dashboard'}
+  },
 
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
