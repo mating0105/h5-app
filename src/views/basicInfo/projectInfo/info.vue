@@ -1712,11 +1712,5 @@ export default {
     }
   }
 }
-// 滑动删除
-.xh-swipe-button {
-  .van-swipe-cell__right {
-    padding-left: 5px;
-  }
-}
 </style>
 

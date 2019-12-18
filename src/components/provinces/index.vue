@@ -1,7 +1,7 @@
 //省市区组件
 <template>
   <div>
-    <van-action-sheet get-container="#app" v-model="showMap" class="xh-list">
+    <van-action-sheet get-container="#app" v-model="showMap" class="xh-list" :close-on-click-overlay='manualClose!==undefined?manualClose:true'>
       <div class="xh-list-body">
         <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
       </div>
@@ -19,7 +19,8 @@ Components.forEach(item => {
 export default {
   name: "mapSheet",
   props: {
-    showMap: Boolean
+    showMap: Boolean,
+    manualClose:Boolean
   },
   data() {
     return {
