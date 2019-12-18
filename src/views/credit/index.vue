@@ -1,5 +1,5 @@
 <template>
-    <ViewPage>
+    <ViewPage :rightFn='rightFn'>
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
@@ -182,6 +182,9 @@
       // 新建客户
       addClint () {
 
+      },
+      rightFn () {
+        
       }
     },
     mounted () {

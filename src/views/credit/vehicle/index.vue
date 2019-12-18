@@ -18,7 +18,8 @@
                       :value="returnText(carFrom.carSpecifications, 'vehicle_specifications')" @click="loadList(12, '车辆规格', carFrom.carSpecifications)"/>
             <van-field v-if="carFrom.carNature === 'old_car'" :border="false" v-model="carFrom.chassisNumber" required clearable input-align="right"
                        label="车架号："
-                       placeholder="请输入"/>
+                       right-icon="scan"
+                       placeholder="请输入" @click-right-icon="discern"/>
             <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link
                       :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
             <van-field v-if="carFrom.carNature === 'new_car'" :border="false" v-model="carFrom.salePrice" required clearable input-align="right"
@@ -366,20 +367,30 @@
        * 保存车辆
        */
       saveCar () {
-        if(this.verifyForm()) {
-          this.$store.dispatch('credit/setCarData', {
-            data: this.carFrom, index: this.$route.query.index
-          })
-          this.$router.go(-1)
+        if (!this.verifyForm()) {
+          return
         }
+        this.$store.dispatch('credit/setCarData', {
+          data: this.carFrom, index: this.$route.query.index
+        })
+        this.$router.go(-1)
 
       },
+      /**
+       * 初始化数据
+       **/
       initData () {
         for (let key in this.carFrom) {
           if (this.carFrom.hasOwnProperty(key)) {
             this.carFrom[key] = this.$route.query[key] || this.carFrom[key]
           }
         }
+      },
+      /**
+       * 识别
+       */
+      discern () {
+
       }
     },
     mounted () {
