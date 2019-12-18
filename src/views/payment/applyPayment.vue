@@ -220,7 +220,7 @@
                     title="缴费时间"
                     required
                     is-link
-                    v-model="paymentDetail.projProjectInfo.pyfDt"
+                    v-model="paymentDetail.projBudgetList.pyfDt"
                     @click="showPopupTime('pyfDt')"
                   />
                 </van-cell-group>
@@ -229,7 +229,7 @@
                     title="缴费方式"
                     required
                     is-link
-                    :value="paymentDetail.projProjectInfo.pyfModName"
+                    :value="paymentDetail.projBudgetList.pyfModName"
                     @click="loadType('缴费方式', 'pyfMod')"
                   />
                 </van-cell-group>
@@ -329,6 +329,7 @@
           <div v-show="stepVal ==3">
             <card>
               <template slot="header">走款资料</template>
+              <imageList :dataList="dataList"></imageList>
             </card>
           </div>
         </div>
@@ -383,6 +384,7 @@ import {
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
+import imageList from '@/components/imageList'
 import ProjectInfo from "@/views/basicInfo/projectInfo/info";
 import { paymentDetail, getDic,submitPay } from "@/api/payment";
 import { format } from "@/utils/format";
@@ -404,7 +406,8 @@ export default {
     redCard,
     ViewPage,
     card,
-    ProjectInfo
+    ProjectInfo,
+    imageList
   },
   data() {
     return {
@@ -428,7 +431,8 @@ export default {
       options: [],
       timeType: "",
       timetitle: "",
-      currentDate: new Date()
+      currentDate: new Date(),
+      dataList:[],//图片上传
     };
   },
   methods: {
@@ -448,11 +452,7 @@ export default {
     submit() {
       console.log(this.paymentDetail);
       submitPay(this.paymentDetail).then(res =>{
-        if(res.code == 200){
           this.$notify({ type: "success", message: '保存成功' });
-        }else{
-          this.$notify({ type: "danger", message: msg });
-        }
       })
     },
     loadType(title, field) {
@@ -489,8 +489,8 @@ export default {
     confirm(row) {
       switch (this.fieldName) {
         case "pyfMod":
-          this.paymentDetail.projProjectInfo[this.fieldName] = row.value;
-          this.paymentDetail.projProjectInfo[this.fieldName + "Name"] =
+          this.paymentDetail.projBudgetList[this.fieldName] = row.value;
+          this.paymentDetail.projBudgetList[this.fieldName + "Name"] =
             row.label;
           break;
         case "payType":
@@ -534,7 +534,7 @@ export default {
       var time = format(value, "yyyyMMdd hh");
       switch (this.timeType) {
         case "pyfDt":
-          this.paymentDetail.projProjectInfo.pyfDt = time;
+          this.paymentDetail.projBudgetList.pyfDt = time;
           break;
         case "payTime":
           this.paymentDetail.projPayInfo.payTime = time;

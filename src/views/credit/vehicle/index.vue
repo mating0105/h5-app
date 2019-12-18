@@ -1,7 +1,7 @@
 <template>
     <ViewPage :loading="loading">
         <Card>
-            <van-cell title="车辆类别：" :border="false" required is-link value=""/>
+            <van-cell title="车辆类别：" :border="false" required is-link value="" @click="showTypePickerFn"/>
             <van-cell title="车辆性质：" :border="false" required>
                 <radio v-model="form.property" disabled>
                     <radio-item :label="1">新车</radio-item>
@@ -30,7 +30,7 @@
             <van-field v-model="form.remarks" :border="false" clearable input-align="right" label="备注："
                        placeholder="请输入"/>
         </Card>
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 10px;" v-if="form.property === 2">
             <template v-slot:header>
                 车辆照片
             </template>
@@ -46,6 +46,16 @@
         <transition name="page-move">
             <brand :visible.sync="showBrand" v-if="showBrand" @change="changeBrand"></brand>
         </transition>
+
+        <van-popup v-model="showPicker" position="bottom" get-container="#app">
+            <van-picker
+                    show-toolbar
+                    :columns="columns"
+                    @cancel="showPicker = false"
+                    @confirm="onConfirm"
+                    @change="onChange"
+            />
+        </van-popup>
     </ViewPage>
 </template>
 
@@ -64,6 +74,11 @@
   Components.forEach(item => {
     Vue.use(item)
   })
+
+  const citys = {
+    '浙江': ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+    '福建': ['福州', '厦门', '莆田', '三明', '泉州']
+  };
 
   export default {
     name: "vehicle",
@@ -84,7 +99,10 @@
         },
         showBrand: false,
         loading: false,
-        dataList: []
+        dataList: [],
+        showPicker: false,
+        columns: [],
+        type2: []
       }
     },
     computed: {
@@ -138,9 +156,46 @@
           await this.getDocumentByType('7777')
           this.getDocumentByType('8888')
           this.getDocumentByType('9999')
-        }catch (e) {
+        } catch (e) {
           console.log(e)
         }
+      },
+      onConfirm (value) {
+        this.showPicker = false
+      },
+      onChange (picker, values) {
+        picker.setColumnValues(1, this.type2);
+      },
+      showTypePickerFn() {
+        this.showPicker = true
+        const keys = this.wordbook.car_type.map(item => item.label)
+        this.type2 = this.wordbook.car_type2.map(item => item.label)
+
+        this.columns = [
+          {
+            values: keys,
+            className: 'column1'
+          },
+          {
+            values: this.type2,
+            className: 'column2',
+            defaultIndex: 0
+          }
+        ]
+      },
+      showPickerFn () {
+        this.showPicker = true
+        this.columns = [
+          {
+            values: Object.keys(citys),
+            className: 'column1'
+          },
+          {
+            values: citys['浙江'],
+            className: 'column2',
+            defaultIndex: 2
+          }
+        ]
       }
     },
     mounted () {

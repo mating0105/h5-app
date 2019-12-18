@@ -23,6 +23,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/creditList',
+    name: 'creditList',
+    component: () => import('@/views/credit'),
+    meta: {title: '征信查询'}
+  },
+
+  {
     path: '/reNewCredit',
     name: 'ReNewCredit',
     component: () => import('@/views/credit/reNewCredit'),
@@ -189,6 +196,12 @@ export const constantRoutes = [
     name: 'ProDocment',
     component: () => import('@/views/basicInfo/documents/index.vue'),
     meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  { 
+    path: '/creatCustomer',
+    name: 'CreatCustomer',
+    component: () => import('@/views/createCustomer/index'),
+    meta: {title: '新建客户', icon: 'dashboard'}
   },
 
   // 404 page must be placed at the end !!!

@@ -10,7 +10,15 @@ export function getBank(params) {
 
 export function getCreditInfo(params) {
   return request({
-    url: '/order/creditInfo/cuCreditRegisterFormMob?lpCertificateNum=340102198407165395&id=191204537544 ',
+    url: '/order/creditInfo/cuCreditRegisterFormMob',
+    method: 'get',
+    params
+  })
+}
+
+export function getList(params) {
+  return request({
+    url: '/order/creditInfo/queryCreaditRegister',
     method: 'get',
     params
   })
