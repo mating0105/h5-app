@@ -91,4 +91,44 @@ export function deleteIncomeList(params) {
     params
   })
 }
-
+// 保存收入信息
+export function setIncomeInfo(params) {
+  return request({
+    url: '/order/viceProj/savePersonalIncomeInfo',
+    method: 'post',
+    data: params
+  })
+}
+// --------------------------------------- 主借人名下车辆
+// 获取名下车辆列表
+export function getVehicleList(params) {
+  return request({
+    url: '/customer/cs/cuPersonalCar/getList',
+    method: 'get',
+    params
+  })
+}
+// 删除名下车辆列表信息
+export function deleteVehicleList(params) {
+  return request({
+    url: '/customer/cs/cuPersonalCar/delete',
+    method: 'get',
+    params
+  })
+}
+// 保存名下车辆
+export function setCarsfo(params) {
+  return request({
+    url: '/customer/cs/cuPersonalCar/insert',
+    method: 'post',
+    data: params
+  })
+}
+// 修改名下车辆
+export function editCarsInfo(params) {
+  return request({
+    url: '/customer/cs/cuPersonalCar/update',
+    method: 'post',
+    data: params
+  })
+}

@@ -23,7 +23,7 @@
               name="emergencyContactName"
               v-model="i.emergencyContactName"
               clearable
-              required
+              :required="index == 0"
               label="联系人名称："
               input-align="right"
               placeholder="请输入紧急联系人名称"
@@ -34,7 +34,7 @@
               name="contactPhone"
               v-model="i.contactPhone"
               clearable
-              required
+              :required="index == 0"
               label="联系人电话："
               input-align="right"
               placeholder="请输入联系人电话"
@@ -42,7 +42,7 @@
             <van-cell
               :border="false"
               title="与借款人关系："
-              required
+              :required="index == 0"
               is-link
               :value="i.borrowerRelationshipDesc"
               @click.native="loadList(index)"
@@ -188,8 +188,8 @@ export default {
     },
     // 保存
     custSubmit() {
-      if(this.contactlist.length < 3) {
-        this.$notify({ type: 'warning', message: '紧急联系人必须为三人' })
+      if(this.contactlist.length < 1) {
+        this.$notify({ type: 'warning', message: '紧急联系人至少一人' })
         return
       }
       setContactSave(this.contactlist).then(res => {

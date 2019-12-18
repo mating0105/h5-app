@@ -7,22 +7,18 @@
           <div class="xh-page-mian xh-card-box">
             <red-card label="客户基本信息">
               <template slot="cardBody">
-                <div>
-                  <van-row>
-                    <van-col
-                      span="12"
-                      class="xh-top-10 xh-ellipsis"
-                    >{{ params.customerName?"客户姓名：" + params.customerName:""}}</van-col>
-                    <van-col
-                      span="12"
-                      class="xh-top-10 xh-text-right"
-                    >{{ params.contactPhone?"联系电话：" + params.contactPhone:"" }}</van-col>
+                <div class="xh-card-padding">
+                  <van-row class="xh-top-10">
+                    <van-col :span="8">客户姓名：</van-col>
+                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.customerName?params.customerName:'--' }}</van-col>
                   </van-row>
-                  <van-row>
-                    <van-col
-                      span="24"
-                      class="xh-top-10 xh-ellipsis"
-                    >{{ params.certificateNum?"证件号码：" + params.certificateNum+" | 身份证":"" }}</van-col>
+                  <van-row class="xh-top-10">
+                    <van-col :span="8">联系电话：</van-col>
+                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.contactPhone?params.contactPhone:'--' }}</van-col>
+                  </van-row>
+                  <van-row class="xh-top-10">
+                    <van-col :span="8">证件号码：</van-col>
+                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.certificateNum?params.certificateNum + ' | 身份证':'--' }}</van-col>
                   </van-row>
                 </div>
               </template>
@@ -98,7 +94,7 @@
 </template>
 <script>
 import Vue from "vue";
-import { Dialog, Button, Row, Col, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
+import { Dialog, Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
 import {
   setProjectTask,
   setProjectProcess
@@ -107,7 +103,7 @@ import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-const Components = [ Dialog, Button, Row, Col, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
+const Components = [ Dialog, Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -369,5 +365,10 @@ export default {
   font-size: 1rem;
   border: 0;
   border-top: 1px solid #e6e6e6;
+}
+.xh-card-padding {
+  .xh-top-10 {
+    padding: 10px 0;
+  }
 }
 </style>
