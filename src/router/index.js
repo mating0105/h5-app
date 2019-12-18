@@ -149,6 +149,12 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/vehicle/list.vue'),
     meta: {title: '名下车辆', icon: 'dashboard'}
   },
+  { 
+    path: '/addCars',
+    name: 'AddCars',
+    component: () => import('@/views/basicInfo/vehicle/addCars.vue'),
+    meta: {title: '新增名下车辆', icon: 'dashboard'}
+  },
   {
     path: '/applyPayment',
     name: 'ApplyPayment',

@@ -75,7 +75,7 @@
         const arr = data.map(item => {
           return {
             ...item,
-            name: item.fullname
+            name: item.name
           }
         })
         this.modelList = [{

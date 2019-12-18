@@ -3,7 +3,7 @@
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="家庭收入">
+          <van-cell title="家庭收入(*请侧滑进行编辑或删除)">
             <van-icon
               slot="right-icon"
               name="plus"
@@ -35,12 +35,12 @@
               <van-button
                 type="warning"
                 style="border-radius: 0;"
-                @click.native="editList(list)"
+                @click.native="editList(i)"
               >修改</van-button>
               <van-button
                 type="danger"
                 style="border-radius: 0;"
-                @click.native="delList(list)"
+                @click.native="delList(i)"
               >删除</van-button>
             </span>
           </van-swipe-cell>
@@ -115,8 +115,8 @@ export default {
         if(res.code == 200) {
           this.homelist = res.data;
           this.homelist.forEach(t => {
-            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
-            t.houseZonDesc = this.returnText('Property_area', t.houseZon);
+            t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
+            t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
           });
         } else {
           this.$notify({
@@ -170,8 +170,5 @@ export default {
   .xh-main {
     color: rgb(196, 37, 42);
   }
-}
-.xh-text-right {
-  text-align: right;
 }
 </style>

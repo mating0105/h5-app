@@ -253,17 +253,7 @@
       </van-action-sheet>
 
       <!-- 弹出省市区 -->
-      <van-action-sheet v-model="addressShow" class="xh-list">
-        <div class="xh-list-body">
-          <van-area
-            :area-list="areaList"
-            :title="addressTitle"
-            :loading="selectLoading"
-            @confirm="addressOnCancel"
-            @cancel="addressOnConfirm"
-          />
-        </div>
-      </van-action-sheet>
+      <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
     </div>
 
   </ViewPage>
@@ -289,6 +279,7 @@ import {
 } from "@/api/client";
 import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
+import Provinces from "@/components/provinces/index";
 import { mapState } from "vuex";
 const Components = [
   Dialog,
@@ -309,7 +300,8 @@ Components.forEach(item => {
 
 export default {
   components: {
-    ViewPage
+    ViewPage,
+    Provinces
   },
   computed: {
     // 所有字典
@@ -390,7 +382,6 @@ export default {
       selectLoading: true, //下拉选择 loading
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
-      addressTitle: "", //城市下拉列表title
       areaList: {
         province_list: [],
         city_list: [],
@@ -440,11 +431,9 @@ export default {
           break;
         case "户籍地址":
           this.addressShow = true;
-          this.addressTitle = "户籍地址";
           break;
         case "居住地":
           this.addressShow = true;
-          this.addressTitle = "居住地";
           break;
         case "子女情况":
           this.selectShow = true;
@@ -516,58 +505,39 @@ export default {
     },
 
     // 省市区选择
-    addressOnCancel(list) {
-      this.selectLoading = true;
-      let a1, a2, a3;
-      let name = [];
-      let addId = [];
-      list.forEach(e => {
-        if (e != undefined) {
-          name.push(e.name);
-          addId.push(e.code);
-        }
-      });
-      if (addId.length > 2 || addId.length === 2) {
-        a2 = realCity(name[1]);
-      }
-      a1 = addId[0];
-      a3 = addId[2];
+    addressOnConfirm(code, name) {
       switch (this.pickerTitle) {
-        case "户籍地址":
-          this.formData.pprovCityZon = name.join("-");
-          this.formData.pProvCityZon = name.join("-");
-          this.formData.pProvCityZonCode =
-            a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
+        case '户籍地址':
+          this.formData.pProvCityZon = name;
+          this.formData.pprovCityZon = name;
+          this.formData.pProvCityZonCode = code;
           break;
-        case "居住地":
-          this.formData.rprovCityZon = name.join("-");
-          this.formData.rProvCityZon = name.join("-");
-          this.formData.rProvCityZonCode =
-            a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
+        case '居住地':
+          this.formData.rProvCityZon = name;
+          this.formData.rprovCityZon = name;
+          this.formData.rProvCityZonCode = code;
+          break;
+        default:
           break;
       }
       this.addressShow = false;
-    },
-    addressOnConfirm() {
-      this.addressShow = false;
-      this.selectLoading = true;
     },
     subMit() {
       this.subLoading = true;
       this.subDisabled = true;
-
       setClientSave(this.subData)
         .then(res => {
           this.subLoading = false;
           this.subDisabled = false;
-          if (res.code == 200) {
-            this.$toast.success("保存成功");
-            // setTimeout(() => {
-            //   bridge.ReturnVC(1, true);
-            // }, 1000);
+          if(res.code == 200) {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
           } else {
-            this.$toast({
-              position: "top",
+            this.$notify({
+              type: "danger",
               message: res.msg
             });
           }
@@ -595,69 +565,6 @@ export default {
       };
       
       this.subMit();
-      // 客户信息
-
-      // if (
-      //   this.formData.unitChar &&
-      //   this.formData.certificateNum &&
-      //   this.formData.contactPhone &&
-      //   this.formData.marriage &&
-      //   this.formData.primarySchool &&
-      //   this.formData.levelEducation &&
-      //   this.formData.pProvCityZon &&
-      //   this.formData.rProvCityZon &&
-      //   this.formData.childrenSituation &&
-      //   this.formData.localResidence &&
-      //   this.formData.spsRsdncDtlAdr
-      // ) {
-      //   if (this.subData.childrenSituation == "0") {
-      //     sub1 = true;
-      //   } else {
-      //     if (this.subData.schoolSituation) {
-      //       sub1 = true;
-      //     } else {
-      //       sub1 = false;
-      //     }
-      //   }
-      // } else {
-      //   sub1 = false;
-      // }
-
-      // // 配偶信息
-      // if (
-      //   this.formData.spsCltrDgr &&
-      //   this.formData.spsUnitChar &&
-      //   this.formData.spsNm &&
-      //   this.formData.spsCrdtNo &&
-      //   this.formData.spsCtcTel
-      // ) {
-      //   sub2 = true;
-      // } else {
-      //   sub2 = false;
-      // }
-
-      // if (
-      //   this.formData.marriageDesc != "已婚" &&
-      //   this.formData.marriageDesc != "事实婚姻"
-      // ) {
-      //   if (sub1 && errNum == 0) {
-      //     this.subMit();
-      //   } else {
-      //     this.$toast({
-      //       position: "top",
-      //       message: "带 * 必须填写完整, 且填写无误"
-      //     });
-      //   }
-      // } else {
-      //   if (sub1 && sub2 && errNum == 0) {
-      //     this.subMit();
-      //   } else {
-      //     this.$toast({
-      //       position: "top",
-      //       message: "带 * 必须填写完整, 且填写无误"
-      //     });
-      //   }
-      // }
     },
     // 有接口验证的时候
     urlRules(urls, rows) {

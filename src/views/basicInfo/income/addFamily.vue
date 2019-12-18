@@ -4,88 +4,156 @@
       <van-row class="xh-card-box xh-radius">
         <section>
           <van-cell
-            name="isHasHouse"
-            title="是否有房产："
+            title="收入人："
             required
             is-link
-            :value="formData.isHasHouseDesc"
-            @click.native="loadList('是否有房产')"
-            @blur.prevent="ruleMessge"
+            :value="formData.incomePeopleDesc"
+            @click.native="loadList('收入人')"
           />
         </section>
-        <div v-if="formData.isHasHouse == '1' || formData.isHasHouse == '' ">
+        <section>
+          <van-cell
+            title="职业状况："
+            required
+            is-link
+            :value="formData.occupationalStatusDesc"
+            @click.native="loadList('职业状况')"
+          />
+        </section>
+
+        <div v-if="formData.occupationalStatusDesc != '待业' ">
           <section>
-            <van-field
-              name="ownerProperty"
-              v-model="formData.ownerProperty"
-              :disabled="isView == 1"
+            <van-cell
+              title="单位性质："
               required
-              label="产权所有人："
-              input-align="right"
-              label-width="100px"
-              placeholder="请输入产权所有人"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.ownerProperty"
+              is-link
+              :value="formData.unitCharDesc"
+              @click.native="loadList('单位性质')"
             />
           </section>
           <section>
             <van-cell
-              name="houseType"
-              title="房产性质："
+              title="行业领域："
               required
               is-link
-              :value="formData.houseTypeDesc"
-              @click.native="loadList('房产性质')"
-            />
-          </section>
-          <section>
-            <van-cell
-              name="houseZon"
-              title="房产区域："
-              required
-              is-link
-              :value="formData.houseZonDesc"
-              @click.native="loadList('房产区域')"
+              :value="formData.idyDmnDesc"
+              @click.native="loadList('行业领域')"
             />
           </section>
 
           <section>
-            <van-cell
-              name="provCityZon"
-              title="房产所在地："
+            <van-field
+              name="companyName"
+              v-model="formData.companyName"
               required
-              is-link
-              :value="formData.provCityZon"
-              @click.native="loadList('房产所在地')"
+              :disabled="isView == '1' "
+              label="单位名称："
+              clearable
+              input-align="right"
+              placeholder="请输入单位名称"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.companyName"
             />
           </section>
           <section>
             <van-field
-              name="specificAddress"
-              v-model="formData.specificAddress"
-              required
-              :disabled="isView == 1"
+              name="companyTel"
+              v-model="formData.companyTel"
+              :disabled="isView == '1' "
+              label="单位电话："
+              input-align="right"
+              placeholder="请输入单位电话"
+              type="tel"
+              clearable
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.companyTel"
+            />
+          </section>
+          <section>
+            <van-cell
+              name="provCityZon"
+              title="单位地址："
+              is-link
+              :value="formData.provCityZon"
+              @click.native="loadList('单位地址')"
+            />
+          </section>
+          <section>
+            <van-field
+              v-model="formData.detailAddress"
+              :disabled="isView == '1' "
               label="详细地址："
               input-align="right"
               placeholder="请输入详细地址"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.specificAddress"
             />
           </section>
           <section>
             <van-field
-              name="houseArea"
-              v-model="formData.houseArea"
+              name="workingYears"
+              v-model="formData.workingYears"
+              :disabled="isView == '1' "
               required
-              :disabled="isView == 1"
-              label="房产面积(m²)："
+              type="number"
+              clearable
+              label="从业年限(年)："
               input-align="right"
-              placeholder="请输入房产面积"
+              placeholder="请输入从业年限"
               @blur.prevent="ruleMessge"
-              :error-message="errorMsg.houseArea"
+              :error-message="errorMsg.workingYears"
             />
           </section>
+
+          <div
+            v-if="formData.occupationalStatusDesc != '承包方' && formData.occupationalStatusDesc != '私营业主' && formData.occupationalStatusDesc != '企业实际掌控者' && formData.occupationalStatusDesc != '股东' "
+          >
+            <section>
+              <van-field
+                name="personalIncome"
+                v-model="formData.personalIncome"
+                :disabled="isView == '1' "
+                label="月固定收入(元)："
+                input-align="right"
+                clearable
+                placeholder="请输入月固定收入"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.personalIncome"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="月固定收入状况："
+                required
+                is-link
+                :value="formData.personalIncomeStatusDesc"
+                @click.native="loadList('月固定收入状况')"
+              />
+            </section>
+          </div>
         </div>
+
+        <section v-if="formData.occupationalStatusDesc != '待业' ">
+          <van-cell
+            title="收入佐证："
+            required
+            is-link
+            :value="formData.incomeEvidenceDesc"
+            @click.native="loadList('收入佐证')"
+          />
+        </section>
+
+        <section>
+          <van-field
+            :disabled="isView == '1' "
+            v-model="formData.remark"
+            rows="3"
+            autosize
+            clearable
+            type="textarea"
+            :maxlength="200"
+            placeholder="请输入备注"
+            show-word-limit
+          />
+        </section>
 
         <!-- 下拉选择器 -->
         <van-action-sheet v-model="selectShow" class="xh-list">
@@ -100,17 +168,7 @@
         </van-action-sheet>
 
         <!-- 弹出省市区 -->
-        <van-action-sheet v-model="addressShow" class="xh-list">
-          <div class="xh-list-body">
-            <van-area
-              :area-list="areaList"
-              :title="addressTitle"
-              :loading="selectLoading"
-              @confirm="addressOnCancel"
-              @cancel="addressOnConfirm"
-            />
-          </div>
-        </van-action-sheet>
+        <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
       </van-row>
       <!-- 保 存按钮 -->
       <div class="xh-submit">
@@ -143,7 +201,8 @@ import {
   Popup
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
-import { getHouseInfo, setHouseInfo, editHouseInfo } from "@/api/client";
+import Provinces from "@/components/provinces/index";
+import { getHouseInfo, setIncomeInfo } from "@/api/client";
 import { mapState } from "vuex";
 const Components = [
   Dialog,
@@ -170,24 +229,31 @@ export default {
     })
   },
   components: {
-    ViewPage
+    ViewPage,
+    Provinces
   },
   data() {
     return {
       isView: 0, // 是否查看
       formData: {
-        // 额外提交(上页传递)
-        customerNum: "", // 客户编号
-        customerId: "", // 客户ID
+        customerNum: '',// 客户编号
+        customerId: '',// 客户ID
         // 额外提交
-
-        isHasHouse: "", //是否有房产
-        ownerProperty: "", //产权所有人
-        houseType: "", //房产性质
-        houseZon: "", //房产区域
-        provCityZon: "", //房产所在地
-        specificAddress: "", //详细地址
-        houseArea: "" //房产面积(m²)
+        incomePeople: '', //收入人
+        occupationalStatus: '', //职业状况
+        unitChar: '', //单位性质
+        idyDmn: '', //行业领域
+        companyName: '', //单位名称
+        companyTel: '', //单位电话
+        provCityZon: '', //单位地址
+        detailAddress: '', //详细地址
+        workingYears: '', //从业年限(年)
+        personalIncome: '', //月固定收入(元)
+        personalIncomeDesc: '',
+        personalIncomeStatus: '', //固定收入情况
+        personalIncomeStatusDesc: '',
+        incomeEvidence: '', //收入佐证
+        remark: '', //备注
       },
       columns: [], //待选择列表
       errorMsg: {
@@ -237,48 +303,80 @@ export default {
         projectId: this.params.projectId,
         id: this.params.id
       }).then(res => {
-        if(res.code == 200) {
+        if (res.code == 200) {
           this.formData = res.data;
-          this.formData.isHasHouseDesc = this.returnText('yes_no', this.formData.isHasHouse);
-          this.formData.houseZonDesc = this.returnText('Property_area', this.formData.houseZon);
-          this.formData.houseTypeDesc = this.returnText('Property_nature', this.formData.houseType);
+          this.formData.isHasHouseDesc = this.returnText(
+            "yes_no",
+            this.formData.isHasHouse
+          );
+          this.formData.houseZonDesc = this.returnText(
+            "Property_area",
+            this.formData.houseZon
+          );
+          this.formData.houseTypeDesc = this.returnText(
+            "Property_nature",
+            this.formData.houseType
+          );
         }
       });
     },
     loadList(val) {
       this.pickerTitle = val;
       switch (val) {
-        case "是否有房产":
+        case "收入人":
           this.selectShow = true;
-          this.columns = this.wordbook.yes_no;
+          this.columns = this.wordbook.income_person;
           break;
-        case "房产性质":
+        case "职业状况":
           this.selectShow = true;
-          this.columns = this.wordbook.Property_nature;
+          this.columns = this.wordbook.OccupationalStatus;
           break;
-        case "房产所在地":
+        case "单位地址":
           this.addressShow = true;
-          this.addressTitle = "户籍地址";
           break;
-        case "房产区域":
+        case "单位性质":
           this.selectShow = true;
           this.columns = this.wordbook.Property_area;
+          break;
+        case "行业领域":
+          this.selectShow = true;
+          this.columns = this.wordbook.belong_industry;
+          break;
+        case "月固定收入状况":
+          this.selectShow = true;
+          this.columns = this.wordbook.IncomeStatus;
+          break;
+        case "收入佐证":
+          this.selectShow = true;
+          this.columns = this.wordbook.income_prove;
           break;
       }
     },
     onConfirm(rows, index) {
       switch (this.pickerTitle) {
-        case "是否有房产":
-          this.formData.isHasHouse = rows.value;
-          this.formData.isHasHouseDesc = rows.label;
+        case "收入人":
+          this.formData.incomePeople = rows.value;
+          this.formData.incomePeopleDesc = rows.label;
           break;
-        case "房产性质":
-          this.formData.houseType = rows.value;
-          this.formData.houseTypeDesc = rows.label;
+        case "职业状况":
+          this.formData.occupationalStatus = rows.value;
+          this.formData.occupationalStatusDesc = rows.label;
           break;
-        case "房产区域":
-          this.formData.houseZon = rows.value;
-          this.formData.houseZonDesc = rows.label;
+        case "单位性质":
+          this.formData.unitChar = rows.value;
+          this.formData.unitCharDesc = rows.label;
+          break;
+        case "行业领域":
+          this.formData.idyDmn = rows.value;
+          this.formData.idyDmnDesc = rows.label;
+          break;
+        case "月固定收入状况":
+          this.formData.personalIncomeStatus = rows.value;
+          this.formData.personalIncomeStatusDesc = rows.label;
+          break;
+        case "收入佐证":
+          this.formData.incomeEvidence = rows.value;
+          this.formData.incomeEvidenceDesc = rows.label;
           break;
       }
       this.selectShow = false;
@@ -288,66 +386,97 @@ export default {
       this.selectLoading = true;
     },
     // 省市区 ------------------------
-    addressOnCancel() {
-
-    },
-    addressOnConfirm() {
-
+    addressOnConfirm(code, name) {
+      this.formData.provCityZon = name;
+      this.formData.provCityZonCode = code;
+      this.addressShow = false;
     },
     // 保存
     custSubmit() {
       this.formData.customerId = this.params.customerId;
-      if (this.formData.isHasHouse == 0) {
-        this.formData.ownerProperty = "";
-        this.formData.houseArea = "";
+      this.formData.customerNum = this.params.customerNum;
+      let occupationalStatus = this.formData.occupationalStatus;
+      if (occupationalStatus == 6) {
+        this.formData.idyDmn = "";
+        this.formData.unitChar = "";
+        this.formData.companyName = "";
+        this.formData.companyTel = "";
+        this.formData.detailAddress = "";
+        this.formData.workingYears = "";
+        this.formData.employeesNumber = "";
+        this.formData.businessArea = "";
+        this.formData.fieldNature = "";
+        this.formData.turnover = "";
+        this.formData.profit = "";
+        this.formData.sharesConstitute = "";
+        this.formData.registerCapital = "";
+        this.formData.totalShares = "";
+        this.formData.personalIncome = "";
+        this.formData.personalIncomeStatus = "";
+        this.formData.incomeEvidence = "";
+        this.formData.remark = "";
         this.formData.provCityZon = "";
-        this.formData.specificAddress = "";
-        this.formData.houseType = "";
-        this.formData.houseZon = "";
-      } else {
-        // const {
-        //   ids: wbtProvCityZonCode,
-        //   names: provCityZon
-        // } = amap.utils.splieIdCode(this.form.provCityZonId, "-");
-        this.formData.provCityZon = "天津市-市辖区-和平区";
-        this.formData.wbtProvCityZonCode = "120000-120100-120101";
+        this.formData.wbtProvCityZonCode = "";
       }
-      if(this.isView == 0) {
-        setHouseInfo(this.formData).then(res => {
-          if(res.code == 200) {
-            this.$notify({
-              type: "success",
-              message: res.msg
-            });
-            this.$router.go(-1);
-          } else {
-            this.$notify({
-              type: "danger",
-              message: res.msg
-            });
-          }
-        });
-      } else {
-        editHouseInfo(this.formData).then(res => {
-          if(res.code == 200) {
-            this.$notify({
-              type: "success",
-              message: res.msg
-            });
-            this.$router.go(-1);
-          } else {
-            this.$notify({
-              type: "danger",
-              message: res.msg
-            });
-          }
-        });
+      if (
+        occupationalStatus === 5 ||
+        occupationalStatus === 7 ||
+        occupationalStatus === 8 ||
+        occupationalStatus === 9 ||
+        occupationalStatus === 10 ||
+        occupationalStatus === 11 ||
+        occupationalStatus === 12 ||
+        occupationalStatus === 13
+      ) {
+        this.formData.employeesNumber = "";
+        this.formData.businessArea = "";
+        this.formData.fieldNature = "";
+        this.formData.turnover = "";
+        this.formData.profit = "";
+        this.formData.sharesConstitute = "";
+        this.formData.registerCapital = "";
+        this.formData.totalShares = "";
       }
+      if (occupationalStatus === 1 || occupationalStatus === 2) {
+        this.formData.sharesConstitute = "";
+        this.formData.registerCapital = "";
+        this.formData.totalShares = "";
+        this.formData.personalIncome = "";
+        this.formData.personalIncomeStatus = "";
+      }
+      if (occupationalStatus === 3 || occupationalStatus === 4) {
+        this.formData.personalIncome = "";
+        this.formData.personalIncomeStatus = "";
+      }
+      // if (this.isView == 0) {
+        setIncomeInfo(this.formData).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.$router.go(-1);
+        });
+      // } else {
+      //   editIncomeInfo(this.formData).then(res => {
+      //     if (res.code == 200) {
+      //       this.$notify({
+      //         type: "success",
+      //         message: res.msg
+      //       });
+      //       this.$router.go(-1);
+      //     } else {
+      //       this.$notify({
+      //         type: "danger",
+      //         message: res.msg
+      //       });
+      //     }
+      //   });
+      // }
     }
   },
   mounted() {
     this.params = this.$route.query;
-    if(this.params.type == 1) {
+    if (this.params.type == 1) {
       this.isView = this.params.type;
       this.loadData();
     }

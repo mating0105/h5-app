@@ -129,6 +129,7 @@ export default {
         certificateNum: rows.certificateNum, //客户手机号码
         id: rows.projectId,
         customerId: rows.customerId,
+        customerNum: rows.customerNum,
         projectNo: rows.projectNo
       }});
     },
