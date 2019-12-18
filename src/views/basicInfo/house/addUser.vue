@@ -100,17 +100,7 @@
         </van-action-sheet>
 
         <!-- 弹出省市区 -->
-        <van-action-sheet v-model="addressShow" class="xh-list">
-          <div class="xh-list-body">
-            <van-area
-              :area-list="areaList"
-              :title="addressTitle"
-              :loading="selectLoading"
-              @confirm="addressOnCancel"
-              @cancel="addressOnConfirm"
-            />
-          </div>
-        </van-action-sheet>
+        <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
       </van-row>
       <!-- 保 存按钮 -->
       <div class="xh-submit">
@@ -143,6 +133,7 @@ import {
   Popup
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
+import Provinces from "@/components/provinces/index";
 import { getHouseInfo, setHouseInfo, editHouseInfo } from "@/api/client";
 import { mapState } from "vuex";
 const Components = [
@@ -170,7 +161,8 @@ export default {
     })
   },
   components: {
-    ViewPage
+    ViewPage,
+    Provinces
   },
   data() {
     return {
@@ -288,11 +280,10 @@ export default {
       this.selectLoading = true;
     },
     // 省市区 ------------------------
-    addressOnCancel() {
-
-    },
-    addressOnConfirm() {
-
+    addressOnConfirm(code, name) {
+      this.formData.provCityZon = name;
+      this.formData.wbtProvCityZonCode = code;
+      this.addressShow = false;
     },
     // 保存
     custSubmit() {
@@ -304,13 +295,10 @@ export default {
         this.formData.specificAddress = "";
         this.formData.houseType = "";
         this.formData.houseZon = "";
-      } else {
-        // const {
-        //   ids: wbtProvCityZonCode,
-        //   names: provCityZon
-        // } = amap.utils.splieIdCode(this.form.provCityZonId, "-");
-        this.formData.provCityZon = "天津市-市辖区-和平区";
-        this.formData.wbtProvCityZonCode = "120000-120100-120101";
+        this.formData.houseTypeDesc = "";
+        this.formData.houseZonDesc = "";
+        this.formData.houseAreaDesc = "";
+        this.formData.wbtProvCityZonCode = "";
       }
       if(this.isView == 0) {
         setHouseInfo(this.formData).then(res => {

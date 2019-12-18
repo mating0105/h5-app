@@ -1,5 +1,4 @@
 <template>
-  <div>
     <ViewPage>
       <van-list
         v-model="loading"
@@ -9,15 +8,15 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-        <div v-for="(item,index) in list" :key="index" :title="item">
-          <Card class="xh-top-10">
+        <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
+          <Card class="xh-top-10" :bodyPadding='true'>
             <template v-slot:header>
               <section class="xh-plus">
                 <van-cell :title="item.projectNo" :value="item.processStateDesc" icon="notes-o"></van-cell>
               </section>
             </template>
             <van-row>
-              <van-col span="24">客户名称：{{item.coustomerName}}</van-col>
+              <van-col span="24">客户名称：{{item.customerName}}</van-col>
               <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
               <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
             </van-row>
@@ -37,7 +36,6 @@
         </div>
       </van-list>
     </ViewPage>
-  </div>
 </template>
 
 <script>
@@ -96,7 +94,8 @@ export default {
     },
     // 发起走款
     applyPay(rows) {
-      this.$router.push({ path: "/applyPayment", query: {projectId:rows.projectId} });
+      // console.log({projectId:rows.projectId,customerNum:rows.customerNum,customerId:rows.customerId})
+      this.$router.push({ path: "/applyPayment", query: {projectId:rows.projectId,customerNum:rows.customerNum,customerId:rows.customerId} });
     },
     loadData() {}
   },

@@ -1,56 +1,62 @@
 <template>
   <ViewPage>
     <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
       :error.sync="error"
-      error-text="请求失败，点击重新加载"
+      :finished="finished"
       @load="onLoad"
+      error-text="请求失败，点击重新加载"
+      finished-text="没有更多了"
+      v-model="loading"
     >
-      <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-        <Card class="xh-top-10" :bodyPadding='true'>
+      <div
+        :key="ie"
+        class="van-clearfix"
+        v-for="(item,ie) in list"
+      >
+        <Card
+          :bodyPadding="true"
+          class="xh-top-10"
+        >
           <template v-slot:header>
             <section class="xh-plus">
-              <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
+              <van-cell
+                :title="item.customerNum"
+                :value="returnText(item.processState)"
+                icon="notes-o"
+              ></van-cell>
             </section>
           </template>
           <van-row>
-            <van-col span="24">客户名称：{{ item.customerName }}</van-col>
-            <van-col span="24" class="xh-top-10">身份证：{{ item.certificateNum }}</van-col>
-            <van-col span="24" class="xh-top-10">手机号码：{{ item.contactPhone }}</van-col>
+            <van-col span="24">客户名字：{{ item.customerName }}</van-col>
+            <van-col
+              class="xh-top-10"
+              span="24"
+            >身份证：{{ item.certificateNum }}</van-col>
+            <van-col
+              class="xh-top-10"
+              span="24"
+            >手机号码：{{ item.contactPhone }}</van-col>
           </van-row>
           <template v-slot:footer>
             <div style="text-align:right;">
               <van-button
-                plain
-                type="danger"
+                @click="supple(item)"
                 class="xh-radius"
+                plain
                 style="border-radius: 6px;"
-                @click="startForm(item)"
-              >发起报单</van-button>
+                type="danger"
+              >重权资料补录</van-button>
             </div>
           </template>
         </Card>
       </div>
     </van-list>
-    <div class="xh-fixed-submit">
-      <div class="xh-submit">
-        <van-button
-          icon="plus"
-          size="large"
-          class="xh-bg-main"
-          @click="addClint"
-          :loading="loading"
-        >新建报单</van-button>
-      </div>
-    </div>
   </ViewPage>
 </template>
 
 <script>
 import Vue from "vue";
-import { getProjectList } from "@/api/project";
+import { queryRightSuppleList } from "@/api/heavyRightSupplement";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
@@ -62,6 +68,7 @@ Components.forEach(item => {
   Vue.use(item);
 });
 import { mapState } from "vuex";
+import { log } from 'util';
 export default {
   components: {
     ViewPage,
@@ -82,7 +89,7 @@ export default {
   computed: {
     // 所有字典
     ...mapState({
-      wordbook: state => state.user.wordbook,
+      wordbook: state => state.user.wordbook
     })
   },
   methods: {
@@ -90,7 +97,7 @@ export default {
     returnText(val) {
       let name;
       this.wordbook.apply_status.forEach(e => {
-        if(e.value == val) {
+        if (e.value == val) {
           name = e.label;
         }
       });
@@ -98,16 +105,16 @@ export default {
     },
     onLoad() {
       this.loading = true;
-      getProjectList(this.parms).then(res => {
+      queryRightSuppleList(this.parms).then(res => {
         const { code, data, msg } = res;
-        if(code == 200) {
+        if (code == 200) {
           setTimeout(() => {
             data.result.forEach(t => {
               this.list.push(t);
             });
             // 加载状态结束
             this.loading = false;
-            this.parms.pageIndex ++;
+            this.parms.pageIndex++;
             // 数据全部加载完成
             if (this.list.length == data.totalCount) {
               this.finished = true;
@@ -116,25 +123,17 @@ export default {
             }
           }, 500);
         } else {
-          this.$notify({ type: 'danger', message: msg });
+          this.$notify({ type: "danger", message: msg });
           this.loading = false;
         }
       });
     },
-    // 发起报单
-    startForm(rows) {
-      this.$router.push({ path: '/xhProject', query: {
-        customerName: rows.customerName, //客户姓名
-        contactPhone: rows.contactPhone, //客户身份证
-        certificateNum: rows.certificateNum, //客户手机号码
-        id: rows.projectId,
-        customerId: rows.customerId,
-        customerNum: rows.customerNum,
-        projectNo: rows.projectNo
+    // 重权补录
+    supple(rows) {
+      this.$router.push({ name: "HeavyRightBasic",params:{
+        id: rows.projectId
       }});
-    },
-    // 新建客户
-    addClint() {}
+    }
   },
   mounted() {
     this.onLoad();
