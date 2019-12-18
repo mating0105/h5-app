@@ -1,7 +1,7 @@
 //省市区组件
 <template>
   <div>
-    <van-action-sheet get-container="#app" v-model="showMap" class="xh-list" :close-on-click-overlay='manualClose!==undefined?manualClose:true'>
+    <van-action-sheet get-container="#app" :close-on-click-overlay="false" v-model="showMap" class="xh-list">
       <div class="xh-list-body">
         <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
       </div>

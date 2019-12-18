@@ -76,7 +76,10 @@
               <template slot="header">其他费用</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-cell title="担保费(元)" :value="paymentDetail.projBudgetList.warrantCharges?paymentDetail.projBudgetList.warrantCharges:'0'" />
+                  <van-cell
+                    title="担保费(元)"
+                    :value="paymentDetail.projBudgetList.warrantCharges?paymentDetail.projBudgetList.warrantCharges:'0'"
+                  />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -229,7 +232,7 @@
                     title="缴费方式"
                     required
                     is-link
-                    :value="paymentDetail.projBudgetList.pyfModName"
+                    :value="returnText('pyfMod',paymentDetail.projBudgetList.pyfMod)"
                     @click="loadType('缴费方式', 'pyfMod')"
                   />
                 </van-cell-group>
@@ -278,7 +281,7 @@
                     title="走款模式"
                     required
                     is-link
-                    :value="paymentDetail.projPayInfo.payTypeName"
+                    :value="returnText('payType',paymentDetail.projPayInfo.payType)"
                     @click="loadType('走款模式', 'payType')"
                   />
                 </van-cell-group>
@@ -331,10 +334,31 @@
               <template slot="header">走款资料</template>
               <imageList :dataList="dataList"></imageList>
             </card>
+            <card>
+              <template v-slot:header>意见描述</template>
+              <section>
+                <van-cell-group :border="false">
+                  <van-field
+                    v-model="message"
+                    rows="2"
+                    autosize
+                    label-width="0"
+                    :border="false"
+                    type="textarea"
+                    maxlength="200"
+                    placeholder="请输入"
+                    show-word-limit
+                  />
+                </van-cell-group>
+              </section>
+            </card>
+            <div class="xh-submit">
+              <van-button size="large" class="xh-bg-main" @click="submit" :loading="loadingSubmit">提交</van-button>
+            </div>
           </div>
         </div>
-        <div class="xh-submit">
-          <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">保 存</van-button>
+        <div class="xh-submit" v-show="stepVal !=3">
+          <van-button size="large" class="xh-bg-main" @click="save" :loading="loading">保 存</van-button>
         </div>
       </van-tab>
       <van-tab title="项目信息" name="project">
@@ -384,9 +408,10 @@ import {
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
-import imageList from '@/components/imageList'
+import imageList from "@/components/imageList";
 import ProjectInfo from "@/views/basicInfo/projectInfo/info";
-import { paymentDetail, getDic,submitPay } from "@/api/payment";
+import { paymentDetail, getDic, submitPay, savePay ,submitProcess} from "@/api/payment";
+import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
 const Components = [
   Button,
@@ -421,9 +446,9 @@ export default {
       paymentDetail: {}, //基本信息
       params: {}, //上个页面传过来的参数
       loading: false,
+      loadingSubmit:false,
       selectName: "",
-      payMethods: [], //缴费方式数组
-      payTypes: [], //走款方式数组
+      dicList: [], //字典获取
       valueKey: "label",
       fieldName: "",
       show2: false,
@@ -432,8 +457,58 @@ export default {
       timeType: "",
       timetitle: "",
       currentDate: new Date(),
-      dataList:[],//图片上传
+      dataList: [], //图片上传
+      message: "", //意见描述
+      peopleList: [] //下一节点人数组
     };
+  },
+  computed: {
+    // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
+    "paymentDetail.projBudgetList.totalCharges"() {
+      let estimateCharges =
+        parseFloat(this.paymentDetail.projBudgetList.estimateCharges) || 0; // 评估费
+      let investigateCharges =
+        parseFloat(this.paymentDetail.projBudgetList.investigateCharges) || 0; //调查费
+      let gpsCharges =
+        parseFloat(this.paymentDetail.projBudgetList.gpsCharges) || 0; //GPS费用
+      let agreeBail =
+        parseFloat(this.paymentDetail.projBudgetList.agreeBail) || 0; //履约保证金
+      let collectCarDealer =
+        parseFloat(this.paymentDetail.projBudgetList.collectCarDealer) || 0; //实收车商
+      let notarialFees =
+        parseFloat(this.paymentDetail.projBudgetList.notarialFees) || 0; //公证费
+      let allopatryCharges =
+        parseFloat(this.paymentDetail.projBudgetList.allopatryCharges) || 0; //异地上户费
+      let colligateCharges =
+        parseFloat(this.paymentDetail.projBudgetList.colligateCharges) || 0; //综合服务费
+      let doolBail =
+        parseFloat(this.paymentDetail.projBudgetList.doolBail) || 0; //上户保证金
+      return (
+        estimateCharges +
+        investigateCharges +
+        agreeBail +
+        collectCarDealer +
+        notarialFees +
+        allopatryCharges +
+        colligateCharges +
+        doolBail +
+        gpsCharges
+      );
+    }
+  },
+  computed: {
+    wordbook() {
+      return this.$store.state.user.wordbook;
+    },
+    documentType() {
+      let obj = {};
+      if (this.wordbook.document_type && this.wordbook.document_type.length) {
+        this.wordbook.document_type.forEach(item => {
+          obj[item.value] = item;
+        });
+      }
+      return obj;
+    }
   },
   methods: {
     stepVhange(val) {
@@ -449,23 +524,46 @@ export default {
       });
     },
     //保存数据
-    submit() {
+    save() {
       console.log(this.paymentDetail);
-      submitPay(this.paymentDetail).then(res =>{
-          this.$notify({ type: "success", message: '保存成功' });
-      })
+      savePay(this.paymentDetail).then(res => {
+        this.$notify({ type: "success", message: "保存成功" });
+      });
     },
+    //提交流程
+    submit() {
+      this.loadingSubmit = true;
+      submitPay(this.paymentDetail).then(res => {
+        console.log(res);
+        let data = res.data.users;
+        let people = [];
+        data.forEach(t => {
+          people.push({
+            ...t,
+            label: t.companyName + "-" + t.name
+          });
+        });
+        this.peopleList = people;
+        this.loadType("下一节点审批人", "people");
+      });
+    },
+    //上拉菜单选择
     loadType(title, field) {
       this.selectName = title;
       this.isWordbook = false;
       this.fieldName = field;
       switch (title) {
         case "缴费方式":
-          this.options = this.payMethods;
+          this.options = this.dicList.pay_method;
           this.show3 = true;
           break;
         case "走款模式":
-          this.options = this.payTypes;
+          this.options = this.dicList.payType;
+          this.show3 = true;
+          break;
+        case "下一节点审批人":
+          // this.loadingSubmit = false;
+          this.options = this.peopleList;
           this.show3 = true;
           break;
         default:
@@ -480,13 +578,33 @@ export default {
       ];
       getDic(arr).then(res => {
         if (res.code == 200) {
-          this.payMethods = res.data.pay_method;
-          this.payTypes = res.data.payType;
+          this.dicList = res.data;
         }
       });
     },
+    returnText(type, val) {
+      let name;
+      switch (type) {
+        case "pyfMod":
+          this.dicList.pay_method.forEach(e => {
+            if (e.value == val) {
+              name = e.label;
+            }
+          });
+          break;
+        case "payType":
+          this.dicList.payType.forEach(e => {
+            if (e.value == val) {
+              name = e.label;
+            }
+          });
+          break;
+      }
+      return name;
+    },
     // 字典选择确认
     confirm(row) {
+      console.log(row);
       switch (this.fieldName) {
         case "pyfMod":
           this.paymentDetail.projBudgetList[this.fieldName] = row.value;
@@ -495,9 +613,20 @@ export default {
           break;
         case "payType":
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
-          this.paymentDetail.projPayInfo[this.fieldName + "Name"] =
-            row.label;
+          this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
           break;
+        case 'people':
+          let data = {
+            businessKey:this.paymentDetail.projPayInfo.id,
+            conclusionCode: "01",
+            commentsDesc:this.message,
+            nextUser:row.id
+          }
+          submitProcess(data).then(res =>{
+            this.$notify({ type: "success", message: "流程提交成功" });
+          })
+          break;
+
       }
       this.show3 = false;
     },
@@ -544,12 +673,44 @@ export default {
     },
     cancelTime() {
       this.show2 = false;
+    },
+    //加载走款图片
+    loadImg() {
+      this.getDocumentByType("0620");
+    },
+    async getDocumentByType(documentType) {
+      try {
+        const params = {
+          customerNum: this.params.customerNum,
+          documentType: documentType
+        };
+        const { data } = await getDocumentByType(params);
+        const declare = this.documentType[documentType]
+          ? this.documentType[documentType].label
+          : "图片描述";
+        data.forEach(item => {
+          item.declare = declare;
+        });
+        this.dataList.push({
+          declare: declare, //图片描述
+          isRequire: true, //*是否必须
+          deletable: true, //是否可以操作-上传和删除
+          documentType: documentType,
+          customerNum: this.params.customerNum,
+          customerId: this.params.customerId,
+          kind: "1",
+          fileList: data
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   mounted() {
     this.params = this.$route.query;
     this.loadData();
     this.getDict();
+    this.loadImg();
   }
 };
 </script>

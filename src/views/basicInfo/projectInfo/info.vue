@@ -597,16 +597,7 @@
       </div>
     </van-action-sheet>
     <!-- 弹出省市区 -->
-    <van-action-sheet get-container="#app" v-model="show2" title class="xh-list">
-      <div class="xh-list-body">
-        <van-area
-          :area-list="areaList"
-          :value="projProjectInfo.wbtProvCityZonCode"
-          @confirm="confirmSelect"
-          @cancel="cancelSelect"
-        />
-      </div>
-    </van-action-sheet>
+    <Provinces :showMap.sync="show2" @getProvince="confirmSelect"></Provinces>
   </div>
 </template>
 
@@ -622,6 +613,7 @@ import {
 } from "@/api/project";
 // 自定义组件
 import redCard from "@/components/redCard/index";
+import Provinces from "@/components/provinces/index";
 import Card from "@/components/card/index";
 // 其他组件
 import {
@@ -663,7 +655,8 @@ export default {
   name: "projectInfo",
   components: {
     redCard,
-    Card
+    Card,
+    Provinces
   },
   computed: {
     bankTotal() {
@@ -964,9 +957,11 @@ export default {
       this.$set(this.projProjectInfo, "productId", ids);
     },
     // 省市区选择
-    confirmSelect() {},
-    // 省市区取消
-    cancelSelect() {},
+    confirmSelect(code,name) {
+      this.projProjectInfo.wbtProvCityZon = code;
+      this.projProjectInfo.wbtProvCityZonName = name;
+      this.show2 = false;
+    },
     // 其他接口数据
     loadType(title, field) {
       this.selectName = title;
@@ -1328,7 +1323,8 @@ export default {
             accountNum: this.returnVal(row.accountNum),
             accountName: this.returnVal(row.accountName),
             accountBank: this.returnVal(row.accountBank),
-            wbtProvCityZonName: this.returnVal(row.wbtProvCityZonName),
+            wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
+            wbtProvCityZon: row.wbtProvCityZonCode,
             paymentNumber: this.returnVal(row.paymentNumber),
             paymentNumberName: this.returnVal(row.paymentNumberName),
             customerBond: this.returnVal(row.customerBond),
@@ -1600,9 +1596,9 @@ export default {
             accountName: formList.accountName,
             accountBank: formList.accountBank,
             // ------------------------------ 地址 --------
-            wbtProvCityZonCode: "120000-120100-120101",
-            wbtProvCityZon: "天津市-市辖区-和平区",
-            wbtProvCityZonDesc: "天津市-市辖区-和平区",
+            wbtProvCityZonCode: formList.wbtProvCityZon,
+            wbtProvCityZon: formList.wbtProvCityZonName,
+            wbtProvCityZonDesc: formList.wbtProvCityZonName,
             rbrinsPltfrmNmName: formList.rbrinsPltfrmNmName,
             rbrinsPltfrmNmId: formList.rbrinsPltfrmNmId,
             thiefRescue: formList.thiefRescue,
