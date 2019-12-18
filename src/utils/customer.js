@@ -23,4 +23,15 @@ export function getBirth(IdNO) {
         return "";
     }
 }
+//通过身份证号 获取年龄
+export function getAge(IdNO){
+    var myDate = new Date();
+    var month = myDate.getMonth() + 1;
+    var day = myDate.getDate();
+    var age = myDate.getFullYear() - IdNO.substring(6, 10) - 1;
+    if (IdNO.substring(10, 12) < month || IdNO.substring(10, 12) == month && IdNO.substring(12, 14) <= day) {
+        age++;
+    }
+    return age;
+}
 

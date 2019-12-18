@@ -7,12 +7,6 @@
             <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName"/>
             <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum"/>
             <van-cell title="电话号码:" required :border="false" :value="form.telephone"/>
-            <!--            <van-field v-model="form.creditPersonName" :border="false" required clearable input-align="right" label="客户名称："-->
-            <!--                       placeholder="请输入客户名称"/>-->
-            <!--            <van-field v-model="form.cpCertificateNum" :border="false" required clearable input-align="right" label="证件号码："-->
-            <!--                       placeholder="请输入证件号码"/>-->
-            <!--            <van-field v-model="form.telephone" :border="false" type="tel" required clearable input-align="right" label="电话号码："-->
-            <!--                       placeholder="请输入电话号码"/>-->
             <van-cell title="征信对象类型:" required :border="false" value="借款人"/>
             <van-cell title="银行：" :border="false" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
             <van-field class="label_plus" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
@@ -24,31 +18,43 @@
         <Card style="margin-top: 10px;">
             <template v-slot:header>
                 车辆信息
-                <div class="card-icon" @click="addVehicle">
+                <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0">
                     <van-icon name="add-o"/>
                 </div>
             </template>
-            <van-swipe-cell v-for="(item, index) in dataList.carInfos" :key="index">
-                <van-cell title="车辆类别:" :border="false" :value="returnText(item.carType, 'car_type') + returnText(item.carType2, 'carType2')"/>
-                <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
-                <van-cell title="车辆规格:" :border="false" :value="returnText(item.carSpecifications, 'vehicle_specifications')"/>
-                <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
-                <van-cell title="车辆品牌型号:" :border="false" :value="item.brndNm + item.carSeries + item.carModel"/>
-                <van-cell title="销售价(元):" :border="false" :value="item.salePrice"/>
-                <van-cell title="备注:" :border="false" :value="item.remarks"/>
-                <div slot="right" style="height: 100%">
-                    <van-button
-                            type="warning"
-                            style="height:100%;border-radius: 0;"
-                    >修改
-                    </van-button>
-                    <van-button
-                            type="danger"
-                            style="height:100%;border-radius: 0;"
-                    >删除
-                    </van-button>
-                </div>
-            </van-swipe-cell>
+            <div>
+                <van-swipe-cell v-for="(item, index) in dataList.carInfos" :key="index">
+                    <van-cell title="车辆类别:" :border="false"
+                              :value="nameToString(returnText(item.carType, 'car_type'), returnText(item.carType2, 'car_type2'))"/>
+                    <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
+                    <van-cell title="车辆规格:" :border="false" :value="returnText(item.carSpecifications, 'vehicle_specifications')"/>
+                    <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
+                    <van-cell title="车辆品牌型号:" :border="false" :value="nameToString(item.brndNm, item.carSeries, item.carModel)"/>
+                    <van-cell v-if="item.carNature === 'old_car'" title="车架号:" :border="false" :value="item.chassisNumber"/>
+                    <van-cell v-if="item.carNature === 'new_car'" title="销售价(元):" :border="false" :value="item.salePrice"/>
+                    <template v-else-if="item.carNature === 'old_car'">
+                        <van-cell title="车牌所在地:" :border="false" :value="item.carLicenseLocation"/>
+                        <van-cell title="首次上牌日:" :border="false" :value="item.plateDate"/>
+                        <van-cell title="行驶里程（万公里）:" :border="false" :value="item.roadHaul"/>
+                        <van-cell title="发动机号:" :border="false" :value="item.engineNum"/>
+                    </template>
+                    <van-cell title="备注:" :value="item.remark"/>
+                    <div slot="right" style="height: 100%">
+                        <van-button
+                                type="warning"
+                                style="height:100%;border-radius: 0;"
+                                @click="editCar(item, index)"
+                        >修改
+                        </van-button>
+                        <van-button
+                                type="danger"
+                                style="height:100%;border-radius: 0;"
+                                @click="removeCar(index)"
+                        >删除
+                        </van-button>
+                    </div>
+                </van-swipe-cell>
+            </div>
         </Card>
 
 
@@ -87,11 +93,11 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
   import { getValue, setValue } from '@/utils/session'
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell } from 'vant';
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell]
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog]
   Components.forEach(item => {
     Vue.use(item)
   })
@@ -108,6 +114,8 @@
           investigateBank: '',
           investigateBankName: '',
           isInternetCredit: '',
+          carInfos: [],
+          surDtlList: []
         },
         vehicleForm: {
           type: '测试数据'
@@ -212,7 +220,7 @@
       async getCreditInfo () {
         try {
           this.loading = true
-          if(getValue("credit")) {
+          if (getValue("credit")) {
             this.dataList = JSON.parse(getValue("credit"))
           } else {
             const params = {
@@ -223,6 +231,8 @@
             this.dataList = res.data.cuCreditRegister;
           }
           this.loading = false
+
+          this.initCar()
 
           // 判断征信终止按钮隐藏和显示
           // if (this.isInternet == '0' && this.dataList.status == "05") {
@@ -255,28 +265,110 @@
           // if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
           //   this.form.isSupplement = '0'
           // }
-
         } catch (e) {
           this.loading = false
           console.log(e)
         }
       },
+      initCar () {
+        if (this.$store.state.credit.carData) {
+          const index = this.$store.state.credit.index
+          const carData = this.$store.state.credit.carData
+          if (index === -1) {
+            this.dataList.carInfos.push(carData)
+          } else {
+            const carInfo = this.dataList.carInfos[index]
+            if (carInfo) {
+              for (let key in carData) {
+                if (carData.hasOwnProperty(key)) {
+                  carInfo[key] = carData[key] || carInfo[key]
+                }
+              }
+            }
+          }
+          this.$store.dispatch('credit/removeCarData')
+        }
+      },
       addVehicle () {
+        const query = {
+          customerId: this.dataList.customerId,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
+        }
         this.$router.push({
-          path: '/vehicle'
+          path: '/vehicle',
+          query
         })
       },
-      nextStep () {
+      /**
+       * 下一步
+       **/
+      async nextStep () {
+        console.log(this.dataList)
+        try {
+          this.loading = true
+          await saveCreditInfo(this.dataList)
+          //todo
+          this.loading = false
+          this.$nextTick(() => {
+            this.$router.push({
+              path: '/creditNextStep'
+            })
+          })
+        }catch (e) {
+          this.loading = false
+          console.log(e)
+        }
+        // this.$router.push({
+        //   path: '/creditNextStep'
+        // })
+      },
+      /**
+       *  删除车
+       **/
+      removeCar (index) {
+        Dialog.confirm({
+          title: '标题',
+          message: '弹窗内容'
+        }).then(() => {
+          this.dataList.carInfos.splice(index, 1)
+          this.save()
+          // on confirm
+        }).catch(() => {
+          // on cancel
+        });
+      },
+      /**
+       *  编辑车辆
+       *  @param car
+       *  @param index
+       **/
+      editCar (car, index) {
+        const query = {
+          customerId: this.dataList.customerId,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
+          index: index,
+          ...car
+        }
         this.$router.push({
-          path: '/creditNextStep'
+          path: '/vehicle',
+          query
         })
+      },
+      nameToString () {
+        return [...arguments].map(item => item).join(' ')
+      },
+      /**
+       * 保存数据到本地
+       */
+      save () {
+        setValue("credit", JSON.stringify(this.dataList));
       }
     },
     mounted () {
       this.getCreditInfo()
     },
     destroyed () {
-      setValue("credit", JSON.stringify(this.dataList));
+      this.save()
     }
   }
 </script>

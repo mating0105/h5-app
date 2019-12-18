@@ -1,32 +1,49 @@
 <template>
   <ViewPage>
-    <Card>
+    <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="家庭收入">
+          <van-cell title="家庭收入(*请侧滑进行编辑或删除)">
             <van-icon
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
+              @click="pullUrl"
             />
           </van-cell>
         </section>
       </template>
       <van-row class="xh-row">
-        <van-col span="24" class="xh-row-col xh-top-10" v-for="(i,index) in homelist" :key="index" @click.native="pushUrl(i)">
-          <van-col span="24">
-            <van-col span="12">
-              <span class="xh-main xh-title">收入人：</span>
-              <span class="xh-black">{{ i.incomePeopleDesc}}</span>
+        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index" @click.native="pushUrl(i)">
+          <van-swipe-cell :right-width="130">
+            <van-col span="24">
+              <van-col span="24">
+                <van-col span="12">
+                  <span class="xh-main xh-title">收入人：</span>
+                  <span class="xh-black">{{ i.incomePeopleDesc}}</span>
+                </van-col>
+                <van-col span="12" class="xh-text-right">
+                  <span class="xh-main">{{ i.occupationalStatusDesc }}</span>
+                </van-col>
+              </van-col>
+              <van-col span="24" class="xh-top-10">
+                <span class="xh-main xh-title">单位名称：</span>
+                <span class="xh-black">{{ i.companyName }}</span>
+              </van-col>
             </van-col>
-            <van-col span="12" class="xh-text-right">
-              <span class="xh-main">{{ i.occupationalStatusDesc }}</span>
-            </van-col>
-          </van-col>
-          <van-col span="24" class="xh-top-10">
-            <span class="xh-main xh-title">单位名称：</span>
-            <span class="xh-black">{{ i.companyName }}</span>
-          </van-col>
+            <span slot="right">
+              <van-button
+                type="warning"
+                style="border-radius: 0;"
+                @click.native="editList(i)"
+              >修改</van-button>
+              <van-button
+                type="danger"
+                style="border-radius: 0;"
+                @click.native="delList(i)"
+              >删除</van-button>
+            </span>
+          </van-swipe-cell>
         </van-col>
       </van-row>
     </Card>
@@ -38,18 +55,24 @@ import Vue from "vue";
 // 自定义组件
 import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
-// 其他组件
+import { getIncomeList, deleteIncomeList } from "@/api/client";
+import { mapState } from "vuex";
 import {
   Row,
   Col,
   Icon,
-  Cell
+  Cell,
+  SwipeCell,
+  Button
 } from "vant";
+
 const Components = [
   Row,
   Col,
   Icon,
-  Cell
+  Cell,
+  SwipeCell,
+  Button
 ];
 
 Components.forEach(item => {
@@ -60,44 +83,80 @@ export default {
     Card,
     ViewPage
   },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
+  },
   data() {
     return {
-      homelist: [
-        { incomePeopleDesc:'hhh', occupationalStatusDesc: '67868', companyName: '7568768768' },
-        // { incomePeopleDesc:'hhh', occupationalStatusDesc: '67868', companyName: '7568768768' }
-      ],
+      homelist: [],
+      params: {},
+
     }
   },
   methods: {
-    loadData(params) {
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
+    loadData() {
       let dataList = {
-        projectId: params.projectId,
-        customerId: params.customerId
+        customerId: this.params.customerId
       };
-      requestUrl.getList('/carloan/projProjectInfo/findIncome', dataList).then( (res) => {
-        if(res.data.code == 'SYS.200'){
-          this.homelist = res.data.data.list;
+      getIncomeList(dataList).then(res => {
+        if(res.code == 200) {
+          this.homelist = res.data;
+          this.homelist.forEach(t => {
+            t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
+            t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
+          });
         } else {
-          this.$toast({
-            position: 'top',
-            message: '数据获取失败',
+          this.$notify({
+            type: "danger",
+            message: res.msg
           });
         }
-      }).catch(function (error) {
-        console.log(error);
-      });
+      })
     },
-    pushUrl(i){
-      console.log(i.id)
-      urls = 'zhgjApp/page/projectDeclaration/infoIncome.html?id='+ i.id;
-      // location.href = urls;
-      bridge.loadurlwithmobile({"url":urls})
+    // 跳转新增
+    pullUrl(){
+      this.$router.push({ path: '/addIncome', query: {...this.params, type: 0 } });
+    },
+    // 修改
+    editList(rows) {
+      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.id, type: 1 } });
+    },
+    // 删除
+    delList(rows) {
+      deleteIncomeList({
+        id: rows.id
+      }).then(res => {
+        if(res.code == 200) {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.loadData();
+        } else {
+          this.$notify({
+            type: "danger",
+            message: res.msg
+          });
+        }
+      });
     }
   },
   mounted() {
-    // var params = commonFun.urlParam(location.search);
-    // token = params.token;
-    // this.loadData(params);
+    this.params = this.$route.query;
+    this.loadData();
   },
 }
 </script>
@@ -111,8 +170,5 @@ export default {
   .xh-main {
     color: rgb(196, 37, 42);
   }
-}
-.xh-text-right {
-  text-align: right;
 }
 </style>

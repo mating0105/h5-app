@@ -23,3 +23,11 @@ export function getList(params) {
     params
   })
 }
+
+export function saveCreditInfo(params) {
+  return request({
+    url: '/order/creditInfo/creditRegisterInput',
+    method: 'post',
+    data: params
+  })
+}

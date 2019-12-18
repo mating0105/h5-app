@@ -8,7 +8,7 @@
             <section>
               <van-field
                 name="customerName"
-                v-model="fromData.customerName"
+                v-model="formData.customerName"
                 required
                 clearable
                 label="客户姓名："
@@ -21,9 +21,8 @@
             <section>
               <van-field
                 name="certificateNum"
-                v-model="fromData.certificateNum"
+                v-model="formData.certificateNum"
                 required
-                disabled
                 clearable
                 label="证件号码："
                 input-align="right"
@@ -35,7 +34,7 @@
             <section>
               <van-field
                 name="contactPhone"
-                v-model="fromData.contactPhone"
+                v-model="formData.contactPhone"
                 clearable
                 required
                 label="联系电话："
@@ -50,7 +49,7 @@
                 title="婚姻状况："
                 required
                 is-link
-                :value="fromData.marriageDesc"
+                :value="formData.marriageDesc"
                 @click.native="loadList('婚姻状况')"
               />
             </section>
@@ -59,7 +58,7 @@
                 title="文化程度："
                 required
                 is-link
-                :value="fromData.levelEducationDesc"
+                :value="formData.levelEducationDesc"
                 @click.native="loadList('文化程度')"
               />
             </section>
@@ -68,14 +67,14 @@
                 title="单位性质："
                 required
                 is-link
-                :value="fromData.unitCharDesc"
+                :value="formData.unitCharDesc"
                 @click.native="loadList('单位性质')"
               />
             </section>
             <section>
               <van-field
                 name="primarySchool"
-                v-model="fromData.primarySchool"
+                v-model="formData.primarySchool"
                 clearable
                 required
                 label="曾就读小学："
@@ -90,7 +89,7 @@
                 title="户籍地址："
                 required
                 is-link
-                :value="fromData.pProvCityZon"
+                :value="formData.pProvCityZon"
                 @click.native="loadList('户籍地址')"
               />
             </section>
@@ -99,14 +98,14 @@
                 title="居住地："
                 required
                 is-link
-                :value="fromData.rProvCityZon"
+                :value="formData.rProvCityZon"
                 @click.native="loadList('居住地')"
               />
             </section>
             <section>
               <van-field
                 name="spsRsdncDtlAdr"
-                v-model="fromData.spsRsdncDtlAdr"
+                v-model="formData.spsRsdncDtlAdr"
                 required
                 clearable
                 label="居住地详细地址："
@@ -121,23 +120,23 @@
                 title="子女情况："
                 required
                 is-link
-                :value="fromData.childrenSituationDesc"
+                :value="formData.childrenSituationDesc"
                 @click.native="loadList('子女情况')"
               />
             </section>
-            <section v-if="fromData.childrenSituationDesc != '无' ">
+            <section v-if="formData.childrenSituationDesc != '无' ">
               <van-cell
                 title="子女上学情况："
                 required
                 is-link
-                :value="fromData.schoolSituationDesc"
+                :value="formData.schoolSituationDesc"
                 @click.native="loadList('子女上学情况')"
               />
             </section>
             <section>
               <van-field
                 name="localResidence"
-                v-model="fromData.localResidence"
+                v-model="formData.localResidence"
                 clearable
                 required
                 type="number"
@@ -151,7 +150,7 @@
             <section>
               <van-field
                 name="remark"
-                v-model="fromData.remark"
+                v-model="formData.remark"
                 type="textarea"
                 placeholder="请输入备注"
                 rows="1"
@@ -213,7 +212,7 @@
                 title="配偶文化程度："
                 required
                 is-link
-                :value="fromData.spsCltrDgrDesc"
+                :value="formData.spsCltrDgrDesc"
                 @click.native="loadList('配偶文化程度')"
               />
             </section>
@@ -222,7 +221,7 @@
                 title="配偶单位性质："
                 required
                 is-link
-                :value="fromData.spsUnitCharDesc"
+                :value="formData.spsUnitCharDesc"
                 @click.native="loadList('配偶单位性质')"
               />
             </section>
@@ -254,17 +253,7 @@
       </van-action-sheet>
 
       <!-- 弹出省市区 -->
-      <van-action-sheet v-model="addressShow" class="xh-list">
-        <div class="xh-list-body">
-          <van-area
-            :area-list="areaList"
-            :title="addressTitle"
-            :loading="selectLoading"
-            @confirm="addressOnCancel"
-            @cancel="addressOnConfirm"
-          />
-        </div>
-      </van-action-sheet>
+      <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
     </div>
 
   </ViewPage>
@@ -285,9 +274,12 @@ import {
   Picker
 } from "vant";
 import {
-  getClientInfo
+  getClientInfo,
+  setClientSave
 } from "@/api/client";
+import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
+import Provinces from "@/components/provinces/index";
 import { mapState } from "vuex";
 const Components = [
   Dialog,
@@ -308,7 +300,8 @@ Components.forEach(item => {
 
 export default {
   components: {
-    ViewPage
+    ViewPage,
+    Provinces
   },
   computed: {
     // 所有字典
@@ -318,7 +311,7 @@ export default {
   },
   data() {
     return {
-      fromData: {
+      formData: {
         // 额外提交(上页传递)
         projectId: "", //项目Id
         customerId: "", //客户id
@@ -389,7 +382,6 @@ export default {
       selectLoading: true, //下拉选择 loading
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
-      addressTitle: "", //城市下拉列表title
       areaList: {
         province_list: [],
         city_list: [],
@@ -439,11 +431,9 @@ export default {
           break;
         case "户籍地址":
           this.addressShow = true;
-          this.addressTitle = "户籍地址";
           break;
         case "居住地":
           this.addressShow = true;
-          this.addressTitle = "居住地";
           break;
         case "子女情况":
           this.selectShow = true;
@@ -470,38 +460,38 @@ export default {
     onConfirm(rows, index) {
       switch (this.pickerTitle) {
         case "婚姻状况":
-          this.fromData.marriage = rows.value;
-          this.fromData.marriageDesc = rows.label;
+          this.formData.marriage = rows.value;
+          this.formData.marriageDesc = rows.label;
           break;
         case "文化程度":
-          this.fromData.levelEducation = rows.value;
-          this.fromData.levelEducationDesc = rows.label;
+          this.formData.levelEducation = rows.value;
+          this.formData.levelEducationDesc = rows.label;
           break;
         case "子女情况":
-          this.fromData.childrenSituation = rows.value;
-          this.fromData.childrenSituationDesc = rows.label;
+          this.formData.childrenSituation = rows.value;
+          this.formData.childrenSituationDesc = rows.label;
           break;
         case "子女上学情况":
-          this.fromData.schoolSituation = rows.value;
-          this.fromData.schoolSituationDesc = rows.label;
+          this.formData.schoolSituation = rows.value;
+          this.formData.schoolSituationDesc = rows.label;
           break;
         case "配偶文化程度":
-          this.fromData.spsCltrDgr = rows.value;
-          this.fromData.spsCltrDgrDesc = rows.label;
+          this.formData.spsCltrDgr = rows.value;
+          this.formData.spsCltrDgrDesc = rows.label;
           break;
         case "单位性质":
-          this.fromData.unitChar = rows.value;
-          this.fromData.unitCharDesc = rows.label;
+          this.formData.unitChar = rows.value;
+          this.formData.unitCharDesc = rows.label;
           break;
         case "配偶单位性质":
-          this.fromData.spsUnitChar = rows.value;
-          this.fromData.spsUnitCharDesc = rows.label;
+          this.formData.spsUnitChar = rows.value;
+          this.formData.spsUnitCharDesc = rows.label;
           break;
       }
 
       if (
-        this.fromData.marriageDesc == "已婚" ||
-        this.fromData.marriageDesc == "事实婚姻"
+        this.formData.marriageDesc == "已婚" ||
+        this.formData.marriageDesc == "事实婚姻"
       ) {
         this.spouseShow = true;
       } else {
@@ -515,58 +505,39 @@ export default {
     },
 
     // 省市区选择
-    addressOnCancel(list) {
-      this.selectLoading = true;
-      let a1, a2, a3;
-      let name = [];
-      let addId = [];
-      list.forEach(e => {
-        if (e != undefined) {
-          name.push(e.name);
-          addId.push(e.code);
-        }
-      });
-      if (addId.length > 2 || addId.length === 2) {
-        a2 = realCity(name[1]);
-      }
-      a1 = addId[0];
-      a3 = addId[2];
+    addressOnConfirm(code, name) {
       switch (this.pickerTitle) {
-        case "户籍地址":
-          this.fromData.pprovCityZon = name.join("-");
-          this.fromData.pProvCityZon = name.join("-");
-          this.fromData.pProvCityZonCode =
-            a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
+        case '户籍地址':
+          this.formData.pProvCityZon = name;
+          this.formData.pprovCityZon = name;
+          this.formData.pProvCityZonCode = code;
           break;
-        case "居住地":
-          this.fromData.rprovCityZon = name.join("-");
-          this.fromData.rProvCityZon = name.join("-");
-          this.fromData.rProvCityZonCode =
-            a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
+        case '居住地':
+          this.formData.rProvCityZon = name;
+          this.formData.rprovCityZon = name;
+          this.formData.rProvCityZonCode = code;
+          break;
+        default:
           break;
       }
       this.addressShow = false;
-    },
-    addressOnConfirm() {
-      this.addressShow = false;
-      this.selectLoading = true;
     },
     subMit() {
       this.subLoading = true;
       this.subDisabled = true;
-
       setClientSave(this.subData)
         .then(res => {
           this.subLoading = false;
           this.subDisabled = false;
-          if (res.code == 200) {
-            this.$toast.success("保存成功");
-            // setTimeout(() => {
-            //   bridge.ReturnVC(1, true);
-            // }, 1000);
+          if(res.code == 200) {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
           } else {
-            this.$toast({
-              position: "top",
+            this.$notify({
+              type: "danger",
               message: res.msg
             });
           }
@@ -575,117 +546,32 @@ export default {
 
     // submit
     custSubmit() {
-      if (this.params.isChangeProj == "1") {
-        //配偶互换过的
-        this.fromData.customerName = this.spsNm;
-        this.fromData.contactPhone = this.spsCtcTel;
-        this.fromData.certificateNum = this.spsCrdtNo;
-        this.fromData.spsNm = this.customerName;
-        this.fromData.spsCtcTel = this.contactPhone;
-        this.fromData.spsCrdtNo = this.certificateNum;
-      } else {
-        this.fromData.customerName = this.customerName;
-        this.fromData.contactPhone = this.contactPhone;
-        this.fromData.certificateNum = this.certificateNum;
-        this.fromData.spsNm = this.spsNm;
-        this.fromData.spsCtcTel = this.spsCtcTel;
-        this.fromData.spsCrdtNo = this.spsCrdtNo;
-      }
       let sub1 = false,
         sub2 = false,
         errNum = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] ? errNum++ : "";
       }
-      this.subData = Object.assign({}, this.fromData);
-      this.subData.marriage = this.fromData.marriage;
-      this.subData.levelEducation = this.fromData.levelEducation;
-      this.subData.childrenSituation = this.fromData.childrenSituation;
-      this.subData.schoolSituation = this.fromData.schoolSituation;
-      this.subData.spsCltrDgr = this.fromData.spsCltrDgr;
-      this.subData.unitChar = this.fromData.unitChar;
-      this.subData.spsUnitChar = this.fromData.spsUnitChar;
-
-      // 根据身份证获取 性别  and 年龄
-      this.subData.sex = UUserCard(this.fromData.certificateNum, 2);
-      this.subData.age = UUserCard(this.fromData.certificateNum, 3);
-      this.subData.spsGnd = this.fromData.spsCrdtNo
-        ? UUserCard(this.fromData.spsCrdtNo, 2)
-        : "";
-      this.subData.spsAge = this.fromData.spsCrdtNo
-        ? UUserCard(this.fromData.spsCrdtNo, 3)
-        : "";
-
-      // 客户信息
-
-      if (
-        this.fromData.unitChar &&
-        this.fromData.certificateNum &&
-        this.fromData.contactPhone &&
-        this.fromData.marriage &&
-        this.fromData.primarySchool &&
-        this.fromData.levelEducation &&
-        this.fromData.pProvCityZon &&
-        this.fromData.rProvCityZon &&
-        this.fromData.childrenSituation &&
-        this.fromData.localResidence &&
-        this.fromData.spsRsdncDtlAdr
-      ) {
-        if (this.subData.childrenSituation == "0") {
-          sub1 = true;
-        } else {
-          if (this.subData.schoolSituation) {
-            sub1 = true;
-          } else {
-            sub1 = false;
-          }
-        }
-      } else {
-        sub1 = false;
-      }
-
-      // 配偶信息
-      if (
-        this.fromData.spsCltrDgr &&
-        this.fromData.spsUnitChar &&
-        this.fromData.spsNm &&
-        this.fromData.spsCrdtNo &&
-        this.fromData.spsCtcTel
-      ) {
-        sub2 = true;
-      } else {
-        sub2 = false;
-      }
-
-      if (
-        this.fromData.marriageDesc != "已婚" &&
-        this.fromData.marriageDesc != "事实婚姻"
-      ) {
-        if (sub1 && errNum == 0) {
-          this.subMit();
-        } else {
-          this.$toast({
-            position: "top",
-            message: "带 * 必须填写完整, 且填写无误"
-          });
-        }
-      } else {
-        if (sub1 && sub2 && errNum == 0) {
-          this.subMit();
-        } else {
-          this.$toast({
-            position: "top",
-            message: "带 * 必须填写完整, 且填写无误"
-          });
-        }
-      }
+      this.subData = {
+        ...this.formData,
+        sex: toUserCard(this.formData.certificateNum, 2),
+        age: toUserCard(this.formData.certificateNum, 3),
+        spsGnd: this.formData.spsCrdtNo
+        ? toUserCard(this.formData.spsCrdtNo, 2)
+        : "",
+        spsAge: this.formData.spsCrdtNo
+        ? toUserCard(this.formData.spsCrdtNo, 3)
+        : ""
+      };
+      
+      this.subMit();
     },
     // 有接口验证的时候
     urlRules(urls, rows) {
       let param = rows.params.split(",");
       let obj = {};
       param.forEach(t => {
-        obj[t] = this.fromData[t];
+        obj[t] = this.formData[t];
       });
       requestUrl.getList(urls, obj, "soa").then(res => {
         if (res.data.code === 200) {
@@ -756,18 +642,15 @@ export default {
       getClientInfo(obj).then(res => {
         const { code, data, msg } = res;
         if(code == 200) {
-          this.fromData = res.data;
-          let yearBirth = this.fromData.certificateNum.substring(6, 10);
-          let monthBirth = this.fromData.certificateNum.substring(10, 12);
-          let dayBirth = this.fromData.certificateNum.substring(12, 14);
-          this.fromData.birthday = yearBirth + "-" + monthBirth + "-" + dayBirth;
-          this.fromData.marriageDesc = this.returnText('marriage_type', this.fromData.marriage);
-          this.fromData.levelEducationDesc = this.returnText('DegreeOfEducation', this.fromData.levelEducation);
-          this.fromData.childrenSituationDesc = this.returnText('children', this.fromData.childrenSituation);
-          this.fromData.schoolSituationDesc = this.returnText('school_Situation', this.fromData.schoolSituation);
-          this.fromData.spsCltrDgrDesc = this.returnText('DegreeOfEducation', this.fromData.spsCltrDgr);
-          this.fromData.unitCharDesc = this.returnText('unit_Property', this.fromData.unitChar);
-          this.fromData.spsUnitCharDesc = this.returnText('unit_Property', this.fromData.spsUnitChar);
+          this.formData = res.data;
+          this.formData.birthday = toUserCard(this.formData.certificateNum,1);
+          this.formData.marriageDesc = this.returnText('marriage_type', this.formData.marriage);
+          this.formData.levelEducationDesc = this.returnText('DegreeOfEducation', this.formData.levelEducation);
+          this.formData.childrenSituationDesc = this.returnText('children', this.formData.childrenSituation);
+          this.formData.schoolSituationDesc = this.returnText('school_Situation', this.formData.schoolSituation);
+          this.formData.spsCltrDgrDesc = this.returnText('DegreeOfEducation', this.formData.spsCltrDgr);
+          this.formData.unitCharDesc = this.returnText('unit_Property', this.formData.unitChar);
+          this.formData.spsUnitCharDesc = this.returnText('unit_Property', this.formData.spsUnitChar);
         } else {
           this.$notify({ type: "danger", message: msg });
         }

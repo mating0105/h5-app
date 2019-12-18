@@ -132,6 +132,12 @@ export const constantRoutes = [
     meta: {title: '家庭收入', icon: 'dashboard'}
   },
   { 
+    path: '/addIncome',
+    name: 'AddIncome',
+    component: () => import('@/views/basicInfo/income/addFamily.vue'),
+    meta: {title: '新增家庭收入', icon: 'dashboard'}
+  },
+  { 
     path: '/incomeGuarantor',
     name: 'IncomeGuarantor',
     component: () => import('@/views/basicInfo/income/guarantor.vue'),
@@ -142,6 +148,12 @@ export const constantRoutes = [
     name: 'VehicleList',
     component: () => import('@/views/basicInfo/vehicle/list.vue'),
     meta: {title: '名下车辆', icon: 'dashboard'}
+  },
+  { 
+    path: '/addCars',
+    name: 'AddCars',
+    component: () => import('@/views/basicInfo/vehicle/addCars.vue'),
+    meta: {title: '新增名下车辆', icon: 'dashboard'}
   },
   {
     path: '/applyPayment',
@@ -189,7 +201,7 @@ export const constantRoutes = [
     path: '/proDocument',
     name: 'ProDocment',
     component: () => import('@/views/basicInfo/documents/index.vue'),
-    meta: {title: '调查结论', icon: 'dashboard'}
+    meta: {title: '相关文档', icon: 'dashboard'}
   },
   { 
     path: '/creatCustomer',
@@ -197,7 +209,37 @@ export const constantRoutes = [
     component: () => import('@/views/createCustomer/index'),
     meta: {title: '新建客户', icon: 'dashboard'}
   },
-
+  { 
+    path: '/heavyRightSupplement',
+    name: 'HeavyRightSupplement',
+    component: () => import('@/views/heavyRightSupplement/index'),
+    meta: {title: '重权补录', icon: 'dashboard'}
+  },
+  { 
+    path: '/heavyRightManage/:id',
+    name: 'HeavyRightManage',
+    component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
+    meta: {title: '重权管理', icon: 'dashboard'},
+    children:[
+      {
+        path: 'basic',
+        name: 'HeavyRightBasic',
+        component: () => import('@/views/heavyRightSupplement/manage/basic'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'a',
+        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'b',
+        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      }
+    ]
+   
+  },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
 ]
