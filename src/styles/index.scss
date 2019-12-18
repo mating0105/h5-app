@@ -136,16 +136,28 @@ div:focus {
   .xh-row-col {
     padding: 10px 0;
     border-bottom: 1px solid #ebeef5;
+    .van-cell {
+      padding: 10px 0;
+    }
   }
-  .xh-row-col:last-child {
+  .xh-row-cell {
+    padding: 10px 0;
+    border-bottom: 1px solid #ebeef5;
+  }
+  .xh-row-col:last-child,.xh-row-cell:last-child {
     border-bottom: 0;
   }
-  .van-cell {
-    padding: 10px 0;
+  .xh-row-col:last-child, .xh-row-cell:last-child {
+    border-bottom: 0;
   }
 }
 // 文字内容靠右
 .xh-text-right {
   text-align: right;
 }
-
+// 滑动删除
+.xh-swipe-button {
+  .van-swipe-cell__right {
+    padding-left: 5px;
+  }
+}
