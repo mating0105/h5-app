@@ -56,7 +56,7 @@ module.exports = {
         changeOrigin: true
       },
       '/group1': {
-        target: `http://119.3.165.2:8085`,
+        target: `http://119.3.165.2:8085`
       },
       '/customer': {
         target: `http://119.3.165.2:8085`,
@@ -66,6 +66,14 @@ module.exports = {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
+      '/order': {
+        target: `http://192.168.0.81:8086`,
+        changeOrigin: true
+      },
+      '/user': {
+        target: `http://119.3.165.2:8085`,
+        changeOrigin: true
+      }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
@@ -77,7 +85,7 @@ module.exports = {
       //   target: `http://172.16.20.100:8085/api`,//测试
       //   changeOrigin: true
       // }
-    },
+    }
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {

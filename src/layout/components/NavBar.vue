@@ -6,7 +6,7 @@
                 left-arrow
                 @click-left="backFn ? backFn() : onClickLeft()"
         >
-            <van-icon v-if="rightFn" name="ellipsis" slot="right" @click="rightFn" size="24"/>
+            <van-icon v-if="rightFn" name="ellipsis" slot="right" @click.stop="rightFn" size="24"/>
         </van-nav-bar>
     </div>
 </template>
