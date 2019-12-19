@@ -8,7 +8,7 @@
             <van-cell title="证件号码:" :border="false" :value="form.cpCertificateNum"/>
             <van-cell title="电话号码:" :border="false" :value="form.telephone"/>
             <van-cell title="征信对象类型:" :border="false" value="借款人"/>
-            <van-cell title="银行：" :border="false" is-link v-model="dataList.investigateBankName"/>
+            <van-cell title="银行：" :border="false" :is-link="edit" v-model="dataList.investigateBankName"/>
             <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" clearable input-align="right"
                        label="意向贷款金额(元)："
                        placeholder="请输入"/>

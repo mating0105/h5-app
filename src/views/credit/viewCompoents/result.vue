@@ -1,0 +1,130 @@
+<template>
+    <Card>
+        <template v-slot:header>
+            {{title}}征信结果
+        </template>
+        <div class="xh-electronic-box" v-for="(item, index) in dataList" :key="index">
+            <div>
+                <div class="xh-box-item">
+                    <svg-icon icon-class="user"/>
+                    <span>{{item.creditPersonName}}</span>
+                    <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
+                </div>
+                <div class="xh-box-item">
+                    <svg-icon icon-class="id-card"/>
+                    <span>{{item.cpCertificateNum}}</span>
+                </div>
+                <div class="xh-box-item">
+                    <svg-icon icon-class="mobile-phone"/>
+                    <span>{{item.telephone}}</span>
+                </div>
+            </div>
+            <div class="xh-contract-status">
+                <div>
+                    <span v-if="item.bigDataResult === 'pass'" class="xh-contract-true">通过</span>
+                    <span v-else class="xh-contract-false">未通过</span>
+                    <van-icon class="xh-contract-icon" name="arrow"/>
+                </div>
+            </div>
+        </div>
+    </Card>
+</template>
+
+<script>
+  import Vue from 'vue';
+  import { Icon } from 'vant';
+  import Card from '@/components/card';
+
+  Vue.use(Icon);
+  export default {
+    name: "electronicContract",
+    components: {
+      Card
+    },
+    props: {
+      title: String,
+      dataList: Array
+    },
+    computed: {
+      wordbook () {
+        return this.$store.state.user.wordbook
+      },
+    },
+    methods: {
+      // 字典转换
+      returnText (val, key) {
+        let name = '';
+        if (this.wordbook[key]) {
+          this.wordbook[key].forEach(e => {
+            if (e.value === val) {
+              name = e.label;
+            }
+          });
+        }
+        return name;
+      },
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+
+    .xh-electronic-box {
+        background: rgb(242, 242, 242);
+        margin: 1rem;
+        padding: 1rem;
+        display: flex;
+        position: relative;
+
+        .xh-box-item {
+            margin-bottom: .5rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            span {
+                display: inline-block;
+            }
+
+            span:nth-of-type(1) {
+                margin: 0 .5rem;
+            }
+        }
+
+    }
+
+
+    .xh-electronic-tag {
+        background: #FDF1F0;
+        border-radius: 4px;
+        padding: .2rem;
+        color: #C4252A;
+    }
+
+    .xh-contract-status {
+        > div {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        .xh-contract-true {
+            color: rgb(7, 193, 96);
+        }
+
+        .xh-contract-false {
+            color: rgb(238, 10, 36);
+        }
+
+        .xh-contract-icon {
+            font-size: 2.4rem;
+            font-weight: 600;
+            display: inline-block;
+            vertical-align: middle;
+            color: #999;
+        }
+    }
+
+</style>

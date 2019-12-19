@@ -93,30 +93,10 @@
        * 下一步
        **/
       async nextStep () {
-        try {
-          this.loading = true
-          const {data} = await saveCreditInfo(this.dataList)
-
-          const query = {
-            customerId: data.customerId,
-            customerNum: data.customerNum,
-            creditRegisterId: data.creditRegisterId,
-            ...this.$route.query
-          }
-          this.loading = false
-          this.$nextTick(() => {
-            Toast.success('保存成功')
-          })
-          this.$nextTick(() => {
-            this.$router.push({
-              path: '/creditNextStep',
-              query
-            })
-          })
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
+        this.$router.push({
+          path: '/bigDataReply',
+          query: this.$route.query
+        })
       }
     },
     mounted () {

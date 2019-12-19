@@ -11,3 +11,17 @@ export function getList(params) {
     params
   })
 }
+
+/**
+ * 回复
+ * @param params
+ */
+export function reply(params) {
+  return request({
+    url: 'order/creditInfo/updateCreditResult',
+    method: 'post',
+    data: params
+  })
+}
+
+

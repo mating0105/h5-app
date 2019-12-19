@@ -1,15 +1,9 @@
 <template>
     <ViewPage :loading="loading">
-        <!--        <Card>-->
-        <!--            <template v-slot:header>-->
-        <!--                电子签约-->
-        <!--            </template>-->
-        <!--            <electronicContract></electronicContract>-->
-        <!--            <electronicContract></electronicContract>-->
-        <!--        </Card>-->
-        <Card>
+        <result :dataList="users" title="大数据"></result>
+        <Card style="margin-top: 1rem">
             <template v-slot:header>
-                征信查询照片
+                大数据征信报告照片
             </template>
             <div v-for="(item, index) in users" :key="index">
                 <div class="xh-image-box">
@@ -22,31 +16,13 @@
                 <imageList :dataList="item.dataList"></imageList>
             </div>
         </Card>
-
-        <Card style="margin-top: 1rem;">
-            <template v-slot:header>
-                意见描述
-            </template>
-            <van-field v-model="remarks" :border="false" type="textarea" placeholder="输入说明" rows="1"
-                       :autosize='autosize' class="zh-textarea"/>
-        </Card>
-
         <!-- 提交按钮 -->
-        <div class="xh-submit-box">
-            <van-button size="large"
-                        @click="submit"
+        <div class="xh-submit-box" v-if="edit">
+            <van-button size="large" @click="submit"
                         class="xh-btn"
             >提交
             </van-button>
         </div>
-        <van-popup v-model="showUser" position="bottom" get-container="#app">
-            <van-picker
-                    show-toolbar
-                    :columns="changeUserList.map(item => item.companyName + '-' + item.name)"
-                    @cancel="showUser = false"
-                    @confirm="onSelect"
-            />
-        </van-popup>
     </ViewPage>
 </template>
 
@@ -54,57 +30,27 @@
 
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card';
-  // import electronicContract from './electronicContract'
   import imageList from '@/components/imageList'
+  import result from '../viewCompoents/result'
   import { Field, Button, ActionSheet, Popup, Toast } from 'vant'
   import Vue from 'vue'
   import { getDocumentByType } from '@/api/document'
-  import { getCreditInfo, createTask, getUsers, submitCredit } from '@/api/credit'
+  import { getCreditInfo } from '@/api/credit'
+  import { reply } from '@/api/bigData'
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
-
-  //0101 主借人身份证正面
-  //0102 主借人身份证正面
-  //0103 主借人授权书
-  //0104 主借人银行征信授权书
-  //2001 主借人银行卡正反面
-  //0202 主借人征信报告
-
-  //0105 主借人配偶身份证正面
-  //0106 主借人配偶身份证反面
-  //0107 主借人配偶授权书
-  //0108 主借人配偶银行征信授权书
-  //2002 主借人配偶银行卡正反面
-  //0203 主借人配偶征信报告
-
-  //0120 担保人身份证反面
-  //0117 担保人身份证
-  //0118 担保人授权书
-  //0119 担保人银行征信授权书
-  //2005 担保人银行卡正反面
-
-  //0110 共债人身份证反面
-  //0111 共债人授权书
-  //0112 共债人银行征信授权书
-  //2003 共债人银行卡正反面
-
-  //0114 共债人配偶身份证反面
-  //0115 共债人配偶授权书
-  //0116 共债人配偶银行征信授权书
-  //2004 共债人配偶英航卡正反面
 
   export default {
     name: "creditNextStep",
     components: {
       ViewPage,
       Card,
-      // electronicContract,
-      imageList
+      imageList,
+      result
     },
     data () {
       return {
         loading: false,
-        remarks: "",
         autosize: {
           maxHeight: 100,
           minHeight: 80
@@ -117,9 +63,8 @@
           borrower: ['0101', '0102', '0103', '0104', '2001', '0202'],//借款人
           joiDebtor: ['0110', '0111', '0112', '2003'],//共债人
         },
-        changeUserList: [],
-        showUser: false,
-        taskData: {}
+        edit: true,
+        form: {}
       }
     },
     computed: {
@@ -189,60 +134,25 @@
               this.getDocumentByType(i, item)
             })
           })
+          this.form = data.cuCreditRegister
           this.users = data.cuCreditRegister.surDtlList.reverse()
+          this.form.surDtlList = this.users
           this.loading = false
         } catch (e) {
           this.loading = false
           console.log(e)
         }
       },
-      /**
-       * 提交
-       * @return {Promise<void>}
-       */
       async submit () {
         try {
           this.loading = true
-          const params = {
-            "businessKey": this.$route.query.creditRegisterId,
-            "businessType": "07",
-            "commentsDesc": "同意",
-            "conclusionCode": "01",
-            "processDefineKey": "WF_CU_CREDIT_001"
-          }
-          const {data} = await createTask(params)
-          this.taskData = data;
-          const userParams = {
-            "businessKey": this.$route.query.creditRegisterId,
-            "commentsDesc": this.remarks,
-            "conclusionCode": "01"
-          }
-          const res = await getUsers(userParams)
-          this.changeUserList = res.data.list
-          this.loading = false
-          this.showUser = true
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
-      },
-      async onSelect (item, index) {
-        const data = this.changeUserList[index]
-        this.showUser = false
-        try {
-          this.loading = true
-          const params = {
-            "ids": data.id,
-            "taskBean": this.taskData.taskBean,
-            "wfBizComments": this.taskData.wfBizComments
-          }
-          await submitCredit(params)
+          await reply(this.form)
           this.loading = false
           this.$nextTick(() => {
-            Toast.success('保存成功')
+            Toast.success('提交成功')
           })
           this.$nextTick(() => {
-            this.$router.push('/creditList')
+            this.$router.push('/bigDataQueryList')
           })
         } catch (e) {
           this.loading = false
@@ -252,7 +162,7 @@
     },
     mounted () {
       this.getCreditInfo()
-      // this.initImage()
+      this.edit = Boolean(this.$route.query.edit)
     }
   }
 </script>
@@ -280,6 +190,66 @@
             span:nth-of-type(1) {
                 margin: 0 .5rem;
             }
+        }
+    }
+
+    .xh-electronic-box {
+        background: rgb(242, 242, 242);
+        margin: 1rem;
+        padding: 1rem;
+        display: flex;
+        position: relative;
+        border-radius: 5px;
+        overflow: hidden;
+
+        .xh-box-item {
+            margin-bottom: .5rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            span {
+                display: inline-block;
+            }
+
+            span:nth-of-type(1) {
+                margin: 0 .5rem;
+            }
+        }
+
+    }
+
+
+    .xh-electronic-tag {
+        background: #FDF1F0;
+        border-radius: 4px;
+        padding: .2rem;
+        color: #C4252A;
+    }
+
+    .xh-contract-status {
+        > div {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        .xh-contract-true {
+            color: #3ECE73;
+        }
+
+        .xh-contract-false {
+            color: #C4252A;
+        }
+
+        .xh-contract-icon {
+            font-size: 2.4rem;
+            font-weight: 600;
+            display: inline-block;
+            vertical-align: middle;
+            color: #999;
         }
     }
 

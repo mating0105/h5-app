@@ -185,7 +185,9 @@
       },
       // 新建客户
       addClint () {
-
+        this.$router.push({
+          path: '/creatCustomer',
+        })
       },
       rightFn () {
 
