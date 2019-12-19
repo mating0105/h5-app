@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: '/standard_app_html',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -56,7 +56,7 @@ module.exports = {
         changeOrigin: true
       },
       '/group1': {
-        target: `http://119.3.165.2:8085`,
+        target: `http://119.3.165.2:8085`
       },
       '/customer': {
         target: `http://119.3.165.2:8085`,
@@ -65,7 +65,7 @@ module.exports = {
       '/product': {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
-      },
+      }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
@@ -77,7 +77,7 @@ module.exports = {
       //   target: `http://172.16.20.100:8085/api`,//测试
       //   changeOrigin: true
       // }
-    },
+    }
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {

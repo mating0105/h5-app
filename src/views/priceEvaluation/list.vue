@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightFn='rightFn'>
+    <ViewPage>
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
@@ -24,79 +24,34 @@
                         </section>
                     </template>
                     <van-row>
-                        <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
-                        <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
-                        <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
-                        <van-col span="24" class="xh-top-10">申报人：{{ item.applicantName }}</van-col>
-                        <van-col span="24" class="xh-top-10" v-if="item.creditResult === 'pass'">
-                            <span class="xh-success-tag">
-                               银行征信通过
-                            </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-else-if="item.creditResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               银行征信未通过
-                            </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
-                            <span class="xh-success-tag">
-                               大数据征信通过
-                            </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               大数据征信未通过
-                            </span>
-                        </van-col>
+                        <van-col span="24">车架号：{{ item.chassisNumber }}</van-col>
+                        <van-col span="24" class="xh-top-10">品牌型号：{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</van-col>
                     </van-row>
                     <template v-slot:footer>
                         <div style="text-align:right; min-height: 2rem">
                             <van-button
-                                    v-if="item.status === '01'"
                                     plain
                                     size="small"
                                     type="danger"
                                     class="xh-radius"
                                     style="border-radius: 6px;"
                                     @click="startForm(item)"
-                            >发起征信
-                            </van-button>
-                            <van-button
-                                    v-else-if="item.status === '04' || item.status === '03'"
-                                    plain
-                                    size="small"
-                                    type="danger"
-                                    class="xh-radius"
-                                    style="border-radius: 6px;"
-                                    @click="startForm(item)"
-                            >重新发起征信
+                            >{{item.evaluatingPrice?'重新评估':'立即评估'}}
                             </van-button>
                         </div>
                     </template>
                 </Card>
             </div>
         </van-list>
-        <div class="xh-fixed-submit">
-            <div class="xh-submit">
-                <van-button
-                        icon="plus"
-                        size="large"
-                        class="xh-bg-main"
-                        @click="addClint"
-                >新增客户
-                </van-button>
-            </div>
-        </div>
     </ViewPage>
 </template>
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/credit";
+  import { getList } from "@/api/priceEvaluation";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
-  import { removeValue } from '@/utils/session'
   // 其他组件
   import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
 
@@ -108,7 +63,7 @@
   import { mapState } from "vuex";
 
   export default {
-    name: 'creditList',
+    name: 'priceEvaluationList',
     components: {
       ViewPage,
       Card
@@ -177,16 +132,15 @@
       },
       // 发起报单
       startForm (item) {
-        removeValue("credit");
-        this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id}})
+        this.$router.push({path: '/priceEvaluationDetail', query: item})
       },
       // 新建客户
       addClint () {
 
       },
-      rightFn () {
-        
-      }
+      nameToString () {
+        return [...arguments].map(item => item).join('')
+      },
     },
     mounted () {
       this.onLoad();

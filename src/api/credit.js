@@ -1,5 +1,9 @@
 import request from '@/utils/request'
 
+/**
+ * 获取银行
+ * @param params
+ */
 export function getBank(params) {
   return request({
     url: '/cooperation/loanPlatform/getLoanPlatformTree',
@@ -8,6 +12,10 @@ export function getBank(params) {
   })
 }
 
+/**
+ * 获取征信详情
+ * @param params
+ */
 export function getCreditInfo(params) {
   return request({
     url: '/order/creditInfo/cuCreditRegisterFormMob',
@@ -16,6 +24,10 @@ export function getCreditInfo(params) {
   })
 }
 
+/**
+ * 获取征信列表
+ * @param params
+ */
 export function getList(params) {
   return request({
     url: '/order/creditInfo/queryCreaditRegister',
@@ -24,9 +36,49 @@ export function getList(params) {
   })
 }
 
+/**
+ * 保存征信信息
+ * @param params
+ */
 export function saveCreditInfo(params) {
   return request({
     url: '/order/creditInfo/creditRegisterInput',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 创建任务
+ * @param params
+ */
+export function createTask(params) {
+  return request({
+    url: '/order/creditProcess/createTask',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 获取用户
+ * @param params
+ */
+export function getUsers(params) {
+  return request({
+    url: '/order/creditProcess/findCreditChoosePer',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 提交征信
+ * @param params
+ */
+export function submitCredit(params) {
+  return request({
+    url: 'order/creditProcess/submitCredit',
     method: 'post',
     data: params
   })

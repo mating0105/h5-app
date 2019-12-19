@@ -162,3 +162,32 @@ div:focus {
     padding-left: 5px;
   }
 }
+
+// 折叠面板的样式
+.xh-fold-panel {
+  border-radius: 5px;
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  overflow: hidden;
+  color: #303133;
+  transition: 0.3s;
+  margin: 1rem;
+  .van-cell.van-cell--clickable.van-collapse-item__title{
+    padding: 1rem;
+  }
+  .van-cell.van-cell--clickable.van-collapse-item__title.van-collapse-item__title--expanded{
+    padding: 1rem;
+  }
+  .left-title > span {
+    color: #c4252a;
+    font-weight: Bold;
+  }
+  .xh-fold-panel-item{
+    
+  }
+}
+.xh-fold-panel.is-always-shadow {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+
