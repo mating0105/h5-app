@@ -91,7 +91,7 @@ export default {
             dictionaryData:{},//字典数据
             info:{},
             pathData:[
-                {name:'缴费走款',path:'/lendProcess',params:newParams},
+                {name:'银行放款',path:'/lendProcess',params:newParams},
                 {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
             ]
         };

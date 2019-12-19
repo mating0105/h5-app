@@ -39,16 +39,17 @@
       rightMenuFn(){
         this.rightMenu = !this.rightMenu;
       },
-      goPage(item){
-        this.$router.push({ path: item.path, query: {...item.params}});
-        this.rightMenu = false;
-      }
+    //   goPage(item){
+    //     this.$router.push({ path: item.path, query: {...item.params}});
+    //     this.rightMenu = false;
+    //   }
     },
     props: {
       backFn: Function,
       title: '',
       rightFn: Function,
-      iconClass:''
+      iconClass:'',
+      goPage:Function
     }
   }
 </script>
