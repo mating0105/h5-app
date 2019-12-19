@@ -209,6 +209,18 @@ export const constantRoutes = [
     component: () => import('@/views/createCustomer/index'),
     meta: {title: '新建客户', icon: 'dashboard'}
   },
+  { 
+    path: '/contractList',
+    name: 'contractList',
+    component: () => import('@/views/contractUpload/index'),
+    meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
+  },
+  { 
+    path: '/contractUpload',
+    name: 'contractUpload',
+    component: () => import('@/views/contractUpload/upload'),
+    meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
+  },
 
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
