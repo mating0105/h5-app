@@ -556,11 +556,11 @@
                 this.listLoading=true;
                 const data=await submitProcess(para);
                 if(data.code==200&&data.status){
-                    this.listLoading=false;
                     Notify({ type: 'success', message: '流程提交成功' });
                     setTimeout(()=>{
                         this.$router.push({ path:'/lendProcessList'});
                     },1000)
+                    this.listLoading=false;
                 }
             }catch(err){
                 console.log(err)
