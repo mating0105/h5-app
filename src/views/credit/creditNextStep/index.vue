@@ -189,7 +189,7 @@
               this.getDocumentByType(i, item)
             })
           })
-          this.users = data.cuCreditRegister.surDtlList
+          this.users = data.cuCreditRegister.surDtlList.reverse()
           this.loading = false
         } catch (e) {
           this.loading = false

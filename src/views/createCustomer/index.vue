@@ -200,8 +200,19 @@ export default {
   data() {
     return {
       customerData: {
-        sex: "",
-        birthday: ""
+        "sex": "", //性别
+        "birthday": "",//出生日期
+        "customerName": "",//客户姓名
+        "certificateNum": "",//身份证号码
+        "age": "",//年龄
+        "creditObjectType": "",//征信对象类型
+        "nationName": "",//民族
+        "nation": "",//
+        "familyAddress": "",//身份证住址
+        "signOrg": "",//身份证签发机关
+        "startDate": "",//起始日
+        "endDate": "",//截止日
+        "contactPhone": ""//手机号码
       },
       show1: false,
       show2: false,
@@ -376,6 +387,7 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
+      console.log(this.customerData)
     }
   },
   mounted() {
