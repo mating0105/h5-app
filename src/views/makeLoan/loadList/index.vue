@@ -64,11 +64,6 @@ export default {
         Card
     },
     data() {
-        const pathData=[
-            {name:'银行放款',path:'/lendProcess',params:{}},
-            {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,
-            lpCertificateNum:'530423199502263320',id:'191204537544'}},
-        ]
         return {
             listData:[],
             tabList:[
@@ -89,7 +84,10 @@ export default {
                 pageIndex:1,
             },
             dictionaryData:{},//字典数据\
-            pathData:pathData
+            pathData:[
+                {name:'银行放款',path:'/lendProcess',params:{}},
+                {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
+            ]
         };
     },
     watch: {
