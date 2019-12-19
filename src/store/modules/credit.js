@@ -17,7 +17,7 @@ const mutations = {
   SET_CUSTOMER_DATA (state, data) {
     state.customerData = data
   },
-  SET_CUSTOMER_DATA (state, index) {
+  SET_CUSTOMER_INDEX (state, index) {
     if(index || index >= 0)
     state.index = index
     else
