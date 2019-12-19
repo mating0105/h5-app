@@ -9,34 +9,34 @@
         </section>
       </template>
       <van-row class="xh-row">
-        <van-col span="24" class="xh-row-col xh-top-10"
+        <van-col span="24" class="xh-row-col xh-swipe-button"
           v-for="(i,index) in guarantorList"
           :key="index"
           @click="pushUrl(i)"
         >
           <van-swipe-cell :right-width="120">
             <div class="xh-form-body">
-              <van-cell-group>
+              <section>
                 <van-cell title="担保人姓名：" :value="i.customerName" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="证件号码：" :value="i.certificateNum" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="是否共债人：" :value="i.isBondsDesc" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="与客户关系：" :value="i.relationCusDesc" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="担保人联系电话：" :value="i.contactPhone" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="婚姻状况：" :value="i.marriageDesc" />
-              </van-cell-group>
-              <van-cell-group>
+              </section>
+              <section>
                 <van-cell title="户籍地址：" :value="i.pProvCityZon" />
-              </van-cell-group>
+              </section>
             </div>
             <van-row slot="right" class="xh-swipe-btn">
               <div class="xh-col-12 xh-swipe-edit" @click="edit(i.id)">编辑</div>
@@ -51,12 +51,28 @@
 
 <script>
 import Vue from "vue";
-// 自定义组件
 import Card from "@/components/card/index";
-import ViewPage from "@/layout/components/ViewPage";
-// 其他组件
-import { Row, Col, Icon, Cell, SwipeCell } from "vant";
-const Components = [Row, Col, Icon, Cell, SwipeCell];
+import ViewPage from '@/layout/components/ViewPage';
+import { getGuaranteeList, deleteHouseList } from "@/api/client";
+import { mapState } from "vuex";
+import {
+  Row,
+  Col,
+  Icon,
+  Cell,
+  SwipeCell,
+  Button
+} from "vant";
+
+const Components = [
+  Row,
+  Col,
+  Icon,
+  Cell,
+  SwipeCell,
+  Button
+];
+
 Components.forEach(item => {
   Vue.use(item);
 });
@@ -75,93 +91,65 @@ export default {
     };
   },
   methods: {
-    loadData(params) {
-      let dataList = {
-        customerNum: params.customerNum,
-        projectId: params.projectId
-      };
-      requestUrl
-        .getList("/order/cuGuarantee/findCuGuaranteeDetail", dataList, "soa")
-        .then(res => {
-          if (res.data.code == 200) {
-            let {
-              cuGuaranteeIncome,
-              cuGuaranteeHouseList,
-              cuGuaranteeList
-            } = res.data.data;
-            cuGuaranteeList.forEach(t => {
-              t.isBondsDesc = returnName(t.isBonds, publicList.yes_no);
-              t.relationCusDesc = returnName(
-                t.relationCus,
-                publicList.relation_Cus
-              );
-              t.marriageDesc = returnName(t.marriage, publicList.marriage_type);
-            });
-            this.guarantorList = cuGuaranteeList;
-          } else {
-            this.$toast(res.data.msg);
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    pushUrl(i) {
-      urls = "zhgjApp/page/projectDeclaration/infoGuarantor.html?id=" + i.id;
-      bridge.loadurlwithmobile({ url: urls });
-    },
-    //新增
-    addBtn() {
-      bridge.loadurlwithmobile({
-        url:
-          "zhgjApp/page/zy/guarantorInfo/addAssure.html?projectId=" +
-          this.projectId
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
       });
+      return name;
     },
-    //编辑
-    edit(id) {
-      bridge.loadurlwithmobile({
-        url:
-          "zhgjApp/page/zy/guarantorInfo/addAssure.html?id=" +
-          id +
-          "&projectId=" +
-          this.projectId +
-          "&customerNum" +
-          this.params.customerNum
+    pathHouse() {
+      this.$router.push({ path: '/addGuarantor', query: {...this.params, type: 0 } });
+    },
+    loadData() {
+      let obj = {
+        customerNum: this.params.customerNum,
+        projectId: this.params.projectId,
+      }
+      this.loading = true;
+      getGuaranteeList(obj).then(res => {
+        try {
+          this.houseList = res.data.cuGuaranteeList;
+          this.houseList.forEach(t => {
+            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
+            t.houseZonDesc = this.returnText('Property_area', t.houseZon);
+          });
+          this.loading = false;
+        } catch {
+          this.loading = false;
+        }
+      })
+    },
+    // 修改
+    editList(rows) {
+      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
+    },
+    // 删除
+    delList(rows) {
+      deleteHouseList({
+        id: rows.id
+      }).then(res => {
+        if(res.code == 200) {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.loadData();
+        } else {
+          this.$notify({
+            type: "danger",
+            message: res.msg
+          });
+        }
       });
-    },
-    //删除
-    deleteThis(id) {
-      this.$dialog
-        .confirm({
-          title: "提示",
-          message: "确认删除此担保人吗？"
-        })
-        .then(() => {
-          var dataList = {
-            id: id
-          };
-          requestUrl
-            .getList("/carloan/projProjectInfo/deleteCuGuarantee", dataList)
-            .then(res => {
-              if (res.data.code == "SYS.200") {
-                this.$toast.success("删除成功");
-                location.reload();
-              } else {
-                this.$toast(res.message);
-              }
-            });
-        })
-        .catch(() => {});
     }
   },
   mounted() {
-    // var params = commonFun.urlParam(location.search);
-    // token = params.token;
-    // this.projectId = params.projectId;
-    // this.params = params;
-    // publicData();
-    // this.loadData(params);
+    this.params = this.$route.query;
+    this.loadData();
   }
 };
 </script>

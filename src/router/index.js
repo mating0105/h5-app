@@ -91,8 +91,14 @@ export const constantRoutes = [
   { 
     path: '/clientIndex',
     name: 'ClientIndex',
-    component: () => import('@/views/basicInfo/client/index'),
+    component: () => import('@/views/basicInfo/client/user'),
     meta: {title: '客户及配偶', icon: 'dashboard'}
+  },
+  { 
+    path: '/addGuarantor',
+    name: 'AddGuarantor',
+    component: () => import('@/views/basicInfo/client/addGuarantor'),
+    meta: {title: '新增担保人', icon: 'dashboard'}
   },
 
   { 
@@ -101,6 +107,7 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/contact/index'),
     meta: {title: '紧急联系人', icon: 'dashboard'}
   }, 
+
   { 
     path: '/houseUser',
     name: 'HouseUser',
@@ -112,6 +119,12 @@ export const constantRoutes = [
     name: 'AddHouseUser',
     component: () => import('@/views/basicInfo/house/addUser'),
     meta: {title: '新增房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/guarantor',
+    name: 'Guarantor',
+    component: () => import('@/views/basicInfo/client/guarantor'),
+    meta: {title: '担保人信息', icon: 'dashboard'}
   },
   { 
     path: '/houseGuarantor',
