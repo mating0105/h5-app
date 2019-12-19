@@ -31,3 +31,27 @@ export function saveCreditInfo(params) {
     data: params
   })
 }
+
+export function createTask(params) {
+  return request({
+    url: '/order/creditProcess/createTask',
+    method: 'post',
+    data: params
+  })
+}
+
+export function getUsers(params) {
+  return request({
+    url: '/order/creditProcess/findCreditChoosePer',
+    method: 'post',
+    data: params
+  })
+}
+
+export function submitCredit(params) {
+  return request({
+    url: 'order/creditProcess/submitCredit',
+    method: 'post',
+    data: params
+  })
+}

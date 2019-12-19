@@ -93,7 +93,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo, createTask } from '@/api/credit'
   import { getValue, setValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
@@ -133,12 +133,26 @@
         bankList: {},
         columns: [],
         // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
-        perInfoList: [], //客户下面的其他客户数据
-        errorMsg: { //必填list
-          loanPersonName: '',
-          telephone: '',// 手机号码验证
-          lpCertificateNum: '',
-        },
+        // perInfoList: [], //客户下面的其他客户数据
+        // errorMsg: { //必填list
+        //   loanPersonName: '',
+        //   telephone: '',// 手机号码验证
+        //   lpCertificateNum: '',
+        // },
+        rules: {
+          intentionPrice: [
+            {
+              required: true,
+              msg: '意向贷款金额未填'
+            }
+          ],
+          investigateBankName: [
+            {
+              required: true,
+              msg: '银行未选'
+            }
+          ],
+        }
       }
     },
     computed: {
@@ -256,7 +270,7 @@
             if (e.creditObjectType == 'borrower') {
               this.form = e;
             } else {
-              this.perInfoList.push(e);
+              // this.perInfoList.push(e);
             }
           })
           // if (!this.form.relation) {
@@ -303,24 +317,33 @@
        * 下一步
        **/
       async nextStep () {
-        console.log(this.dataList)
         try {
+          if (!this.verifyForm()) {
+            return
+          }
           this.loading = true
-          await saveCreditInfo(this.dataList)
-          //todo
+          const {data} = await saveCreditInfo(this.dataList)
+
+          const query = {
+            customerId: data.customerId,
+            customerNum: data.customerNum,
+            creditRegisterId: data.creditRegisterId,
+            ...this.$route.query
+          }
           this.loading = false
           this.$nextTick(() => {
+            Toast.success('保存成功')
+          })
+          this.$nextTick(() => {
             this.$router.push({
-              path: '/creditNextStep'
+              path: '/creditNextStep',
+              query
             })
           })
-        }catch (e) {
+        } catch (e) {
           this.loading = false
           console.log(e)
         }
-        // this.$router.push({
-        //   path: '/creditNextStep'
-        // })
       },
       /**
        *  删除车
@@ -362,7 +385,27 @@
        */
       save () {
         setValue("credit", JSON.stringify(this.dataList));
-      }
+      },
+      verifyForm () {
+        let flag = true
+        for (let key in this.rules) {
+          if (this.rules.hasOwnProperty(key)) {
+            try {
+              this.rules[key].forEach(item => {
+                if (item.required) {
+                  if (!this.dataList[key]) {
+                    this.$toast(item.msg || '提示');
+                    flag = false
+                    throw Error();
+                  }
+                }
+              })
+            } catch (e) {
+            }
+          }
+        }
+        return flag
+      },
     },
     mounted () {
       this.getCreditInfo()

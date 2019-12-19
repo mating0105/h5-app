@@ -65,6 +65,14 @@ module.exports = {
       '/product': {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
+      },
+      '/order': {
+        target: `http://192.168.0.81:8086`,
+        changeOrigin: true
+      },
+      '/user': {
+        target: `http://119.3.165.2:8085`,
+        changeOrigin: true
       }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
