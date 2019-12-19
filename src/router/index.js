@@ -101,7 +101,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '银行放款', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -238,12 +238,6 @@ export const constantRoutes = [
     name: 'CostDetail',
     component: () => import('@/views/payment/costDetail'),
     meta: {title: '费用信息', icon: 'dashboard'}
-  },
-  {
-    path: '/walkInformation',
-    name: 'WalkInformation',
-    component: () => import('@/views/payment/walkInformation'),
-    meta: {title: '走款信息', icon: 'dashboard'}
   },
   {
     path: '/controlMeasure',

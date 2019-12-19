@@ -40,3 +40,11 @@ export function submitProcess(params){
         data: params
     })
 }
+// 获取待办已办数据
+export function findList(params){
+    return request({
+        url:'/order/wf/findList',
+        method: 'post',
+        data: params
+    })
+}

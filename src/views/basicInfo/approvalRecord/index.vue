@@ -3,14 +3,16 @@
   <div>
     <Card v-for="item in recordList" style="margin-top:10px;">
       <van-row>
-        <van-col span="10" class="xh-approval-name">
+        <van-col class="xh-approval-name">
           <span>{{item.name}}</span>
           {{item.processedRole}}
         </van-col>
-        <van-col span="8" offset="6" class="xh-approval-time">{{item.createDate}}</van-col>
       </van-row>
       <van-cell-group :border="false">
-        <van-cell title="流程类型:" :value="item.businessType" />
+        <van-cell title="时间:" :value="item.createDate" />
+      </van-cell-group>
+      <van-cell-group :border="false">
+        <van-cell title="流程类型:" :value="returnText('business_type',item.businessType)" />
       </van-cell-group>
       <van-cell-group :border="false">
         <van-cell title="意见描述:" :value="item.commentsDesc" />
@@ -23,6 +25,8 @@ import Vue from "vue";
 import { Row, Col, Cell, CellGroup } from "vant";
 import Card from "@/components/card/index";
 import { approvalRecord } from "@/api/payment";
+import { format } from "@/utils/format";
+import { mapState } from "vuex";
 const Components = [Row, Col, Cell, CellGroup];
 Components.forEach(item => {
   Vue.use(item);
@@ -31,20 +35,43 @@ export default {
   components: {
     Card
   },
-  props: {
-    recordList: {
-      type: Array
-    }
-  },
   data() {
-    return {};
+    return {
+      recordList: []
+    };
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
   },
   methods: {
     loadRecord() {
-
+      let data = {
+        businessKey: this.params.businessKey,
+        businessType: this.params.businessType
+      };
+      approvalRecord(data).then(res => {
+        this.recordList = res.data;
+        this.recordList.forEach(e => {
+          e.createDate = format(new Date(e.createDate), "yyyy-MM-dd");
+        });
+      });
+    },
+    returnText(n,val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
     }
   },
   mounted() {
+    this.params = this.$route.query;
+    console.log(this.params);
     this.loadRecord(); //加载审批记录
   }
 };

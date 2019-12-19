@@ -50,7 +50,7 @@
                   <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="产品性质" :value="paymentDetail.projProjectInfo.productProperty" />
+                  <van-cell title="产品性质" :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
@@ -415,7 +415,9 @@ import {
   Tabs,
   Cell,
   CellGroup,
-  DatetimePicker
+  DatetimePicker,
+  Picker,
+  ActionSheet
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
@@ -439,7 +441,9 @@ const Components = [
   Tabs,
   Cell,
   CellGroup,
-  DatetimePicker
+  DatetimePicker,
+  Picker,
+  ActionSheet
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -612,6 +616,7 @@ export default {
     // 获取其他字典接口
     getDict() {
       let arr = [
+        "product_property",//产品性质
         "pay_method", //缴费方式
         "payType", //走款模式
         "BANK_TYPE_JYR" //银行
@@ -646,6 +651,14 @@ export default {
             }
           });
           break;
+          case 'product_property':
+            this.dicList.product_property.forEach(e => {
+            if (e.value == val) {
+              name = e.label;
+            }
+          });
+          break;
+
       }
       return name;
     },
