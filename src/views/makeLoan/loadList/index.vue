@@ -64,6 +64,11 @@ export default {
         Card
     },
     data() {
+        var newParams=(value)=>{
+            let obj={};
+            obj.id=47;//value.businesskey;
+            return obj
+        };
         return {
             listData:[],
             tabList:[
@@ -83,9 +88,10 @@ export default {
                 pageSize:10,
                 pageIndex:1,
             },
-            dictionaryData:{},//字典数据\
+            dictionaryData:{},//字典数据
+            info:{},
             pathData:[
-                {name:'银行放款',path:'/lendProcess',params:{}},
+                {name:'缴费走款',path:'/lendProcess',params:newParams},
                 {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
             ]
         };
@@ -151,6 +157,7 @@ export default {
         },
         // 发起放款
         applyPay(val) {
+            this.info=val;
             this.returnPath(this.returnText('business_type',val.businesstype))
         },
         returnPath(value){
@@ -158,11 +165,10 @@ export default {
                 if(item.name==value){
                     this.$router.push({
                         path:item.path,
-                        query:item.params
+                        query:item.params(this.info)
                     });
                 }
             })
-
         },
         changeState(val){
             this.pageData.status=Number(val);

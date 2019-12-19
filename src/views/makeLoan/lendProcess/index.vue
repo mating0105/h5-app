@@ -236,6 +236,7 @@
                 {value:14,label:'申述意见'},
             ],
             rightBoxShow:false,
+            businessKey:0,
         };
     },
     methods: {
@@ -433,7 +434,7 @@
             try{
                 this.listLoading=true;
                 let para={
-                    id:47
+                    id:this.businessKey
                 }
                 const data=await loanInfoDetail(para);
                 if(data.code==200){
@@ -554,7 +555,7 @@
             try{  
                 let para=Object.assign({},this.form);
                 let params={
-                    businessKey:Number(this.form.borrowerInfo.bankMakeLoanId),
+                    businessKey:this.businessKey,//Number(this.form.borrowerInfo.bankMakeLoanId),
                     nextUser:nextUserObj.id,
                     commentsDesc:this.commentsDesc,
                     isSendMsg:this.checked?1:0,
@@ -595,6 +596,7 @@
         })
     },
     mounted () {
+        this.businessKey=this.$route.query.id
         this.getDictionaryData();
     }
   }
