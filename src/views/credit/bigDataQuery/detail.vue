@@ -1,0 +1,135 @@
+<template>
+    <ViewPage :loading="loading">
+        <template v-slot:head>
+            <van-tabs v-model="active">
+                <van-tab title="征信信息"></van-tab>
+                <van-tab title="基本信息"></van-tab>
+                <van-tab title="相关文档"></van-tab>
+                <van-tab title="审批记录"></van-tab>
+            </van-tabs>
+        </template>
+        <template v-if="active === 0">
+            <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+            <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+        </template>
+        <template v-else-if="active === 1">
+            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
+        </template>
+
+        <!-- 提交按钮 -->
+        <div class="xh-submit-box" v-if="edit">
+            <van-button size="large" @click="nextStep"
+                        class="xh-btn"
+            >征信回复
+            </van-button>
+        </div>
+    </ViewPage>
+</template>
+
+<script>
+  import ViewPage from '@/layout/components/ViewPage';
+  import Card from '@/components/card'
+  import creditInfoTable from '../viewCompoents/creditInfoTable'
+  import basicInfo from '../viewCompoents/basicInfo'
+  import Vue from 'vue';
+  import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
+
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs]
+  Components.forEach(item => {
+    Vue.use(item)
+  })
+
+  export default {
+    name: "bigDataQueryDetail",
+    components: {
+      ViewPage,
+      Card,
+      creditInfoTable,
+      basicInfo
+    },
+    data () {
+      return {
+        active: 0,
+        dataList: {
+          investigateBank: '',
+          investigateBankName: '',
+          isInternetCredit: '',
+          carInfos: [],
+          surDtlList: []
+        },
+        loading: false,
+        form: {},
+        perInfoList: [], //客户下面的其他客户数据
+        edit: false
+      }
+    },
+    methods: {
+      async getCreditInfo () {
+        try {
+          this.loading = true
+          const params = {
+            lpCertificateNum: this.$route.query.lpCertificateNum,
+            id: this.$route.query.id
+          }
+          const res = await getCreditInfo(params)
+          this.dataList = res.data.cuCreditRegister;
+          this.loading = false
+
+          this.dataList.surDtlList.forEach(e => {
+            if (e.creditObjectType === 'borrower') {
+              this.form = e;
+            } else {
+              this.perInfoList.push(e);
+            }
+          })
+
+        } catch (e) {
+          this.loading = false
+          console.log(e)
+        }
+      },
+      /**
+       * 下一步
+       **/
+      async nextStep () {
+        try {
+          this.loading = true
+          const {data} = await saveCreditInfo(this.dataList)
+
+          const query = {
+            customerId: data.customerId,
+            customerNum: data.customerNum,
+            creditRegisterId: data.creditRegisterId,
+            ...this.$route.query
+          }
+          this.loading = false
+          this.$nextTick(() => {
+            Toast.success('保存成功')
+          })
+          this.$nextTick(() => {
+            this.$router.push({
+              path: '/creditNextStep',
+              query
+            })
+          })
+        } catch (e) {
+          this.loading = false
+          console.log(e)
+        }
+      }
+    },
+    mounted () {
+      this.getCreditInfo()
+      this.edit = Boolean(this.$route.query.edit)
+    }
+  }
+</script>
+
+<style>
+
+    .label_plus .van-field__label {
+        width: 9rem;
+    }
+
+</style>

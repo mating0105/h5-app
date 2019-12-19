@@ -8,22 +8,22 @@
             <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum"/>
             <van-cell title="电话号码:" required :border="false" :value="form.telephone"/>
             <van-cell title="征信对象类型:" required :border="false" value="借款人"/>
-            <van-cell title="银行：" :border="false" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
-            <van-field class="label_plus" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
+            <van-cell title="银行：" :disabled="!edit" :border="false" required is-link v-model="dataList.investigateBankName" @click="showPickerFn"/>
+            <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
                        placeholder="请输入"/>
-            <van-field v-model="dataList.remarks" :border="false" type="textarea" placeholder="输入说明" rows="1"
+            <van-field v-model="dataList.remarks" :border="false" :disabled="!edit" type="textarea" placeholder="输入说明" rows="1"
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
         <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 {{dataList.carInfos.length === 0 ? '新增': ''}}车辆信息
-                <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0">
+                <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0 && edit">
                     <van-icon name="add-o"/>
                 </div>
             </template>
             <div>
-                <van-swipe-cell v-for="(item, index) in dataList.carInfos" :key="index">
+                <van-swipe-cell :disabled="!edit" v-for="(item, index) in dataList.carInfos" :key="index">
                     <van-cell title="车辆类别:" :border="false"
                               :value="nameToString(returnText(item.carType, 'car_type'), returnText(item.carType2, 'car_type2'))"/>
                     <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
@@ -61,12 +61,12 @@
         <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 征信客户
-                <div class="card-icon" @click="addPer">
+                <div class="card-icon" @click="addPer" v-if="edit">
                     <van-icon name="add-o"/>
                 </div>
             </template>
             <div>
-                <van-swipe-cell v-for="(item, index) in perInfoList" :key="index">
+                <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
                     <van-cell title="客户名称:" required :border="false" :value="item.creditPersonName"/>
                     <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum"/>
                     <van-cell title="电话号码:" required :border="false" :value="item.telephone"/>
@@ -89,7 +89,7 @@
             </div>
         </Card>
         <!-- 提交按钮 -->
-        <div class="xh-submit-box">
+        <div class="xh-submit-box" v-if="edit">
             <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
@@ -174,7 +174,8 @@
               msg: '银行未选'
             }
           ],
-        }
+        },
+        edit: false
       }
     },
     computed: {
@@ -219,6 +220,9 @@
         picker.setColumnValues(1, this.bankList[values[0]]);
       },
       async showPickerFn () {
+        if(!this.edit) {
+          return
+        }
         this.showPicker = true;
         try {
           await this.getBank()
@@ -328,6 +332,9 @@
         }
       },
       addVehicle () {
+        if(!this.edit) {
+          return
+        }
         const query = {
           customerId: this.dataList.customerId,
           customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
@@ -534,8 +541,8 @@
       },
     },
     mounted () {
-      console.log(this.$store.state.credit.customerData)
       this.getCreditInfo()
+      this.edit = Boolean(this.$route.query.edit)
     },
     destroyed () {
       this.save()

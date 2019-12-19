@@ -3,29 +3,32 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-18 15:39:25
+ * @LastEditTime : 2019-12-19 19:17:03
  -->
 
 <template>
-  <ViewPage class="heavy-right-manage">
+  <ViewPage
+    :loading="loading"
+    class="heavy-right-manage"
+  >
     <van-tabs v-model="active">
       <van-tab
-        to="basic"
         name="basic"
+        replace
         title="基本信息"
-        replace
+        to="basic"
       ></van-tab>
       <van-tab
-        to="a"
         name="doc"
-        title="相关文档"
         replace
+        title="相关文档"
+        to="a"
       ></van-tab>
       <van-tab
-        to="b"
         name="record"
-        title="审批记录"
         replace
+        title="审批记录"
+        to="b"
       ></van-tab>
     </van-tabs>
     <div class="heavy-right-manage-wrap">
@@ -48,7 +51,7 @@ Components.forEach(item => {
   Vue.use(item);
 });
 import { mapState } from "vuex";
-import { log } from 'util';
+import { log } from "util";
 export default {
   name: "heavyRightManage",
   components: {
@@ -57,19 +60,18 @@ export default {
   data() {
     return {
       // 基本信息basic 相关文档doc 审批记录record
-      active: "basic"
+      active: "basic",
+      loading: false
     };
   },
   props: {},
-  mounted() {
-  },
+  mounted() {},
   methods: {}
 };
 </script>
 <style lang='scss' scoped>
 .heavy-right-manage {
   .heavy-right-manage-wrap {
-
   }
 }
 </style>

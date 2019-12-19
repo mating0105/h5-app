@@ -55,7 +55,6 @@
 
 <style lang="scss" scoped>
   #nav {
-    height: 50px;
     .rightButtonBox{
       position: fixed;
       top: 52px;

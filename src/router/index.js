@@ -58,6 +58,20 @@ export const constantRoutes = [
   },
 
   {
+    path: '/bigDataQueryList',
+    name: 'bigDataQueryList',
+    component: () => import('@/views/credit/bigDataQuery/list'),
+    meta: {title: '大数据查询'}
+  },
+
+  {
+    path: '/bigDataQueryDetail',
+    name: 'bigDataQueryDetail',
+    component: () => import('@/views/credit/bigDataQuery/detail'),
+    meta: {title: '基本资料'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),

@@ -18,31 +18,33 @@
       error-text="请求失败，点击重新加载"
       @load="onLoad"
     >
-      <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-        <Card class="xh-top-10" :bodyPadding="true">
-          <van-row class="contractUploadBox">
-            <van-col span="24">
-              <span class="projectNo">NO.{{item.projectNo}}</span>
-            </van-col>
-            <van-col span="24"><img src="../../assets/new_images/icon_name.png" />
-              <span>{{item.customerName}}</span>
-            </van-col>
-            <van-col span="24" class="xh-top-10"><img src="../../assets/new_images/icon_telephone.png" />
-              <span>{{item.contactPhone}}</span>
-            </van-col>
-            <van-col span="24" class="xh-top-10">
-              <img src="../../assets/new_images/icon_idcard.png" />
-              <span>{{item.certificateNum}}</span>
-              <span class="idCard">身份证</span>
-            </van-col>
-          </van-row>
-          <template v-slot:footer>
-            <div class="upBtn">
-              <van-button round type="info" size="small" @click="goUpload">合同上传</van-button>
-            </div>
-          </template>
-        </Card>
-      </div>
+      <van-pull-refresh v-model="loading" @refresh="onRefresh">
+        <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
+          <Card class="xh-top-10" :bodyPadding="true">
+            <van-row class="contractUploadBox">
+              <van-col span="24">
+                <span class="projectNo">NO.{{item.projectNo}}</span>
+              </van-col>
+              <van-col span="24"><img src="../../assets/new_images/icon_name.png" />
+                <span>{{item.customerName}}</span>
+              </van-col>
+              <van-col span="24" class="xh-top-10"><img src="../../assets/new_images/icon_telephone.png" />
+                <span>{{item.contactPhone}}</span>
+              </van-col>
+              <van-col span="24" class="xh-top-10">
+                <img src="../../assets/new_images/icon_idcard.png" />
+                <span>{{item.certificateNum}}</span>
+                <span class="idCard">身份证</span>
+              </van-col>
+            </van-row>
+            <template v-slot:footer>
+              <div class="upBtn">
+                <van-button round type="info" size="small" @click="goUpload">合同上传</van-button>
+              </div>
+            </template>
+          </Card>
+        </div>
+      </van-pull-refresh>
     </van-list>
   </ViewPage>
 </template>
@@ -55,9 +57,9 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { removeValue } from "@/utils/session";
 // 其他组件
-import { Row, Col, Button, List, Search } from "vant";
+import { Row, Col, Button, List, Search, PullRefresh } from "vant";
 
-const Components = [Row, Col, Button, List, Search];
+const Components = [Row, Col, Button, List, Search, PullRefresh];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -93,16 +95,29 @@ export default {
   watch: {
     error(value) {
       if (!value) {
-        this.onLoad();
+        if(this.list.length > 0){
+          this.params.pageIndex = this.params.pageIndex;
+          this.onLoad()
+        }else{
+          this.onLoad(true)
+        }
       }
     }
   },
   methods: {
-    rightFn(){
-
+    onRefresh(){
+      this.onLoad(true);
     },
-    onLoad () {
+    onLoad (isPullRefresh) {
       this.loading = true;
+
+      // 是否下拉刷新
+      if(isPullRefresh){
+        this.list = [];
+        this.params.searchKey = '';
+        this.params.pageIndex = 1;
+      }
+
       getList(this.params).then(res => {
         const {code, data, msg} = res;
         setTimeout(() => {
@@ -137,20 +152,7 @@ export default {
   },
   activated(){
     this.$refs.listBox.$refs.placeholder.offsetParent.scrollTop = this.scroll;
-  },
-    
-  // created(){
-  //   this.$nextTick(()=>{
-  //       document.addEventListener('click',(e)=>{
-  //           if(this.rightBoxShow==true&&!this.$refs.box.contains(e.target)){
-  //               this.rightBoxShow=false
-  //           }
-  //       })
-  //   })
-  // }
-  // mounted(){
-  //   this.activated();
-  // }
+  }
 };
 </script>
 
