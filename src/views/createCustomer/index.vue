@@ -44,7 +44,7 @@
             required
             is-link
             :value="returnText('credit_object_type',customerData.creditObjectType)"
-            @click="loadType('征信对象类型', 'credit_object_type')"
+            @click="loadType('征信对象类型', 'creditObjectType')"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -165,7 +165,8 @@ import {
   Field,
   CellGroup,
   DatetimePicker,
-  ActionSheet
+  ActionSheet,
+  Picker
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
@@ -175,6 +176,7 @@ import { callBridge, registerBridge } from "@/utils/bridge";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
+import { mapState } from "vuex";
 const Components = [
   Button,
   Row,
@@ -183,7 +185,8 @@ const Components = [
   Field,
   CellGroup,
   DatetimePicker,
-  ActionSheet
+  ActionSheet,
+  Picker
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -214,8 +217,19 @@ export default {
       //   maxDate: new Date(2099, 12, 31)
       timeType: "", //区分打开时间弹框标识
       familyList: [], //民族数组
-      loading: false
+      loading: false,
+      params: {},
+      options: [],
+      valueKey: "label",
+      selectName: "",
+      valueId: "id" // 下拉选择取的哪个value值
     };
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
   },
   methods: {
     formatter(type, value) {
@@ -269,7 +283,6 @@ export default {
       this.show2 = true;
     },
     getFamily(id, label) {
-      console.log(id, label);
       this.customerData.nationName = label;
       this.customerData.nation = id;
       this.show2 = false;
@@ -297,22 +310,30 @@ export default {
       this.isWordbook = false;
       this.fieldName = field;
       switch (title) {
-        case "缴费方式":
-          this.options = this.dicList.pay_method;
-          this.show3 = true;
+        case "征信对象类型":
+          this.options = this.wordbook.credit_object_type;
+          this.show4 = true;
           break;
         default:
           break;
       }
     },
+    // 字典选择确认
+    confirm(row) {
+      this.show4 = false;
+      this.customerData[this.fieldName] = row.value;
+      // this.customerData[this.fieldName + "Name"] = row.label;
+    },
+    cancel() {},
     //保存信息
     submit() {
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
-        this.$store.dispatch('credit/setCustomerData', {
-          data: this.customerData, index: this.$route.query.index
-        })
-        this.$router.go(-1)
+        this.$store.dispatch("credit/setCustomerData", {
+          data: this.customerData,
+          index: this.$route.query.index
+        });
+        this.$router.go(-1);
       } else {
         //新建客户，走接口
         this.loading = true;
@@ -330,13 +351,24 @@ export default {
     loadImg() {
       this.show3 = true;
     },
+    //选择获取图片方式
     onSelect(e) {
-      console.log(e);
       callBridge("idCardOCR", { type: e.value }, data => {
         console.log(data);
       });
       this.show3 = false;
     },
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
+    //获取信息
     loadData() {
       for (let key in this.customerData) {
         if (this.customerData.hasOwnProperty(key)) {
@@ -349,7 +381,8 @@ export default {
   mounted() {
     this.getFamilyDic();
     this.params = this.$route.query;
-    if (this.$router.query.credit) {
+    console.log(this.params);
+    if (this.params.credit) {
       //从征信里进入
       this.loadData();
     } else {
