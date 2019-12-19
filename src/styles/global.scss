@@ -43,3 +43,20 @@
     flex: 1;
   }
 }
+
+.xh-table-border {
+  position: relative;
+}
+
+.xh-table-border:not(:last-child)::after {
+  position: absolute;
+  box-sizing: border-box;
+  content: ' ';
+  pointer-events: none;
+  right: 0;
+  bottom: 0;
+  left: 1.33333rem;
+  border-bottom: 0.08333rem solid #ebedf0;
+  -webkit-transform: scaleY(.5);
+  transform: scaleY(.5);
+}

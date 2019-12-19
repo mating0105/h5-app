@@ -8,39 +8,53 @@
               <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人')" />
             </section>
             <section>
-              <van-cell title="房产性质：" required is-link :value="form.houseTypeDesc" @click.native="loadList('房产性质')" />
+              <van-cell title="收入人：" required is-link :value="form.incomePeopleDesc" @click.native="loadList('收入人')" />
             </section>
             <section>
-              <van-cell title="房产区域：" required is-link :value="form.houseZonDesc" @click.native="loadList('房产区域')" />
+              <van-cell title="职业状况：" required is-link :value="form.occupationalStatusDesc"
+                @click.native="loadList('职业状况')" />
             </section>
-            <section>
-              <van-field name="propertyValue" v-model="form.propertyValue" type="number" clearable required label="产权价值(万元)："
-                input-align="right" placeholder="请输入产权价值" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyValue"/>
-            </section>
-            <section>
-              <van-field name="ownerProperty" v-model="form.ownerProperty" clearable required label="产权所有人：" input-align="right"
-                placeholder="请输入产权所有人" @blur.prevent="ruleMessge" :error-message="errorMsg.ownerProperty"/>
-            </section>
-            <section>
-              <van-cell title="房产所在地：" required is-link :value="form.provCityZon" @click.native="loadList('房产所在地')" />
-            </section>
-            <section>
-              <van-field name="specificAddress" v-model="form.specificAddress" clearable required label="详细地址：" input-align="right"
-                placeholder="请输入详细地址" @blur.prevent="ruleMessge" :error-message="errorMsg.specificAddress"/>
-            </section>
-            <section>
-              <van-field name="houseArea" v-model="form.houseArea" type="number" clearable required label="房产面积(m２)：" input-align="right"
-                placeholder="请输入房产面积" @blur.prevent="ruleMessge" :error-message="errorMsg.houseArea"/>
-            </section>
-            <section>
-              <van-field name="propertyHolderNum" v-model="form.propertyHolderNum" type="number" clearable required label="产权共有人数(个)："
-                input-align="right" placeholder="请输入产权共有人数" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyHolderNum"/>
-            </section>
-            <section>
-              <van-field name="propertyOwneratio" v-model="form.propertyOwneratio" type="number" clearable required label="本人产权占有比(%)："
-                input-align="right" placeholder="请输入本人产权占有比" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyOwneratio"/>
-            </section>
-
+            <div v-if="form.occupationalStatus != 6">
+              <section>
+                <van-cell title="单位性质：" required is-link :value="form.unitCharDesc" @click.native="loadList('单位性质')" />
+              </section>
+              <section>
+                <van-cell title="行业领域：" required is-link :value="form.idyDmnDesc" @click.native="loadList('行业领域')" />
+              </section>
+              <section>
+                <van-field name="companyName" v-model="form.companyName" clearable required label="单位名称：" input-align="right"
+                  placeholder="请输入单位名称" @blur.prevent="ruleMessge" :error-message="errorMsg.companyName"/>
+              </section>
+              <section>
+                <van-field name="companyTel" v-model="form.companyTel" clearable label="单位电话：" input-align="right" placeholder="请输入单位电话"
+                  @blur.prevent="ruleMessge" :error-message="errorMsg.companyTel" />
+              </section>
+              <section>
+                <van-cell title="单位地址：" is-link :value="form.provCityZon" @click.native="loadList('单位地址')" />
+              </section>
+              <section>
+                <van-field name="detailAddress" v-model="form.detailAddress" clearable label="详细地址：" input-align="right"
+                  placeholder="请输入详细地址" @blur.prevent="ruleMessge" :error-message="errorMsg.detailAddress"/>
+              </section>
+              <section>
+                <van-field name="workingYears" v-model="form.workingYears" type="number" clearable required label="从业年限："
+                  input-align="right" placeholder="请输入从业年限" @blur.prevent="ruleMessge" :error-message="errorMsg.workingYears"/>
+              </section>
+              <section>
+                <van-field name="personalIncome" v-model="form.personalIncome" type="number" clearable label="月固定收入(元)：" input-align="right"
+                  placeholder="请输入月固定收入" @blur.prevent="ruleMessge" :error-message="errorMsg.personalIncome"/>
+              </section>
+              <section>
+                <van-cell title="月固定收入状况：" is-link :value="form.personalIncomeStatusDesc"
+                  @click.native="loadList('月固定收入状况')" />
+              </section>
+              <section>
+                <van-cell title="收入佐证：" is-link :value="form.incomeEvidenceDesc" @click.native="loadList('收入佐证')" />
+              </section>
+              <section>
+                <van-field v-model="form.remark" clearable label="备注" input-align="right" placeholder="请输入备注" />
+              </section>
+            </div>
             <!-- 下拉选择器 -->
             <van-action-sheet v-model="selectShow" class="xh-list">
               <van-picker

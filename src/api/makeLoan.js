@@ -32,3 +32,19 @@ export function getPeople(params){
         data: params
     })
 }
+//提交流程
+export function submitProcess(params){
+    return request({
+        url:'/order/bankmakeloan/submit',
+        method: 'post',
+        data: params
+    })
+}
+// 获取待办已办数据
+export function findList(params){
+    return request({
+        url:'/order/wf/findList',
+        method: 'post',
+        data: params
+    })
+}
