@@ -132,3 +132,37 @@ export function editCarsInfo(params) {
     data: params
   })
 }
+// ----------------------------------------
+// 获取担保人列表
+export function getGuaranteeList(params) {
+  return request({
+    url: '/order/cuGuarantee/findCuGuaranteeDetail',
+    method: 'get',
+    params
+  })
+}
+// 获取担保人信息
+export function getGuaranteeInfo(params) {
+  return request({
+    url: '/order/cuGuarantee/findGuarantorDtl',
+    method: 'get',
+    params
+  })
+}
+// 保存担保人信息
+export function setGuaranteeInfo(params) {
+  return request({
+    url: '/order/cuGuarantee/saveCuGuarantee',
+    method: 'post',
+    data: params
+  })
+}
+// 删除名下车辆列表信息
+export function deleteGuaranteeList(params) {
+  return request({
+    url: '/order/cuGuarantee/deleteGuarantee',
+    method: 'get',
+    params
+  })
+}
+

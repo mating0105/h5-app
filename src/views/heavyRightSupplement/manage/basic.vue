@@ -19,7 +19,6 @@
           </van-cell>
         </section>
       </template>
-      <!-- 基本信息 -->
       <van-row>
         <van-col span="24">
           <van-cell
@@ -44,132 +43,332 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.customerName"
+            :value="details.creditObjectType | codeInToName(wordbook.credit_object_type)"
             class="info"
             title="征信对象类型"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.customerName"
+            :value="details.dsbrPltfrmNm"
             class="info"
             title="银行:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.loanAmt"
+            :value="details.intentionPrice"
             class="info"
             title="意向贷款金额(元):"
           />
         </van-col>
       </van-row>
     </Card>
-    <Card
-      :bodyPadding="true"
-      class="xh-top-10"
+
+    <van-collapse
+      class="xh-fold-panel is-always-shadow"
+      v-model="activeName"
     >
+      <van-collapse-item
+        name="car"
+        title="车辆信息"
+        title-class="left-title"
+      >
+        <van-row
+          :key="index"
+          class="xh-fold-panel-item"
+          v-for="(item,index) in details.cars"
+        >
+          <van-col span="24">
+            <van-cell
+              :value="item.carNatureDesc"
+              class="info"
+              title="车辆性质:"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.carFrameNum"
+              class="info"
+              title="车架号:"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.automarke"
+              class="info"
+              title="车辆品牌:"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.carSeries"
+              class="info"
+              title="车系"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.carModel"
+              class="info"
+              title="车辆型号"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.estimateOriginalPrice"
+              class="info"
+              title="评估价:"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-field
+              :border="false"
+              input-align="right"
+              label="实际开票价(元):"
+              label-width="120"
+              name
+              placeholder="请输入"
+              required
+              type="number"
+              v-model="item.actualInvoicedPrice"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-cell
+              :value="item.licensePlateNum"
+              class="info"
+              title="车牌号:"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-field
+              :border="false"
+              input-align="right"
+              label="发动机号:"
+              name
+              placeholder="请输入"
+              required
+              v-model="item.engineNum"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-field
+              :border="false"
+              @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
+              input-align="right"
+              is-link
+              label="保险到期日:"
+              label-width="120"
+              name
+              placeholder="请选择"
+              readonly
+              required
+              v-model="item.insuranceExpire"
+            />
+          </van-col>
+          <van-col span="24">
+            <van-divider />
+          </van-col>
+        </van-row>
+      </van-collapse-item>
+    </van-collapse>
+
+    <Card class="xh-top-10">
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell>
-            <span>车辆信息</span>
+            <span>重权信息</span>
           </van-cell>
         </section>
       </template>
-      <van-row>
-        <van-col span="24">
-          <van-cell
-            :value="details.carNature | codeInToName(wordbook.car_nature)"
-            class="info"
-            title="车辆性质:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.carFrameNum"
-            class="info"
-            title="车架号:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.automarke"
-            class="info"
-            title="车辆品牌:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.customerName"
-            class="info"
-            title="车系"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.customerName"
-            class="info"
-            title="车辆型号"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="评估价:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="实际开票价(元):"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="车牌号:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="发动机号:"
-          />
-        </van-col>
-        <van-col span="24">
-          <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="保险到期日:"
-          />
+      <van-row class="xh-right-info">
+        <van-col
+          class="xh-black xh-relative xh-boder-left"
+          span="24"
+        >
+          <section>
+            <van-field
+              :border="false"
+              @click="dateRowClick('mortgageTime','办理抵押上牌日期')"
+              input-align="right"
+              is-link
+              label="办理抵押上牌日期:"
+              label-width="120"
+              name
+              placeholder="请选择"
+              readonly
+              required
+              v-model="details.mortgageTime"
+            />
+          </section>
+          <section>
+            <van-field
+              :border="false"
+              clearable
+              input-align="right"
+              label="上户地点:"
+              placeholder="请输入"
+              required
+              v-model="details.registeredPlace"
+            />
+          </section>
+          <section>
+            <van-field
+              :border="false"
+              @click="dateRowClick('transactionDate','交易日期')"
+              input-align="right"
+              is-link
+              label="交易日期:"
+              name
+              placeholder="请选择"
+              readonly
+              required
+              v-model="details.transactionDate"
+            />
+          </section>
+          <section>
+            <van-cell
+              required
+              title="是否有套票:"
+            >
+              <singleConnect
+                :default-active-value="details.ispackage"
+                :list="YESORNO"
+                @singleChange="singleChange"
+                type="ispackage"
+              ></singleConnect>
+            </van-cell>
+          </section>
+          <section>
+            <van-field
+              :border="false"
+              @input="inputValue"
+              input-align="right"
+              label="套票成交价（元）:"
+              label-width="120"
+              name
+              placeholder="请输入"
+              required
+              type="number"
+              v-if="details.ispackage === 1"
+              v-model="details.packageDeal"
+            />
+          </section>
+          <section>
+            <van-field
+              :border="false"
+              input-align="right"
+              label="与贷款金额差价（元）"
+              label-width="140"
+              name
+              placeholder="自动计算"
+              readonly
+              required
+              v-if="details.ispackage === 1"
+              v-model="details.differenceCarprice"
+            />
+          </section>
+          <section>
+            <van-cell
+              required
+              title="是否失信客户:"
+            >
+              <singleConnect
+                :default-active-value="details.dishonestyCustomer"
+                :list="YESORNO"
+                @singleChange="singleChange"
+                type="dishonestyCustomer"
+              ></singleConnect>
+            </van-cell>
+          </section>
+          <section>
+            <van-field
+              :border="false"
+              @click="dateRowClick('ownershipRegisterDate','重权登记日期')"
+              input-align="right"
+              is-link
+              label="重权登记日期:"
+              name
+              placeholder="请选择"
+              readonly
+              required
+              v-model="details.ownershipRegisterDate"
+            />
+          </section>
         </van-col>
       </van-row>
     </Card>
+    <!-- 时间选择器 -->
+    <van-action-sheet
+      class="xh-list"
+      get-container="#app"
+      v-model="datePopFlag"
+    >
+      <van-datetime-picker
+        :formatter="formatter"
+        :title="datePopTitle"
+        @cancel="cancelTime"
+        @confirm="confirmTime"
+        type="date"
+        v-model="currentDate"
+      />
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import { YESORNO } from "@/constants/dictionaries";
 import { queryRightSuppleDetails } from "@/api/heavyRightSupplement";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
+import SingleConnect from "@/components/SingleConnect/index";
+
 // 其他组件
-import { Tab, Tabs, Row, Col, Icon, Cell, Button, List } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Tab, Tabs];
+import {
+  Tab,
+  Tabs,
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Collapse,
+  CollapseItem,
+  Divider,
+  Field,
+  ActionSheet,
+  DatetimePicker
+} from "vant";
+const Components = [
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Tab,
+  Tabs,
+  Collapse,
+  CollapseItem,
+  Divider,
+  Field,
+  ActionSheet,
+  DatetimePicker
+];
 
 Components.forEach(item => {
   Vue.use(item);
 });
 import { mapState } from "vuex";
 import { log } from "util";
+import { format } from "@/utils/format";
 export default {
   name: "basic",
-  components: { Card },
+  components: { Card, SingleConnect },
   computed: {
     ...mapState({
       wordbook: state => state.user.wordbook
@@ -180,7 +379,25 @@ export default {
   },
   data() {
     return {
+      currentDate: new Date(), // 当前日期
+      dateIndex: "",
+      dateArr: "",
+      datePopTitle: "", // 当前弹出框的名称
+      datePopFlag: false, // 时间选择器
+      dateSelectType: "", // 当前选择时间的type
+      YESORNO,
+      activeName: ["car"],
       details: {}
+      // form: {
+      //   mortgageTime: "", // 办理抵押上牌时间
+      //   registeredPlace: "", // 上户地点
+      //   transactionDate: "", // 交易日期
+      //   ispackage: "", // 是否有套票
+      //   packageDeal: "", // 套票成交价
+      //   differenceCarprice: "", // 与贷款金额的差价
+      //   dishonestyCustomer: "", // 是否失信客户
+      //   ownershipRegisterDate: "" // 重权登记日期
+      // }
     };
   },
   props: {},
@@ -188,6 +405,9 @@ export default {
     this.queryDetails();
   },
   methods: {
+    singleChange({ type, item }) {
+      this.details[type] = item.value;
+    },
     // 查询补录的详情
     queryDetails() {
       queryRightSuppleDetails({
@@ -201,6 +421,60 @@ export default {
           this.loading = false;
         }
       });
+    },
+    formatter(type, value) {
+      if (type == "year") {
+        return `${value}年`;
+      } else if (type == "month") {
+        return `${value}月`;
+      } else if (type == "day") {
+        return `${value}日`;
+      }
+    },
+    // 正在输入的时候
+    inputValue(value) {
+      // 与贷款金额的差价 = 套票成交价-贷款金额
+      this.details.packageDeal = value;
+      if (value) {
+        if (this.details.differenceCarprice) {
+          this.details.differenceCarprice = value * 1 - this.details.loanAmt;
+        } else {
+          this.details.differenceCarprice = value;
+        }
+      } else {
+        this.details.differenceCarprice = "";
+      }
+    },
+    dateRowClick(type, title, arrStr, index) {
+      this.datePopTitle = title;
+      this.datePopFlag = true;
+      this.dateSelectType = type;
+      this.dateArr = arrStr;
+      this.dateIndex = index;
+      if (arrStr) {
+        let nowValue = this.details[this.dateArr][this.dateIndex][
+          this.dateSelectType
+        ];
+        this.currentDate = nowValue ? new Date(nowValue) : new Date();
+      } else {
+        this.currentDate = this.details[type]
+          ? new Date(this.details[type])
+          : new Date();
+      }
+    },
+    // 确认时间选择
+    confirmTime(value) {
+      var time = format(value, "yyyy-MM-dd");
+      if (this.dateArr) {
+        this.details[this.dateArr][this.dateIndex][this.dateSelectType] = time;
+      } else {
+        this.details[this.dateSelectType] = time;
+      }
+
+      this.datePopFlag = false;
+    },
+    cancelTime() {
+      this.datePopFlag = false;
     }
   }
 };
