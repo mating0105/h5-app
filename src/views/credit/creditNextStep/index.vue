@@ -23,7 +23,7 @@
             </div>
         </Card>
 
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 意见描述
             </template>
@@ -32,10 +32,10 @@
         </Card>
 
         <!-- 提交按钮 -->
-        <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+        <div class="xh-submit-box">
             <van-button size="large"
                         @click="submit"
-                        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
+                        class="xh-btn"
             >提交
             </van-button>
         </div>

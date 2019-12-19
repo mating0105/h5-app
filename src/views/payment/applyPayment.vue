@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <van-tabs v-model="activeName">
       <van-tab title="费用信息" name="cost">
         <div class="xh-pay-content">
@@ -187,7 +187,7 @@
               <van-row>
                 <van-cell-group :border="false">
                   <van-field
-                    v-model="paymentDetail.projBudgetList.totalCharges"
+                    v-model="totalCharges"
                     required
                     clearable
                     label="费用合计"
@@ -294,7 +294,7 @@
                     @click="showPopupTime('payTime')"
                   />
                 </van-cell-group>
-                <div v-show="paymentDetail.projPayInfo.payTypeName == '转账'">
+                <div v-show="paymentDetail.projPayInfo.payType == '2'">
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeAccount"
@@ -311,7 +311,19 @@
                       title="开户银行"
                       required
                       is-link
-                      :value="paymentDetail.projPayInfo.payeeBank"
+                      :value="returnText('payeeBank',paymentDetail.projPayInfo.payeeBank)"
+                      @click="loadType('开户银行', 'payeeBank')"
+                    />
+                  </van-cell-group>
+                  <van-cell-group :border="false">
+                    <van-field
+                      v-model="paymentDetail.projPayInfo.payeeSubBank"
+                      required
+                      clearable
+                      label="开户支行"
+                      input-align="right"
+                      placeholder="请输入"
+                      @blur.prevent="()=>{ }"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
@@ -353,12 +365,12 @@
               </section>
             </card>
             <div class="xh-submit">
-              <van-button size="large" class="xh-bg-main" @click="submit" :loading="loadingSubmit">提交</van-button>
+              <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
             </div>
           </div>
         </div>
         <div class="xh-submit" v-show="stepVal !=3">
-          <van-button size="large" class="xh-bg-main" @click="save" :loading="loading">保 存</van-button>
+          <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
         </div>
       </van-tab>
       <van-tab title="项目信息" name="project">
@@ -410,7 +422,13 @@ import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import imageList from "@/components/imageList";
 import ProjectInfo from "@/views/basicInfo/projectInfo/info";
-import { paymentDetail, getDic, submitPay, savePay ,submitProcess} from "@/api/payment";
+import {
+  paymentDetail,
+  getDic,
+  submitPay,
+  savePay,
+  submitProcess
+} from "@/api/payment";
 import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
 const Components = [
@@ -446,7 +464,6 @@ export default {
       paymentDetail: {}, //基本信息
       params: {}, //上个页面传过来的参数
       loading: false,
-      loadingSubmit:false,
       selectName: "",
       dicList: [], //字典获取
       valueKey: "label",
@@ -459,12 +476,13 @@ export default {
       currentDate: new Date(),
       dataList: [], //图片上传
       message: "", //意见描述
-      peopleList: [] //下一节点人数组
+      peopleList: [], //下一节点人数组
+      // totalCharges:'',//费用合计
     };
   },
   computed: {
     // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
-    "paymentDetail.projBudgetList.totalCharges"() {
+    totalCharges(){
       let estimateCharges =
         parseFloat(this.paymentDetail.projBudgetList.estimateCharges) || 0; // 评估费
       let investigateCharges =
@@ -483,6 +501,17 @@ export default {
         parseFloat(this.paymentDetail.projBudgetList.colligateCharges) || 0; //综合服务费
       let doolBail =
         parseFloat(this.paymentDetail.projBudgetList.doolBail) || 0; //上户保证金
+      console.log(
+        estimateCharges +
+          investigateCharges +
+          agreeBail +
+          collectCarDealer +
+          notarialFees +
+          allopatryCharges +
+          colligateCharges +
+          doolBail +
+          gpsCharges
+      );
       return (
         estimateCharges +
         investigateCharges +
@@ -494,9 +523,7 @@ export default {
         doolBail +
         gpsCharges
       );
-    }
-  },
-  computed: {
+    },
     wordbook() {
       return this.$store.state.user.wordbook;
     },
@@ -516,35 +543,48 @@ export default {
     },
     loadData() {
       paymentDetail({ projectId: this.params.projectId }).then(res => {
-        if (res.code == 200) {
+        try {
+          this.loading = false;
           this.paymentDetail = res.data;
-        } else {
-          this.$notify({ type: "danger", message: msg });
+        } catch (e) {
+          this.loading = false;
         }
       });
     },
     //保存数据
     save() {
+      this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
       console.log(this.paymentDetail);
+      this.loading = true;
       savePay(this.paymentDetail).then(res => {
-        this.$notify({ type: "success", message: "保存成功" });
+        try {
+          this.loading = false;
+          this.$notify({ type: "success", message: "保存成功" });
+        } catch (e) {
+          this.loading = false;
+        }
       });
     },
     //提交流程
     submit() {
-      this.loadingSubmit = true;
+      this.loading = true;
+      this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
       submitPay(this.paymentDetail).then(res => {
-        console.log(res);
-        let data = res.data.users;
-        let people = [];
-        data.forEach(t => {
-          people.push({
-            ...t,
-            label: t.companyName + "-" + t.name
+        try {
+          this.loading = false;
+          let data = res.data.users;
+          let people = [];
+          data.forEach(t => {
+            people.push({
+              ...t,
+              label: t.companyName + "-" + t.name
+            });
           });
-        });
-        this.peopleList = people;
-        this.loadType("下一节点审批人", "people");
+          this.peopleList = people;
+          this.loadType("下一节点审批人", "people");
+        } catch (e) {
+          this.loading = false;
+        }
       });
     },
     //上拉菜单选择
@@ -561,8 +601,11 @@ export default {
           this.options = this.dicList.payType;
           this.show3 = true;
           break;
+        case "开户银行":
+          this.options = this.dicList.BANK_TYPE_JYR;
+          this.show3 = true;
+          break;
         case "下一节点审批人":
-          // this.loadingSubmit = false;
           this.options = this.peopleList;
           this.show3 = true;
           break;
@@ -574,7 +617,8 @@ export default {
     getDict() {
       let arr = [
         "pay_method", //缴费方式
-        "payType" //走款模式
+        "payType", //走款模式
+        "BANK_TYPE_JYR" //银行
       ];
       getDic(arr).then(res => {
         if (res.code == 200) {
@@ -599,6 +643,13 @@ export default {
             }
           });
           break;
+        case "payeeBank":
+          this.dicList.BANK_TYPE_JYR.forEach(e => {
+            if (e.value == val) {
+              name = e.label;
+            }
+          });
+          break;
       }
       return name;
     },
@@ -615,18 +666,30 @@ export default {
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
           this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
           break;
-        case 'people':
-          let data = {
-            businessKey:this.paymentDetail.projPayInfo.id,
-            conclusionCode: "01",
-            commentsDesc:this.message,
-            nextUser:row.id
-          }
-          submitProcess(data).then(res =>{
-            this.$notify({ type: "success", message: "流程提交成功" });
-          })
+        case "payeeBank":
+          this.paymentDetail.projPayInfo[this.fieldName] = row.value;
+          this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
           break;
-
+        case "people":
+          this.loading = true;
+          if (this.message == "") {
+            this.message = "同意";
+          }
+          let data = {
+            businessKey: this.paymentDetail.projPayInfo.id,
+            conclusionCode: "01",
+            commentsDesc: this.message,
+            nextUser: row.id
+          };
+          submitProcess(data).then(res => {
+            try {
+              this.loading = false;
+              this.$notify({ type: "success", message: "流程提交成功" });
+            } catch (e) {
+              this.loading = false;
+            }
+          });
+          break;
       }
       this.show3 = false;
     },

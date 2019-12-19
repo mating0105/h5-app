@@ -15,7 +15,7 @@
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 车辆信息
                 <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0">
@@ -58,7 +58,7 @@
         </Card>
 
 
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 新增征信客户
                 <div class="card-icon">
@@ -67,12 +67,12 @@
             </template>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+        <div class="xh-submit-box">
             <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
-                        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
+                        class="xh-btn"
             >下一步
             </van-button>
         </div>
@@ -420,12 +420,6 @@
 
     .label_plus .van-field__label {
         width: 9rem;
-    }
-
-    .card-icon {
-        color: rgb(196, 37, 42);
-        text-align: right;
-        float: right;
     }
 
 </style>
