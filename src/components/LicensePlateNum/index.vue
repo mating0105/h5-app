@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 16:07:41
+ * @LastEditTime : 2019-12-19 18:39:30
  -->
 
 <template>
@@ -96,7 +96,8 @@
 <script>
 import Vue from "vue";
 import ShowList from "./showList";
-
+// 其他组件
+import { bridge } from "@/utils/bridge";
 // 其他组件
 import { Popup, Notify } from "vant";
 const Components = [Popup, Notify];
@@ -263,6 +264,9 @@ export default {
     // OCR识别
     scanChange() {
       // TODO
+      bridge.callhandler("vinOCR",null, data => {
+        console.log(1111,data)
+      });
     },
     sub() {
       const first = this.first;

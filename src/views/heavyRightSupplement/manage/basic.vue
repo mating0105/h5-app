@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-18 16:08:00
+ * @LastEditTime : 2019-12-19 19:18:04
  -->
 
 <template>
@@ -415,16 +415,22 @@ export default {
     },
     // 查询补录的详情
     queryDetails() {
+      this.$parent.loading = true;
       queryRightSuppleDetails({
         projectId: this.id
-      }).then(res => {
-        const { code, data, msg } = res;
-        if (code == 200) {
-          this.details = data;
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
-      });
+      })
+        .then(res => {
+          const { code, data, msg } = res;
+          if (code == 200) {
+            this.details = data;
+          } else {
+            this.$notify({ type: "danger", message: msg });
+          }
+          this.$parent.loading = false;
+        })
+        .catch(() => {
+          this.$parent.loading = false;
+        });
     },
     formatter(type, value) {
       if (type == "year") {
@@ -478,7 +484,7 @@ export default {
     },
     // 提交表单
     sub() {
-      saveHeavyRightBasic(this.details).then(res => {
+      saveHeavyRightBasic(JSON.stringify(this.details)).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {
           this.$notify({ type: "success", message: msg });
