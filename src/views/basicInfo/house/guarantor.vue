@@ -14,45 +14,33 @@
         </section>
       </template>
       <div class="xh-row">
-        <div class="xh-row-col xh-swipe-button"  v-for="(list,index) in houseList" :key="index">
+        <div class="xh-row-col xh-swipe-button"  v-for="(i,index) in houseList" :key="index">
           <van-swipe-cell :right-width="130">
-            <section>
-              <van-cell title="是否有房产:" :value="list.isHasHouse == '1'?'有房产':'没有房产'" />
-            </section>
-            <section>
-              <van-cell title="担保人:" :value="list.cuGuaranteeName" />
-            </section>
-            <section>
-              <van-cell title="房产性质:" :value="list.houseTypeDesc" />
-            </section>
-            <section>
-              <van-cell title="省市区:" :value="list.provCityZon" />
-            </section>
-            <section>
-              <van-cell title="详细地址:" :value="list.specificAddress" />
-            </section>
-            <section>
-              <van-cell title="房权所有人:" :value="list.ownerProperty" />
-            </section>
-            <section>
-              <div class="van-cell">
-                <div class="van-cell__title">
-                  房产面积(m
-                  <sup>2</sup>)：
-                </div>
-                <div class="van-cell__value">{{list.houseArea}}</div>
-              </div>
-            </section>
+            <div class="xh-form-body">
+              <van-col span="24">
+                <van-col span="12">
+                  <span class="xh-main xh-title">房产所有人：</span>
+                  <span class="xh-black">{{ i.cuGuaranteeName }}</span>
+                </van-col>
+                <van-col span="12" class="xh-text-right">
+                  <span class="xh-main">{{ i.houseTypeDesc }}</span>
+                </van-col>
+              </van-col>
+              <van-col span="24" class="xh-top-10">
+                <span class="xh-main xh-title">房产所在地：</span>
+                <span class="xh-black">{{ i.provCityZon }}</span>
+              </van-col>
+            </div>
             <span slot="right">
               <van-button
                 type="warning"
-                style="height:100%;border-radius: 0;"
-                @click.native="editList(list)"
+                style="border-radius: 0;"
+                @click.native="editList(i)"
               >修改</van-button>
               <van-button
                 type="danger"
-                style="height:100%;border-radius: 0;"
-                @click.native="delList(list)"
+                style="border-radius: 0;"
+                @click.native="delList(i)"
               >删除</van-button>
             </span>
           </van-swipe-cell>
@@ -130,10 +118,7 @@ export default {
         try {
           this.houseList = res.data.cuGuaranteeHouseList;
           this.houseList.forEach(t => {
-            t.isBondsDesc = this.returnText('yes_no', t.isBonds);
-            t.relationCusDesc = this.returnText('relation_Cus', t.relationCus);
-            t.levelEducationDesc = this.returnText('DegreeOfEducation', t.levelEducation);
-            t.marriageDesc = this.returnText('marriage_type', t.marriage);
+            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
           });
           this.loading = false;
         } catch {
@@ -171,3 +156,17 @@ export default {
   }
 }
 </script>
+
+
+
+<style lang="scss">
+.xh-row {
+  .xh-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .xh-main {
+    color: rgb(196, 37, 42);
+  }
+}
+</style>

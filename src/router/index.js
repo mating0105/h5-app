@@ -165,6 +165,12 @@ export const constantRoutes = [
     meta: {title: '新增家庭收入', icon: 'dashboard'}
   },
   { 
+    path: '/addGuarantorIncome',
+    name: 'AddGuarantorIncome',
+    component: () => import('@/views/basicInfo/income/addGuarantor.vue'),
+    meta: {title: '新增担保人收入', icon: 'dashboard'}
+  },
+  { 
     path: '/incomeGuarantor',
     name: 'IncomeGuarantor',
     component: () => import('@/views/basicInfo/income/guarantor.vue'),
