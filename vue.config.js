@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: '/standard_app_html',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -63,14 +63,6 @@ module.exports = {
         changeOrigin: true
       },
       '/product': {
-        target: `http://119.3.165.2:8085`,
-        changeOrigin: true
-      },
-      '/order': {
-        target: `http://192.168.0.81:8086`,
-        changeOrigin: true
-      },
-      '/user': {
         target: `http://119.3.165.2:8085`,
         changeOrigin: true
       }

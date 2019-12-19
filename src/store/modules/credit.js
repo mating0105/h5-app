@@ -1,6 +1,7 @@
 const state = {
   carData: null,
-  index: -1
+  index: -1,
+  customerData: null,
 }
 
 const mutations = {
@@ -13,6 +14,15 @@ const mutations = {
     else
       state.index = -1
   },
+  SET_CUSTOMER_DATA (state, data) {
+    state.customerData = data
+  },
+  SET_CUSTOMER_DATA (state, index) {
+    if(index || index >= 0)
+    state.index = index
+    else
+    state.index = -1
+  },
 }
 
 const actions = {
@@ -22,6 +32,13 @@ const actions = {
   },
   removeCarData({commit}) {
     commit('SET_CAR_DATA', null, -1)
+  },
+  setCustomerData ({commit}, {data, index}) {
+    commit('SET_CUSTOMER_DATA', data)
+    commit('SET_CUSTOMER_INDEX', index)
+  },
+  removeCustomerData({commit}) {
+    commit('SET_CUSTOMER_DATA', null, -1)
   }
 }
 

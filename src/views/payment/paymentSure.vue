@@ -80,11 +80,7 @@ export default {
           commentsDesc: "11111"
         }
       ],
-      params: {
-        customerName: "大范甘迪", //客户姓名
-        contactPhone: "444", //客户身份证
-        certificateNum: "33333" //客户手机号码
-      },
+      params: {},//上个页面接收的数据
       meunRow:[
         {
           name: "项目基本信息",
@@ -129,6 +125,9 @@ export default {
     meunList(row){
       this.$router.push({ path: row.url, query: this.params });
     }
+  },
+  mounted(){
+    this.params = this.$route.query;
   }
 };
 </script>
