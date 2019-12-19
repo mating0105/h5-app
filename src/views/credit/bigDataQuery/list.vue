@@ -24,8 +24,30 @@
                         </section>
                     </template>
                     <van-row style="min-height: 10rem">
-                        <van-col span="24">车架号：{{ item.chassisNumber }}</van-col>
-                        <van-col span="24" class="xh-top-10">品牌型号：{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</van-col>
+                        <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
+                        <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
+                        <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
+                        <van-col span="24" class="xh-top-10">申报人：{{ item.applicantName }}</van-col>
+                        <van-col span="24" class="xh-top-10" v-if="item.creditResult === 'pass'">
+                            <span class="xh-success-tag">
+                               银行征信通过
+                            </span>
+                        </van-col>
+                        <van-col span="24" class="xh-top-10" v-else-if="item.creditResult === 'not_pass'">
+                            <span class="xh-danger-tag">
+                               银行征信未通过
+                            </span>
+                        </van-col>
+                        <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
+                            <span class="xh-success-tag">
+                               大数据征信通过
+                            </span>
+                        </van-col>
+                        <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
+                            <span class="xh-danger-tag">
+                               大数据征信未通过
+                            </span>
+                        </van-col>
                     </van-row>
                     <template v-slot:footer>
                         <div style="text-align:right; min-height: 2rem">
@@ -36,7 +58,7 @@
                                     class="xh-radius"
                                     style="border-radius: 6px;"
                                     @click.stop="startForm(item)"
-                            >{{item.evaluatingPrice?'重新评估':'立即评估'}}
+                            >查询大数据征信
                             </van-button>
                         </div>
                     </template>
@@ -48,7 +70,7 @@
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/priceEvaluation";
+  import { getList } from "@/api/bigData";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -63,7 +85,7 @@
   import { mapState } from "vuex";
 
   export default {
-    name: 'priceEvaluationList',
+    name: 'bigDataQuery',
     components: {
       ViewPage,
       Card
@@ -135,7 +157,7 @@
       },
       // 详情
       startForm (item, query = {}) {
-        this.$router.push({path: '/priceEvaluationDetail', query: {edit: true, ...item, ...query}})
+        this.$router.push({path: '/bigDataQueryDetail', query: {edit: true, lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
       },
       nameToString () {
         return [...arguments].map(item => item).join('')

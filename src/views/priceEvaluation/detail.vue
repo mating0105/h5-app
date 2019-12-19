@@ -20,7 +20,7 @@
             <van-cell title="行驶里程（万公里）:" :border="false" :value="carData.roadHaul"/>
             <van-cell v-if="showMore" title="发动机号:" :border="false" :value="carData.engineNum"/>
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
-            <van-field v-model="carData.evaluatingPrice" :border="false" required clearable input-align="right" label="评估价（元）："
+            <van-field v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
                        placeholder="请输入"/>
         </Card>
 
@@ -31,7 +31,7 @@
             <imageList :dataList="dataList" :view="true"></imageList>
         </Card>
 
-        <Card style="margin-top: 1rem;">
+        <Card style="margin-top: 1rem;" v-if="edit">
             <template v-slot:header>
                 意见描述
             </template>
@@ -40,7 +40,7 @@
         </Card>
 
         <!-- 提交按钮 -->
-        <div class="xh-submit-box">
+        <div class="xh-submit-box" v-if="edit">
             <van-button class="xh-btn" size="large"
                         @click="save"
             >保存
@@ -78,7 +78,8 @@
           maxHeight: 100,
           minHeight: 80
         },
-        dataList: []
+        dataList: [],
+        edit: false
       }
     },
     computed: {
@@ -180,6 +181,7 @@
     mounted () {
       this.initData()
       this.initImage()
+      this.edit = Boolean(this.$route.query.edit)
     }
   }
 </script>

@@ -1,10 +1,10 @@
 <template>
   <ViewPage>
-    <Card>
+    <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="家庭收入">
-            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" />
+          <van-cell title="担保人收入">
+            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"/>
           </van-cell>
         </section>
       </template>
@@ -12,36 +12,37 @@
         <van-col span="24" class="xh-row-col xh-swipe-button"
           v-for="(i,index) in guarantorList"
           :key="index"
-          @click="pushUrl(i)"
         >
-          <van-swipe-cell :right-width="120">
+          <van-swipe-cell :right-width="130">
             <div class="xh-form-body">
               <section>
-                <van-cell title="担保人姓名：" :value="i.customerName" />
+                <van-cell title="担保人姓名：" :value="i.cuGuaranteeName" />
               </section>
               <section>
-                <van-cell title="证件号码：" :value="i.certificateNum" />
+                <van-cell title="收入人：" :value="i.incomePeopleDesc" />
               </section>
               <section>
-                <van-cell title="是否共债人：" :value="i.isBondsDesc" />
+                <van-cell title="职业情况：" :value="i.occupationalStatusDesc" />
               </section>
               <section>
-                <van-cell title="与客户关系：" :value="i.relationCusDesc" />
+                <van-cell title="单位名称：" :value="i.companyName" />
               </section>
               <section>
-                <van-cell title="担保人联系电话：" :value="i.contactPhone" />
-              </section>
-              <section>
-                <van-cell title="婚姻状况：" :value="i.marriageDesc" />
-              </section>
-              <section>
-                <van-cell title="户籍地址：" :value="i.pProvCityZon" />
+                <van-cell title="月固定收入：" :value="i.personalIncomeDesc" />
               </section>
             </div>
-            <van-row slot="right" class="xh-swipe-btn">
-              <div class="xh-col-12 xh-swipe-edit" @click="edit(i.id)">编辑</div>
-              <div class="xh-col-12 xh-swipe-delete" @click="deleteThis(i.id)">删除</div>
-            </van-row>
+            <span slot="right">
+              <van-button
+                type="warning"
+                style="border-radius: 0;height:100%;"
+                @click.native="editList(i)"
+              >修改</van-button>
+              <van-button
+                type="danger"
+                style="border-radius: 0;height:100%;"
+                @click.native="delList(i)"
+              >删除</van-button>
+            </span>
           </van-swipe-cell>
         </van-col>
       </van-row>
@@ -83,9 +84,7 @@ export default {
   },
   data() {
     return {
-      guarantorList: [
-        { name: 1 }
-      ],
+      guarantorList: [],
       projectId: "",
       params: {}
     };
@@ -101,8 +100,8 @@ export default {
       });
       return name;
     },
-    pathHouse() {
-      this.$router.push({ path: '/addGuarantor', query: {...this.params, type: 0 } });
+    pullUrl() {
+      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, type: 0 } });
     },
     loadData() {
       let obj = {
@@ -112,7 +111,7 @@ export default {
       this.loading = true;
       getGuaranteeList(obj).then(res => {
         try {
-          this.houseList = res.data.cuGuaranteeList;
+          this.guarantorList = res.data.cuGuaranteeIncome;
           this.houseList.forEach(t => {
             t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
             t.houseZonDesc = this.returnText('Property_area', t.houseZon);
@@ -125,7 +124,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.id, type: 1 } });
     },
     // 删除
     delList(rows) {

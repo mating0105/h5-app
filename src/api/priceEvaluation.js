@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /**
- * 获取银行
+ * 获取列表
  * @param params
  */
 export function getList(params) {

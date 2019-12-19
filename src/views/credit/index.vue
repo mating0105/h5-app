@@ -17,7 +17,7 @@
                 @load="onLoad"
         >
             <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                <Card class="xh-top-10" :bodyPadding='true'>
+                <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
                     <template v-slot:header>
                         <section class="xh-plus">
                             <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -58,7 +58,7 @@
                                     type="danger"
                                     class="xh-radius"
                                     style="border-radius: 6px;"
-                                    @click="startForm(item)"
+                                    @click.stop="startForm(item)"
                             >发起征信
                             </van-button>
                             <van-button
@@ -68,7 +68,7 @@
                                     type="danger"
                                     class="xh-radius"
                                     style="border-radius: 6px;"
-                                    @click="startForm(item)"
+                                    @click.stop="startForm(item)"
                             >重新发起征信
                             </van-button>
                         </div>
@@ -175,17 +175,20 @@
         this.params.pageIndex = 1
         this.onLoad()
       },
+      startFormFn (item) {
+        this.startForm(item, {edit: false})
+      },
       // 发起报单
-      startForm (item) {
+      startForm (item, query = {}) {
         removeValue("credit");
-        this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id}})
+        this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
       },
       // 新建客户
       addClint () {
 
       },
       rightFn () {
-        
+
       }
     },
     mounted () {

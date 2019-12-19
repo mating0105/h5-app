@@ -1,7 +1,13 @@
 <template>
   <div id="app">
     <transition name="page-move">
-      <router-view />
+
+      <keep-alive v-if="$route.meta.keepAlive">
+        <router-view />
+      </keep-alive>
+
+      <router-view v-else/>
+
     </transition>
   </div>
 </template>
@@ -14,7 +20,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "cd0408",
+        username: "gz0119",
         password: "123"
       }
     };

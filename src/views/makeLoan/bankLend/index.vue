@@ -51,26 +51,8 @@
                     <template v-slot:header>
                         放款凭证
                     </template>
-                    <div class="zh-form-body" style="display: flex; flex-wrap: wrap; padding:5px 0;">
-                    <div class="zh-img zh-relative" v-for="(i,index) in imgWalkList" :key="index">
-                      <div class="zh-upload" @click="imagesLook(index)">
-                        <div class="zh-upload-button zh-upload-img">
-                          <img :src="i.smallUrl" alt="" />
-                        </div>
-                      </div>
-                      <van-icon name="close" @click="closeImg(index,i.documentId)" />
-                    </div>
-                    <div class="zh-img zh-relative">
-                      <div class="zh-upload">
-                        <div class="zh-upload-button zh-upload-icon" @click="callUpdateImg">
-                          <div class="van-uploader">
-                            <i class="icon-add"></i>
-                          </div>
-                          <p class="text">添加照片</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    <imageList :dataList="dataList"></imageList>
+                    
                 </Card>
                 <!-- 意见描述 -->
                 <Card style="margin-top:15px;">
@@ -153,11 +135,12 @@
   import Card from '@/components/card/index';
   import redCard from "@/components/redCard/index";
   import imageList from '@/components/imageList';
-  import {getProjectInfo,getPeople,submitProcess} from '@/api/makeLoan.js';
+  import { getDocumentByType } from '@/api/document'
+  import {getProjectInfo,getPeople,submitProcess,loanInfoDetail} from '@/api/makeLoan.js';
   import { getDic } from "@/api/createCustomer";
-  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox } from 'vant';
+  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify } from 'vant';
 
-  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox];
+  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify];
   Components.forEach(item => {
   Vue.use(item);
 });
@@ -186,6 +169,7 @@ export default {
         form:{},
         bankLoanInfo:{},//放款信息
         commentsDesc:'',//意见描述
+        FinanceCashier:'',
         FinanceCashierDesc:'请选择',//财务人员
         showQRCode: false,
         qrCodeUrl: "",
@@ -196,8 +180,9 @@ export default {
         currentDate: new Date(),
         dictionaryData:{},//字典数据
         submitloading:false,
-        businessKey:36,
+        businessKey:47,
         projectId:0,
+        dataList: [],
     };
   },
   methods: {
@@ -325,6 +310,7 @@ export default {
             const data=await getProjectInfo(para);
             if(data.code==200){
                 this.form=data.data;
+                this.initImage();
                 this.listLoading=false;
             }
         }catch(err){
@@ -381,10 +367,8 @@ export default {
                     customerName:this.form.projectInfo.customerName,
                     msgType:'WF_BANK_MAKE_LOAN_YWY',
                     isSendMsg:this.salesmanChecked?1:0,
-
                     receiver:this.form.projectInfo.clientManager.id,
                 }
-
             }
             if(this.approvalConclusion=='03'){
                 wfCommentInfo={
@@ -395,68 +379,60 @@ export default {
                     customerName:this.form.projectInfo.customerName,
                     msgType:'WF_BANK_MAKE_LOAN_CW',
                     isSendMsg:this.cashierChecked?1:0,
-                    
-                    receiver:this.form.projectInfo.clientManager.id,
+                    receiver:this.FinanceCashier,
                 }
-
             }
             let bankLoanInfo=Object.assign({},this.bankLoanInfo);
             bankLoanInfo.id=this.businessKey;
-
             para.wfCommentInfo=wfCommentInfo;
             para.bankLoanInfo=bankLoanInfo;
             this.submitloading=true;
-            console.log(para,'para')
-            return;
             const data=await submitProcess(para);
             if(data.code==200&&data.status){
-                this.submitloading=false;
                 Notify({ type: 'success', message: '流程提交成功' });
                 setTimeout(()=>{
                     this.$router.push({ path:'/lendProcessList'});
                 },1000)
+                this.submitloading=false;
             }
         }catch(err){
             console.log(err)
             this.submitloading=false;
         }
     },
-    //--------------图片-------------
-    callbackImage(data) {
-        data.forEach(e => {
-            switch (e.documentType) {
-            case '0620':
-                this.imgWalkList.push(e)
-                break;
-            }
-        })
-    },
-    closeImg(index, documentId) {
-        requestUrl.getList('/carloan/projProjectInfo/deleteFile', { documentId: documentId }).then((res) => {
-          this.imgWalkList.splice(index, 1)
-        })
-    },
-    // 查看图片
-    imagesLook(index) {
-        var imagelist = [];
-        this.imgWalkList.forEach(e => {
-            imagelist.push(e.bigUrl)
-        })
-        bridge.callhandler("PreviewImages", { "imageList": imagelist, "index": index });
-    },
-    //图片上传
-    callUpdateImg() {
-        let params = {
-            documentType: '0620',
-            customerNum: this.form.cost.customerNo,
-            customerId: this.form.cost.customerId,
-            bizNum: this.projectNo,
-            bizId: this.projectId,
-            kind: "1"
+    // -------------图片------------
+    async initImage () {
+        try {
+            await this.getDocumentByType('7776')//凭证图片
+        } catch (e) {
+            console.log(e)
         }
-        bridge.callhandler('newUploadImg', params)
     },
-    
+    async getDocumentByType (documentType) {
+        try {
+          const params = {
+            customerNum: this.form.projectInfo.customerNum,
+            documentType: documentType
+          }
+          const {data} = await getDocumentByType(params)
+          const declare = '放款凭证'
+          data.forEach(item => {
+            item.declare = declare;
+          })
+          this.dataList.push({
+            declare: declare,//图片描述
+            isRequire: true,//*是否必须
+            deletable: true,//是否可以操作-上传和删除
+            documentType: documentType,
+            customerNum: this.form.projectInfo.customerNum,
+            customerId: this.form.projectInfo.customerId,
+            kind: '1',
+            fileList: data || []
+          })
+        } catch (e) {
+          console.log(e)
+        }
+      },
   },
   mounted() {
     this.getDictionaryData();
