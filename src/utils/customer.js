@@ -2,7 +2,6 @@
 //通过身份证号 获取性别  1男2女
 export function getSex(IdNO) {
     if (IdNO.length == 18) {
-        console.log(IdNO.charAt(16));
         return IdNO.charAt(16) % 2 == 0 ? "2" : "1";
     } else if (IdNO.length == 15) {
         return IdNO.charAt(14) % 2 == 0 ? "2" : "1";

@@ -172,7 +172,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
 import card from "@/components/card/index";
 import { format } from "@/utils/format";
-import { callBridge, registerBridge } from "@/utils/bridge";
+import bridge from "@/utils/bridge";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
@@ -200,8 +200,19 @@ export default {
   data() {
     return {
       customerData: {
-        sex: "",
-        birthday: ""
+        "sex": "", //性别
+        "birthday": "",//出生日期
+        "customerName": "",//客户姓名
+        "certificateNum": "",//身份证号码
+        "age": "",//年龄
+        "creditObjectType": "",//征信对象类型
+        "nationName": "",//民族
+        "nation": "",//
+        "familyAddress": "",//身份证住址
+        "signOrg": "",//身份证签发机关
+        "startDate": "",//起始日
+        "endDate": "",//截止日
+        "contactPhone": ""//手机号码
       },
       show1: false,
       show2: false,
@@ -353,7 +364,7 @@ export default {
     },
     //选择获取图片方式
     onSelect(e) {
-      callBridge("idCardOCR", { type: e.value }, data => {
+      bridge.callhandler("idCardOCR", { type: e.value }, data => {
         console.log(data);
       });
       this.show3 = false;
@@ -376,6 +387,7 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
+      console.log(this.customerData)
     }
   },
   mounted() {

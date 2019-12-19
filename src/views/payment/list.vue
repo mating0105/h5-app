@@ -20,8 +20,7 @@
               <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
               <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
             </van-row>
-            <!-- v-if="item.processStateDesc == '未提交'" -->
-            <template v-slot:footer >
+            <template v-slot:footer  v-if="item.processStateDesc == '未提交'">
               <div style="text-align:right;">
                 <van-button
                   plain
