@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :rightFn="rightFn" :iconClass="'ellipsis'">
+  <ViewPage :rightMenuList="rightMenuList" :iconClass="'ellipsis'">
     <template v-slot:head>
       <van-search
         v-model="params.searchKey"
@@ -80,7 +80,14 @@ export default {
         pageSize: 10,
         searchKey: ""
       },
-      scroll: 0
+      scroll: 0,
+      rightMenuList:[{
+        title:'业务员报单',path:'/contractUpload',params:{id:1,age:18}
+      },{
+        title:'财务走款',path:'/b'
+      },{
+        title:'业务',path:'/c'
+      }],
     };
   },
   watch: {

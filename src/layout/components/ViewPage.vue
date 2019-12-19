@@ -1,7 +1,7 @@
 <template>
     <div id="view-page">
         <div>
-            <NavBar :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass'></NavBar>
+            <NavBar :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass' :rightMenuList="rightMenuList"></NavBar>
             <slot name="head"></slot>
         </div>
         <div class="wrapper" ref="wrapper">
@@ -36,7 +36,11 @@
       loading: false,
       title: '',
       rightFn:Function,
-      iconClass:''
+      iconClass:'',
+      rightMenuList:{
+        type: Array,
+        default: () => []
+      }
     },
     components: {
       NavBar
