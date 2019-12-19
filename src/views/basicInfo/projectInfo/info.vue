@@ -1174,7 +1174,11 @@ export default {
     loanData() {
       this.loading = true;
       getProjectInfo({
+<<<<<<< HEAD
+        id: this.params.projectId
+=======
         id: this.params.project
+>>>>>>> b3280e81dd03f6e5ca690066e7b37e181182814f
       }).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {
