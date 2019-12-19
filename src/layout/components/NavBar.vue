@@ -1,6 +1,7 @@
 <template>
     <div id="nav">
         <van-nav-bar
+                id="xh-nav"
                 :title="title || $route.meta.title || ''"
                 left-text="返回"
                 left-arrow

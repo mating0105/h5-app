@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="xh-image-item-title"><span v-if="data.isRequire" class="xh-is-require">*</span>{{data.declare}}</div>
+        <div class="xh-image-item-title" v-if="fileList.length || data.deletable"><span v-if="data.isRequire" class="xh-is-require">*</span>{{data.declare}}</div>
         <van-uploader multiple :after-read="upload" :deletable="data.deletable" class="xh-image-upload" :class="{'xh-image-deletable': !data.deletable}"
                       :disabled="!data.deletable"
                       v-model="fileList" :before-delete="deleteImage"/>
@@ -297,7 +297,7 @@
         color: red;
     }
 
-    .van-uploader.xh-image-deletable {
+    .xh-image-deletable .van-uploader__upload {
         display: none;
     }
 

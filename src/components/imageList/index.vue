@@ -18,7 +18,7 @@
                     {{item.declare}}
                 </div>
             </div>
-            <div class="image-item" v-if="list.length<=3">
+            <div class="image-item" v-if="list.length<=3 && !view">
                 <div class="xh-no-image" @click="showImageUpload = true">
                     <van-icon class="xh-image-icon" name="plus"/>
                 </div>
@@ -40,7 +40,8 @@
   export default {
     name: "imageList",
     props: {
-      dataList: Array
+      dataList: Array,
+      view: Boolean
     },
     components: {
       imageUpload
@@ -53,8 +54,7 @@
     },
     data () {
       return {
-        showImageUpload: false,
-        view: false
+        showImageUpload: false
       }
     },
     methods: {

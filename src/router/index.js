@@ -44,6 +44,20 @@ export const constantRoutes = [
   },
 
   {
+    path: '/priceEvaluationList',
+    name: 'priceEvaluationList',
+    component: () => import('@/views/priceEvaluation/list'),
+    meta: {title: '车价评估'}
+  },
+
+  {
+    path: '/priceEvaluationDetail',
+    name: 'priceEvaluationDetail',
+    component: () => import('@/views/priceEvaluation/detail'),
+    meta: {title: '评估详情'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
