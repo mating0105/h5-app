@@ -44,6 +44,20 @@ export const constantRoutes = [
   },
 
   {
+    path: '/priceEvaluationList',
+    name: 'priceEvaluationList',
+    component: () => import('@/views/priceEvaluation/list'),
+    meta: {title: '车价评估'}
+  },
+
+  {
+    path: '/priceEvaluationDetail',
+    name: 'priceEvaluationDetail',
+    component: () => import('@/views/priceEvaluation/detail'),
+    meta: {title: '评估详情'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
@@ -91,8 +105,14 @@ export const constantRoutes = [
   { 
     path: '/clientIndex',
     name: 'ClientIndex',
-    component: () => import('@/views/basicInfo/client/index'),
+    component: () => import('@/views/basicInfo/client/user'),
     meta: {title: '客户及配偶', icon: 'dashboard'}
+  },
+  { 
+    path: '/addGuarantor',
+    name: 'AddGuarantor',
+    component: () => import('@/views/basicInfo/client/addGuarantor'),
+    meta: {title: '新增担保人', icon: 'dashboard'}
   },
 
   { 
@@ -101,6 +121,7 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/contact/index'),
     meta: {title: '紧急联系人', icon: 'dashboard'}
   }, 
+
   { 
     path: '/houseUser',
     name: 'HouseUser',
@@ -112,6 +133,12 @@ export const constantRoutes = [
     name: 'AddHouseUser',
     component: () => import('@/views/basicInfo/house/addUser'),
     meta: {title: '新增房产信息', icon: 'dashboard'}
+  },
+  { 
+    path: '/guarantor',
+    name: 'Guarantor',
+    component: () => import('@/views/basicInfo/client/guarantor'),
+    meta: {title: '担保人信息', icon: 'dashboard'}
   },
   { 
     path: '/houseGuarantor',
@@ -136,6 +163,12 @@ export const constantRoutes = [
     name: 'AddIncome',
     component: () => import('@/views/basicInfo/income/addFamily.vue'),
     meta: {title: '新增家庭收入', icon: 'dashboard'}
+  },
+  { 
+    path: '/addGuarantorIncome',
+    name: 'AddGuarantorIncome',
+    component: () => import('@/views/basicInfo/income/addGuarantor.vue'),
+    meta: {title: '新增担保人收入', icon: 'dashboard'}
   },
   { 
     path: '/incomeGuarantor',
@@ -172,6 +205,12 @@ export const constantRoutes = [
     name: 'PaymentSure',
     component: () => import('@/views/payment/paymentSure'),
     meta: {title: '走款确认', icon: 'dashboard'}
+  },
+  {
+    path: '/paymentProjectInfo',
+    name: 'PaymentProjectInfo',
+    component: () => import('@/views/payment/projectInfo'),
+    meta: {title: '项目基本信息', icon: 'dashboard'}
   },
   {
     path: '/costDetail',
@@ -221,7 +260,37 @@ export const constantRoutes = [
     component: () => import('@/views/contractUpload/upload'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
-
+  {
+    path: '/heavyRightSupplement',
+    name: 'HeavyRightSupplement',
+    component: () => import('@/views/heavyRightSupplement/index'),
+    meta: {title: '重权补录', icon: 'dashboard'}
+  },
+  { 
+    path: '/heavyRightManage/:id',
+    name: 'HeavyRightManage',
+    component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
+    meta: {title: '重权管理', icon: 'dashboard'},
+    children:[
+      {
+        path: 'basic',
+        name: 'HeavyRightBasic',
+        component: () => import('@/views/heavyRightSupplement/manage/basic'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'a',
+        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      },
+      {
+        path: 'b',
+        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        meta: {title: '重权管理', icon: 'dashboard'},
+      }
+    ]
+   
+  },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
 ]

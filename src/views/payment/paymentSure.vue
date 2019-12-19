@@ -11,35 +11,29 @@
                   <van-col
                     span="12"
                     class="xh-top-10 xh-ellipsis"
-                  >{{ params.customerName?"客户姓名：" + params.customerName:""}}</van-col>
+                  >{{ data.projProjectInfo.customerName?"客户姓名：" + data.projProjectInfo.customerName:""}}</van-col>
                   <van-col
                     span="12"
                     class="xh-top-10 xh-text-right"
-                  >{{ params.contactPhone?"联系电话：" + params.contactPhone:"" }}</van-col>
+                  >{{ data.projProjectInfo.contactPhone?"联系电话：" + data.projProjectInfo.contactPhone:"" }}</van-col>
                 </van-row>
                 <van-row>
                   <van-col
                     span="24"
                     class="xh-top-10 xh-ellipsis"
-                  >{{ params.certificateNum?"证件号码：" + params.certificateNum+" | 身份证":"" }}</van-col>
+                  >{{ data.projProjectInfo.certificateNum?"证件号码：" + data.projProjectInfo.certificateNum+" | 身份证":"" }}</van-col>
                 </van-row>
               </div>
             </template>
           </redCard>
           <van-row class="xh-page-body">
-              <van-col
-                span="6"
-                class="xh-meun"
-                v-for="i in meunRow"
-                :key="i.id"
-                @click="meunList(i)"
-              >
-                <div class="xh-icon">
-                  <img :src="require('./../../assets/old_images/'+i.icon)" alt />
-                </div>
-                <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
-              </van-col>
-            </van-row>
+            <van-col span="6" class="xh-meun" v-for="i in meunRow" :key="i.id" @click="meunList(i)">
+              <div class="xh-icon">
+                <img :src="require('./../../assets/old_images/'+i.icon)" alt />
+              </div>
+              <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
+            </van-col>
+          </van-row>
         </div>
       </van-tab>
       <van-tab title="审批记录" name="approval">
@@ -57,6 +51,7 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
+import { getPaymentDetail, getDic } from "@/api/payment";
 const Components = [Button, Row, Col, Tab, Tabs, Cell, CellGroup];
 Components.forEach(item => {
   Vue.use(item);
@@ -80,17 +75,14 @@ export default {
           commentsDesc: "11111"
         }
       ],
-      params: {
-        customerName: "大范甘迪", //客户姓名
-        contactPhone: "444", //客户身份证
-        certificateNum: "33333" //客户手机号码
-      },
-      meunRow:[
+      params: {}, //上个页面接收的数据
+      data:{},
+      meunRow: [
         {
           name: "项目基本信息",
           key: 1,
           icon: "icon-project.png",
-          url: "/projectInfo"
+          url: "/paymentProjectInfo"
         },
         {
           name: "费用信息",
@@ -121,20 +113,38 @@ export default {
           key: 6,
           icon: "icon-gps.png",
           url: "/vehicleList"
-        },
+        }
       ]
     };
   },
   methods: {
-    meunList(row){
+    meunList(row) {
       this.$router.push({ path: row.url, query: this.params });
+    },
+    loadData() {
+      getPaymentDetail({ projectId: this.params.projectId })
+        .then(res => {
+          this.loading = false;
+          this.data = res.data;
+        })
+        .catch(e => {
+          this.loading = false;
+        });
+    },
+    loadRecord(){
+
     }
+  },
+  mounted() {
+    this.params = this.$route.query;
+    this.params.projectId = '191129536900';
+    this.loadData();//加载详情数据
   }
 };
 </script>
 <style >
-.xh-paysure-card{
-  padding:10px;
+.xh-paysure-card {
+  padding: 10px;
 }
 .xh-meun {
   text-align: center;

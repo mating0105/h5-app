@@ -163,7 +163,7 @@ export default {
           name: "担保人信息",
           key: 7,
           icon: "icon-guarantor.png",
-          url: "guarantorInfo/assureList.html"
+          url: "/guarantor"
         },
         {
           name: "担保人房产",

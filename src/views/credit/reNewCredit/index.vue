@@ -15,9 +15,9 @@
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 1rem;">
             <template v-slot:header>
-                车辆信息
+                {{dataList.carInfos.length === 0 ? '新增': ''}}车辆信息
                 <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0">
                     <van-icon name="add-o"/>
                 </div>
@@ -58,21 +58,43 @@
         </Card>
 
 
-        <Card style="margin-top: 10px;">
+        <Card style="margin-top: 1rem;">
             <template v-slot:header>
-                新增征信客户
-                <div class="card-icon">
+                征信客户
+                <div class="card-icon" @click="addPer">
                     <van-icon name="add-o"/>
                 </div>
             </template>
+            <div>
+                <van-swipe-cell v-for="(item, index) in perInfoList" :key="index">
+                    <van-cell title="客户名称:" required :border="false" :value="item.creditPersonName"/>
+                    <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum"/>
+                    <van-cell title="电话号码:" required :border="false" :value="item.telephone"/>
+                    <van-cell title="征信对象类型:" required :value="returnText(item.creditObjectType, 'credit_object_type')"/>
+                    <div slot="right" style="height: 100%">
+                        <van-button
+                                type="warning"
+                                style="height:100%;border-radius: 0;"
+                                @click="editPer(item, index)"
+                        >修改
+                        </van-button>
+                        <van-button
+                                type="danger"
+                                style="height:100%;border-radius: 0;"
+                                @click="removePer(index)"
+                        >删除
+                        </van-button>
+                    </div>
+                </van-swipe-cell>
+            </div>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+        <div class="xh-submit-box">
             <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
-                        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
+                        class="xh-btn"
             >下一步
             </van-button>
         </div>
@@ -93,7 +115,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo, createTask } from '@/api/credit'
   import { getValue, setValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
@@ -134,11 +156,25 @@
         columns: [],
         // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
         perInfoList: [], //客户下面的其他客户数据
-        errorMsg: { //必填list
-          loanPersonName: '',
-          telephone: '',// 手机号码验证
-          lpCertificateNum: '',
-        },
+        // errorMsg: { //必填list
+        //   loanPersonName: '',
+        //   telephone: '',// 手机号码验证
+        //   lpCertificateNum: '',
+        // },
+        rules: {
+          intentionPrice: [
+            {
+              required: true,
+              msg: '意向贷款金额未填'
+            }
+          ],
+          investigateBankName: [
+            {
+              required: true,
+              msg: '银行未选'
+            }
+          ],
+        }
       }
     },
     computed: {
@@ -232,7 +268,16 @@
           }
           this.loading = false
 
+          this.dataList.surDtlList.forEach(e => {
+            if (e.creditObjectType === 'borrower') {
+              this.form = e;
+            } else {
+              this.perInfoList.push(e);
+            }
+          })
+
           this.initCar()
+          this.initCustomerData()
 
           // 判断征信终止按钮隐藏和显示
           // if (this.isInternet == '0' && this.dataList.status == "05") {
@@ -252,13 +297,6 @@
           // if (!this.dataList.isSCICBC) {
           //   this.dataList.isSCICBC = '0';
           // }
-          this.dataList.surDtlList.forEach(e => {
-            if (e.creditObjectType == 'borrower') {
-              this.form = e;
-            } else {
-              this.perInfoList.push(e);
-            }
-          })
           // if (!this.form.relation) {
           //   this.form.relation = '1';
           // }
@@ -271,9 +309,9 @@
         }
       },
       initCar () {
-        if (this.$store.state.credit.carData) {
+        const carData = this.$store.state.credit.carData
+        if (carData) {
           const index = this.$store.state.credit.index
-          const carData = this.$store.state.credit.carData
           if (index === -1) {
             this.dataList.carInfos.push(carData)
           } else {
@@ -303,24 +341,33 @@
        * 下一步
        **/
       async nextStep () {
-        console.log(this.dataList)
         try {
+          if (!this.verifyForm()) {
+            return
+          }
           this.loading = true
-          await saveCreditInfo(this.dataList)
-          //todo
+          const {data} = await saveCreditInfo(this.dataList)
+
+          const query = {
+            customerId: data.customerId,
+            customerNum: data.customerNum,
+            creditRegisterId: data.creditRegisterId,
+            ...this.$route.query
+          }
           this.loading = false
           this.$nextTick(() => {
+            Toast.success('保存成功')
+          })
+          this.$nextTick(() => {
             this.$router.push({
-              path: '/creditNextStep'
+              path: '/creditNextStep',
+              query
             })
           })
-        }catch (e) {
+        } catch (e) {
           this.loading = false
           console.log(e)
         }
-        // this.$router.push({
-        //   path: '/creditNextStep'
-        // })
       },
       /**
        *  删除车
@@ -354,6 +401,50 @@
           query
         })
       },
+      addPer () {
+        const query = {
+          customerId: this.dataList.customerId,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
+          credit: true,
+        }
+        this.$router.push({
+          path: '/creatCustomer',
+          query
+        })
+      },
+      /**
+       *  编辑人员
+       *  @param per
+       *  @param index
+       **/
+      editPer (per, index) {
+        const query = {
+          customerId: this.dataList.customerId,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
+          index: index,
+          credit: true,
+          ...this.unFormatter(per)
+        }
+        this.$router.push({
+          path: '/creatCustomer',
+          query
+        })
+      },
+      /**
+       *  删除人
+       **/
+      removePer (index) {
+        Dialog.confirm({
+          title: '标题',
+          message: '弹窗内容'
+        }).then(() => {
+          this.perInfoList.splice(index, 1)
+          // this.save()
+          // on confirm
+        }).catch(() => {
+          // on cancel
+        });
+      },
       nameToString () {
         return [...arguments].map(item => item).join(' ')
       },
@@ -361,10 +452,89 @@
        * 保存数据到本地
        */
       save () {
+        this.dataList.surDtlList = [this.form, ...this.perInfoList]
         setValue("credit", JSON.stringify(this.dataList));
-      }
+      },
+      initCustomerData () {
+        let customerData = this.$store.state.credit.customerData
+        if (customerData) {
+          const index = this.$store.state.credit.index
+          customerData = this.enFormatter(customerData)
+          if (index === -1) {
+            this.perInfoList.push(customerData)
+          } else {
+            const perInfo = this.perInfoList[index]
+            if (perInfo) {
+              for (let key in customerData) {
+                if (customerData.hasOwnProperty(key)) {
+                  perInfo[key] = customerData[key] || perInfo[key]
+                }
+              }
+            }
+          }
+          this.$store.dispatch('credit/removeCustomerData')
+        }
+      },
+      enFormatter (beanData) {
+        return {
+          "sex": beanData.sex, //性别
+          "creditPersonName": beanData.customerName,//客户姓名
+          "cpCertificateNum": beanData.certificateNum,//身份证号码
+          "age": beanData.age,//年龄
+          "creditObjectType": beanData.creditObjectType,//征信对象类型
+          "perInfo": {
+            "nationName": beanData.nationName,//民族
+            "nation": beanData.nation,//民族
+            "birthday": beanData.birthday,//出生日期
+            "signOrg": beanData.signOrg//身份证签发机关
+          },
+          "familyAddress": beanData.familyAddress,//身份证住址
+          "startDate": beanData.startDate,//起始日
+          "endDate": beanData.endDate,//截止日
+          "telephone": beanData.contactPhone//手机号码
+        }
+      },
+      unFormatter (beanData) {
+        const perInfo = beanData.perInfo || {}
+        return {
+          "sex": beanData.sex, //性别
+          "birthday": perInfo.birthday,//出生日期
+          "customerName": beanData.creditPersonName,//客户姓名
+          "certificateNum": beanData.cpCertificateNum,//身份证号码
+          "age": beanData.age,//年龄
+          "creditObjectType": beanData.creditObjectType,//征信对象类型
+          "nationName": perInfo.nationName,//民族
+          "nation": perInfo.nation,//
+          "familyAddress": beanData.familyAddress,//身份证住址
+          "signOrg": perInfo.signOrg,//身份证签发机关
+          "startDate": beanData.startDate,//起始日
+          "endDate": beanData.endDate,//截止日
+          "contactPhone": beanData.telephone//手机号码
+        }
+      },
+      verifyForm () {
+        let flag = true
+        for (let key in this.rules) {
+          if (this.rules.hasOwnProperty(key)) {
+            try {
+              this.rules[key].forEach(item => {
+                if (item.required) {
+                  if (!this.dataList[key]) {
+                    this.$toast(item.msg || '提示');
+                    flag = false
+                    throw Error();
+                  }
+                }
+              })
+            } catch (e) {
+            }
+          }
+        }
+        return flag
+      },
     },
     mounted () {
+      console.log(this.$store.state.credit.customerData)
       this.getCreditInfo()
     },
     destroyed () {
@@ -377,12 +547,6 @@
 
     .label_plus .van-field__label {
         width: 9rem;
-    }
-
-    .card-icon {
-        color: rgb(196, 37, 42);
-        text-align: right;
-        float: right;
     }
 
 </style>

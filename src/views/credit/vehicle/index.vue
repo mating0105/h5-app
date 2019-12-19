@@ -18,7 +18,8 @@
                       :value="returnText(carFrom.carSpecifications, 'vehicle_specifications')" @click="loadList(12, '车辆规格', carFrom.carSpecifications)"/>
             <van-field v-if="carFrom.carNature === 'old_car'" :border="false" v-model="carFrom.chassisNumber" required clearable input-align="right"
                        label="车架号："
-                       placeholder="请输入"/>
+                       right-icon="scan"
+                       placeholder="请输入" @click-right-icon="discern"/>
             <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link
                       :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
             <van-field v-if="carFrom.carNature === 'new_car'" :border="false" v-model="carFrom.salePrice" required clearable input-align="right"
@@ -35,17 +36,17 @@
             <van-field v-model="carFrom.remark" :border="false" clearable input-align="right" label="备注："
                        placeholder="请输入"/>
         </Card>
-        <Card style="margin-top: 10px;" v-if="carFrom.carNature === 'old_car'">
+        <Card style="margin-top: 1rem;" v-if="carFrom.carNature === 'old_car'">
             <template v-slot:header>
                 车辆照片
             </template>
             <imageList :dataList="dataList"></imageList>
         </Card>
         <!-- 提交按钮 -->
-        <div style="margin-top: 45px; margin-bottom: 30px; display: flex; flex-direction: row;">
+        <div class="xh-submit-box">
             <van-button size="large"
                         @click="saveCar"
-                        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
+                        class="xh-btn"
             >保存
             </van-button>
         </div>
@@ -163,6 +164,12 @@
               msg: '车辆性质未选'
             }
           ],
+          chassisNumber: [
+            {
+              required: true,
+              msg: '车辆车架号未填'
+            }
+          ],
           carSource: [
             {
               required: true,
@@ -258,9 +265,9 @@
       },
       async initImage () {
         try {
-          await this.getDocumentByType('7777')
-          this.getDocumentByType('8888')
-          this.getDocumentByType('9999')
+          await this.getDocumentByType('7777')//发动机细节
+          this.getDocumentByType('8888')//车辆内饰
+          this.getDocumentByType('9999')//车辆外观
         } catch (e) {
           console.log(e)
         }
@@ -366,20 +373,30 @@
        * 保存车辆
        */
       saveCar () {
-        if(this.verifyForm()) {
-          this.$store.dispatch('credit/setCarData', {
-            data: this.carFrom, index: this.$route.query.index
-          })
-          this.$router.go(-1)
+        if (!this.verifyForm()) {
+          return
         }
+        this.$store.dispatch('credit/setCarData', {
+          data: this.carFrom, index: this.$route.query.index
+        })
+        this.$router.go(-1)
 
       },
+      /**
+       * 初始化数据
+       **/
       initData () {
         for (let key in this.carFrom) {
           if (this.carFrom.hasOwnProperty(key)) {
             this.carFrom[key] = this.$route.query[key] || this.carFrom[key]
           }
         }
+      },
+      /**
+       * 识别
+       */
+      discern () {
+
       }
     },
     mounted () {

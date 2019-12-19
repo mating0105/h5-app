@@ -1,19 +1,21 @@
 <template>
     <div id="nav">
         <van-nav-bar
+                id="xh-nav"
                 :title="title || $route.meta.title || ''"
                 left-text="返回"
                 left-arrow
                 @click-left="backFn ? backFn() : onClickLeft()"
         >
-            <van-icon v-if="rightFn" name="ellipsis" slot="right" @click="rightFn" size="24"/>
+            <van-icon v-if="rightFn&&iconClass" :name="iconClass" size="24" @click.stop="rightFn" slot="right"/>
+            <svg-icon v-else-if="rightFn" style="font-size: 1.8rem" @click.stop="rightFn" icon-class="filter" slot="right"/>
         </van-nav-bar>
     </div>
 </template>
 
 <script>
   import Vue from 'vue'
-  import { NavBar,Icon  } from 'vant';
+  import { NavBar, Icon } from 'vant';
 
   Vue.use(NavBar).use(Icon)
   export default {
@@ -26,7 +28,8 @@
     props: {
       backFn: Function,
       title: '',
-      rightFn:Function
+      rightFn: Function,
+      iconClass:''
     }
   }
 </script>

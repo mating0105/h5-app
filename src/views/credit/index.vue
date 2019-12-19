@@ -1,5 +1,5 @@
 <template>
-    <ViewPage>
+    <ViewPage :rightFn='rightFn'>
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
@@ -108,6 +108,7 @@
   import { mapState } from "vuex";
 
   export default {
+    name: 'creditList',
     components: {
       ViewPage,
       Card
@@ -182,6 +183,9 @@
       // 新建客户
       addClint () {
 
+      },
+      rightFn () {
+        
       }
     },
     mounted () {

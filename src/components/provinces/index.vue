@@ -20,7 +20,7 @@ export default {
   name: "mapSheet",
   props: {
     showMap: Boolean,
-    manualClose:Boolean
+    manualClose:Boolean //是否在点击遮罩层后关闭
   },
   data() {
     return {

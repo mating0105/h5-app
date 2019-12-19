@@ -127,10 +127,10 @@ export default {
         customerName: rows.customerName, //客户姓名
         contactPhone: rows.contactPhone, //客户身份证
         certificateNum: rows.certificateNum, //客户手机号码
-        id: rows.projectId,
         customerId: rows.customerId,
         customerNum: rows.customerNum,
-        projectNo: rows.projectNo
+        projectNo: rows.projectNo,
+        projectId: rows.projectId,
       }});
     },
     // 新建客户

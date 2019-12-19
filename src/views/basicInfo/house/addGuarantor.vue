@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <div class="xh-page-body xh-bg-maingray">
       <div class="xh-card">
         <van-row>
@@ -43,17 +43,18 @@
 
             <!-- 下拉选择器 -->
             <van-action-sheet v-model="selectShow" class="xh-list">
-              <van-picker show-toolbar :title="pickerTitle" :value-key="'label'" :columns="columns" @cancel="onCancel"
-                @confirm="onConfirm" />
+              <van-picker
+                show-toolbar
+                :title="pickerTitle"
+                :columns="columns"
+                :value-key="'label'"
+                @cancel="selectShow = false"
+                @confirm="onConfirm"
+              />
             </van-action-sheet>
 
             <!-- 弹出省市区 -->
-            <van-action-sheet v-model="addressShow" class="xh-list">
-              <div class="xh-list-body">
-                <van-area :area-list="areaList" :title="addressTitle" :loading="selectLoading"
-                  @confirm="addressOnCancel" @cancel="addressOnConfirm" />
-              </div>
-            </van-action-sheet>
+            <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
 
           </van-col>
         </van-row>
@@ -61,7 +62,7 @@
       <!-- 保 存按钮 -->
       <div class="xh-submit">
         <van-button size="large" class="xh-bg-main" :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="subLoading" :disabled="subDisabled" @click.native="custSubmit">保 存</van-button>
+          :loading="loading" :disabled="subDisabled" @click.native="custSubmit">保 存</van-button>
       </div>
     </div>
   </ViewPage>
@@ -81,7 +82,11 @@ import {
   Area,
   Picker
 } from "vant";
+import { getGuaranteeHouse, setGuaranteeHouse, editGuaranteeHouse } from "@/api/client";
+import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
+import Provinces from "@/components/provinces/index";
+import { mapState } from "vuex";
 const Components = [
   Dialog,
   Button,
@@ -101,6 +106,8 @@ Components.forEach(item => {
 export default {
   data() {
     return {
+      isView: 0,
+      loading: false,
       form: {
         guaranteeId: '',
         houseArea: '',
@@ -131,22 +138,154 @@ export default {
       selectLoading: true, //下拉选择 loading
       pickerTitle: '',//下拉列表title
       addressShow: false,// 城市下拉选择器显示
-      addressTitle: '',//城市下拉列表title
-      areaList: {},//城市列表 init
       columns: [], //待选择列表
-      addressList: {}, //城市列表
-
-
       // 下拉菜单 List
       guaranteeList: [],//担保人
-      subLoading: false, //提交loading
+      loading: false, // loading
       subDisabled: false, //按钮禁用状态
       projectId: '',//项目id
-      ruleData: {}
+      ruleData: {},
     }
   },
   components: {
-    ViewPage
+    ViewPage,
+    Provinces,
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
+  },
+  methods: {
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
+    loadList(key) {
+      this.pickerTitle = key;
+      switch (key) {
+        case '担保人':
+          this.selectShow = true;
+          this.columns = this.guaranteeList;
+          break;
+        case '房产性质':
+          this.selectShow = true;
+          this.columns = this.wordbook.Property_nature;
+          break;
+        case '房产区域':
+          this.selectShow = true;
+          this.columns = this.wordbook.Property_area;
+          break;
+        case '房产所在地':
+          this.addressShow = true;
+          break;
+      
+        default:
+          break;
+      }
+    },
+    loadData(id) {
+      var dataList = {
+            projectId: this.params.projectId
+          };
+      if (id) {
+        dataList.id = id;
+      }
+      getGuaranteeHouse(dataList).then(res => {
+        try {
+          let { data } = res;
+          data.listCuGuarantee.forEach(e => {
+            this.guaranteeList.push({
+              label: e.customerName,
+              value: e.id
+            })
+          })
+          if (id) {
+            this.form = res.data;
+            this.form.houseTypeDesc = this.returnText('Property_nature', this.form.houseType);
+            this.form.houseZonDesc = this.returnText('Property_area', this.form.houseZon);
+          }
+          this.form = data;
+          this.loading = false;
+        } catch {
+          this.loading = false;
+        }
+      })
+    },
+    onConfirm(rows) {
+      switch (this.pickerTitle) {
+        case "担保人":
+          this.form.cuGuaranteeName = rows.label;
+          this.form.guaranteeId = rows.value;
+          break;
+        case "房产性质":
+          this.form.houseTypeDesc = rows.label;
+          this.form.houseType = rows.value;
+          break;
+        case "房产区域":
+          this.form.houseZonDesc = rows.label;
+          this.form.houseZon = rows.value;
+          break;
+      }
+      this.selectShow = false;
+    },
+
+    // 省市区选择
+    addressOnConfirm(code, name) {
+      this.form.provCityZon = name;
+      this.form.provCityZonCode = code;
+      this.addressShow = false;
+    },
+    // 保存
+    custSubmit() {
+      // this.loading = true;
+      if(this.isView == 0) {
+        setGuaranteeHouse(this.form).then(res => {
+          try {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
+            this.loading = false;
+          } catch {
+            this.loading = false;
+          }
+        })
+      } else {
+        editGuaranteeHouse(this.form).then(res => {
+          try {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
+            this.loading = false;
+          } catch {
+            this.loading = false;
+          }
+        })
+      }
+    },
+    ruleMessge() {
+
+    }
+  },
+  mounted() {
+    this.params = this.$route.query;
+    if (this.params.id) {
+      this.isView = 1;
+      this.loadData(this.params.id)
+    } else {
+      this.loadData()
+    }
   }
 }
 </script>
