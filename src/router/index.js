@@ -213,12 +213,6 @@ export const constantRoutes = [
     meta: {title: '费用信息', icon: 'dashboard'}
   },
   {
-    path: '/walkInformation',
-    name: 'WalkInformation',
-    component: () => import('@/views/payment/walkInformation'),
-    meta: {title: '走款信息', icon: 'dashboard'}
-  },
-  {
     path: '/controlMeasure',
     name: 'ControlMeasure',
     component: () => import('@/views/payment/controlMeasure'),

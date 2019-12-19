@@ -1180,7 +1180,7 @@ export default {
       //   message: '加载中...'
       // });
       getProjectInfo({
-        id: this.params.id
+        id: this.params.projectId
       }).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {

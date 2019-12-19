@@ -29,7 +29,7 @@ export function savePay(params) {
         data: params
     })
 }
-//提交接口-创建流程
+//提交接口-业务发起走款创建流程
 export function submitPay(params) {
     return request({
         url: '/order/captureExpends/createProess',
@@ -49,7 +49,15 @@ export function submitProcess(params) {
 export function approvalRecord(params) {
     return request({
         url: '/order/projProjectWf/getPageCreditList',
-        method: 'get',
+        method: 'post',
+        data: params
+    })
+}
+//提交接口-财务确认走款
+export function submitGo(params) {
+    return request({
+        url: 'order/captureExpends/submit',
+        method: 'post',
         data: params
     })
 }
