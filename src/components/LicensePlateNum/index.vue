@@ -13,6 +13,8 @@
       :arr="cacheNumArr"
       :first="cacheFirst"
       @click="clickShowKeyboard"
+      isScan
+      @scanChange="scanChange"
     ></showList>
     <div class="plate_number">
       <van-popup
@@ -257,6 +259,10 @@ export default {
           this.numArr.pop();
         }
       }
+    },
+    // OCR识别
+    scanChange() {
+      // TODO
     },
     sub() {
       const first = this.first;

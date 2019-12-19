@@ -8,10 +8,7 @@
 
 <template>
   <div class="basic">
-    <Card
-      :bodyPadding="true"
-      class="xh-top-10"
-    >
+    <Card class="xh-top-10">
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell>
@@ -19,7 +16,7 @@
           </van-cell>
         </section>
       </template>
-      <van-row>
+      <van-row class="form-content">
         <van-col span="24">
           <van-cell
             :value="details.customerName"
@@ -124,6 +121,7 @@
           <van-col span="24">
             <van-field
               :border="false"
+              class="info"
               input-align="right"
               label="实际开票价(元):"
               label-width="120"
@@ -136,6 +134,7 @@
           </van-col>
           <van-col span="24">
             <van-cell
+              class="info"
               required
               title="车牌号:"
             >
@@ -145,6 +144,7 @@
           <van-col span="24">
             <van-field
               :border="false"
+              class="info"
               input-align="right"
               label="发动机号:"
               name
@@ -157,6 +157,7 @@
             <van-field
               :border="false"
               @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
+              class="info"
               input-align="right"
               is-link
               label="保险到期日:"
@@ -185,13 +186,14 @@
       </template>
       <van-row class="xh-right-info">
         <van-col
-          class="xh-black xh-relative xh-boder-left"
+          class="form-content xh-black xh-relative xh-boder-left"
           span="24"
         >
           <section>
             <van-field
               :border="false"
               @click="dateRowClick('mortgageTime','办理抵押上牌日期')"
+              class="info"
               input-align="right"
               is-link
               label="办理抵押上牌日期:"
@@ -206,6 +208,7 @@
           <section>
             <van-field
               :border="false"
+              class="info"
               clearable
               input-align="right"
               label="上户地点:"
@@ -218,6 +221,7 @@
             <van-field
               :border="false"
               @click="dateRowClick('transactionDate','交易日期')"
+              class="info"
               input-align="right"
               is-link
               label="交易日期:"
@@ -230,6 +234,7 @@
           </section>
           <section>
             <van-cell
+              class="info"
               required
               title="是否有套票:"
             >
@@ -245,6 +250,7 @@
             <van-field
               :border="false"
               @input="inputValue"
+              class="info"
               input-align="right"
               label="套票成交价（元）:"
               label-width="120"
@@ -259,6 +265,7 @@
           <section>
             <van-field
               :border="false"
+              class="info"
               input-align="right"
               label="与贷款金额差价（元）"
               label-width="140"
@@ -272,6 +279,7 @@
           </section>
           <section>
             <van-cell
+              class="info"
               required
               title="是否失信客户:"
             >
@@ -287,6 +295,7 @@
             <van-field
               :border="false"
               @click="dateRowClick('ownershipRegisterDate','重权登记日期')"
+              class="info"
               input-align="right"
               is-link
               label="重权登记日期:"
@@ -315,13 +324,24 @@
         v-model="currentDate"
       />
     </van-action-sheet>
+    <!-- 保 存按钮 -->
+    <div class="xh-submit xh-page-body">
+      <van-button
+        @click.native="sub"
+        class="xh-bg-main"
+        size="large"
+      >保 存</van-button>
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
-import { queryRightSuppleDetails } from "@/api/heavyRightSupplement";
+import {
+  queryRightSuppleDetails,
+  saveHeavyRightBasic
+} from "@/api/heavyRightSupplement";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
@@ -403,7 +423,6 @@ export default {
           this.details = data;
         } else {
           this.$notify({ type: "danger", message: msg });
-          this.loading = false;
         }
       });
     },
@@ -455,8 +474,19 @@ export default {
       } else {
         this.details[this.dateSelectType] = time;
       }
-
       this.datePopFlag = false;
+    },
+    // 提交表单
+    sub() {
+      saveHeavyRightBasic(this.details).then(res => {
+        const { code, data, msg } = res;
+        if (code == 200) {
+          this.$notify({ type: "success", message: msg });
+          this.goBack();
+        } else {
+          this.$notify({ type: "danger", message: msg });
+        }
+      });
     },
     cancelTime() {
       this.datePopFlag = false;
@@ -466,13 +496,20 @@ export default {
 </script>
 <style lang='scss' scoped>
 .basic {
+  .form-content {
+    padding: 10px 0;
+  }
+  .info {
+    padding-top: 0;
+    padding-bottom: 0.4rem;
+  }
+  .xh-fold-panel >>> .van-collapse-item__content {
+    padding: 10px 0 0 0;
+  }
   .xh-plus {
     span {
       color: rgb(196, 37, 42);
     }
-  }
-  .info {
-    padding: 0 0 4px 0;
   }
 }
 </style>
