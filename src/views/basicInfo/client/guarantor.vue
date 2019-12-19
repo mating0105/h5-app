@@ -3,7 +3,7 @@
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="房产信息">
+          <van-cell title="担保人信息">
             <van-icon
               slot="right-icon"
               name="plus"
@@ -14,32 +14,38 @@
         </section>
       </template>
       <div class="xh-row">
-        <div class="xh-row-col xh-swipe-button"  v-for="(i,index) in houseList" :key="index">
+        <div class="xh-row-col xh-swipe-button" v-for="(i,index) in houseList" :key="index">
           <van-swipe-cell :right-width="130">
-            <div class="xh-form-body">
-              <van-col span="24">
-                <van-col span="12">
-                  <span class="xh-main xh-title">房产所有人：</span>
-                  <span class="xh-black">{{ i.cuGuaranteeName }}</span>
-                </van-col>
-                <van-col span="12" class="xh-text-right">
-                  <span class="xh-main">{{ i.houseTypeDesc }}</span>
-                </van-col>
-              </van-col>
-              <van-col span="24" class="xh-top-10">
-                <span class="xh-main xh-title">房产所在地：</span>
-                <span class="xh-black">{{ i.provCityZon }}</span>
-              </van-col>
-            </div>
+            <section>
+              <van-cell title="担保人姓名：" :value="i.customerName" />
+            </section>
+            <section>
+              <van-cell title="证件号码：" :value="i.certificateNum" />
+            </section>
+            <section>
+              <van-cell title="是否共债人：" :value="i.isBondsDesc" />
+            </section>
+            <section>
+              <van-cell title="与客户关系：" :value="i.relationCusDesc" />
+            </section>
+            <section>
+              <van-cell title="担保人联系电话：" :value="i.contactPhone" />
+            </section>
+            <section>
+              <van-cell title="婚姻状况：" :value="i.marriageDesc" />
+            </section>
+            <section>
+              <van-cell title="户籍地址：" :value="i.pProvCityZon" />
+            </section>
             <span slot="right">
               <van-button
                 type="warning"
-                style="border-radius: 0;"
+                style="height:100%;border-radius: 0;"
                 @click.native="editList(i)"
               >修改</van-button>
               <van-button
                 type="danger"
-                style="border-radius: 0;"
+                style="height:100%;border-radius: 0;"
                 @click.native="delList(i)"
               >删除</van-button>
             </span>
@@ -106,7 +112,7 @@ export default {
       return name;
     },
     pathHouse() {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addGuarantor', query: {...this.params, type: 0 } });
     },
     loadData() {
       let obj = {
@@ -116,9 +122,12 @@ export default {
       this.loading = true;
       getGuaranteeList(obj).then(res => {
         try {
-          this.houseList = res.data.cuGuaranteeHouseList;
+          this.houseList = res.data.cuGuaranteeList;
           this.houseList.forEach(t => {
-            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
+            t.isBondsDesc = this.returnText('yes_no', t.isBonds);
+            t.relationCusDesc = this.returnText('relation_Cus', t.relationCus);
+            t.levelEducationDesc = this.returnText('DegreeOfEducation', t.levelEducation);
+            t.marriageDesc = this.returnText('marriage_type', t.marriage);
           });
           this.loading = false;
         } catch {
@@ -128,7 +137,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
     },
     // 删除
     delList(rows) {
@@ -156,17 +165,3 @@ export default {
   }
 }
 </script>
-
-
-
-<style lang="scss">
-.xh-row {
-  .xh-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-  .xh-main {
-    color: rgb(196, 37, 42);
-  }
-}
-</style>

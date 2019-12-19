@@ -1173,14 +1173,8 @@ export default {
     // 获取报单数据
     loanData() {
       this.loading = true;
-      // const toast = Toast.loading({
-      //   duration: 0, // 持续展示 toast
-      //   forbidClick: true,
-      //   overlay: true,
-      //   message: '加载中...'
-      // });
       getProjectInfo({
-        id: this.params.id
+        id: this.params.project
       }).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {
@@ -1387,7 +1381,6 @@ export default {
         } else {
           this.$notify({ type: "danger", message: msg });
           this.loading = false;
-          // Toast.clear();
         }
       });
     },

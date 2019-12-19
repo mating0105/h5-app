@@ -136,10 +136,11 @@
           </van-col>
           <van-col span="24">
             <van-cell
-              :value="item.licensePlateNum"
-              class="info"
+              required
               title="车牌号:"
-            />
+            >
+              <licensePlateNum v-model="item.licensePlateNum"></licensePlateNum>
+            </van-cell>
           </van-col>
           <van-col span="24">
             <van-field
@@ -325,17 +326,15 @@ import { queryRightSuppleDetails } from "@/api/heavyRightSupplement";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import SingleConnect from "@/components/SingleConnect/index";
+import LicensePlateNum from "@/components/LicensePlateNum/index";
 
 // 其他组件
 import {
-  Tab,
-  Tabs,
   Row,
   Col,
   Icon,
   Cell,
   Button,
-  List,
   Collapse,
   CollapseItem,
   Divider,
@@ -346,12 +345,8 @@ import {
 const Components = [
   Row,
   Col,
-  Icon,
   Cell,
   Button,
-  List,
-  Tab,
-  Tabs,
   Collapse,
   CollapseItem,
   Divider,
@@ -368,7 +363,7 @@ import { log } from "util";
 import { format } from "@/utils/format";
 export default {
   name: "basic",
-  components: { Card, SingleConnect },
+  components: { Card, SingleConnect, LicensePlateNum },
   computed: {
     ...mapState({
       wordbook: state => state.user.wordbook
@@ -388,16 +383,6 @@ export default {
       YESORNO,
       activeName: ["car"],
       details: {}
-      // form: {
-      //   mortgageTime: "", // 办理抵押上牌时间
-      //   registeredPlace: "", // 上户地点
-      //   transactionDate: "", // 交易日期
-      //   ispackage: "", // 是否有套票
-      //   packageDeal: "", // 套票成交价
-      //   differenceCarprice: "", // 与贷款金额的差价
-      //   dishonestyCustomer: "", // 是否失信客户
-      //   ownershipRegisterDate: "" // 重权登记日期
-      // }
     };
   },
   props: {},

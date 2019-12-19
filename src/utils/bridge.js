@@ -1,5 +1,6 @@
 // 与移动端桥接的公用方法
-export function setBridge(callback) {
+export function setupWebViewJavascriptBridge(callback) {
+    console.log(callback)
     var bridge = window.WebViewJavascriptBridge || window.WKWebViewJavascriptBridge
     if (bridge) {
         return callback(bridge);
@@ -22,15 +23,20 @@ export function setBridge(callback) {
     }
 }
 
-export function callBridge(name, data, callback) {
-    setBridge(function (bridge) {
-        bridge.callBridge(name,data, callback);
-    })
-}
-export function registerBridge(name, callback) {
-    setBridge(function (bridge) {
-        bridge.registerBridge(name, function (data, responseCallback) {
-            callback(data, responseCallback)
+var bridge = {
+    //通用的call方法
+    callhandler: (name, data, callback) => {
+        setupWebViewJavascriptBridge(function (bridge) {
+            bridge.callHandler(name,data, callback);
         })
-    })
+    },
+    //通用的registerHandler方法
+    registerhandler : (name, callback) => {
+        setupWebViewJavascriptBridge(function (bridge) {
+            bridge.registerHandler(name, function (data, responseCallback) {
+                callback(data, responseCallback)
+            })
+        })
+
+    },
 }
