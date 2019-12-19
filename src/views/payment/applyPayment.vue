@@ -209,7 +209,7 @@
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
-                    v-model="paymentDetail.projBudgetList.actincmAmt"
+                    v-model="actincmAmt"
                     required
                     clearable
                     label="实收金额(元)"
@@ -423,7 +423,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import imageList from "@/components/imageList";
 import ProjectInfo from "@/views/basicInfo/projectInfo/info";
 import {
-  paymentDetail,
+  getPaymentDetail,
   getDic,
   submitPay,
   savePay,
@@ -476,13 +476,12 @@ export default {
       currentDate: new Date(),
       dataList: [], //图片上传
       message: "", //意见描述
-      peopleList: [], //下一节点人数组
-      // totalCharges:'',//费用合计
+      peopleList: [] //下一节点人数组
     };
   },
   computed: {
     // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
-    totalCharges(){
+    totalCharges() {
       let estimateCharges =
         parseFloat(this.paymentDetail.projBudgetList.estimateCharges) || 0; // 评估费
       let investigateCharges =
@@ -501,17 +500,6 @@ export default {
         parseFloat(this.paymentDetail.projBudgetList.colligateCharges) || 0; //综合服务费
       let doolBail =
         parseFloat(this.paymentDetail.projBudgetList.doolBail) || 0; //上户保证金
-      console.log(
-        estimateCharges +
-          investigateCharges +
-          agreeBail +
-          collectCarDealer +
-          notarialFees +
-          allopatryCharges +
-          colligateCharges +
-          doolBail +
-          gpsCharges
-      );
       return (
         estimateCharges +
         investigateCharges +
@@ -523,6 +511,10 @@ export default {
         doolBail +
         gpsCharges
       );
+    },
+    actincmAmt() {
+      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0; //打折金额
+      return parseFloat(this.totalCharges) - dcnAmt;
     },
     wordbook() {
       return this.$store.state.user.wordbook;
@@ -542,37 +534,41 @@ export default {
       this.stepVal = val;
     },
     loadData() {
-      paymentDetail({ projectId: this.params.projectId }).then(res => {
-        try {
+      getPaymentDetail({ projectId: this.params.projectId })
+        .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
-        } catch (e) {
+        })
+        .catch(e => {
           this.loading = false;
-        }
-      });
+        });
     },
     //保存数据
     save() {
+      this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
       console.log(this.paymentDetail);
       this.loading = true;
-      savePay(this.paymentDetail).then(res => {
-        try {
+      savePay(this.paymentDetail)
+        .then(res => {
           this.loading = false;
           this.$notify({ type: "success", message: "保存成功" });
-        } catch (e) {
+          this.paymentDetail = res.data.project;
+        })
+        .catch(e => {
           this.loading = false;
-        }
-      });
+        });
     },
     //提交流程
     submit() {
       this.loading = true;
+      this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
-      submitPay(this.paymentDetail).then(res => {
-        try {
+      submitPay(this.paymentDetail)
+        .then(res => {
           this.loading = false;
           let data = res.data.users;
+          this.paymentDetail = res.data.project;
           let people = [];
           data.forEach(t => {
             people.push({
@@ -582,10 +578,10 @@ export default {
           });
           this.peopleList = people;
           this.loadType("下一节点审批人", "people");
-        } catch (e) {
+        })
+        .catch(e => {
           this.loading = false;
-        }
-      });
+        });
     },
     //上拉菜单选择
     loadType(title, field) {
@@ -681,14 +677,14 @@ export default {
             commentsDesc: this.message,
             nextUser: row.id
           };
-          submitProcess(data).then(res => {
-            try {
+          submitProcess(data)
+            .then(res => {
               this.loading = false;
               this.$notify({ type: "success", message: "流程提交成功" });
-            } catch (e) {
+            })
+            .catch(e => {
               this.loading = false;
-            }
-          });
+            });
           break;
       }
       this.show3 = false;

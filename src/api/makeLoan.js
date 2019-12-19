@@ -32,3 +32,11 @@ export function getPeople(params){
         data: params
     })
 }
+//提交流程
+export function submitProcess(params){
+    return request({
+        url:'/order/bankmakeloan/submit',
+        method: 'post',
+        data: params
+    })
+}

@@ -7,7 +7,8 @@
                 left-arrow
                 @click-left="backFn ? backFn() : onClickLeft()"
         >
-            <svg-icon v-if="rightFn" style="font-size: 1.8rem" @click.stop="rightFn" icon-class="filter" slot="right"/>
+            <van-icon v-if="rightFn&&iconClass" :name="iconClass" size="24" @click.stop="rightFn" slot="right"/>
+            <svg-icon v-else-if="rightFn" style="font-size: 1.8rem" @click.stop="rightFn" icon-class="filter" slot="right"/>
         </van-nav-bar>
     </div>
 </template>
@@ -27,7 +28,8 @@
     props: {
       backFn: Function,
       title: '',
-      rightFn: Function
+      rightFn: Function,
+      iconClass:''
     }
   }
 </script>

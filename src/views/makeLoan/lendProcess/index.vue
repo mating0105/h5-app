@@ -1,6 +1,6 @@
 <template>
-    <ViewPage :rightFn='rightFn' :backFn='backFn' :loading="listLoading" v-if="projectForm.projectInfo" id="lendProcess">
-        <van-tabs v-model="activeName">
+    <ViewPage :rightFn='rightFn' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" id="lendProcess">
+        <van-tabs v-model="activeName" v-if="projectForm.projectInfo">
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
                     <Card>
@@ -21,10 +21,10 @@
                             借款人信息
                         </template>
                         <div>
-                            <van-field label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName"/>
-                            <van-field label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" />
-                            <van-field label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" />
-                            <van-cell title="主借人性别：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.customerSex"
+                            <van-field label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"/>
+                            <van-field label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" />
+                            <van-field label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"/>
+                            <van-cell title="主借人性别：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.customerSexDesc"
                             @click="showPopupType('customerSex')" />
                             <van-field label="主借人年龄：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerAge"/>
                             <van-field label="主借人月收入（元）：" placeholder="请输入" :border="false" label-width='160' input-align="right" v-model="form.borrowerInfo.mainLoanWage"/>
@@ -51,16 +51,16 @@
                         </template>
                         <div>
                             <van-cell title="车辆类别：" :border="false" is-link required :value="item.carTypeDesc"
-                            @click="showPopupType('carType',index)" value-class='rightClass'/>
+                            @click="showPopupType('car_type',index)" value-class='rightClass' @blur.prevent="ruleMessge"/>
                             <van-cell title="车辆性质：" :border="false" is-link value-class='rightClass' required :value="item.carNatureDesc"
-                            @click="showPopupType('car_nature',index)" />
+                            @click="showPopupType('car_nature',index)" @blur.prevent="ruleMessge"/>
                             <van-cell title="车辆规格：" :border="false" is-link value-class='rightClass' required :value="item.carSpecificationsDesc"
-                            @click="showPopupType('vehicle_specifications',index)" />
-                            <van-cell title="车辆来源" :border="false" is-link value-class='rightClass' required :value="item.customerSexDesc"
-                            @click="showPopupType('CAR_SOURCE',index)" />
-                            <van-cell title="品牌型号：" :border="false" is-link value-class='rightClass' required :value="item.brndNmId" @click="selectBrand(index)"/>
-                            <van-field label="实际开票价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.actualInvoicedPrice" />
-                            <van-field label="送行车价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.seeingCarPrice"/>
+                            @click="showPopupType('vehicle_specifications',index)" @blur.prevent="ruleMessge"/>
+                            <van-cell title="车辆来源" :border="false" is-link value-class='rightClass' required :value="item.carSourceDesc"
+                            @click="showPopupType('CAR_SOURCE',index)" @blur.prevent="ruleMessge"/>
+                            <van-cell title="品牌型号：" :border="false" is-link value-class='rightClass' required :value="item.brandModel" @click="selectBrand(index)" @blur.prevent="ruleMessge"/>
+                            <van-field label="实际开票价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.actualInvoicedPrice" @blur.prevent="ruleMessge"/>
+                            <van-field label="送行车价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.seeingCarPrice" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card>
@@ -68,22 +68,22 @@
                             贷款信息
                         </template>
                         <div>
-                            <van-field label="贷款金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.loanAmt" />
-                            <van-field label="刷卡金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.floatRate" />
-                            <van-field label="评估金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required required v-model="form.loanInfo.assessmentPrice" />
-                            <van-cell title="贷款产品：" :border="false" required v-model="form.loanInfo.loanProductName" />
-                            <van-cell title="贷款银行：" :border="false" required :value="form.loanInfo.payPlatformName" />
-                            <van-field label="贷款年限：" label-width='150' placeholder="请输入" input-align="right" :border="false" required :value="form.loanInfo.loanYear" />
+                            <van-field label="贷款金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.loanAmt" @blur.prevent="ruleMessge"/>
+                            <van-field label="刷卡金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.factCharges" @blur.prevent="ruleMessge"/>
+                            <van-field label="评估金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.assessmentPrice" @blur.prevent="ruleMessge"/>
+                            <van-cell title="贷款产品：" :border="false" required @blur.prevent="ruleMessge" v-model="form.loanInfo.loanProductName" />
+                            <van-cell title="贷款银行：" :border="false" required @blur.prevent="ruleMessge" :value="form.loanInfo.payPlatformName" />
+                            <van-field label="贷款年限：" label-width='150' placeholder="请输入" input-align="right" :border="false" required :value="form.loanInfo.loanYear" @blur.prevent="ruleMessge"/>
                             <van-cell title="贷款期数：" value-class='rightClass' :border="false" required is-link :value="form.loanInfo.loanTermDesc"
-                            @click="showPopupType('period_number')" />
-                            <van-field label="贷款成数：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" />
-                            <van-field label="客户利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanRate" />
+                            @click="showPopupType('period_number')" @blur.prevent="ruleMessge"/>
+                            <van-field label="贷款成数：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" @blur.prevent="ruleMessge"/>
+                            <van-field label="客户利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanRate" @blur.prevent="ruleMessge"/>
                             <van-field label="浮息利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" v-model="form.loanInfo.floatRate" />
-                            <van-field label="公司收费利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.companyChargeRate" />
+                            <van-field label="公司收费利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.companyChargeRate" @blur.prevent="ruleMessge"/>
                             <van-field label="保费金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" v-model="form.loanInfo.premiumPrice" />
-                            <van-field label="业务选融费用（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.businessPrice" />
-                            <van-field label="资料费（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.informationPrice" />
-                            <van-field label="车款金额合计（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.carTotalPrice" />
+                            <van-field label="业务选融费用（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.businessPrice" @blur.prevent="ruleMessge"/>
+                            <van-field label="资料费（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.informationPrice" @blur.prevent="ruleMessge"/>
+                            <van-field label="车款金额合计（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.carTotalPrice" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card style="margin-top:15px;">
@@ -91,9 +91,9 @@
                             收款人信息
                         </template>
                         <div>
-                            <van-field label="收款人姓名：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptName" />
-                            <van-field label="收款人账号：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptAccount" />
-                            <van-field label="收款人银行：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank"/>
+                            <van-field label="收款人姓名：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptName" @blur.prevent="ruleMessge"/>
+                            <van-field label="收款人账号：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptAccount" @blur.prevent="ruleMessge"/>
+                            <van-field label="收款人银行：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="updateInfo" :loading='updateLoading'>下一步</van-button>
@@ -104,7 +104,7 @@
                             意见描述
                         </template>
                         <div>
-                            <van-field required :border="false" v-model="message" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit/>
+                            <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card style="margin-top:15px;">
@@ -158,10 +158,10 @@
   import brand from '@/components/carBrand/brand'
   import { getSex,getAge} from "@/utils/customer";
   import { getDic } from "@/api/createCustomer";
-  import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox} from 'vant';
-  import {loanInfoDetail,getProjectInfo,updateLoanInfo,getPeople} from '@/api/makeLoan.js'
+  import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox,Notify} from 'vant';
+  import {loanInfoDetail,getProjectInfo,updateLoanInfo,getPeople,submitProcess} from '@/api/makeLoan.js'
 
-  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox]
+  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox,Notify]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -183,6 +183,7 @@
     },
     data() {
         return {
+            iconClass:'ellipsis',
             //---tab:1--基本信息
             form:{},//车辆信息、贷款信息、收款人信息、借款人信息
             projectForm:{},//项目信息
@@ -195,8 +196,8 @@
             showBrand: false,
             showBrandSign:null,
             customerSexList:[
-                { label: '男', key: '1' },
-                { label: '女', key: '2' }
+                { label: '男', value: '1' },
+                { label: '女', value: '2' }
             ],
             columns: [],//选择项列表
             popupShow: false,
@@ -205,8 +206,8 @@
             payTypeShow: false,//走款模式判断显示，
             stepIndex:1,
             rightIcon:true,
-            message:'',
-            checked:false,
+            commentsDesc:'',//意见描述
+            checked:false,//通知业务员补充资料 true:是  false：否
             updateLoading:false,//更新
             submitLoading:false,//提交
             // ---tab:3--审批记录
@@ -282,9 +283,19 @@
                 this.title1='请选择职务'
                 this.columns = this.dictionaryData.OccupationalStatus;
                 break;
-            case 'carType'://暂未完成
+            case 'car_type':
                 this.title1='请选择车辆类型'
-                this.columns = this.dictionaryData.carType;
+                this.columns = [
+                    {
+                        values: Object.values(this.dictionaryData.car_type),
+                        className: 'column1'
+                    },
+                    {
+                        values: this.dictionaryData.car_type2,
+                        className: 'column2',
+                        defaultIndex: 0
+                    }
+                ]
                 break;
             case 'car_nature':
                 this.title1='请选择车辆性质'
@@ -317,39 +328,44 @@
                     this.projectForm.projectInfo.payType=value.label;
                     break;
                 case 'customerSex':
-                    this.form.borrowerInfo.customerSex=value.label;
+                    this.form.borrowerInfo.customerSexDesc=value.label;
+                    this.form.borrowerInfo.customerSex=value.value;
                     break;
                 case 'payment_source':
                     this.form.borrowerInfo.paymentSourceDesc=value.label;
-                    this.form.borrowerInfo.paymentSource=value.id;
+                    this.form.borrowerInfo.paymentSource=value.value;
                     break;
                 case 'OccupationalStatus':
                     this.form.borrowerInfo.postDesc=value.label;
-                    this.form.borrowerInfo.post=value.id;
+                    this.form.borrowerInfo.post=value.value;
                     break;
-                case 'carType'://暂未完成
-                    // this.form.carInfos = this.dictionaryData.carType;
+                case 'car_type':
+                    let desc=[]
+                    value.forEach((item)=>{
+                        desc.push(item.label);
+                    })
+                    this.form.carInfos[this.popupSign.value].carTypeDesc=desc.join('-');
+                    this.form.carInfos[this.popupSign.value].carType=value[0].value;
+                    this.form.carInfos[this.popupSign.value].carType2=value[1].value;
                     break;
                 case 'car_nature':
                     this.form.carInfos[this.popupSign.value].carNatureDesc=value.label;
-                    this.form.carInfos[this.popupSign.value].carNature = value.id;
+                    this.form.carInfos[this.popupSign.value].carNature = value.value;
                     break;
                 case 'vehicle_specifications':
                     this.form.carInfos[this.popupSign.value].carSpecificationsDesc = value.label;
-                    this.form.carInfos[this.popupSign.value].carSpecifications = value.id;
+                    this.form.carInfos[this.popupSign.value].carSpecifications = value.value;
                     break;
                 case 'CAR_SOURCE':
-                    this.form.carInfos[this.popupSign.value].customerSexDesc = value.label;
-                    this.form.carInfos[this.popupSign.value].customerSex = value.id;
+                    this.form.carInfos[this.popupSign.value].carSourceDesc = value.label;
+                    this.form.carInfos[this.popupSign.value].carSource = value.value;
                     break;
                 case 'period_number':
                     this.form.loanInfo.loanTermDesc = value.label;
-                    this.form.loanInfo.loanTerm = value.id;
+                    this.form.loanInfo.loanTerm = value.value;
                     break;
                 case 'submit':
-                    this.form.loanInfo.loanTermDesc = value.label;
-                    this.form.loanInfo.loanTerm = value.id;
-                    this.submitProcess();
+                    this.submitProcess(value);
                 }
         },
         //-----------省市区----------------
@@ -365,14 +381,15 @@
         getIdcard(e) {
             let sex = getSex(e.target.value);
             let age = getAge(e.target.value);
-            this.form.borrowerInfo.customerSex=this.switchSex(sex);
+            this.form.borrowerInfo.customerSex=sex;
+            this.form.borrowerInfo.customerSexDesc=this.switchSex(sex);
             this.form.borrowerInfo.customerAge = age;
         },
         //转换性别
         switchSex(sex){
             let sexText='';
             this.customerSexList.forEach((item,index)=>{
-                if(item.key==sex){
+                if(item.value==sex){
                     sexText=item.label;
                 }
             })
@@ -384,8 +401,13 @@
             this.showBrandSign=index;
         },
         changeBrand (carBrand) {
-            this.form.carInfos[this.showBrandSign].brndNmId = carBrand.model.name; 
-            // carBrand.brand.name+carBrand.series.name+carBrand.model.name
+            this.form.carInfos[this.showBrandSign].carModelId=carBrand.model.id;
+            this.form.carInfos[this.showBrandSign].brndNmId=carBrand.brand.id;
+            this.form.carInfos[this.showBrandSign].carSeriesId=carBrand.series.id;
+            this.form.carInfos[this.showBrandSign].carModel=carBrand.model.name;
+            this.form.carInfos[this.showBrandSign].carBrand=carBrand.brand.name;
+            this.form.carInfos[this.showBrandSign].carSeries=carBrand.series.name;
+            this.form.carInfos[this.showBrandSign].brandModel =carBrand.brand.name+' '+carBrand.series.name;+' '+carBrand.model.name;
         },
         //下一步
         nextStep(){
@@ -400,23 +422,24 @@
             try{
                 this.listLoading=true;
                 let para={
-                    id:36
+                    id:47
                 }
                 const data=await loanInfoDetail(para);
                 if(data.code==200){
                     this.form=data.data;
-                    this.form.borrowerInfo.customerSex=this.switchSex(data.data.borrowerInfo.customerSex);
+                    this.form.borrowerInfo.customerSexDesc=this.switchSex(data.data.borrowerInfo.customerSex);
                     this.form.borrowerInfo.paymentSourceDesc = this.returnText('payment_source', this.form.borrowerInfo.paymentSource);
                     this.form.borrowerInfo.postDesc = this.returnText('OccupationalStatus', this.form.borrowerInfo.post);
                     this.form.loanInfo.loanTermDesc=this.returnText('period_number', this.form.loanInfo.loanTerm);
                     this.form.carInfos.forEach((item,index)=>{
                         item.carNatureDesc=this.returnText('car_nature', item.carNature);
-                        item.carSpecificationsDesc=this.returnText('vehicle_specifications', item.carSpecifications);
-                        item.customerSexDesc=this.returnText('CAR_SOURCE', item.customerSex);
-                        item.carTypeDesc=this.returnText('car_type', item.carType);
+                        item.carSpecificationsDesc=this.returnText('vehicle_specifications', Number(item.carSpecifications));
+                        item.carSourceDesc=this.returnText('CAR_SOURCE', item.carSource);
+                        item.carTypeDesc=this.returnText('car_type', item.carType)+'-'+this.returnText('car_type2', item.carType2);
+                        item.brandModel =item.carBrand+' '+item.carSeries+' '+item.carModel;
                     })
                     this.getProjectInfo(data.data.borrowerInfo.projectId);
-                    this.listLoading=false;
+                    // this.listLoading=false;
                 }
             }catch(err){
                 console.log(err)
@@ -441,7 +464,7 @@
             }
         },
         //-------------------字典数据请求-------------------
-        //获取还款来源
+        //获取字典数据
         async getDictionaryData () {
             try {
                 let arr = [
@@ -475,20 +498,18 @@
         },
         //----------------更新放款结果---------------
         async updateInfo(){
-            console.log('更新');
             try{  
                 this.updateLoading=true;
-                let para={}
+                let para=Object.assign({},this.form);
                 const data=await updateLoanInfo(para);
                 if(data.code==200){
-                    console.log(data.data,'dayta')
                     this.updateLoading=false;
+                    Notify({ type: 'success', message: '保存成功' });
                     this.stepIndex++;
                 }
             }catch(err){
                 console.log(err)
                 this.updateLoading=false;
-                this.stepIndex++;
             }
             
         },
@@ -518,10 +539,39 @@
             })
         },
         //提交流程
-        submitProcess(){
-            console.log(this.form,this.projectForm,'2222222222222')
-            console.log(1111111,'1111111')
-
+        async submitProcess(nextUserObj){
+            try{  
+                let para=Object.assign({},this.form);
+                let params={
+                    businessKey:Number(this.form.borrowerInfo.bankMakeLoanId),
+                    nextUser:nextUserObj.id,
+                    commentsDesc:this.commentsDesc,
+                    isSendMsg:this.checked?1:0,
+                    receiver:this.projectForm.projectInfo.clientManager.id,
+                    msgType:'WF_BANK_MAKE_LOAN_YWY',
+                    customerNum:this.projectForm.projectInfo.customerNum,
+                    customerName:this.projectForm.projectInfo.customerName,
+                }
+                para.wfCommentInfo=params;
+                this.listLoading=true;
+                const data=await submitProcess(para);
+                if(data.code==200&&data.status){
+                    this.listLoading=false;
+                    Notify({ type: 'success', message: '流程提交成功' });
+                    setTimeout(()=>{
+                        this.$router.push({ path:'/lendProcessList'});
+                    },1000)
+                }
+            }catch(err){
+                console.log(err)
+                this.listLoading=false;
+            }
+        },
+        //规则验证
+        ruleMessge(e) {
+            let name = e.target.name;
+            let val = e.target.value;
+            // this.errorMsg[name] = this.returnMsg(name, val);
         },
     },
     created(){
@@ -549,7 +599,7 @@
 .notice{
     display:flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
 }
 .notice>p{
     margin:0;
