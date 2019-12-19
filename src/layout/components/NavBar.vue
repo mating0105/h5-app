@@ -33,7 +33,7 @@
 </script>
 
 <style scoped>
-    #nav {
-        height: 50px;
-    }
+    /*#nav {*/
+    /*    height: 50px;*/
+    /*}*/
 </style>
