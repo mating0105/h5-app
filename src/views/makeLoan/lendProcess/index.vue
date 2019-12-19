@@ -376,6 +376,17 @@
         getProvince(code,name){
             this.form.borrowerInfo[this.mapShowText]=name;
             this.mapShow = false;
+            switch(this.mapShowText){
+                case 'registerProvCityZon':
+                    this.form.borrowerInfo.registerProvCityZonCode=code;
+                    break;
+                case 'familyAddressProvCityZon':
+                    this.form.borrowerInfo.familyAddProvCityZonCode=code;
+                    break;
+                case 'customerCoProvCityZon':
+                    this.form.borrowerInfo.customerCoProvCityZonCode=code;
+                    break;
+            }
         },
         //通过身份证查性别和出生年月
         getIdcard(e) {
