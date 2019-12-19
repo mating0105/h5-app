@@ -172,7 +172,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
 import card from "@/components/card/index";
 import { format } from "@/utils/format";
-import { callBridge, registerBridge } from "@/utils/bridge";
+import bridge from "@/utils/bridge";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
@@ -353,7 +353,7 @@ export default {
     },
     //选择获取图片方式
     onSelect(e) {
-      callBridge("idCardOCR", { type: e.value }, data => {
+      bridge.callhandler("idCardOCR", { type: e.value }, data => {
         console.log(data);
       });
       this.show3 = false;

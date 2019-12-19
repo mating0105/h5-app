@@ -188,6 +188,12 @@ export const constantRoutes = [
     meta: {title: '走款确认', icon: 'dashboard'}
   },
   {
+    path: '/paymentProjectInfo',
+    name: 'PaymentProjectInfo',
+    component: () => import('@/views/payment/projectInfo'),
+    meta: {title: '项目基本信息', icon: 'dashboard'}
+  },
+  {
     path: '/costDetail',
     name: 'CostDetail',
     component: () => import('@/views/payment/costDetail'),

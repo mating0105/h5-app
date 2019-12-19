@@ -7,7 +7,7 @@ export function paymentList(params) {
         params
     })
 }
-export function paymentDetail(params) {
+export function getPaymentDetail(params) {
     return request({
         url: '/order/captureExpends',
         method: 'get',
@@ -42,6 +42,14 @@ export function submitProcess(params) {
     return request({
         url: '/order/captureExpends/submit',
         method: 'post',
+        data: params
+    })
+}
+//加载审批记录
+export function approvalRecord(params) {
+    return request({
+        url: '/order/projProjectWf/getPageCreditList',
+        method: 'get',
         data: params
     })
 }
