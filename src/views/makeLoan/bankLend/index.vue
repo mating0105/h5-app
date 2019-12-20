@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :loading='listLoading'>
+    <ViewPage :loading='listLoading' :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass">
         <van-tabs v-model="activeName" v-if="form.projectInfo">
             <van-tab title="银行审批信息" name="1" class="tabBox">
                 <!-- 客户基本信息 -->
@@ -37,7 +37,7 @@
                         银行放款信息
                     </template>
                     <div>
-                        <van-field label="主借人还款卡号：" :border="false" label-width='150' input-align="right" required v-model="bankLoanInfo.repaymentBankCardNo" />
+                        <van-field label="主借人还款卡号：" :border="false" label-width='150' input-align="right" required v-model="bankLoanInfo.repaymentBankCardNo" placeholder="请输入" />
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')"/>
                         <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
@@ -183,9 +183,31 @@ export default {
         businessKey:47,
         projectId:0,
         dataList: [],
+        iconClass:'ellipsis',
+        rightBoxList:[
+            {value:1,title:'项目基本信息'},
+            {value:2,title:'做单基本信息'},
+            {value:3,title:'客户及配偶'},
+            {value:4,title:'紧急联系人'},
+            {value:5,title:'房产信息'},
+            {value:6,title:'家庭收入'},
+            {value:7,title:'名下车辆'},
+            {value:8,title:'担保人信息'},
+            {value:9,title:'担保人房产'},
+            {value:10,title:'担保人收入'},
+            {value:11,title:'调查结论'},
+            {value:12,title:'相关文档'},
+            {value:13,title:'GPS安装信息'},
+            {value:14,title:'合同照片'},
+        ]
     };
   },
   methods: {
+    //----------导航----------------
+    goPage(item){
+        console.log(item,'item')
+
+    },
     //-----------显示选择弹框--------------
     showPopupType(type) {
         this.popupShow = true
@@ -406,7 +428,7 @@ export default {
             if(data.code==200&&data.status){
                 Notify({ type: 'success', message: '流程提交成功' });
                 setTimeout(()=>{
-                    this.$router.push({ path:'/lendProcessList'});
+                    this.$router.go(-1);
                 },1000)
                 this.submitloading=false;
             }
