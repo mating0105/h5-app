@@ -40,6 +40,17 @@
               </van-col>
             </van-row>
           </div>
+
+          <!-- 审批结论 -->
+
+          <!-- <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10" v-if="params.activityId == 'WF_PROJ_APPR_01_T04'"> -->
+          <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10">
+            <van-cell :border="false" title="审批结论" title-class="xh-blue" is-link :value="completionDesc" @click="linkCode"/>
+          </van-row>
+
+          <controlMeasure></controlMeasure>
+
+          <!-- 意见 -->
           <Card style="margin: 10px 0;">
             <template v-slot:header>意见描述</template>
             <section>
@@ -58,35 +69,40 @@
               </van-cell-group>
             </section>
           </Card>
+          <!-- 有终止的提交按钮 -->
+          <div class="xh-submit" v-if="isActive">
+            <van-row>
+              <van-col :span="4"><van-button size="large" type="default" style="color: #000;">终止</van-button></van-col>
+              <van-col :span="20"><van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button></van-col>
+            </van-row>
+          </div>
           <!-- 提交按钮 -->
-          <div class="xh-submit">
+          <div class="xh-submit" v-else>
             <van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button>
           </div>
         </div>
       </van-tab>
-      <van-tab title="征信信息" name="2"></van-tab>
-      <van-tab title="审批记录" name="3"></van-tab>
+      <van-tab title="征信信息" name="2">
+        <creditInfoTable title="人行征信" :dataList="surDtlList" type="creditResult"></creditInfoTable>
+        <creditInfoTable title="互联网查询" :dataList="surDtlList" type="bigDataResult"></creditInfoTable>
+      </van-tab>
+      <van-tab title="审批记录" name="3">
+        <ApprovalRecord></ApprovalRecord>
+      </van-tab>
     </van-tabs>
-    <van-dialog
-      v-model="showQRCode"
-      :show-confirm-button="false"
-      :show-cancel-button="false"
-      :close-on-popstate="true"
-      :close-on-click-overlay="true"
-    >
-      <!-- <van-loading /> -->
-      <img width="100%" height="100%" :src="qrCodeUrl" />
-    </van-dialog>
+
+    
+
     <!-- 弹出选项 -->
     <van-action-sheet get-container="#app" v-model="showSheet" class="xh-list">
       <div class="xh-list-body">
         <van-picker
-          :columns="peopleList"
+          :columns="columns"
           show-toolbar
           value-key="label"
-          title="下一节点处理人"
+          :title="typeTitle"
           @confirm="confirm"
-          @cancel="cancel"
+          @cancel="showSheet = false"
         />
       </div>
     </van-action-sheet>
@@ -94,16 +110,21 @@
 </template>
 <script>
 import Vue from "vue";
-import { Dialog, Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
+import { Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
 import {
   setProjectTask,
-  setProjectProcess
+  setProjectProcess,
+  isEndActive
 } from "@/api/project";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-const Components = [ Dialog, Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
+import ApprovalRecord from '@/views/basicInfo/approvalRecord';
+import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
+import controlMeasure from '@/views/basicInfo/payment/controlMeasure';
+
+const Components = [ Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -114,14 +135,17 @@ export default {
     xhBadge,
     redCard,
     ViewPage,
-    Card
+    Card,
+    ApprovalRecord,
+    creditInfoTable,
+    controlMeasure
   },
   data() {
     return {
       activeName: "1",
       selected: 1,
       showSheet: false,
-      peopleList: [], // 选人
+      columns: [],
       meunRow: [
         {
           name: "项目基本信息",
@@ -202,7 +226,17 @@ export default {
       certificateNum: "",
       showQRCode: false,
       qrCodeUrl: "",
-      loading: false
+      loading: false,
+      surDtlList: [],
+      completionList: [
+        { label: '通过', value: '01'},
+        { label: '退回', value: '03'},
+        { label: '拒绝', value: '04'}
+      ],
+      completionDesc: '通过',
+      completion: '01', // 结论
+      typeTitle: '',
+      isActive: false
     };
   },
   methods: {
@@ -210,11 +244,13 @@ export default {
       this.$toast("关闭!");
     },
     confirm(row) {
-      this.postFrom.processedBy = row.id;
-      this.postProcess();
-      this.showSheet = false;
-    },
-    cancel() {
+      if(this.typeTitle == '下一节点处理人') {
+        this.postFrom.processedBy = row.id;
+        this.postProcess();
+      } else {
+        this.completionDesc = row.label;
+        this.completion = row.value;
+      }
       this.showSheet = false;
     },
     submitTask() {
@@ -223,14 +259,14 @@ export default {
       }
       let obj = {
         conclusionCode: "01",
-        // businessKey: "2019121486",
-        businessKey: this.params.id,
+        businessKey: this.params.projectId,
         commentsDesc: this.message
       }
       setProjectTask(obj).then(res => {
         if(res.code == 200) {
           let objArr = [];
           let { data } = res;
+          this.typeTitle = '下一节点处理人';
           this.showSheet = true;
           data.list.forEach(t => {
             objArr.push({
@@ -238,7 +274,7 @@ export default {
               label: t.companyName+'-'+t.name
             })
           });
-          this.peopleList = objArr;
+          this.columns = objArr;
         } else {
           this.$notify({
             type: "danger",
@@ -273,26 +309,55 @@ export default {
     meunList(row) {
       this.$router.push({ path: row.url, query: this.params });
     },
-    getQRCode(custId, projId) {
-      requestUrl
-        .getList(
-          "/order/ws/qrcode",
-          {
-            customerId: custId,
-            projectId: projId
-          },
-          "soa"
-        )
-        .then(res => {
-          if (res.data.code == 200 && res.data.data.codeImg) {
-            this.qrCodeUrl = res.data.data.codeImg;
-            // this.qrCodeUrl = "http://192.168.0.81:8080/group2/M00/00/3C/wKgAU11k10uAFTfrAAL1NDR8bIo167.jpg";
-          }
-        });
+    // 其他情况弹出同意不同意
+    linkCode() {
+      this.typeTitle = '意见';
+      this.showSheet = true;
+      this.columns = this.completionList;
+    },
+    // 是否出现终止
+    endActive() {
+      isEndActive({
+        projId: this.params.projectId
+      }).then(res => {
+        this.isActive = res.data == '05'?true:false;
+      });
     }
   },
   mounted() {
-    this.params = this.$route.query;
+    console.log(this.$route.query);
+    let { info, dealState } = this.$route.query;
+    if(dealState) { // 待办已办进入
+      this.params = {
+        customerName: info.customerName, //客户姓名
+        contactPhone: info.contactPhone, //客户身份证
+        certificateNum: info.certificateNum, //客户手机号码
+        customerId: info.customerId,
+        customerNum: info.customerNum,
+        projectNo: info.projectNo,
+        projectId: info.businesskey,
+        isView: dealState == 3?1:0,
+        activityId: info.activityId
+      }
+      // 
+      switch (info.activityId) {
+        case 'WF_PROJ_APPR_01_T01': // 客户经理待办
+          // this.completionList.splice(this.completionList.findIndex(item => item.value === '03'), 1);
+          break;
+        case 'WF_PROJ_APPR_01_T04': // 内勤待办
+          this.completionList.splice(this.completionList.findIndex(item => item.value === '04'), 1);
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.params = this.$route.query;
+      this.endActive();
+    }
+    // this.surDtlList = {
+    //   lpCertificateNum: this.params.certificateNum,
+    //   id: this.params.customerId
+    // }; 
   }
 };
 </script>
@@ -370,5 +435,9 @@ export default {
   .xh-top-10 {
     padding: 10px 0;
   }
+}
+.xh-blue {
+  color:#c4252a;
+  font-weight: 700;
 }
 </style>

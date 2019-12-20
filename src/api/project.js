@@ -96,3 +96,11 @@ export function createNewProj(params) {
     params
   })
 }
+// 是否出现终止
+export function isEndActive(params) {
+  return request({
+    url: 'order/projProject/getProcesstype',
+    method: 'get',
+    params
+  })
+}
