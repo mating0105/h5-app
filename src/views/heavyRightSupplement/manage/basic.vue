@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 19:00:58
+ * @LastEditTime : 2019-12-20 19:04:55
  -->
 
 <template>
@@ -336,7 +336,6 @@
 </template>
 
 <script>
-import Validate from '@/utils/commonValidate';
 import Qs from "qs";
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
