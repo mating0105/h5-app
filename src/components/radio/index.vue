@@ -53,6 +53,10 @@
             color: white;
         }
 
+        &.active.is-disabled,  &.is-disabled{
+            opacity: 0.5;
+        }
+
         &:first-child {
             border-left: 1px solid #dcdfe6;
             border-radius: 6px 0 0 6px;

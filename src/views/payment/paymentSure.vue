@@ -35,6 +35,7 @@
             </van-col>
           </van-row>
         </div>
+        <div v-show="params.dealState == '1'">
         <van-cell-group :border="true" class="xh-conclusion">
           <van-cell title="审批结论" :value="conclusion" is-link @click="chooseConclusion" />
         </van-cell-group>
@@ -58,6 +59,7 @@
         </card>
         <div class="xh-submit">
           <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
+        </div>
         </div>
       </van-tab>
 
@@ -167,11 +169,11 @@ export default {
           value: "01"
         },
         {
-          name: "拒绝",
+          name: "回退",
           value: "02"
         },
         {
-          name: "回退",
+          name: "拒绝",
           value: "04"
         }
       ],
@@ -186,7 +188,10 @@ export default {
       this.$router.push({ path: row.url, query: this.params });
     },
     loadData() {
-      getPaymentDetail({ projectId: this.params.projectId })
+      getPaymentDetail({
+        projectId: this.params.info.projectId,
+        businesskey: this.params.info.businesskey
+      })
         .then(res => {
           this.loading = false;
           this.data = res.data;
@@ -209,27 +214,51 @@ export default {
     },
     //提交流程
     submit() {
-      this.loading = true;
+      let businessKey = this.params.info.businesskey;
       let data = {
-        businessKey: this.params.businessKey,
+        businessKey: businessKey,
         commentsDesc: this.message,
         conclusionCode: this.conclusionCode
       };
-      submitGo(data)
-        .then(res => {
-          this.loading = false;
-          this.$notify({ type: "success", message: "流程提交成功" });
-        })
-        .catch(e => {
-          this.loading = false;
-        });
+      if (this.conclusionCode) {
+        if (this.conclusionCode == "02") {
+          if (!this.message) {
+            this.$notify({ type: "danger", message: "请输入意见描述" });
+          } else {
+            this.loading = true;
+            submitGo(data)
+              .then(res => {
+                this.loading = false;
+                this.$notify({ type: "success", message: "流程提交成功" });
+                this.$router.go(-1);
+              })
+              .catch(e => {
+                this.loading = false;
+              });
+          }
+        } else {
+          this.loading = true;
+          if (this.message == "") {
+            data.commentsDesc = "同意";
+          }
+          submitGo(data)
+            .then(res => {
+              this.loading = false;
+              this.$notify({ type: "success", message: "流程提交成功" });
+              this.$router.go(-1);
+            })
+            .catch(e => {
+              this.loading = false;
+            });
+        }
+      } else {
+        this.$notify({ type: "danger", message: "请选择审批结论" });
+      }
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.params.projectId = "190228185906";
-    this.params.businessKey = "190412507328";
-    this.params.businessType = "08";
+    console.log(this.params);
     this.loadData(); //加载详情数据
   }
 };

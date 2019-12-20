@@ -49,8 +49,8 @@ export default {
   methods: {
     loadRecord() {
       let data = {
-        businessKey: this.params.businessKey,
-        businessType: this.params.businessType
+        businessKey: this.params.info.businessKey,
+        businessType: this.params.info.businessType
       };
       approvalRecord(data).then(res => {
         this.recordList = res.data;
@@ -71,7 +71,6 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    console.log(this.params);
     this.loadRecord(); //加载审批记录
   }
 };

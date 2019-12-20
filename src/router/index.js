@@ -102,7 +102,7 @@ export const constantRoutes = [
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
-    meta: {title: '项目报单', icon: 'dashboard'}
+    meta: {title: '项目报单', icon: 'dashboard', keepAlive: true}
   },
   {
     path: '/lendProcessList',
@@ -129,7 +129,13 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/projectInfo/index'),
     meta: {title: '新建报单', icon: 'dashboard'}
   },
-
+  
+  { 
+    path: '/customerList',
+    name: 'CustomerList',
+    component: () => import('@/views/project/customerList'),
+    meta: {title: '客户列表', icon: 'dashboard' }
+  },
   { 
     path: '/clientIndex',
     name: 'ClientIndex',
@@ -265,6 +271,12 @@ export const constantRoutes = [
     meta: {title: '相关文档', icon: 'dashboard'}
   },
   { 
+    path: '/relatedDocs',
+    name: 'RelatedDocs',
+    component: () => import('@/views/relatedDocs/relatedDocs.vue'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  { 
     path: '/creatCustomer',
     name: 'CreatCustomer',
     component: () => import('@/views/createCustomer/index'),
@@ -289,7 +301,7 @@ export const constantRoutes = [
     meta: {title: '重权补录', icon: 'dashboard'}
   },
   { 
-    path: '/heavyRightManage/:id',
+    path: '/heavyRightManage/:id/:customerNum/:customerId',
     name: 'HeavyRightManage',
     component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
     meta: {title: '重权管理', icon: 'dashboard'},
@@ -301,13 +313,15 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'a',
-        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        path: 'relatedDocs',
+        name: 'HeavyRelatedDocs',
+        component: () => import('@/views/relatedDocs/relatedDocs'),
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'b',
-        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        path: 'approval',
+        name: 'HeavyApproval',
+        component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
       }
     ]
