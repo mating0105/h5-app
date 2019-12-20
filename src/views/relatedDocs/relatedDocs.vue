@@ -1,9 +1,11 @@
 <!--
  * @Description:相关文档
+   当是查看的时候,可以使用组件的形式引入也可以使用页面的形式引入
+   当可以编辑和上传的时候,只能使用组件的形式并且,requestParams与types必传
  * @Author: shenah
  * @Date: 2019-12-20 13:26:57
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 22:27:08
+ * @LastEditTime : 2019-12-20 23:16:58
  -->
 
 <template>
@@ -36,8 +38,14 @@ export default {
   components: { Card, ImageList, Nothing },
   props: {
     requestParams: {
+      // {customerNum:'xxx',customerId:'xxxx',dealState:'3'}
       type: String,
       default: () => {}
+    },
+    types: {
+      // ['1100','0011'] => 里面的每个代表的是文档的类型
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -104,24 +112,46 @@ export default {
           Toast.clear(this.toast);
         });
     },
+    findLabel(docType) {
+      for (let i = 0; i < this.docTypes.length; i++) {
+        let one = this.docTypes[i];
+        if (one.value + "" === docType) {
+          return one;
+        }
+      }
+      return {};
+    },
     // 处理图片数据
     handleImgData(arr) {
       const { customerNum, customerId, dealState } = this.params;
       let map = new Map();
+      // 公用的参数
+      const commonParams = {
+        isRequire: true, //*是否必须
+        deletable: dealState === "1", //是否可以操作-上传和删除
+        documentType,
+        customerNum,
+        customerId,
+        kind: "1"
+      };
+      // 当可以上传或者修改的时候做处理为了防止请求回来的数据为空,而导致无法上传
+      if (dealState === "1") {
+        this.types.forEach(item => {
+          let obj = this.findLabel(item);
+          map.set(item, {
+            ...commonParams,
+            declare: obj.label, //图片描述
+            fileList: []
+          });
+        });
+      }
       arr.forEach(item => {
         const { documentType } = item;
         if (!map.has(documentType)) {
-          let obj = this.docTypes.filter(
-            one => one.value + "" === documentType
-          )[0];
+          let obj = this.findLabel(documentType);
           map.set(documentType, {
-            declare: obj && obj.label, //图片描述
-            isRequire: true, //*是否必须
-            deletable: dealState === "1", //是否可以操作-上传和删除
-            documentType,
-            customerNum,
-            customerId,
-            kind: "1",
+            ...commonParams,
+            declare: obj.label, //图片描述
             fileList: [item]
           });
         } else {
