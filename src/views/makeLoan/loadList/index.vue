@@ -109,15 +109,15 @@ export default {
             pathData:{
                 //待办路径
                 dealwith:[
-                    {name:'客户经理待办',path:'/a',params:{}},
-                    {name:'内勤待办',path:'/b',params:{}},
-                    {name:'审批官待办',path:'/c',params:{}},
-                    {name:'业务人员待办',path:'/d',params:{}},
-                    {name:'财务走款确认待办',path:'/e',params:{}},
-                    {name:'客户经理待办',path:'/f',params:{}},
-                    {name:'驻行人员待办',path:'/g',params:{}},
-                    {name:'合规文员待办',path:'/h',params:{}},
-                    {name:'驻行内勤待办',path:'/m',params:{}},
+                    {name:'客户经理待办',path:'/a',params:newParams},
+                    {name:'内勤待办',path:'/b',params:newParams},
+                    {name:'审批官待办',path:'/c',params:newParams},
+                    {name:'业务人员待办',path:'/applyPayment',params:newParams},
+                    {name:'财务走款确认待办',path:'/paymentSure',params:newParams},
+                    {name:'客户经理待办',path:'/f',params:newParams},
+                    {name:'驻行人员待办',path:'/g',params:newParams},
+                    {name:'合规文员待办',path:'/h',params:newParams},
+                    {name:'驻行内勤待办',path:'/m',params:newParams},
                 ],
                 //已办路径
                 alreadyDone:[
