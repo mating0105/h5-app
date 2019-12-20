@@ -109,7 +109,7 @@ export default {
             pathData:{
                 //待办路径
                 dealwith:[
-                    {name:'客户经理待办',path:'/a',params:newParams},
+                    {name:'客户经理待办',path:'/xhProject',params:newParams},
                     {name:'内勤待办',path:'/b',params:newParams},
                     {name:'审批官待办',path:'/c',params:newParams},
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},
@@ -128,7 +128,7 @@ export default {
                     {name:'出具抵押合同',path:'/c',params:newParams},
                     {name:'原单变更申请',path:'/d',params:newParams},
                     {name:'车易贷_征信调查',path:'/f',params:newParams},
-                    {name:'项目审批',path:'/g',params:newParams},
+                    {name:'项目审批',path:'/xhProject',params:newParams},
                     {name:'缴费走款',path:'/paymentSure',params:newParams},
                     {name:'车商准入',path:'/i',params:newParams},
                 ]
