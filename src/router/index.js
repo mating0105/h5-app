@@ -258,6 +258,12 @@ export const constantRoutes = [
     meta: {title: '相关文档', icon: 'dashboard'}
   },
   { 
+    path: '/relatedDocs',
+    name: 'RelatedDocs',
+    component: () => import('@/views/relatedDocs/relatedDocs.vue'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  { 
     path: '/creatCustomer',
     name: 'CreatCustomer',
     component: () => import('@/views/createCustomer/index'),
@@ -282,7 +288,7 @@ export const constantRoutes = [
     meta: {title: '重权补录', icon: 'dashboard'}
   },
   { 
-    path: '/heavyRightManage/:id',
+    path: '/heavyRightManage/:id/:customerNum/:customerId',
     name: 'HeavyRightManage',
     component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
     meta: {title: '重权管理', icon: 'dashboard'},
@@ -294,8 +300,9 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'a',
-        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        path: 'relatedDocs',
+        name: 'HeavyRelatedDocs',
+        component: () => import('@/views/relatedDocs/relatedDocs'),
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {

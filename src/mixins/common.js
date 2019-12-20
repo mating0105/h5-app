@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-18 17:23:21
+ * @LastEditTime : 2019-12-20 17:38:15
  */
 
 export default {
@@ -18,6 +18,10 @@ export default {
      */
     goBack(index = -1) {
       this.$router.go(index);
+    },
+    // 加载加载图片防止打包后图片的路径不对
+    loadingImg(imgName) {
+      return require(`../images/${imgName}`);
     }
   },
   filters: {
