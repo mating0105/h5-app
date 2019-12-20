@@ -28,7 +28,7 @@
                 <van-cell title="单位名称：" :value="i.companyName" />
               </section>
               <section>
-                <van-cell title="月固定收入：" :value="i.personalIncomeDesc" />
+                <van-cell title="月固定收入：" :value="i.personalIncome" />
               </section>
             </div>
             <span slot="right">
@@ -54,7 +54,7 @@
 import Vue from "vue";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-import { getGuaranteeList, deleteHouseList } from "@/api/client";
+import { getGuaranteeList, deleteGuaranteeIncome } from "@/api/client";
 import { mapState } from "vuex";
 import {
   Row,
@@ -89,6 +89,12 @@ export default {
       params: {}
     };
   },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
+  },
   methods: {
     // 字典转换
     returnText(n, val) {
@@ -112,9 +118,9 @@ export default {
       getGuaranteeList(obj).then(res => {
         try {
           this.guarantorList = res.data.cuGuaranteeIncome;
-          this.houseList.forEach(t => {
-            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
-            t.houseZonDesc = this.returnText('Property_area', t.houseZon);
+          this.guarantorList.forEach(t => {
+            t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
+            t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
           });
           this.loading = false;
         } catch {
@@ -124,11 +130,11 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 1 } });
     },
     // 删除
     delList(rows) {
-      deleteHouseList({
+      deleteGuaranteeIncome({
         id: rows.id
       }).then(res => {
         if(res.code == 200) {

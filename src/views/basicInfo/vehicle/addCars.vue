@@ -27,7 +27,7 @@
           />
         </section>
         <section>
-          <div class="van-cell van-field">
+          <!-- <div class="van-cell van-field">
             <div class="van-cell__title van-field__label">
               <span>车牌号：</span>
             </div>
@@ -50,7 +50,13 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
+          <van-cell
+            required
+            title="车牌号:"
+          >
+            <licensePlateNum v-model="formData.carNumber"></licensePlateNum>
+          </van-cell>
         </section>
 
         <section>
@@ -141,6 +147,7 @@ import {
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import brand from "@/components/carBrand/brand";
+import LicensePlateNum from "@/components/LicensePlateNum/index";
 import { setCarsfo, editCarsInfo } from "@/api/client";
 import { mapState } from "vuex";
 const Components = [
@@ -169,7 +176,8 @@ export default {
   },
   components: {
     ViewPage,
-    brand
+    brand,
+    LicensePlateNum
   },
   data() {
     return {

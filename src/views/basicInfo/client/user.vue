@@ -1,6 +1,6 @@
 <template>
   <!-- 客户及配偶 -->
-  <ViewPage>
+  <ViewPage :loading="loading">
     <div class="xh-page-body">
       <div class="xh-card-box xh-radius">
         <van-row>
@@ -311,6 +311,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       formData: {
         // 额外提交(上页传递)
         projectId: "", //项目Id
@@ -637,23 +638,23 @@ export default {
     loadClient() {
       let obj = {
         id: this.params.customerId,
-        projectId: this.params.id
+        projectId: this.params.projectId
       }
+      this.loading = true;
       getClientInfo(obj).then(res => {
-        const { code, data, msg } = res;
-        if(code == 200) {
-          this.formData = res.data;
-          this.formData.birthday = toUserCard(this.formData.certificateNum,1);
-          this.formData.marriageDesc = this.returnText('marriage_type', this.formData.marriage);
-          this.formData.levelEducationDesc = this.returnText('DegreeOfEducation', this.formData.levelEducation);
-          this.formData.childrenSituationDesc = this.returnText('children', this.formData.childrenSituation);
-          this.formData.schoolSituationDesc = this.returnText('school_Situation', this.formData.schoolSituation);
-          this.formData.spsCltrDgrDesc = this.returnText('DegreeOfEducation', this.formData.spsCltrDgr);
-          this.formData.unitCharDesc = this.returnText('unit_Property', this.formData.unitChar);
-          this.formData.spsUnitCharDesc = this.returnText('unit_Property', this.formData.spsUnitChar);
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
+        const { data } = res;
+        this.formData = data;
+        this.formData.birthday = toUserCard(this.formData.certificateNum,1);
+        this.formData.marriageDesc = this.returnText('marriage_type', this.formData.marriage);
+        this.formData.levelEducationDesc = this.returnText('DegreeOfEducation', this.formData.levelEducation);
+        this.formData.childrenSituationDesc = this.returnText('children', this.formData.childrenSituation);
+        this.formData.schoolSituationDesc = this.returnText('school_Situation', this.formData.schoolSituation);
+        this.formData.spsCltrDgrDesc = this.returnText('DegreeOfEducation', this.formData.spsCltrDgr);
+        this.formData.unitCharDesc = this.returnText('unit_Property', this.formData.unitChar);
+        this.formData.spsUnitCharDesc = this.returnText('unit_Property', this.formData.spsUnitChar); 
+        this.loading = false;
+      }).catch(()=>{
+        this.loading = false;
       });
     }
   },

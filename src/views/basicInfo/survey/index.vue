@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <ViewPage>
+  <ViewPage :loading="loading">
+    <div class="xh-page-body">
       <van-row class="xh-card-box xh-radius">
         <van-col :span="24">
           <van-cell-group :border="false">
@@ -8,49 +8,49 @@
               title="首付款是否为自有资金："
               required
               is-link
-              :value="firstFunds"
+              :value="ruleForm.firstFundsDesc"
               :border="false"
-              @click.native="loadList('首付款是否为自有资金')"
+              @click.native="loadList('首付款是否为自有资金','yes_no')"
             />
             <van-cell
               title="是否清楚车价："
               required
               is-link
               :border="false"
-              :value="clearCarPrice"
-              @click.native="loadList('是否清楚车价')"
+              :value="ruleForm.clearCarPriceDesc"
+              @click.native="loadList('是否清楚车价','yes_no')"
             />
             <van-cell
               title="是否有驾驶证："
               required
               is-link
               :border="false"
-              :value="drivingLicense"
-              @click.native="loadList('是否有驾驶证')"
+              :value="ruleForm.drivingLicenseDesc"
+              @click.native="loadList('是否有驾驶证','yes_no')"
             />
             <van-cell
               title="调查中是否有陪同："
               required
               is-link
               :border="false"
-              :value="accompany"
-              @click.native="loadList('调查中是否有陪同')"
+              :value="ruleForm.accompanyDesc"
+              @click.native="loadList('调查中是否有陪同','yes_no')"
             />
             <van-cell
               title="是否人车匹配："
               required
               is-link
-              :value="match"
+              :value="ruleForm.matchDesc"
               :border="false"
-              @click.native="loadList('是否人车匹配')"
+              @click.native="loadList('是否人车匹配','yes_no')"
             />
             <van-cell
               title="是否涉及消费返利："
               required
               is-link
               :border="false"
-              :value="rebate"
-              @click.native="loadList('是否涉及消费返利')"
+              :value="ruleForm.rebateDesc"
+              @click.native="loadList('是否涉及消费返利','yes_no')"
             />
             <div v-show="isquick">
               <van-row>
@@ -69,7 +69,7 @@
                 </van-col>
               </van-row>
               <van-field
-                v-model="realEstateReport"
+                v-model="ruleForm.houseReport"
                 class="xh-text-right"
                 required
                 label="借款人信息及房产报告:"
@@ -81,7 +81,7 @@
                 autosize
               />
               <van-field
-                v-model="debtReport"
+                v-model="ruleForm.responseReport"
                 class="xh-text-right"
                 required
                 label="借款人收入负债报告:"
@@ -93,7 +93,7 @@
                 autosize
               />
               <van-field
-                v-model="incomeReport"
+                v-model="ruleForm.gnrHsptyAndIncmRpt"
                 class="xh-text-right"
                 required
                 label="担保人房产及收入报告:"
@@ -106,7 +106,7 @@
               />
             </div>
             <van-field
-              v-model="surveyOpinion"
+              v-model="ruleForm.surveyOpinion"
               class="xh-text-right"
               required
               label="调查意见情况:"
@@ -120,7 +120,7 @@
               :error-message="errorMsg.surveyOpinion"
             />
             <van-field
-              v-model="dataDetailed"
+              v-model="ruleForm.dataDetailed"
               class="xh-text-right"
               required
               label="差资料明细:"
@@ -137,44 +137,44 @@
               title="实际调查地址："
               required
               is-link
-              v-model="investAddress"
+              v-model="ruleForm.actSurvyAdrId"
               :border="false"
-              @click="popaddress('investAddress')"
+              @click="popaddress('实际调查地址')"
             />
             <van-cell
               title="购车用途："
               is-link
-              :value="carUse"
+              :value="ruleForm.carUseDesc"
               :border="false"
-              @click.native="loadList('购车用途')"
+              @click.native="loadList('购车用途','car_use')"
             />
             <van-cell
               title="上户地："
               required
               is-link
-              v-model="homeLand"
+              v-model="ruleForm.upAccLndId"
               :border="false"
-              @click="popaddress('homeLand')"
+              @click="popaddress('上户地')"
             />
             <van-cell
               title="提供人："
               :required="bankWaterFlag"
               is-link
-              :value="providerDesc"
+              :value="ruleForm.providerDesc"
               :border="false"
-              @click.native="loadList('提供人')"
+              @click.native="loadList('提供人','provider_type')"
             />
             <van-cell
               title="姓名："
               :required="bankWaterFlag"
               is-link
-              :value="providerName"
+              :value="ruleForm.providerName"
               :border="false"
-              @click.native="loadList('姓名')"
+              @click.native="loadList('姓名','1')"
               :disabled="providerNameable"
             />
             <van-field
-              v-model="providerPhone"
+              v-model="ruleForm.providerPhone"
               :required="bankWaterFlag"
               label="手机号："
               input-align="right"
@@ -182,7 +182,7 @@
               :border="false"
             />
             <van-field
-              v-model="providerIdCard"
+              v-model="ruleForm.providerIdCard"
               :required="bankWaterFlag"
               label="身份证号："
               input-align="right"
@@ -194,7 +194,7 @@
               :required="bankWaterFlag"
               is-link
               :border="false"
-              v-model="jrnlDateStart"
+              v-model="ruleForm.jrnlDateStart"
               @click="showPopupTime('jrnlDateStart')"
             />
             <van-cell
@@ -202,11 +202,11 @@
               :required="bankWaterFlag"
               is-link
               :border="false"
-              v-model="jrnlDateEnd"
+              v-model="ruleForm.jrnlDateEnd"
               @click="showPopupTime('jrnlDateEnd')"
             />
             <van-field
-              v-model="cardNumber"
+              v-model="ruleForm.cardNumber"
               clearable
               :required="bankWaterFlag"
               input-align="right"
@@ -230,35 +230,34 @@
           @click.native="custSubmit"
         >保 存</van-button>
       </div>
-      <!-- 下拉选择器 -->
-      <van-action-sheet v-model="selectShow" class="xh-list">
-        <van-picker
-          show-toolbar
-          :title="pickerTitle"
-          :columns="columns"
-          @cancel="onCancel"
-          @confirm="onConfirm"
-        />
-      </van-action-sheet>
-      <!-- 弹出省市区 -->
-      <van-action-sheet v-model="popupShow2" title class="xh-list">
-        <div class="xh-list-body">
-          <van-area :area-list="areaList" @confirm="confirmSelect" @cancel="cancelSelect" />
-        </div>
-      </van-action-sheet>
-      <!-- 时间选择器 -->
-      <van-popup position="bottom" :overlay="true" v-model="popupShow3">
-        <van-datetime-picker
-          :title="title2"
-          type="date"
-          :formatter="formatter"
-          v-model="currentDate"
-          @confirm="confirmTime"
-          @cancel="cancelTime"
-        />
-      </van-popup>
-    </ViewPage>
-  </div>
+    </div>
+
+    <!-- 下拉选择器 -->
+    <van-action-sheet v-model="selectShow" class="xh-list">
+      <van-picker
+        show-toolbar
+        :title="pickerTitle"
+        :columns="columns"
+        :value-key="'label'"
+        @cancel="selectShow = false"
+        @confirm="onConfirm"
+      />
+    </van-action-sheet>
+
+    <!-- 弹出省市区 -->
+    <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
+    <!-- 时间选择器 -->
+    <van-popup position="bottom" :overlay="true" v-model="popupShow3">
+      <van-datetime-picker
+        :title="title2"
+        type="date"
+        :formatter="formatter"
+        v-model="currentDate"
+        @confirm="confirmTime"
+        @cancel="cancelTime"
+      />
+    </van-popup>
+  </ViewPage>
 </template>
 
 <script>
@@ -266,6 +265,9 @@ import Vue from "vue";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
+import Provinces from "@/components/provinces/index";
+import { getSurveyInfo, getProvider, getProviderSecurity, getCheckReport } from "@/api/client";
+import { mapState } from "vuex";
 // 其他组件
 import {
   Row,
@@ -280,6 +282,7 @@ import {
   CellGroup,
   Picker
 } from "vant";
+import { isArray } from 'util';
 const Components = [
   Row,
   Col,
@@ -300,10 +303,18 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage
+    ViewPage,
+    Provinces
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
   },
   data() {
     return {
+      loading: false, // loading
       id: "",
       projectId: "", // 项目的id
       customerId: "", // 客户id
@@ -397,7 +408,27 @@ export default {
         responseReport: "",
         upAccLnd: ""
       },
-      ruleData: {}
+      ruleData: {},
+
+
+      ruleForm: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+        actSurvyAdrId: '',
+        time: [],
+        customerName: "",
+        certificateNum: "",
+        contactPhone: "",
+        upAccLndId: ""
+      },
+      addressShow: false,
+      providerList: [], // 提供人
     };
   },
   methods: {
@@ -407,226 +438,105 @@ export default {
       });
     },
     loadData() {
-      requestUrl
-        .getList("/carloan/projProjectInfo/getProjConclusion", {
-          projectId: this.projectId,
-          customerId: this.customerId
-        })
-        .then(res => {
-          if (res.data.code == "SYS.200") {
-            let { data } = res.data;
-            this.id = data.id;
-            this.firstFunds = this.changeCode(data.paymentOwnCapital, false); // 首付款是否为自有资金
-            this.clearCarPrice = this.changeCode(data.clearCarPrice, false); // //是否清楚车价
-            this.drivingLicense = this.changeCode(data.driveLicence, false); // 是否有驾驶证
-            this.accompany = this.changeCode(data.accompany, false); // 是否有陪同
-            this.match = this.changeCode(data.selfUsecar, false); // 是否人车匹配
-            this.rebate = this.changeCode(data.involveConsumeRebate, false); // 是否涉及消费返利
-            this.realEstateReport = data.houseReport; // 借款人信息及房产报告
-            this.debtReport = data.responseReport; // 借款人收入负债报告
-            this.incomeReport = data.gnrHsptyAndIncmRpt; // 担保人房产及收入报告
-            this.surveyOpinion = data.inveInfo; // 调查意见情况
-            this.dataDetailed = data.infoDetail; // 差资料明细
-            this.investAddress = data.actSurvyAdr; // 实际调查地址
-            this.actSurvyAdrCode = data.actSurvyAdrCode;
-            this.upAccLndCode = data.upAccLndCode;
-            this.cardNumber = data.jrnlCardno; // 流水卡号
-            this.homeLand = data.upAccLnd; // 上户地
-            this.flowDate = data.jrnlDate; // 流水日期起止
-            this.jrnlDateStart = data.jrnlDateStart; //开始时间
-            this.jrnlDateEnd = data.jrnlDateEnd; //结束时间
-            this.provider = data.provider; //提供人表示
-            this.providerDesc = subParame("credit_object_type", this.provider); //提供人
-            this.providerName = data.providerName;
-            this.providerIdCard = data.providerIdCard;
-            this.providerPhone = data.providerPhone;
-            (this.carUse = this.carDes(data.carUse, false)), // 购车用途code
-              (this.isQuickadjust = data.isQuickadjust); //是否快提快调
-            //是否快提快调
-            if (data.isQuickadjust == 1) {
-              this.isquick = false;
-            } else {
-              this.isquick = true;
-            }
-            //流水是否必填
-            if (data.bankWaterFlag == 1) {
-              this.bankWaterFlag = true;
-            } else {
-              this.bankWaterFlag = false;
-            }
-          } else {
-            this.$toast({
-              position: "top",
-              message: "数据获取失败，" + res.data.message
-            });
-          }
-        })
-        .catch(function(error) {});
-      //提供人信息
-      requestUrl
-        .postList("/carloan/projProjectInfo/searchProvider", {
-          projectId: this.projectId
-        })
-        .then(res => {
-          if (res.code == "SYS.200") {
-            console.log("providerObj", res.data);
-            this.providerObj = res.data;
-          } else {
-          }
+      getSurveyInfo({
+        projectId: this.params.projectId,
+        customerId: this.params.customerId
+      })
+      .then(res => {
+        const { projConclusion } = res.data;
+        this.isQuickadjust = projConclusion.isQuickadjust;
+        this.ruleForm = {
+          ...projConclusion,
+          actSurvyAdrId: [],
+          time: []
+        };
+        if (this.ruleForm.jrnlDateStart) {
+          this.ruleForm.time = [
+            this.ruleForm.jrnlDateStart,
+            this.ruleForm.jrnlDateEnd
+          ];
+        }
         })
         .catch(function(error) {});
     },
 
-    loadList(val) {
-      switch (val) {
-        case "首付款是否为自有资金":
-          this.columns = this.whetherList;
-          this.pickerTitle = "首付款是否为自有资金";
-          break;
-        case "是否清楚车价":
-          this.columns = this.whetherList;
-          this.pickerTitle = "是否清楚车价";
-          break;
-        case "是否有驾驶证":
-          this.columns = this.whetherList;
-          this.pickerTitle = "是否有驾驶证";
-          break;
-        case "调查中是否有陪同":
-          this.columns = this.whetherList;
-          this.pickerTitle = "调查中是否有陪同";
-          break;
-        case "是否人车匹配":
-          this.columns = this.whetherList;
-          this.pickerTitle = "是否人车匹配";
-          break;
-        case "是否涉及消费返利":
-          this.columns = this.whetherList;
-          this.pickerTitle = "是否涉及消费返利";
-          break;
-        case "购车用途":
-          this.columns = this.carUseList;
-          this.pickerTitle = "购车用途";
-          break;
-        case "提供人":
-          this.columns = this.providerList;
-          this.pickerTitle = "提供人";
-          break;
-        case "姓名":
-          // if (this.providerNameable == true) {
-          //   return
-          // } else {
-          var namelist = [];
-          if (
-            this.provider == "borrower" &&
-            this.providerObj.borrower != null
-          ) {
-            namelist.push({
-              text: this.providerObj.borrower.customerName,
-              key: "borrower"
-            });
-          } else if (
-            this.provider == "borrowerSpouse" &&
-            this.providerObj.borrowerSpouse != null
-          ) {
-            namelist.push({
-              text: this.providerObj.borrowerSpouse.customerName,
-              key: "borrowerSpouse"
-            });
-          } else if (this.provider == "security") {
-            this.providerObj.security.forEach(e => {
-              namelist.push({ text: e.customerName, key: "security" });
-            });
-          } else if (this.provider == "securitySpouse") {
-            this.providerObj.securitySpouse.forEach(e => {
-              namelist.push({ text: e.customerName, key: "securitySpouse" });
-            });
-          }
-          this.columns = namelist;
-          this.pickerTitle = "姓名";
-          // }
-
-          break;
+    loadList(val,name) {
+      this.pickerTitle = val;
+      if(name == '1') {
+        console.log(this.providerList);
+        if(this.providerList.length == 0) return
+        this.selectShow = true;
+        this.columns = this.providerList;
+      } else {
+        this.selectShow = true;
+        this.columns = this.wordbook[name];
       }
-      this.selectShow = true;
     },
-    onConfirm(value, index) {
-      this.selectShow = false;
+    onConfirm(rows) {
       switch (this.pickerTitle) {
         case "首付款是否为自有资金":
-          this.firstFunds = value;
+          this.ruleForm.firstFunds = rows.value;
+          this.ruleForm.firstFundsDesc = rows.label;
           break;
         case "是否清楚车价":
-          this.clearCarPrice = value;
+          this.ruleForm.clearCarPrice = rows.value;
+          this.ruleForm.clearCarPriceDesc = rows.label;
           break;
         case "是否有驾驶证":
-          this.drivingLicense = value;
+          this.ruleForm.drivingLicense = rows.value;
+          this.ruleForm.drivingLicenseDesc = rows.label;
           break;
         case "调查中是否有陪同":
-          this.accompany = value;
+          this.ruleForm.accompany = rows.value;
+          this.ruleForm.accompanyDesc = rows.label;
           break;
         case "是否人车匹配":
-          this.match = value;
+          this.ruleForm.match = rows.value;
+          this.ruleForm.matchDesc = rows.label;
           break;
         case "是否涉及消费返利":
-          this.rebate = value;
+          this.ruleForm.rebate = rows.value;
+          this.ruleForm.rebateDesc = rows.label;
           break;
         case "购车用途":
-          this.carUse = value;
+          this.ruleForm.carUse = rows.value;
+          this.ruleForm.carUseDesc = rows.label;
           break;
         case "提供人":
-          this.provider = value.key;
-          this.providerDesc = value.text;
-          this.providerName = "";
-          this.providerIdCard = "";
-          this.providerPhone = "";
-          if (value.key == "borrower") {
-            this.providerNameable = true;
-            this.providerName = this.providerObj.borrower.customerName;
-            this.providerIdCard = this.providerObj.borrower.certificateNum;
-            this.providerPhone = this.providerObj.borrower.contactPhone;
-          } else if (value.key == "borrowerSpouse") {
-            this.providerNameable = true;
-            this.providerName = this.providerObj.borrowerSpouse.customerName;
-            this.providerIdCard = this.providerObj.borrowerSpouse.certificateNum;
-            this.providerPhone = this.providerObj.borrowerSpouse.contactPhone;
-          } else if (
-            value.key == "security" &&
-            this.providerObj.security.length == 1
-          ) {
-            this.providerNameable = false;
-            this.providerName = this.providerObj.security[0].customerName;
-            this.providerIdCard = this.providerObj.security[0].certificateNum;
-            this.providerPhone = this.providerObj.security[0].contactPhone;
-          } else if (
-            value.key == "securitySpouse" &&
-            this.providerObj.securitySpouse.length == 1
-          ) {
-            this.providerNameable = false;
-            this.providerName = this.providerObj.securitySpouse[0].customerName;
-            this.providerIdCard = this.providerObj.securitySpouse[0].certificateNum;
-            this.providerPhone = this.providerObj.securitySpouse[0].contactPhone;
+          this.ruleForm.provider = rows.value;
+          this.ruleForm.providerDesc = rows.label;
+          if(rows.value == 'borrower' || rows.value == 'borrowerSpouse') {
+            this.getProviderList(rows.value);
+          } else {
+            this.getProviderSecurityList(rows.value);
           }
           break;
         case "姓名":
-          this.providerName = value.text;
-          if (value.key == "security") {
-            this.providerIdCard = this.providerObj.security[
-              index
-            ].certificateNum;
-            this.providerPhone = this.providerObj.security[index].contactPhone;
-          } else if (value.key == "securitySpouse") {
-            this.providerIdCard = this.providerObj.securitySpouse[
-              index
-            ].certificateNum;
-            this.providerPhone = this.providerObj.securitySpouse[
-              index
-            ].contactPhone;
-          }
+          this.ruleForm.provider = rows.value;
+          this.ruleForm.providerName = rows.label;
           break;
       }
-    },
-    onCancel() {
       this.selectShow = false;
+    },
+    // 省市区选择
+    popaddress(des) {
+      this.pickerTitle = des;
+      this.addressShow = true;
+    },
+    // 省市区选择确定
+    addressOnConfirm(code, name) {
+      switch (this.pickerTitle) {
+        case '实际调查地址':
+          this.ruleForm.actSurvyAdrId = code;
+          break;
+        case '上户地':
+          this.ruleForm.upAccLndId = code;
+          break;
+      
+        default:
+          break;
+      }
+      this.addressShow = false;
     },
     //显示时间弹框
     showPopupTime(type) {
@@ -666,123 +576,20 @@ export default {
     cancelTime() {
       this.popupShow3 = false;
     },
-    // 省市区选择
-    addressList() {
-      this.areaList.province_list = province;
-      this.areaList.city_list = city;
-      this.areaList.county_list = area;
-    },
-    confirmSelect(list) {
-      let name = [];
-      let addId = [];
-      let a1, a2, a3;
-      list.forEach(e => {
-        if (e != undefined) {
-          name.push(e.name);
-          addId.push(e.code);
-        }
-      });
-      if (addId.length > 2 || addId.length === 2) {
-        a2 = realCity(name[1]);
-      }
-      a1 = addId[0];
-      a3 = addId[2];
-      switch (this.addressType) {
-        case "investAddress":
-          this.actSurvyAdrCode =
-            a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
-          this.investAddress = name.join("-");
-          break;
-        case "homeLand":
-          this.upAccLndCode = a1 + (a2 ? "-" + a2 : "") + (a3 ? "-" + a3 : "");
-          this.homeLand = name.join("-");
-          break;
-        default:
-      }
-      this.popupShow2 = false;
-    },
-    popaddress(des) {
-      this.popupShow2 = true;
-      this.addressType = des;
-    },
     cancelSelect() {
       this.popupShow2 = false;
     },
+    // 生成调查报告
     scbgComit() {
-      // 生成调查报告
-      this.scbgLoading = true;
-      this.scbgDisabled = true;
-      setTimeout(() => {
-        this.scbgLoading = false;
-        this.scbgDisabled = false;
-      }, 1000);
-      requestUrl
-        .getList("/carloan/projProjectInfo/createCheckReportMob", {
-          projectId: this.projectId
-        })
-        .then(res => {
-          if (res.data.code === "SYS.200") {
-            let { data } = res.data;
-            this.realEstateReport = data.houseReport; //借款人信息及房产报告
-            this.debtReport = data.responseReport; //借款人收入负债报告
-            this.incomeReport = data.gnrHsptyAndIncmRpt; //担保人房产及收入报告
-          } else {
-            this.$toast(res.data.message);
-          }
-        });
-    },
-    changeCode(str, flag = true) {
-      // 改变是否的编码
-      if (flag) {
-        return str === "是" ? 1 : 0;
-      }
-      return str * 1 === 1 ? "是" : "否";
-    },
-    changePeopleCode(str, flag = true) {
-      // 改变提供人的code
-      if (flag) {
-        // return str === '本人' ? 'oneself' : 'spouse'
-        return str ? (str === "本人" ? "oneself" : "spouse") : "";
-      }
-      return str === "oneself" ? "本人" : str === "spouse" ? "配偶" : "";
-    },
-    carDes(val, flag = true) {
-      if (flag == false) {
-        switch (val) {
-          case "01":
-            return "自用";
-            break;
-          case "02":
-            return "营运";
-            break;
-          case "03":
-            return "抵债";
-            break;
-          case "04":
-            return "外省用车";
-            break;
-          case "05":
-            return "二手车套现";
-            break;
-        }
-      }
-      switch (val) {
-        case "自用":
-          return "01";
-          break;
-        case "营运":
-          return "02";
-          break;
-        case "抵债":
-          return "03";
-          break;
-        case "外省用车":
-          return "04";
-          break;
-        case "二手车套现":
-          return "05";
-          break;
-      }
+      getCheckReport({
+        projectId: this.params.projectId,
+        customerId: this.params.customerId
+      }).then(res => {
+        let { data } = res;
+        this.ruleForm.houseReport = data.houseReport;  //借款人信息及房产报告
+        this.ruleForm.responseReport = data.responseReport;  //借款人收入负债报告
+        this.ruleForm.gnrHsptyAndIncmRpt = data.gnrHsptyAndIncmRpt; //担保人房产及收入报告
+      });
     },
     // submit
     submitWay() {
@@ -986,17 +793,51 @@ export default {
             this.$toast(res.data.message);
           }
         });
+    },
+
+    // 获取主借人和配偶的姓名
+    getProviderList(val) {
+      getProvider({
+        provider: val,
+        projectId: this.params.projectId
+      }).then(res => {
+        let arr = [];
+        if(res.data) {
+          let list = Array.isArray(res.data)?res.data:[res.data];
+          list.forEach(t => {
+            arr.push({
+              label: t.customerName,
+              value: t.customerName,
+            });
+          });
+        }
+        this.providerList = arr;
+      });
+    },
+    // 获取担保人和配偶的姓名
+    getProviderSecurityList(val) {
+      getProviderSecurity({
+        provider: val,
+        projectId: this.params.projectId
+      }).then(res => {
+        let arr = [];
+        if(res.data) {
+          let list = Array.isArray(res.data)?res.data:[res.data];
+          list.forEach(t => {
+            arr.push({
+              label: t.customerName,
+              value: t.customerName,
+            });
+          });
+        }
+        this.providerList = arr;
+      });
     }
+
   },
   mounted() {
-    // let params = commonFun.urlParam(location.search);
-    // this.projectId = params.projectId;
-    // this.customerId = params.customerId;
-    // token = params.token;
-    // publicData();
-    // this.loadData(); // 初始化数据
-    // this.rulesForm();
-    // this.addressList();
+    this.params = this.$route.query;
+    // this.loadData();
   }
 };
 </script>

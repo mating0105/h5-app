@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
@@ -89,7 +89,8 @@ Components.forEach(item => {
 export default {
   data() {
     return {
-      houseList: []
+      houseList: [],
+      loading: false
     }
   },
   computed: {
@@ -120,20 +121,17 @@ export default {
       let obj = {
         customerId: this.params.customerId
       }
+      this.loading = true;
       getHouseList(obj).then(res => {
-        if(res.code == 200) {
-          this.houseList = res.data;
-          this.houseList.forEach(t => {
-            t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
-            t.houseZonDesc = this.returnText('Property_area', t.houseZon);
-          });
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
-      })
+        this.houseList = res.data;
+        this.houseList.forEach(t => {
+          t.houseTypeDesc = this.returnText('Property_nature', t.houseType);
+          t.houseZonDesc = this.returnText('Property_area', t.houseZon);
+        });
+        this.loading = false;
+      }).catch(()=>{
+        this.loading = false;
+      });
     },
     // 修改
     editList(rows) {
@@ -141,21 +139,18 @@ export default {
     },
     // 删除
     delList(rows) {
+      this.loading = true;
       deleteHouseList({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loading = false;
+        this.loadData();
+      }).catch(()=>{
+        this.loading = false;
       });
     }
   },

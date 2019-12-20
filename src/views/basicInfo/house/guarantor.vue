@@ -54,7 +54,7 @@
 import Vue from "vue";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-import { getGuaranteeList, deleteGuaranteeList } from "@/api/client";
+import { getGuaranteeList, deleteGuaranteeHouse } from "@/api/client";
 import { mapState } from "vuex";
 import {
   Row,
@@ -128,25 +128,22 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, type: 1 } });
     },
     // 删除
     delList(rows) {
-      deleteGuaranteeList({
+      this.loading = true;
+      deleteGuaranteeHouse({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loading = false;
+        this.loadData();
+      }).catch(()=>{
+        this.loading = false;
       });
     }
   },

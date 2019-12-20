@@ -133,7 +133,7 @@ export function editCarsInfo(params) {
   })
 }
 // ---------------------------------------- 担保人
-// 获取担保人列表
+// 获取担保人列表 包括房产 收入
 export function getGuaranteeList(params) {
   return request({
     url: '/order/cuGuarantee/findCuGuaranteeDetail',
@@ -157,7 +157,7 @@ export function setGuaranteeInfo(params) {
     data: params
   })
 }
-// 删除名下车辆列表信息
+// 删除担保人列表信息
 export function deleteGuaranteeList(params) {
   return request({
     url: '/order/cuGuarantee/deleteGuarantee',
@@ -165,6 +165,7 @@ export function deleteGuaranteeList(params) {
     params
   })
 }
+// ----------- 房产 -----------
 // 获取担保人房产详情
 export function getGuaranteeHouse(params) {
   return request({
@@ -189,4 +190,79 @@ export function editGuaranteeHouse(params) {
     data: params
   })
 }
+// 删除担保人房产信息
+export function deleteGuaranteeHouse(params) {
+  return request({
+    url: '/customer/cs/cuPersonalHouse/delete',
+    method: 'get',
+    params
+  })
+}
+// ----------- 收入 -----------
+// 获取担保人收入详情
+export function getGuaranteeIncome(params) {
+  return request({
+    url: '/order/cuGuarantee/guaranteeIncomeDtl',
+    method: 'get',
+    params
+  })
+}
+// 保存担保人收入信息
+export function setGuaranteeIncome(params) {
+  return request({
+    url: "/customer/cs/cuIncomeDtl/insert",
+    method: 'post',
+    data: params
+  })
+}
+// 修改担保人收入信息
+export function editGuaranteeIncome(params) {
+  return request({
+    url: "/customer/cs/cuIncomeDtl/update",
+    method: 'post',
+    data: params
+  })
+}
+// 删除担保人收入信息
+export function deleteGuaranteeIncome(params) {
+  return request({
+    url: '/customer/cs/cuIncomeDtl/delete',
+    method: 'get',
+    params
+  })
+}
+// ------------------------------------------ 调查结论
+// 获取调查结论
+export function getSurveyInfo(params) {
+  return request({
+    url: '/order/projConclusion/form',
+    method: 'get',
+    params
+  })
+}
+// 获取调查结论主借人姓名 
+export function getProvider(params) {
+  return request({
+    url: '/order/projConclusion/getProvider',
+    method: 'get',
+    params
+  })
+}
+// 获取调查结论担保人姓名 
+export function getProviderSecurity(params) {
+  return request({
+    url: '/order/projConclusion/getProviderSecurity',
+    method: 'get',
+    params
+  })
+}
+// 生成调查报告
+export function getCheckReport(params) {
+  return request({
+    url: '/order/projConclusion/createCheckReport',
+    method: 'get',
+    params
+  })
+}
+
 

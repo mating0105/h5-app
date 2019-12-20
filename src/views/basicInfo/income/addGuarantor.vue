@@ -1,25 +1,25 @@
 <template>
   <ViewPage :loading="loading">
-    <div class="xh-page-body xh-bg-maingray">
-      <div class="xh-card">
+    <div class="xh-page-body">
+      <div class="xh-card-box xh-radius">
         <van-row>
           <van-col :span="24">
             <section>
-              <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人')" />
+              <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人', '1')" />
             </section>
             <section>
-              <van-cell title="收入人：" required is-link :value="form.incomePeopleDesc" @click.native="loadList('收入人')" />
+              <van-cell title="收入人：" required is-link :value="form.incomePeopleDesc" @click.native="loadList('收入人', 'income_person')" />
             </section>
             <section>
               <van-cell title="职业状况：" required is-link :value="form.occupationalStatusDesc"
-                @click.native="loadList('职业状况')" />
+                @click.native="loadList('职业状况','OccupationalStatus')" />
             </section>
             <div v-if="form.occupationalStatus != 6">
               <section>
-                <van-cell title="单位性质：" required is-link :value="form.unitCharDesc" @click.native="loadList('单位性质')" />
+                <van-cell title="单位性质：" required is-link :value="form.unitCharDesc" @click.native="loadList('单位性质','unit_Property')" />
               </section>
               <section>
-                <van-cell title="行业领域：" required is-link :value="form.idyDmnDesc" @click.native="loadList('行业领域')" />
+                <van-cell title="行业领域：" required is-link :value="form.idyDmnDesc" @click.native="loadList('行业领域','belong_industry')" />
               </section>
               <section>
                 <van-field name="companyName" v-model="form.companyName" clearable required label="单位名称：" input-align="right"
@@ -30,7 +30,7 @@
                   @blur.prevent="ruleMessge" :error-message="errorMsg.companyTel" />
               </section>
               <section>
-                <van-cell title="单位地址：" is-link :value="form.provCityZon" @click.native="loadList('单位地址')" />
+                <van-cell title="单位地址：" is-link :value="form.provCityZon" @click.native="addressShow = true" />
               </section>
               <section>
                 <van-field name="detailAddress" v-model="form.detailAddress" clearable label="详细地址：" input-align="right"
@@ -46,10 +46,10 @@
               </section>
               <section>
                 <van-cell title="月固定收入状况：" is-link :value="form.personalIncomeStatusDesc"
-                  @click.native="loadList('月固定收入状况')" />
+                  @click.native="loadList('月固定收入状况','IncomeStatus')" />
               </section>
               <section>
-                <van-cell title="收入佐证：" is-link :value="form.incomeEvidenceDesc" @click.native="loadList('收入佐证')" />
+                <van-cell title="收入佐证：" is-link :value="form.incomeEvidenceDesc" @click.native="loadList('收入佐证','income_prove')" />
               </section>
               <section>
                 <van-field v-model="form.remark" clearable label="备注" input-align="right" placeholder="请输入备注" />
@@ -96,7 +96,7 @@ import {
   Area,
   Picker
 } from "vant";
-import { getGuaranteeHouse, setGuaranteeHouse, editGuaranteeHouse } from "@/api/client";
+import { getGuaranteeIncome, setGuaranteeIncome, editGuaranteeIncome } from "@/api/client";
 import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
@@ -182,37 +182,24 @@ export default {
       });
       return name;
     },
-    loadList(key) {
+    loadList(key, name) {
       this.pickerTitle = key;
-      switch (key) {
-        case '担保人':
-          this.selectShow = true;
-          this.columns = this.guaranteeList;
-          break;
-        case '房产性质':
-          this.selectShow = true;
-          this.columns = this.wordbook.Property_nature;
-          break;
-        case '房产区域':
-          this.selectShow = true;
-          this.columns = this.wordbook.Property_area;
-          break;
-        case '房产所在地':
-          this.addressShow = true;
-          break;
-      
-        default:
-          break;
+      this.selectShow = true;
+      if(name == '1') {
+        this.columns = this.guaranteeList;
+      } else {
+        this.columns = this.wordbook[name];
       }
     },
     loadData(id) {
       var dataList = {
             projectId: this.params.projectId
           };
-      if (id) {
-        dataList.id = id;
-      }
-      getGuaranteeHouse(dataList).then(res => {
+        if (id) {
+          dataList.id = id;
+        }
+      this.loading = true;
+      getGuaranteeIncome(dataList).then(res => {
         try {
           let { data } = res;
           data.listCuGuarantee.forEach(e => {
@@ -222,11 +209,14 @@ export default {
             })
           })
           if (id) {
-            this.form = res.data;
-            this.form.houseTypeDesc = this.returnText('Property_nature', this.form.houseType);
-            this.form.houseZonDesc = this.returnText('Property_area', this.form.houseZon);
+            this.form = data;
+            this.form.incomePeopleDesc = this.returnText('income_person', this.form.incomePeople);
+            this.form.occupationalStatusDesc = this.returnText('OccupationalStatus', this.form.occupationalStatus);
+            this.form.unitCharDesc = this.returnText('unit_Property', this.form.unitChar);
+            this.form.idyDmnDesc = this.returnText('belong_industry', this.form.idyDmn);
+            this.form.personalIncomeStatusDesc = this.returnText('IncomeStatus', this.form.personalIncomeStatus);
+            this.form.incomeEvidenceDesc = this.returnText('income_prove', this.form.incomeEvidence);
           }
-          this.form = data;
           this.loading = false;
         } catch {
           this.loading = false;
@@ -239,13 +229,29 @@ export default {
           this.form.cuGuaranteeName = rows.label;
           this.form.guaranteeId = rows.value;
           break;
-        case "房产性质":
-          this.form.houseTypeDesc = rows.label;
-          this.form.houseType = rows.value;
+        case "收入人":
+          this.form.incomePeopleDesc = rows.label;
+          this.form.incomePeople = rows.value;
           break;
-        case "房产区域":
-          this.form.houseZonDesc = rows.label;
-          this.form.houseZon = rows.value;
+        case "职业状况":
+          this.form.occupationalStatusDesc = rows.label;
+          this.form.occupationalStatus = rows.value;
+          break;
+        case "单位性质":
+          this.form.unitCharDesc = rows.label;
+          this.form.unitChar = rows.value;
+          break;
+        case "行业领域":
+          this.form.idyDmnDesc = rows.label;
+          this.form.idyDmn = rows.value;
+          break;
+        case "月固定收入状况":
+          this.form.personalIncomeStatusDesc = rows.label;
+          this.form.personalIncomeStatus = rows.value;
+          break;
+        case "收入佐证":
+          this.form.incomeEvidenceDesc = rows.label;
+          this.form.incomeEvidence = rows.value;
           break;
       }
       this.selectShow = false;
@@ -259,9 +265,9 @@ export default {
     },
     // 保存
     custSubmit() {
-      // this.loading = true;
+      this.loading = true;
       if(this.isView == 0) {
-        setGuaranteeHouse(this.form).then(res => {
+        setGuaranteeIncome(this.form).then(res => {
           try {
             this.$notify({
               type: "success",
@@ -274,7 +280,7 @@ export default {
           }
         })
       } else {
-        editGuaranteeHouse(this.form).then(res => {
+        editGuaranteeIncome(this.form).then(res => {
           try {
             this.$notify({
               type: "success",

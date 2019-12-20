@@ -208,11 +208,10 @@ export default {
             })
           })
           if (id) {
-            this.form = res.data;
+            this.form = data;
             this.form.houseTypeDesc = this.returnText('Property_nature', this.form.houseType);
             this.form.houseZonDesc = this.returnText('Property_area', this.form.houseZon);
           }
-          this.form = data;
           this.loading = false;
         } catch {
           this.loading = false;
