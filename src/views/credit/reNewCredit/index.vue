@@ -90,7 +90,7 @@
         </Card>
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button v-show="canTermin" size="large" style="margin-right: 3px;border-radius: 8px;width: 20%;"
+            <van-button v-show="canTermin" size="large" style="width: 20%;" class="xh-btn"
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
@@ -542,7 +542,7 @@
     },
     mounted () {
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit)
+      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
     },
     destroyed () {
       this.save()

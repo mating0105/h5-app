@@ -8,7 +8,7 @@
               title="首付款是否为自有资金："
               required
               is-link
-              :value="ruleForm.firstFundsDesc"
+              :value="ruleForm.paymentOwnCapitalDesc"
               :border="false"
               @click.native="loadList('首付款是否为自有资金','yes_no')"
             />
@@ -25,7 +25,7 @@
               required
               is-link
               :border="false"
-              :value="ruleForm.drivingLicenseDesc"
+              :value="ruleForm.driveLicenceDesc"
               @click.native="loadList('是否有驾驶证','yes_no')"
             />
             <van-cell
@@ -49,7 +49,7 @@
               required
               is-link
               :border="false"
-              :value="ruleForm.rebateDesc"
+              :value="ruleForm.involveConsumeRebateDesc"
               @click.native="loadList('是否涉及消费返利','yes_no')"
             />
             <div v-show="isquick">
@@ -62,7 +62,6 @@
                   <van-button
                     type="danger"
                     size="small"
-                    :loading="scbgLoading"
                     :disabled="scbgDisabled"
                     @click.native="scbgComit"
                   >生成调查报告</van-button>
@@ -70,74 +69,74 @@
               </van-row>
               <van-field
                 v-model="ruleForm.houseReport"
-                class="xh-text-right"
                 required
-                label="借款人信息及房产报告:"
+                label="借款人信息及房产报告："
                 placeholder="自动生成,无需填写"
+                label-width="100px"
                 type="textarea"
-                input-align="right"
                 rows="1"
                 :border="false"
+                disabled
                 autosize
               />
               <van-field
                 v-model="ruleForm.responseReport"
-                class="xh-text-right"
                 required
-                label="借款人收入负债报告:"
+                label="借款人收入负债报告："
                 placeholder="自动生成,无需填写"
+                label-width="100px"
                 type="textarea"
                 rows="1"
                 :border="false"
-                input-align="right"
+                disabled
                 autosize
               />
               <van-field
                 v-model="ruleForm.gnrHsptyAndIncmRpt"
-                class="xh-text-right"
                 required
-                label="担保人房产及收入报告:"
+                label="担保人房产及收入报告："
                 placeholder="自动生成,无需填写"
+                label-width="100px"
                 type="textarea"
                 rows="1"
                 :border="false"
-                input-align="right"
+                disabled
                 autosize
               />
             </div>
             <van-field
-              v-model="ruleForm.surveyOpinion"
-              class="xh-text-right"
+              v-model="ruleForm.inveInfo"
               required
-              label="调查意见情况:"
+              label="调查意见情况："
               placeholder="请输入意见情况"
               type="textarea"
               rows="1"
               autosize
               :border="false"
               input-align="right"
-              @blur.prevent="()=>{ return errorMsg.surveyOpinion = rules('',$event,this)}"
-              :error-message="errorMsg.surveyOpinion"
+              label-width="100px"
+              @blur.prevent="()=>{ return errorMsg.inveInfo = rules('',$event,this)}"
+              :error-message="errorMsg.inveInfo"
             />
             <van-field
-              v-model="ruleForm.dataDetailed"
-              class="xh-text-right"
+              v-model="ruleForm.infoDetail"
               required
-              label="差资料明细:"
+              label="差资料明细："
               placeholder="请输入差资料明细"
               type="textarea"
               rows="1"
               :border="false"
               input-align="right"
+              label-width="100px"
               autosize
-              @blur.prevent="()=>{ return errorMsg.dataDetailed = rules('',$event,this)}"
-              :error-message="errorMsg.dataDetailed"
+              @blur.prevent="()=>{ return errorMsg.infoDetail = rules('',$event,this)}"
+              :error-message="errorMsg.infoDetail"
             />
             <van-cell
               title="实际调查地址："
               required
               is-link
-              v-model="ruleForm.actSurvyAdrId"
+              v-model="ruleForm.actSurvyAdr"
               :border="false"
               @click="popaddress('实际调查地址')"
             />
@@ -152,7 +151,7 @@
               title="上户地："
               required
               is-link
-              v-model="ruleForm.upAccLndId"
+              v-model="ruleForm.upAccLnd"
               :border="false"
               @click="popaddress('上户地')"
             />
@@ -195,7 +194,7 @@
               is-link
               :border="false"
               v-model="ruleForm.jrnlDateStart"
-              @click="showPopupTime('jrnlDateStart')"
+              @click="showPopupTime('流水开始日期','jrnlDateStart')"
             />
             <van-cell
               title="流水截止日期："
@@ -203,7 +202,7 @@
               is-link
               :border="false"
               v-model="ruleForm.jrnlDateEnd"
-              @click="showPopupTime('jrnlDateEnd')"
+              @click="showPopupTime('流水截止日期','jrnlDateEnd')"
             />
             <van-field
               v-model="ruleForm.cardNumber"
@@ -224,8 +223,6 @@
         <van-button
           size="large"
           class="xh-bg-main"
-          :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="subLoading"
           :disabled="subDisabled"
           @click.native="custSubmit"
         >保 存</van-button>
@@ -266,7 +263,14 @@ import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import Provinces from "@/components/provinces/index";
-import { getSurveyInfo, getProvider, getProviderSecurity, getCheckReport } from "@/api/client";
+import { format } from "@/utils/format"
+import {
+  getSurveyInfo,
+  getProvider,
+  getProviderSecurity,
+  getCheckReport,
+  setSurvey
+} from "@/api/client";
 import { mapState } from "vuex";
 // 其他组件
 import {
@@ -282,7 +286,7 @@ import {
   CellGroup,
   Picker
 } from "vant";
-import { isArray } from 'util';
+import { isArray } from "util";
 const Components = [
   Row,
   Col,
@@ -315,33 +319,6 @@ export default {
   data() {
     return {
       loading: false, // loading
-      id: "",
-      projectId: "", // 项目的id
-      customerId: "", // 客户id
-      firstFunds: "", //首付款是否为自有资金
-      clearCarPrice: "", //是否清楚车价
-      drivingLicense: "", //是否有驾驶证
-      accompany: "", //调查中是否有陪同
-      match: "", //是否人车匹配
-      rebate: "", //是否涉及消费返利
-      realEstateReport: "", //借款人信息及房产报告
-      debtReport: "", //借款人收入负债报告
-      incomeReport: "", //担保人房产及收入报告
-      surveyOpinion: "", //调查意见情况
-      dataDetailed: "", //差资料明细
-      investAddress: "", //实际调查地址
-      cardNumber: "", //流水卡号
-      homeLand: "", //上户地
-      flowDate: "", //流水日期起止
-      jrnlDateStart: "", //流水起始日期
-      jrnlDateEnd: "", //流水截止日期
-      carUse: "", //购车用途code
-      provider: "", //提供人
-      providerDesc: "", //提供人
-      providerName: "", //提供人手机号
-      providerNameable: true, //提供人姓名是否可选
-      providerIdCard: "", //提供人身份证
-      providerPhone: "", //提供人电话
       isQuickadjust: "", //是否快提快调
       title2: "",
       actSurvyAdrCode: "",
@@ -349,53 +326,35 @@ export default {
       // rules: rules, //验证 方法
       columns: [], //待选择列表
       errorMsg: {
-        surveyOpinion: "", //调查意见情况
-        dataDetailed: "" //差资料明细
+        inveInfo: "", //调查意见情况
+        infoDetail: "" //差资料明细
       },
 
       bankWaterFlag: false, // 流水是否必填
       selectShow: false, //下拉选择器显示
       pickerTitle: "", //下拉列表title
 
-      scbgLoading: false, //生成报告loading
       scbgDisabled: false, //按钮禁用状态
 
-      subLoading: false, //提交loading
       subDisabled: false, //按钮禁用状态
 
       currentDate: new Date(),
       popupShow3: false, //时间选择器
       popTimeType: "", //时间类型
-
-      // 下拉菜单 List
-      whetherList: ["是", "否"], //公用是否
-      providerList: [
-        { text: "借款人", key: "borrower" },
-        { text: "借款人配偶", key: "borrowerSpouse" },
-        { text: "担保人", key: "security" },
-        { text: "担保人配偶", key: "securitySpouse" }
-      ],
-      providerObj: {},
-      carUseList: ["二手车套现", "外省用车", "抵债", "营运", "自用"],
       isquick: true, //生成报告是否显示
-      popupShow2: false,
-      addressType: "",
-      areaList: {
-        province_list: {},
-        city_list: {},
-        county_list: {}
-      },
-      formList: {
+      ruleData: {},
+
+      ruleForm: {
         accompany: "",
         actSurvyAdr: "",
         carUse: "",
         clearCarPrice: "",
-        driveLicence: "",
+        paymentOwnCapital: "",
         gnrHsptyAndIncmRpt: "",
         houseReport: "",
         infoDetail: "",
         inveInfo: "",
-        involveConsumeRebate: "",
+        involveConsumeinvolveConsumeRebate: "",
         jrnlCardno: "",
         jrnlDateEnd: "",
         jrnlDateStart: "",
@@ -408,27 +367,8 @@ export default {
         responseReport: "",
         upAccLnd: ""
       },
-      ruleData: {},
-
-
-      ruleForm: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
-        actSurvyAdrId: '',
-        time: [],
-        customerName: "",
-        certificateNum: "",
-        contactPhone: "",
-        upAccLndId: ""
-      },
       addressShow: false,
-      providerList: [], // 提供人
+      providerList: [] // 提供人
     };
   },
   methods: {
@@ -437,34 +377,44 @@ export default {
         this.$set(this, "cardNumber", data.BANK_NUM);
       });
     },
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
     loadData() {
+      this.loading = true;
       getSurveyInfo({
         projectId: this.params.projectId,
         customerId: this.params.customerId
       })
-      .then(res => {
-        const { projConclusion } = res.data;
-        this.isQuickadjust = projConclusion.isQuickadjust;
-        this.ruleForm = {
-          ...projConclusion,
-          actSurvyAdrId: [],
-          time: []
-        };
-        if (this.ruleForm.jrnlDateStart) {
-          this.ruleForm.time = [
-            this.ruleForm.jrnlDateStart,
-            this.ruleForm.jrnlDateEnd
-          ];
-        }
+        .then(res => {
+          const { projConclusion } = res.data;
+          this.isQuickadjust = projConclusion.isQuickadjust;
+          this.ruleForm = projConclusion;
+          this.ruleForm.paymentOwnCapitalDesc = this.returnText('yes_no', projConclusion.paymentOwnCapital);
+          this.ruleForm.clearCarPriceDesc = this.returnText('yes_no', projConclusion.clearCarPrice);
+          this.ruleForm.driveLicenceDesc = this.returnText('yes_no', projConclusion.driveLicence);
+          this.ruleForm.accompanyDesc = this.returnText('yes_no', projConclusion.accompany);
+          this.ruleForm.matchDesc = this.returnText('yes_no', projConclusion.match);
+          this.ruleForm.involveConsumeRebateDesc = this.returnText('yes_no', projConclusion.involveConsumeRebate);
+          this.ruleForm.carUseDesc = this.returnText('car_use', projConclusion.carUse);
+          this.loading = false;
         })
-        .catch(function(error) {});
+        .catch(() => {
+          this.loading = false;
+        });
     },
 
-    loadList(val,name) {
+    loadList(val, name) {
       this.pickerTitle = val;
-      if(name == '1') {
-        console.log(this.providerList);
-        if(this.providerList.length == 0) return
+      if (name == "1") {
+        if (this.providerList.length == 0) return;
         this.selectShow = true;
         this.columns = this.providerList;
       } else {
@@ -475,16 +425,16 @@ export default {
     onConfirm(rows) {
       switch (this.pickerTitle) {
         case "首付款是否为自有资金":
-          this.ruleForm.firstFunds = rows.value;
-          this.ruleForm.firstFundsDesc = rows.label;
+          this.ruleForm.paymentOwnCapital = rows.value;
+          this.ruleForm.paymentOwnCapitalDesc = rows.label;
           break;
         case "是否清楚车价":
           this.ruleForm.clearCarPrice = rows.value;
           this.ruleForm.clearCarPriceDesc = rows.label;
           break;
         case "是否有驾驶证":
-          this.ruleForm.drivingLicense = rows.value;
-          this.ruleForm.drivingLicenseDesc = rows.label;
+          this.ruleForm.driveLicence = rows.value;
+          this.ruleForm.driveLicenceDesc = rows.label;
           break;
         case "调查中是否有陪同":
           this.ruleForm.accompany = rows.value;
@@ -495,8 +445,8 @@ export default {
           this.ruleForm.matchDesc = rows.label;
           break;
         case "是否涉及消费返利":
-          this.ruleForm.rebate = rows.value;
-          this.ruleForm.rebateDesc = rows.label;
+          this.ruleForm.involveConsumeRebate = rows.value;
+          this.ruleForm.involveConsumeRebateDesc = rows.label;
           break;
         case "购车用途":
           this.ruleForm.carUse = rows.value;
@@ -505,15 +455,16 @@ export default {
         case "提供人":
           this.ruleForm.provider = rows.value;
           this.ruleForm.providerDesc = rows.label;
-          if(rows.value == 'borrower' || rows.value == 'borrowerSpouse') {
+          if (rows.value == "borrower" || rows.value == "borrowerSpouse") {
             this.getProviderList(rows.value);
           } else {
             this.getProviderSecurityList(rows.value);
           }
           break;
         case "姓名":
-          this.ruleForm.provider = rows.value;
           this.ruleForm.providerName = rows.label;
+          this.ruleForm.providerIdCard = rows.certificateNum;
+          this.ruleForm.providerPhone = rows.contactPhone;
           break;
       }
       this.selectShow = false;
@@ -526,30 +477,25 @@ export default {
     // 省市区选择确定
     addressOnConfirm(code, name) {
       switch (this.pickerTitle) {
-        case '实际调查地址':
-          this.ruleForm.actSurvyAdrId = code;
+        case "实际调查地址":
+          this.ruleForm.actSurvyAdr = name;
+          this.ruleForm.actSurvyAdrCode = code;
           break;
-        case '上户地':
-          this.ruleForm.upAccLndId = code;
+        case "上户地":
+          this.ruleForm.upAccLnd = name;
+          this.ruleForm.upAccLndCode = code;
           break;
-      
+
         default:
           break;
       }
       this.addressShow = false;
     },
     //显示时间弹框
-    showPopupTime(type) {
+    showPopupTime(title, type) {
+      this.title2 = title;
       this.popTimeType = type;
       this.popupShow3 = true;
-      switch (type) {
-        case "jrnlDateStart":
-          this.title2 = "请选择流水开始时间";
-          break;
-        case "jrnlDateEnd":
-          this.title2 = "请选择流水截止时间";
-          break;
-      }
     },
     formatter(type, value) {
       // console.log(type,value)
@@ -562,172 +508,46 @@ export default {
       }
     },
     confirmTime(value) {
-      var time = commonFun.format(value, "yyyy-MM-dd");
-      switch (this.popTimeType) {
-        case "jrnlDateStart":
-          this.jrnlDateStart = time;
-          break;
-        case "jrnlDateEnd":
-          this.jrnlDateEnd = time;
-          break;
-      }
+      var time = format(new Date(value));
+      this.ruleForm[this.popTimeType] = time;
       this.popupShow3 = false;
     },
     cancelTime() {
       this.popupShow3 = false;
     },
-    cancelSelect() {
-      this.popupShow2 = false;
-    },
     // 生成调查报告
     scbgComit() {
+      this.scbgDisabled = true;
       getCheckReport({
         projectId: this.params.projectId,
         customerId: this.params.customerId
       }).then(res => {
         let { data } = res;
-        this.ruleForm.houseReport = data.houseReport;  //借款人信息及房产报告
-        this.ruleForm.responseReport = data.responseReport;  //借款人收入负债报告
+        this.ruleForm.houseReport = data.houseReport; //借款人信息及房产报告
+        this.ruleForm.responseReport = data.responseReport; //借款人收入负债报告
         this.ruleForm.gnrHsptyAndIncmRpt = data.gnrHsptyAndIncmRpt; //担保人房产及收入报告
+        this.scbgDisabled = false;
+      }).catch(()=>{
+        this.scbgDisabled = false;
       });
     },
-    // submit
+    // 保存调查报告
     submitWay() {
-      this.subLoading = true;
-      this.subDisabled = true;
-      setTimeout(() => {
-        this.subLoading = false;
-        this.subDisabled = false;
-      }, 1000);
-      requestUrl
-        .postList("/carloan/projProjectInfo/saveProjConclusion", {
-          id: this.id,
-          proj: {
-            id: this.projectId
-          },
-          customer: {
-            id: this.customerId
-          },
-          paymentOwnCapital: this.changeCode(this.firstFunds), // 首付款是否为自有资金
-          clearCarPrice: this.changeCode(this.clearCarPrice),
-          driveLicence: this.changeCode(this.drivingLicense), // 是否有驾驶证
-          accompany: this.changeCode(this.accompany), // 是否有陪同
-          selfUsecar: this.changeCode(this.match), // 是否人车匹配
-          involveConsumeRebate: this.changeCode(this.rebate), // 是否涉及消费返利
-          houseReport: this.realEstateReport, // 借款人信息及房产报告
-          responseReport: this.debtReport, // 借款人收入负债报告
-          gnrHsptyAndIncmRpt: this.incomeReport, // 担保人房产及收入报告
-          inveInfo: this.surveyOpinion, // 调查意见情况
-          infoDetail: this.dataDetailed, // 差资料明细
-          actSurvyAdr: this.investAddress, // 实际调查地址
-          actSurvyAdrCode: this.actSurvyAdrCode,
-          upAccLndCode: this.upAccLndCode,
-          jrnlCardno: this.cardNumber, // 流水卡号
-          upAccLnd: this.homeLand, // 上户地
-          jrnlDateStart: this.jrnlDateStart, //开始时间
-          jrnlDateEnd: this.jrnlDateEnd, //结束时间
-          // 'jrnlDate': this.flowDate, // 流水日期起止
-          carUse: this.carDes(this.carUse), //购车用途
-          provider: this.provider, // 提供人
-          providerDesc: this.providerDesc,
-          providerName: this.providerName,
-          providerIdCard: this.providerIdCard,
-          providerPhone: this.providerPhone
-        })
+      setSurvey(this.ruleForm)
         .then(res => {
-          if (res.code === "SYS.200") {
-            this.$toast.success("保存成功");
-            setTimeout(() => {
-              bridge.ReturnVC(1, false);
-            }, 1000);
-          } else {
-            this.$toast(res.message);
-          }
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.subDisabled = false;
+          this.loadData();
+        }).catch(()=>{
+          this.subDisabled = false;
         });
     },
     custSubmit() {
-      if (this.isQuickadjust == 0) {
-        if (this.realEstateReport && this.debtReport && this.incomeReport) {
-          if (
-            this.firstFunds &&
-            this.drivingLicense &&
-            this.accompany &&
-            this.match &&
-            this.rebate &&
-            this.surveyOpinion &&
-            this.dataDetailed &&
-            this.investAddress
-          ) {
-            if (this.bankWaterFlag == true) {
-              if (
-                this.provider &&
-                this.providerName &&
-                this.providerIdCard &&
-                this.providerPhone &&
-                this.cardNumber &&
-                this.jrnlDateStart &&
-                this.jrnlDateEnd
-              ) {
-                this.submitWay();
-              } else {
-                this.$toast({
-                  position: "top",
-                  message: "带 * 必须填写完整, 且填写无误"
-                });
-              }
-            } else {
-              this.submitWay();
-            }
-          } else {
-            this.$toast({
-              position: "top",
-              message: "带 * 必须填写完整, 且填写无误"
-            });
-          }
-        } else {
-          this.$toast({
-            position: "top",
-            message: "您还未生成报告"
-          });
-        }
-      } else {
-        if (
-          this.firstFunds &&
-          this.drivingLicense &&
-          this.accompany &&
-          this.match &&
-          this.rebate &&
-          this.surveyOpinion &&
-          this.dataDetailed &&
-          this.investAddress
-        ) {
-          if (this.bankWaterFlag == true) {
-            if (
-              this.provider &&
-              this.providerName &&
-              this.providerIdCard &&
-              this.providerPhone &&
-              this.cardNumber &&
-              this.jrnlDateStart &&
-              this.jrnlDateEnd
-            ) {
-              this.submitWay();
-            } else {
-              this.$toast({
-                position: "top",
-                message: "带 * 必须填写完整, 且填写无误"
-              });
-            }
-          } else {
-            this.submitWay();
-          }
-        } else {
-          this.$toast({
-            position: "top",
-            message: "带 * 必须填写完整, 且填写无误"
-          });
-        }
-      }
+      this.subDisabled = true;
+      this.submitWay();
     },
     // 有接口验证的时候
     urlRules(urls, rows, msg) {
@@ -802,12 +622,14 @@ export default {
         projectId: this.params.projectId
       }).then(res => {
         let arr = [];
-        if(res.data) {
-          let list = Array.isArray(res.data)?res.data:[res.data];
+        if (res.data) {
+          let list = Array.isArray(res.data) ? res.data : [res.data];
           list.forEach(t => {
             arr.push({
               label: t.customerName,
               value: t.customerName,
+              certificateNum: t.certificateNum,
+              contactPhone: t.contactPhone
             });
           });
         }
@@ -821,23 +643,24 @@ export default {
         projectId: this.params.projectId
       }).then(res => {
         let arr = [];
-        if(res.data) {
-          let list = Array.isArray(res.data)?res.data:[res.data];
+        if (res.data) {
+          let list = Array.isArray(res.data) ? res.data : [res.data];
           list.forEach(t => {
             arr.push({
               label: t.customerName,
               value: t.customerName,
+              certificateNum: t.certificateNum,
+              contactPhone: t.contactPhone
             });
           });
         }
         this.providerList = arr;
       });
     }
-
   },
   mounted() {
     this.params = this.$route.query;
-    // this.loadData();
+    this.loadData();
   }
 };
 </script>

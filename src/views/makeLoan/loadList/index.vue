@@ -67,8 +67,8 @@ export default {
         var newParams=(value,status)=>{
             //value:当前item  status:待办:1,已办:3
             let obj={};
-            obj.id=Number(value.businesskey);
-            obj.dealState=status==1?false:true;
+            obj.info=value;
+            obj.dealState=status;
             return obj
         };
         return {
@@ -109,20 +109,28 @@ export default {
             pathData:{
                 //待办路径
                 dealwith:[
-                    {name:'客户经理待办',path:'/a',params:{}},
-                    {name:'内勤待办',path:'/b',params:{}},
-                    {name:'审批官待办',path:'/c',params:{}},
-                    {name:'业务人员待办',path:'/d',params:{}},
-                    {name:'财务走款确认待办',path:'/e',params:{}},
-                    {name:'客户经理待办',path:'/f',params:{}},
-                    {name:'驻行人员待办',path:'/g',params:{}},
-                    {name:'合规文员待办',path:'/h',params:{}},
-                    {name:'驻行内勤待办',path:'/m',params:{}},
+                    {name:'客户经理待办',path:'/a',params:newParams},
+                    {name:'内勤待办',path:'/b',params:newParams},
+                    {name:'审批官待办',path:'/c',params:newParams},
+                    {name:'业务人员待办',path:'/applyPayment',params:newParams},
+                    {name:'财务走款确认待办',path:'/paymentSure',params:newParams},
+                    {name:'客户经理待办',path:'/f',params:newParams},
+                    {name:'驻行人员待办',path:'/m',params:newParams},
+                    {name:'合规文员待办',path:'/lendProcess',params:newParams},
+                    {name:'驻行内勤待办',path:'/bankLend',params:newParams},
                 ],
                 //已办路径
                 alreadyDone:[
                     {name:'银行放款',path:'/lendProcess',params:newParams},
-                    {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
+                    {name:'征信调查',path:'/j',params:newParams},
+                    {name:'车商补充资料',path:'/a',params:newParams},
+                    {name:'重权回收',path:'/b',params:newParams},
+                    {name:'出具抵押合同',path:'/c',params:newParams},
+                    {name:'原单变更申请',path:'/d',params:newParams},
+                    {name:'车易贷_征信调查',path:'/f',params:newParams},
+                    {name:'项目审批',path:'/g',params:newParams},
+                    {name:'缴费走款',path:'/paymentSure',params:newParams},
+                    {name:'车商准入',path:'/i',params:newParams},
                 ]
             }
         };
