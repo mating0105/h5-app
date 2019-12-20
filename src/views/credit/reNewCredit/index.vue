@@ -116,7 +116,7 @@
   import Card from '@/components/card'
   import Vue from 'vue';
   import { getBank, getCreditInfo, saveCreditInfo, createTask } from '@/api/credit'
-  import { getValue, setValue } from '@/utils/session'
+  import { getValue, setValue, removeValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog]
@@ -175,7 +175,8 @@
             }
           ],
         },
-        edit: false
+        edit: false,
+        query: {}
       }
     },
     computed: {
@@ -264,8 +265,11 @@
             this.dataList = JSON.parse(getValue("credit"))
           } else {
             const params = {
-              lpCertificateNum: this.$route.query.lpCertificateNum,
-              id: this.$route.query.id
+              lpCertificateNum: this.query.lpCertificateNum,
+              id: this.query.id
+            }
+            if(this.query.again) {
+              params.reRegister = 1
             }
             const res = await getCreditInfo(params)
             this.dataList = res.data.cuCreditRegister;
@@ -359,7 +363,7 @@
             customerId: data.customerId,
             customerNum: data.customerNum,
             creditRegisterId: data.creditRegisterId,
-            ...this.$route.query
+            ...this.query
           }
           this.loading = false
           this.$nextTick(() => {
@@ -541,8 +545,24 @@
       },
     },
     mounted () {
+      if(this.$route.query.info && this.$route.query.dealState) {
+        this.query = {
+          lpCertificateNum: this.$route.query.info.certificateNum,
+          id: this.$route.query.info.businesskey
+        }
+        if(this.$route.query.dealState == 3) {
+          this.edit = false
+        }
+        if(this.$route.query.dealState == 1) {
+          this.edit = true
+        }
+        removeValue("credit");
+      } else {
+        this.query = this.$route.query
+        this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      }
+      console.log(this.query)
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
     },
     destroyed () {
       this.save()

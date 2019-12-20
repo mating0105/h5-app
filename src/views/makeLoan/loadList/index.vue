@@ -122,7 +122,7 @@ export default {
                 //已办路径
                 alreadyDone:[
                     {name:'银行放款',path:'/lendProcess',params:newParams},
-                    {name:'征信调查',path:'/j',params:newParams},
+                    {name:'征信调查',path:'/bankQuery',params:newParams},
                     {name:'车商补充资料',path:'/a',params:newParams},
                     {name:'重权回收',path:'/b',params:newParams},
                     {name:'出具抵押合同',path:'/c',params:newParams},
