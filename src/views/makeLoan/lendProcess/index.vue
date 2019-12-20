@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" id="lendProcess">
+    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :id="dealState?'':'lendProcess'">
         <van-tabs v-model="activeName" v-if="projectForm.projectInfo">
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
@@ -12,7 +12,7 @@
                             <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false"/>
                             <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false"/>
                             <van-cell title="制单人员：" :border="false"/>
-                            <van-cell title="走款模式：" value-class='rightClass' is-link v-model="projectForm.projectInfo.payType"
+                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" is-link v-model="projectForm.projectInfo.payType"
                             @click="showPopupType('payType')" :border="false"/>
                         </div>
                     </Card>
@@ -22,24 +22,24 @@
                         </template>
                         <div>
                             <van-field :disabled="dealState" label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"/>
-                            <van-field label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" />
-                            <van-field label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"/>
-                            <van-cell title="主借人性别：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.customerSexDesc"
+                            <van-field :disabled="dealState" label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" />
+                            <van-field :disabled="dealState" label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"/>
+                            <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.customerSexDesc"
                             @click="showPopupType('customerSex')" />
-                            <van-field label="主借人年龄：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerAge"/>
-                            <van-field label="主借人月收入（元）：" placeholder="请输入" :border="false" label-width='160' input-align="right" v-model="form.borrowerInfo.mainLoanWage"/>
-                            <van-field label="主借人家庭人数：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.fiexdNo" />
-                            <van-cell title="还款来源：" :border="false" is-link value-class='rightClass' :value="form.borrowerInfo.paymentSourceDesc"
+                            <van-field :disabled="dealState" label="主借人年龄：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerAge"/>
+                            <van-field :disabled="dealState" label="主借人月收入（元）：" placeholder="请输入" :border="false" label-width='160' input-align="right" v-model="form.borrowerInfo.mainLoanWage"/>
+                            <van-field :disabled="dealState" label="主借人家庭人数：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.fiexdNo" />
+                            <van-cell title="还款来源：" :border="false" is-link :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.paymentSourceDesc"
                             @click="showPopupType('payment_source')" />
-                            <van-cell title="职务：" is-link :border="false" value-class='rightClass' :value="form.borrowerInfo.postDesc"
+                            <van-cell title="职务：" is-link :border="false" :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.postDesc"
                             @click="showPopupType('OccupationalStatus')" />
-                            <van-cell title="户籍地址：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.registerProvCityZon" @click="showMapMethod('registerProvCityZon')"/>
-                            <van-field label="户籍详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.registerAddressDetail" />
-                            <van-cell title="家庭地址：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.familyAddressProvCityZon" @click="showMapMethod('familyAddressProvCityZon')"/>
-                            <van-field label="家庭详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.familyAddressDetail" />
-                            <van-field label="工作单位名称：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCo" />
-                            <van-cell title="工作单位地址：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.customerCoProvCityZon" @click="showMapMethod('customerCoProvCityZon')" />
-                            <van-field label="工作单位详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCoAddDetail" />
+                            <van-cell title="户籍地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.registerProvCityZon" @click="showMapMethod('registerProvCityZon')"/>
+                            <van-field :disabled="dealState" label="户籍详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.registerAddressDetail" />
+                            <van-cell title="家庭地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.familyAddressProvCityZon" @click="showMapMethod('familyAddressProvCityZon')"/>
+                            <van-field :disabled="dealState" label="家庭详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.familyAddressDetail" />
+                            <van-field :disabled="dealState" label="工作单位名称：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCo" />
+                            <van-cell title="工作单位地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.customerCoProvCityZon" @click="showMapMethod('customerCoProvCityZon')" />
+                            <van-field :disabled="dealState" label="工作单位详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCoAddDetail" />
                         </div>
                     </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="nextStep">下一步</van-button>
@@ -51,16 +51,16 @@
                         </template>
                         <div>
                             <van-cell title="车辆类别：" :border="false" is-link required :value="item.carTypeDesc"
-                            @click="showPopupType('car_type',index)" value-class='rightClass' @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆性质：" :border="false" is-link value-class='rightClass' required :value="item.carNatureDesc"
+                            @click="showPopupType('car_type',index)" :value-class="dealState?'':'rightClass'" @blur.prevent="ruleMessge"/>
+                            <van-cell title="车辆性质：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carNatureDesc"
                             @click="showPopupType('car_nature',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆规格：" :border="false" is-link value-class='rightClass' required :value="item.carSpecificationsDesc"
+                            <van-cell title="车辆规格：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carSpecificationsDesc"
                             @click="showPopupType('vehicle_specifications',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆来源" :border="false" is-link value-class='rightClass' required :value="item.carSourceDesc"
+                            <van-cell title="车辆来源" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carSourceDesc"
                             @click="showPopupType('CAR_SOURCE',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="品牌型号：" :border="false" is-link value-class='rightClass' required :value="item.brandModel" @click="selectBrand(index)" @blur.prevent="ruleMessge"/>
-                            <van-field label="实际开票价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.actualInvoicedPrice" @blur.prevent="ruleMessge"/>
-                            <van-field label="送行车价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.seeingCarPrice" @blur.prevent="ruleMessge"/>
+                            <van-cell title="品牌型号：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.brandModel" @click="selectBrand(index)" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="实际开票价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.actualInvoicedPrice" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="送行车价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.seeingCarPrice" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card>
@@ -68,22 +68,22 @@
                             贷款信息
                         </template>
                         <div>
-                            <van-field label="贷款金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.loanAmt" @blur.prevent="ruleMessge"/>
-                            <van-field label="刷卡金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.factCharges" @blur.prevent="ruleMessge"/>
-                            <van-field label="评估金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.assessmentPrice" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="贷款金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.loanAmt" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="刷卡金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.factCharges" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="评估金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.assessmentPrice" @blur.prevent="ruleMessge"/>
                             <van-cell title="贷款产品：" :border="false" required @blur.prevent="ruleMessge" v-model="form.loanInfo.loanProductName" />
                             <van-cell title="贷款银行：" :border="false" required @blur.prevent="ruleMessge" :value="form.loanInfo.payPlatformName" />
-                            <van-field label="贷款年限：" label-width='150' placeholder="请输入" input-align="right" :border="false" required :value="form.loanInfo.loanYear" @blur.prevent="ruleMessge"/>
-                            <van-cell title="贷款期数：" value-class='rightClass' :border="false" required is-link :value="form.loanInfo.loanTermDesc"
+                            <van-field :disabled="dealState" label="贷款年限：" label-width='150' placeholder="请输入" input-align="right" :border="false" required :value="form.loanInfo.loanYear" @blur.prevent="ruleMessge"/>
+                            <van-cell title="贷款期数：" :value-class="dealState?'':'rightClass'" :border="false" required is-link :value="form.loanInfo.loanTermDesc"
                             @click="showPopupType('period_number')" @blur.prevent="ruleMessge"/>
-                            <van-field label="贷款成数：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" @blur.prevent="ruleMessge"/>
-                            <van-field label="客户利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanRate" @blur.prevent="ruleMessge"/>
-                            <van-field label="浮息利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" v-model="form.loanInfo.floatRate" />
-                            <van-field label="公司收费利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.companyChargeRate" @blur.prevent="ruleMessge"/>
-                            <van-field label="保费金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" v-model="form.loanInfo.premiumPrice" />
-                            <van-field label="业务选融费用（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.businessPrice" @blur.prevent="ruleMessge"/>
-                            <van-field label="资料费（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.informationPrice" @blur.prevent="ruleMessge"/>
-                            <van-field label="车款金额合计（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.carTotalPrice" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="贷款成数：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="客户利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanRate" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="浮息利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" v-model="form.loanInfo.floatRate" />
+                            <van-field :disabled="dealState" label="公司收费利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.companyChargeRate" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="保费金额（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" v-model="form.loanInfo.premiumPrice" />
+                            <van-field :disabled="dealState" label="业务选融费用（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.businessPrice" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="资料费（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.informationPrice" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="车款金额合计（元）：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.loanInfo.carTotalPrice" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card style="margin-top:15px;">
@@ -91,9 +91,9 @@
                             收款人信息
                         </template>
                         <div>
-                            <van-field label="收款人姓名：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptName" @blur.prevent="ruleMessge"/>
-                            <van-field label="收款人账号：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptAccount" @blur.prevent="ruleMessge"/>
-                            <van-field label="收款人银行：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="收款人姓名：" placeholder="请输入" label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptName" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="收款人账号：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptAccount" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="收款人银行：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <van-button round type="danger" style="width:100%;margin:30px 0;" @click="updateInfo" :loading='updateLoading'>下一步</van-button>
@@ -104,7 +104,7 @@
                             意见描述
                         </template>
                         <div>
-                            <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
                     <Card style="margin-top:15px;">
@@ -565,7 +565,7 @@
                 if(data.code==200&&data.status){
                     Notify({ type: 'success', message: '流程提交成功' });
                     setTimeout(()=>{
-                        this.$router.push({ path:'/lendProcessList'});
+                        this.$router.push(-1);
                     },1000)
                     this.listLoading=false;
                 }
@@ -584,8 +584,8 @@
     created(){
     },
     mounted () {
-        this.businessKey=this.$route.query.id;
-        this.dealState=this.$route.query.dealState
+        this.businessKey=47;//Number(this.$route.query.info.id);
+        this.dealState=true;//this.$route.query.dealState==1?false:true;
         this.getDictionaryData();
     }
   }

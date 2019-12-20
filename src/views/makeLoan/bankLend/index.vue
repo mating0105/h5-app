@@ -196,8 +196,8 @@ export default {
             this.columns = [
             { label: '通过', value: '01' },
             { label: '退回', value: '02' },
-            { label: '拒绝放款', value: '03' },
-            { label: '已放款', value: '04' }
+            { label: '拒绝放款', value: '04' },
+            { label: '已放款', value: '10' }
             ]
             break;
         case 'accountBank':
@@ -216,7 +216,7 @@ export default {
             case 'approvalConclusion':
                 this.approvalConclusion=value.value;
                 this.approvalConclusionDesc=value.label;
-                if(this.approvalConclusion!=='04'){
+                if(this.approvalConclusion!=='10'){
                     this.bankLoanInfo.factLoanAmt='';
                     this.bankLoanInfo.factLoanDate='';
                 }
@@ -349,13 +349,17 @@ export default {
         try{  
             let para={};
             let wfCommentInfo={};
-            if(this.approvalConclusion=='01'||this.approvalConclusion=='04'){
+            if(this.approvalConclusion=='01'){
                 wfCommentInfo={
                     businessKey:this.businessKey,
                     commentsDesc:this.commentsDesc,
                     conclusionCode:this.approvalConclusion,
                     customerNum:this.form.projectInfo.customerNum,
                     customerName:this.form.projectInfo.customerName,
+                    msgType:'WF_BANK_MAKE_LOAN_YWY',
+                    isSendMsg:1,
+                    receiver:this.form.projectInfo.clientManager.id,
+                    projectNo:this.salesmanChecked?this.form.projectInfo.projectNo:'',
                 }
             }
             if(this.approvalConclusion=='02'){
@@ -371,7 +375,7 @@ export default {
                     projectNo:this.salesmanChecked?this.form.projectInfo.projectNo:'',
                 }
             }
-            if(this.approvalConclusion=='03'){
+            if(this.approvalConclusion=='04'){
                 wfCommentInfo={
                     businessKey:this.businessKey,
                     commentsDesc:this.commentsDesc,
@@ -382,6 +386,15 @@ export default {
                     isSendMsg:this.cashierChecked?1:0,
                     receiver:this.FinanceCashier,
                     projectNo:this.cashierChecked?this.form.projectInfo.projectNo:'',
+                }
+            }
+            if(this.approvalConclusion=='10'){
+                wfCommentInfo={
+                    businessKey:this.businessKey,
+                    commentsDesc:this.commentsDesc,
+                    conclusionCode:this.approvalConclusion,
+                    customerNum:this.form.projectInfo.customerNum,
+                    customerName:this.form.projectInfo.customerName,
                 }
             }
             let bankLoanInfo=Object.assign({},this.bankLoanInfo);
