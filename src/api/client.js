@@ -264,5 +264,13 @@ export function getCheckReport(params) {
     params
   })
 }
+// 保存调查报告
+export function setSurvey(params) {
+  return request({
+    url: '/order/projConclusion/saveProjConclusion',
+    method: 'post',
+    data: params
+  })
+}
 
 

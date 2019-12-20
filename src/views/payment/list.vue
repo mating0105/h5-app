@@ -102,17 +102,14 @@ export default {
     },
     // 发起走款
     applyPay(rows) {
-      // console.log({projectId:rows.projectId,customerNum:rows.customerNum,customerId:rows.customerId})
       this.$router.push({
         path: "/applyPayment",
         query: {
-          projectId: rows.projectId,
-          customerNum: rows.customerNum,
-          customerId: rows.customerId
+          info:rows,
+          dealState:'1'
         }
       });
     },
-    loadData() {}
   },
   mounted() {
     this.onLoad();

@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 19:17:03
+ * @LastEditTime : 2019-12-20 17:57:33
  -->
 
 <template>
@@ -19,10 +19,16 @@
         to="basic"
       ></van-tab>
       <van-tab
-        name="doc"
+        :to="{ name: 'HeavyRelatedDocs', query:{
+          info:JSON.stringify({
+            customerNum,
+            customerId
+          }),
+          dealState:'1'
+        }}"
+        name="relatedDocs"
         replace
         title="相关文档"
-        to="a"
       ></van-tab>
       <van-tab
         name="record"
@@ -57,6 +63,14 @@ export default {
   components: {
     ViewPage
   },
+  computed: {
+    customerNum() {
+      return this.$route.params.customerNum;
+    },
+    customerId() {
+      return this.$route.params.customerId;
+    }
+  },
   data() {
     return {
       // 基本信息basic 相关文档doc 审批记录record
@@ -65,8 +79,21 @@ export default {
     };
   },
   props: {},
-  mounted() {},
-  methods: {}
+  mounted() {
+    this.judgeNow();
+  },
+  methods: {
+    judgeNow() {
+      let { name } = this.$route;
+      if (name === "HeavyRightBasic") {
+        this.active = "basic";
+      } else if (name === "HeavyRelatedDocs") {
+        this.active = "relatedDocs";
+      } else {
+        this.active = "record";
+      }
+    }
+  }
 };
 </script>
 <style lang='scss' scoped>
