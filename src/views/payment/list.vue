@@ -1,40 +1,43 @@
 <template>
-    <ViewPage>
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        :error.sync="error"
-        error-text="请求失败，点击重新加载"
-        @load="onLoad"
-      >
-        <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
-          <Card class="xh-top-10" :bodyPadding='true'>
-            <template v-slot:header>
-              <section class="xh-plus">
-                <van-cell :title="item.projectNo" :value="item.processStateDesc" icon="notes-o"></van-cell>
-              </section>
-            </template>
-            <van-row>
-              <van-col span="24">客户名称：{{item.customerName}}</van-col>
-              <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
-              <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
-            </van-row>
-            <template v-slot:footer  v-if="item.processStateDesc == '未提交'">
-              <div style="text-align:right;">
-                <van-button
-                  plain
-                  type="danger"
-                  class="xh-radius"
-                  style="border-radius: 6px;"
-                  @click="applyPay(item)"
-                >申请走款</van-button>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </van-list>
-    </ViewPage>
+  <ViewPage>
+    <template v-slot:head>
+      <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
+    </template>
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :error.sync="error"
+      error-text="请求失败，点击重新加载"
+      @load="onLoad"
+    >
+      <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
+        <Card class="xh-top-10" :bodyPadding="true">
+          <template v-slot:header>
+            <section class="xh-plus">
+              <van-cell :title="item.projectNo" :value="item.processStateDesc" icon="notes-o"></van-cell>
+            </section>
+          </template>
+          <van-row>
+            <van-col span="24">客户名称：{{item.customerName}}</van-col>
+            <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
+            <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
+          </van-row>
+          <template v-slot:footer v-if="item.processStateDesc == '未提交'">
+            <div style="text-align:right;">
+              <van-button
+                plain
+                type="danger"
+                class="xh-radius"
+                style="border-radius: 6px;"
+                @click="applyPay(item)"
+              >申请走款</van-button>
+            </div>
+          </template>
+        </Card>
+      </div>
+    </van-list>
+  </ViewPage>
 </template>
 
 <script>
@@ -43,8 +46,8 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { paymentList } from "@/api/payment";
 // 其他组件
-import { Row, Col, Icon, Cell, Button, List } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List];
+import { Row, Col, Icon, Cell, Button, List,Search } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List,Search];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -67,6 +70,12 @@ export default {
     };
   },
   methods: {
+    onSearch() {
+      this.list = [];
+      this.finished = false;
+      this.params.pageIndex = 1;
+      this.onLoad();
+    },
     onLoad() {
       this.loading = true;
       paymentList(this.params).then(res => {
@@ -93,10 +102,14 @@ export default {
     },
     // 发起走款
     applyPay(rows) {
-      // console.log({projectId:rows.projectId,customerNum:rows.customerNum,customerId:rows.customerId})
-      this.$router.push({ path: "/applyPayment", query: {projectId:rows.projectId,customerNum:rows.customerNum,customerId:rows.customerId} });
+      this.$router.push({
+        path: "/applyPayment",
+        query: {
+          info:rows,
+          dealState:'1'
+        }
+      });
     },
-    loadData() {}
   },
   mounted() {
     this.onLoad();

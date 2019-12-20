@@ -8,9 +8,9 @@
               <div>
                 <div
                   class="xh-pay-div"
-                >客户姓名及编号：{{paymentDetail.customerName}} {{paymentDetail.customerNum}}</div>
-                <div class="xh-pay-div">证件号码：{{paymentDetail.certificateNum}}</div>
-                <div class="xh-pay-div">电话：{{paymentDetail.contactPhone}}</div>
+                >客户姓名及编号：{{paymentDetail.projProjectInfo.customerName}} {{paymentDetail.projProjectInfo.customerNum}}</div>
+                <div class="xh-pay-div">证件号码：{{paymentDetail.projProjectInfo.certificateNum}}</div>
+                <div class="xh-pay-div">电话：{{paymentDetail.projProjectInfo.contactPhone}}</div>
               </div>
             </template>
           </redCard>
@@ -50,7 +50,10 @@
                   <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="产品性质" :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)" />
+                  <van-cell
+                    title="产品性质"
+                    :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)"
+                  />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
@@ -370,7 +373,14 @@
           </div>
         </div>
         <div class="xh-submit" v-show="stepVal !=3">
-          <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
+          <van-row>
+            <van-col :span="4" v-show="this.params.info.activityId">
+              <van-button size="large" class="xh-bg-gray" @click="end">终 止</van-button>
+            </van-col>
+            <van-col :span="this.params.info.activityId? '19': '24'" :offset="this.params.info.activityId? '1': '0'">
+              <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
+            </van-col>
+          </van-row>
         </div>
       </van-tab>
       <van-tab title="项目信息" name="project">
@@ -417,7 +427,8 @@ import {
   CellGroup,
   DatetimePicker,
   Picker,
-  ActionSheet
+  ActionSheet,
+  Dialog
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
@@ -429,7 +440,8 @@ import {
   getDic,
   submitPay,
   savePay,
-  submitProcess
+  submitProcess,
+  stopTask
 } from "@/api/payment";
 import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
@@ -443,7 +455,8 @@ const Components = [
   CellGroup,
   DatetimePicker,
   Picker,
-  ActionSheet
+  ActionSheet,
+  Dialog
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -538,7 +551,7 @@ export default {
       this.stepVal = val;
     },
     loadData() {
-      getPaymentDetail({ projectId: this.params.projectId })
+      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey })
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
@@ -587,6 +600,28 @@ export default {
           this.loading = false;
         });
     },
+    //终止流程
+    end() {
+      Dialog.confirm({
+        title: "",
+        message: "确定终止缴费流程吗？"
+      })
+        .then(() => {
+          this.loading = true;
+          let data = new FormData();
+          data.append('payInfoId', this.paymentDetail.projPayInfo.id);
+          stopTask(data).then(res =>{
+            this.loading = false;
+            this.$notify({ type: "success", message: "终止成功" });
+            this.$router.go(-1);
+          }).catch(e =>{
+            this.loading = false;
+          })
+        })
+        .catch(() => {
+          
+        });
+    },
     //上拉菜单选择
     loadType(title, field) {
       this.selectName = title;
@@ -616,7 +651,7 @@ export default {
     // 获取其他字典接口
     getDict() {
       let arr = [
-        "product_property",//产品性质
+        "product_property", //产品性质
         "pay_method", //缴费方式
         "payType", //走款模式
         "BANK_TYPE_JYR" //银行
@@ -651,14 +686,13 @@ export default {
             }
           });
           break;
-          case 'product_property':
-            this.dicList.product_property.forEach(e => {
+        case "product_property":
+          this.dicList.product_property.forEach(e => {
             if (e.value == val) {
               name = e.label;
             }
           });
           break;
-
       }
       return name;
     },
@@ -694,6 +728,7 @@ export default {
             .then(res => {
               this.loading = false;
               this.$notify({ type: "success", message: "流程提交成功" });
+              this.$router.go(-1);
             })
             .catch(e => {
               this.loading = false;
@@ -753,7 +788,7 @@ export default {
     async getDocumentByType(documentType) {
       try {
         const params = {
-          customerNum: this.params.customerNum,
+          customerNum: this.params.info.customerNum,
           documentType: documentType
         };
         const { data } = await getDocumentByType(params);
@@ -768,8 +803,8 @@ export default {
           isRequire: true, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
-          customerNum: this.params.customerNum,
-          customerId: this.params.customerId,
+          customerNum: this.params.info.customerNum,
+          customerId: this.params.info.customerId,
           kind: "1",
           fileList: data
         });
@@ -780,6 +815,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    console.log(this.params);
     this.loadData();
     this.getDict();
     this.loadImg();
@@ -883,7 +919,7 @@ export default {
   background: rgb(196, 37, 42);
 }
 .xh-bg-gray {
-  color: rgb(204, 204, 204);
+  background: rgb(204, 204, 204);
 }
 .xh-submit {
   padding: 0 10px 20px 10px;

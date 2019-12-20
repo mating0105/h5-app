@@ -1,7 +1,7 @@
 <template>
     <Card>
         <template v-slot:header>
-            {{title}}征信结果
+            {{isBank ? '银行': '大数据'}}征信结果
         </template>
         <div class="xh-electronic-box" v-for="(item, index) in dataList" :key="index">
             <div>
@@ -20,35 +20,58 @@
                 </div>
             </div>
             <div class="xh-contract-status">
-                <div>
-                    <span v-if="item.bigDataResult === 'pass'" class="xh-contract-true">通过</span>
-                    <span v-else class="xh-contract-false">未通过</span>
+                <div @click="showPopup(item)">
+                    <span v-if="item[type] === 'pass'" class="xh-contract-true">通过</span>
+                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">未通过</span>
+                    <span v-else>请选择征信结果</span>
                     <van-icon class="xh-contract-icon" name="arrow"/>
                 </div>
             </div>
         </div>
+        <van-popup v-model="show" position="bottom" get-container="#app">
+            <van-picker
+                    ref="picker"
+                    show-toolbar
+                    :columns="credit_result"
+                    value-key="label"
+                    @cancel="show = false"
+                    @confirm="onSelect"
+            />
+        </van-popup>
     </Card>
 </template>
 
 <script>
   import Vue from 'vue';
-  import { Icon } from 'vant';
+  import { Icon, Popup, Picker } from 'vant';
   import Card from '@/components/card';
 
-  Vue.use(Icon);
+  Vue.use(Icon).use(Popup).use(Picker);
   export default {
     name: "electronicContract",
     components: {
       Card
     },
+    data () {
+      return {
+        show: false,
+        index: 0
+      }
+    },
     props: {
-      title: String,
-      dataList: Array
+      isBank: Boolean,
+      dataList: Array,
     },
     computed: {
       wordbook () {
         return this.$store.state.user.wordbook
       },
+      credit_result () {
+        return this.$store.state.user.wordbook.credit_result || []
+      },
+      type () {
+        return this.isBank ? 'creditResult' : 'bigDataResult'
+      }
     },
     methods: {
       // 字典转换
@@ -63,6 +86,27 @@
         }
         return name;
       },
+      showPopup (item, index) {
+        this.show = true
+        this.currentData = item
+        this.index = 0
+        try {
+          this.credit_result.forEach((result, index) => {
+            if (item[this.type] === result.value) {
+              this.index = index
+              throw Error()
+            }
+          })
+        } catch (e) {
+        }
+        this.$nextTick(() => {
+          this.$refs['picker'].setIndexes([this.index])
+        })
+      },
+      onSelect (item, index) {
+        this.currentData[this.type] = item.value
+        this.show = false
+      }
     }
   }
 </script>
@@ -77,11 +121,11 @@
         position: relative;
 
         .xh-box-item {
-            margin-bottom: .5rem;
+            margin-bottom: 1rem;
 
-            &:last-child {
-                margin-bottom: 0;
-            }
+            /*&:last-child {*/
+            /*    margin-bottom: 0;*/
+            /*}*/
 
             span {
                 display: inline-block;
@@ -103,6 +147,8 @@
     }
 
     .xh-contract-status {
+        color: #999;
+
         > div {
             position: absolute;
             right: 0;
@@ -119,7 +165,7 @@
         }
 
         .xh-contract-icon {
-            font-size: 2.4rem;
+            font-size: 1.8rem;
             font-weight: 600;
             display: inline-block;
             vertical-align: middle;

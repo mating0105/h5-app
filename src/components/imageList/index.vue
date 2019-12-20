@@ -48,7 +48,7 @@
     },
     computed: {
       list () {
-        const arr = this.dataList.map(item => item.fileList)
+        const arr = this.dataList.map(item => item.fileList);
         return _.flatten(arr)
       }
     },

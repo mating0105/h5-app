@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 19:18:04
+ * @LastEditTime : 2019-12-20 19:09:28
  -->
 
 <template>
@@ -239,7 +239,7 @@
               title="是否有套票:"
             >
               <singleConnect
-                :default-active-value="details.ispackage"
+                :default-active-value="details.ispackage*1"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="ispackage"
@@ -258,7 +258,7 @@
               placeholder="请输入"
               required
               type="number"
-              v-if="details.ispackage === 1"
+              v-if="details.ispackage*1 === 1"
               v-model="details.packageDeal"
             />
           </section>
@@ -273,7 +273,7 @@
               placeholder="自动计算"
               readonly
               required
-              v-if="details.ispackage === 1"
+              v-if="details.ispackage*1 === 1"
               v-model="details.differenceCarprice"
             />
           </section>
@@ -284,7 +284,7 @@
               title="是否失信客户:"
             >
               <singleConnect
-                :default-active-value="details.dishonestyCustomer"
+                :default-active-value="details.dishonestyCustomer*1"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="dishonestyCustomer"
@@ -327,6 +327,7 @@
     <!-- 保 存按钮 -->
     <div class="xh-submit xh-page-body">
       <van-button
+        :loading="subLoading"
         @click.native="sub"
         class="xh-bg-main"
         size="large"
@@ -336,6 +337,7 @@
 </template>
 
 <script>
+import Qs from "qs";
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
 import {
@@ -360,7 +362,8 @@ import {
   Divider,
   Field,
   ActionSheet,
-  DatetimePicker
+  DatetimePicker,
+  Toast
 } from "vant";
 const Components = [
   Row,
@@ -394,6 +397,7 @@ export default {
   },
   data() {
     return {
+      subLoading: false,
       currentDate: new Date(), // 当前日期
       dateIndex: "",
       dateArr: "",
@@ -415,7 +419,13 @@ export default {
     },
     // 查询补录的详情
     queryDetails() {
-      this.$parent.loading = true;
+      this.toast = Toast.loading({
+        message: "加载中...",
+        forbidClick: true,
+        duration: 0,
+        loadingType: "spinner",
+        overlay: true
+      });
       queryRightSuppleDetails({
         projectId: this.id
       })
@@ -426,10 +436,10 @@ export default {
           } else {
             this.$notify({ type: "danger", message: msg });
           }
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         })
         .catch(() => {
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         });
     },
     formatter(type, value) {
@@ -484,15 +494,25 @@ export default {
     },
     // 提交表单
     sub() {
-      saveHeavyRightBasic(JSON.stringify(this.details)).then(res => {
-        const { code, data, msg } = res;
-        if (code == 200) {
-          this.$notify({ type: "success", message: msg });
-          this.goBack();
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
-      });
+      if (this.details.ispackage * 1 !== 1) {
+        this.details.packageDeal = "";
+        this.details.differenceCarprice = "";
+      }
+      this.subLoading = true;
+      saveHeavyRightBasic(this.details)
+        .then(res => {
+          const { code, data, msg } = res;
+          if (code == 200) {
+            this.$notify({ type: "success", message: msg });
+            // this.goBack();
+          } else {
+            this.$notify({ type: "danger", message: msg });
+          }
+          this.subLoading = false;
+        })
+        .catch(() => {
+          this.subLoading = false;
+        });
     },
     cancelTime() {
       this.datePopFlag = false;

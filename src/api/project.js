@@ -71,3 +71,28 @@ export function setProjectProcess(params) {
     data: params
   })
 }
+
+// 获取客户列表
+export function getCustomerList(params) {
+  return request({
+    url: '/order/project/selectCustomer',
+    method: 'get',
+    params
+  })
+}
+// 选择发起报单
+export function getCuListManage(params) {
+  return request({
+    url: '/order/cuListManage/getCuListManage',
+    method: 'get',
+    params
+  })
+}
+// 创建一个新报单
+export function createNewProj(params) {
+  return request({
+    url: '/order/project/newProj',
+    method: 'get',
+    params
+  })
+}

@@ -16,32 +16,7 @@
 import { getToken } from "@/utils/auth";
 
 export default {
-  name: "App",
-  data() {
-    return {
-      loginForm: {
-        username: "gz0119",
-        password: "123"
-      }
-    };
-  },
-  methods: {
-    login() {
-      // this.$store.dispatch('user/login', this.loginForm)
-      this.$store.dispatch("user/login", this.loginForm).then(() => {
-        // this.$router.push({ path: this.redirect || '/' })
-        this.$store.dispatch("user/getWordBook");
-      });
-    }
-  },
-  mounted() {
-    const hasToken = getToken();
-    if (!hasToken) {
-      this.login();
-    } else {
-      this.$store.dispatch("user/getWordBook");
-    }
-  }
+  name: "App"
 };
 </script>
 
