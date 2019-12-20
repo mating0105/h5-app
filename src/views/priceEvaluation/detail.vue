@@ -31,13 +31,13 @@
             <imageList :dataList="dataList" :view="true"></imageList>
         </Card>
 
-        <Card style="margin-top: 1rem;" v-if="edit">
-            <template v-slot:header>
-                意见描述
-            </template>
-            <van-field v-model="carData.evaluatingComm" :border="false" type="textarea" placeholder="输入说明" rows="1"
-                       :autosize='autosize' class="zh-textarea"/>
-        </Card>
+<!--        <Card style="margin-top: 1rem;" v-if="edit">-->
+<!--            <template v-slot:header>-->
+<!--                意见描述-->
+<!--            </template>-->
+<!--            <van-field v-model="carData.evaluatingComm" :border="false" type="textarea" placeholder="输入说明" rows="1"-->
+<!--                       :autosize='autosize' class="zh-textarea"/>-->
+<!--        </Card>-->
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
@@ -181,7 +181,7 @@
     mounted () {
       this.initData()
       this.initImage()
-      this.edit = Boolean(this.$route.query.edit)
+      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
     }
   }
 </script>

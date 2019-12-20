@@ -1,9 +1,9 @@
 <template>
     <ViewPage :loading="loading">
-        <result :dataList="surDtlList" title="大数据" v-if="surDtlList"></result>
+        <result :dataList="surDtlList" :isBank="isBank" v-if="surDtlList"></result>
         <Card style="margin-top: 1rem">
             <template v-slot:header>
-                大数据征信报告照片
+                {{isBank ? '银行' : '大数据'}}征信报告照片
             </template>
             <div v-for="(item, index) in users" :key="index">
                 <div class="xh-image-box">
@@ -15,6 +15,13 @@
                 </div>
                 <imageList :dataList="item.dataList"></imageList>
             </div>
+        </Card>
+        <Card v-if="isBank" v style="margin-top: 1rem">
+            <template v-slot:header>
+                意见描述
+            </template>
+            <van-field v-model="remarks" :border="false" type="textarea" placeholder="输入说明" rows="1"
+                       :autosize='autosize' class="zh-textarea"/>
         </Card>
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
@@ -36,7 +43,7 @@
   import Vue from 'vue'
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
-  import { reply } from '@/api/bigData'
+  import { reply, bankReply } from '@/api/bigData'
   import _ from 'lodash'
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
@@ -62,11 +69,13 @@
           borrowerSpouse: ['0105', '0106', '0107', '0108', '2002', '0203'],//借款人配偶
           security: ['0120', '0117', '0118', '0119', '2005'],//担保人
           borrower: ['0101', '0102', '0103', '0104', '2001', '0202'],//借款人
-          joiDebtor: ['0110', '0111', '0112', '2003'],//共债人
+          joiDebtor: ['0109', '0110', '0111', '0112', '2003'],//共债人
         },
         edit: true,
         form: {},
-        surDtlList: null
+        surDtlList: null,
+        isBank: false,
+        remarks: '',
       }
     },
     computed: {
@@ -152,13 +161,18 @@
       async submit () {
         try {
           this.loading = true
-          await reply(this.form.surDtlList)
+          if (this.isBank) {
+            const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
+            await bankReply(params)
+          } else {
+            await reply(this.form.surDtlList)
+          }
           this.loading = false
           this.$nextTick(() => {
             Toast.success('提交成功')
           })
           this.$nextTick(() => {
-            this.$router.push('/bigDataQueryList')
+            this.$router.push('/bigDataQueryList')//todo
           })
         } catch (e) {
           this.loading = false
@@ -168,7 +182,8 @@
     },
     mounted () {
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit)
+      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      this.isBank = Boolean(this.$route.query.isBank)
     }
   }
 </script>
