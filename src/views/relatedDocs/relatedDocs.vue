@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-20 13:26:57
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 20:06:39
+ * @LastEditTime : 2019-12-20 20:23:07
  -->
 
 <template>
@@ -52,11 +52,11 @@ export default {
       docTypes: state => state.user.wordbook.document_type
     }),
     info() {
-      return this.getStringToObj(this.$route.query.info);
+      return this.getStringToObj(this.$route.query).info;
     },
     dealState() {
       // 1代表可以编辑3不可以编辑
-      return this.$route.query.dealState;
+      return this.getStringToObj(this.$route.query).dealState;
     }
   },
   props: {},
