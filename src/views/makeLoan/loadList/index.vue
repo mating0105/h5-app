@@ -67,16 +67,16 @@ export default {
         var newParams=(value,status)=>{
             let obj={};
             obj.id=Number(value.businesskey);
-            obj.dealState=status==3?false:true;
+            obj.dealState=status==1?false:true;
             return obj
         };
         return {
             listData:[],
             tabList:[
-                {name:'待办',value:'3'},
-                {name:'已办',value:'1'}
+                {name:'待办',value:'1'},
+                {name:'已办',value:'3'}
             ],
-            active:'3',//待办
+            active:'1',//待办
             loading: false,
             listLoading:false,
             isLoading: false,
@@ -85,7 +85,7 @@ export default {
             alreadyDone:'',
             pageData:{
                 searchKey:'',
-                status:3,// 待办：3 已办：1
+                status:1,// 待办：1 已办：3
                 pageSize:10,
                 pageIndex:1,
             },
