@@ -124,6 +124,7 @@ const actions = {
       "credit_object_type", //征信对象类型
       "business_type",//流程类型
       "proj_status", // 项目状态
+      "credit_result", // 征信状态
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

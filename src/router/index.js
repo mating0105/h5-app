@@ -95,7 +95,7 @@ export const constantRoutes = [
     path: '/xhProject',
     name: 'Project',
     component: () => import('@/views/project/index'),
-    meta: {title: '项目报单', icon: 'dashboard'}
+    meta: {title: '项目报单', icon: 'dashboard', keepAlive: true}
   },
   {
     path: '/lendProcessList',
@@ -122,7 +122,13 @@ export const constantRoutes = [
     component: () => import('@/views/basicInfo/projectInfo/index'),
     meta: {title: '新建报单', icon: 'dashboard'}
   },
-
+  
+  { 
+    path: '/customerList',
+    name: 'CustomerList',
+    component: () => import('@/views/project/customerList'),
+    meta: {title: '客户列表', icon: 'dashboard' }
+  },
   { 
     path: '/clientIndex',
     name: 'ClientIndex',

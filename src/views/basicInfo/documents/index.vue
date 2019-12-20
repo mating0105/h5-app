@@ -1,47 +1,40 @@
 <template>
-  <div>
+  <ViewPage>
     <imageList :dataList="dataList"></imageList>
-  </div>
+  </ViewPage>
 </template>
 
 <script>
-import imageList from '@/components/imageList'
+import Vue from "vue";
+// 自定义组件
+import ViewPage from "@/layout/components/ViewPage";
+import Card from "@/components/card/index";
+import imageList from "@/components/imageList";
 
 export default {
   components: {
-    imageList
+    imageList,
+    ViewPage,
+    Card
   },
   data() {
     return {
       dataList: [
         {
-          url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          declare: '身份证正面',
-          deletable: false,
-          isRequire: true
-        },{
-          url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          declare: '身份证反面',
-          deletable: false,
-          isRequire: true
-        },{
-          url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          declare: '银行征信查询授权书',
-          deletable: true,
-          isRequire: true
-        },{
-          url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          declare: '大数据征信查询授权书',
-          deletable: true,
-          isRequire: true
-        },{
-          url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          declare: '银行卡正反面',
-          deletable: true,
-          isRequire: true
-        },
+          declare: "二手车资料",//图片描述
+          isRequire: true,//*是否必须
+          deletable: true,//是否可以操作-上传和删除
+          documentType: "0306",
+          customerNum: this.$route.query.customerNum,
+          customerId: this.$route.query.customerId,
+          kind: '1',
+          fileList: []
+        }
       ]
     }
+  },
+  mounted() {
+
   }
 }
 </script>
