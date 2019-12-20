@@ -71,7 +71,8 @@
         form: {},
         perInfoList: [], //客户下面的其他客户数据
         edit: false,
-        backVisible: false
+        backVisible: false,
+        query: {}
       }
     },
     methods: {
@@ -79,8 +80,8 @@
         try {
           this.loading = true
           const params = {
-            lpCertificateNum: this.$route.query.lpCertificateNum,
-            id: this.$route.query.id
+            lpCertificateNum: this.query.lpCertificateNum,
+            id: this.query.id
           }
           const res = await getCreditInfo(params)
           this.dataList = res.data.cuCreditRegister;
@@ -105,27 +106,44 @@
       async nextStep () {
         this.$router.push({
           path: '/bigDataReply',
-          query: {...this.$route.query, isBank: true}
+          query: {...this.query, isBank: true}
         })
       },
       async backspaceFn (commentsDesc) {
         try {
+          this.loading = true
           const params = {wfBizComments: {commentsDesc, conclusionCode: '02', businessKey: this.dataList.id}, cuCreditRegister: this.dataList}
           await bankReply(params)
+          this.loading = false
           this.$nextTick(() => {
             Toast.success('回退成功')
           })
           this.$nextTick(() => {
-            this.$router.push('/bigDataQueryList')//todo
+            this.$router.push('/lendProcessList')
           })
         } catch (e) {
+          this.loading = false
           console.log(e)
         }
       }
     },
     mounted () {
+      if(this.$route.query.info && this.$route.query.dealState) {
+        this.query = {
+          lpCertificateNum: this.$route.query.info.certificateNum,
+          id: this.$route.query.info.businesskey
+        }
+        if(this.$route.query.dealState == 3) {
+          this.edit = false
+        }
+        if(this.$route.query.dealState == 1) {
+          this.edit = true
+        }
+      } else {
+        this.query = this.$route.query
+        this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      }
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
     }
   }
 </script>

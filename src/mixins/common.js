@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 17:38:15
+ * @LastEditTime : 2019-12-20 20:06:01
  */
 
 export default {
@@ -11,6 +11,18 @@ export default {
     return {};
   },
   methods: {
+    /**
+     * @description:
+     * @param {string} str json字符串类型
+     * @return: obj
+     */
+    getStringToObj(str) {
+      try {
+        return JSON.parse(str);
+      } catch (error) {
+        return {};
+      }
+    },
     /**
      * @description: 返回几层
      * @param {number | string} index 返回几层

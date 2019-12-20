@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-20 13:26:57
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 18:30:48
+ * @LastEditTime : 2019-12-20 20:06:39
  -->
 
 <template>
@@ -17,7 +17,10 @@
         <template v-slot:header>
           <section>{{item.declare}}</section>
         </template>
-        <imageList :dataList="[item]"></imageList>
+        <imageList
+          :dataList="[item]"
+          :view="dealState === '3'"
+        ></imageList>
       </card>
     </div>
     <nothing
@@ -49,11 +52,7 @@ export default {
       docTypes: state => state.user.wordbook.document_type
     }),
     info() {
-      try {
-        return JSON.parse(this.$route.query.info);
-      } catch (error) {
-        return {};
-      }
+      return this.getStringToObj(this.$route.query.info);
     },
     dealState() {
       // 1代表可以编辑3不可以编辑
