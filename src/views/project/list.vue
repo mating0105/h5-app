@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
     <template v-slot:head>
       <van-search
         v-model="params.searchKey"
@@ -8,7 +8,7 @@
         @search="onSearch"
       />
     </template>
-    <van-pull-refresh v-model="loading" @refresh="onLoad">
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -86,13 +86,14 @@ export default {
       params: {
         pageIndex: 1,
         pageSize: 10
-      }
+      },
+      rightlist: []
     };
   },
   computed: {
     // 所有字典
     ...mapState({
-      wordbook: state => state.user.wordbook,
+      wordbook: state => state.user.wordbook
     })
   },
   methods: {
@@ -106,6 +107,14 @@ export default {
       });
       return name;
     },
+    // 筛选返回
+    goPage(val) {
+      console.log(val);
+    },
+    onRefresh() {
+      this.params.pageIndex = 1;
+      this.onLoad();
+    },
     onLoad() {
       this.loading = true;
       getProjectList(this.params).then(res => {
@@ -117,6 +126,11 @@ export default {
           // 加载状态结束
           this.loading = false;
           this.params.pageIndex ++;
+          const { proj_status } = this.wordbook;
+          proj_status.forEach(t => {
+            t.title = t.label;
+          });
+          this.rightlist = proj_status;
           // 数据全部加载完成
           if (this.list.length == data.totalCount) {
             this.finished = true;
