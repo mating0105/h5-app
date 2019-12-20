@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 19:09:28
+ * @LastEditTime : 2019-12-20 19:57:22
  -->
 
 <template>
@@ -397,6 +397,11 @@ export default {
   },
   data() {
     return {
+      errorMsg:{
+        differenceCarprice:'', // 与贷款金额差价（元）
+        dishonestyCustomer:'', // 是否失信客户
+        ownershipRegisterDate:'', // 重权登记日期
+      },
       subLoading: false,
       currentDate: new Date(), // 当前日期
       dateIndex: "",

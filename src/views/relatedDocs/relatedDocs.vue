@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-20 13:26:57
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 18:30:48
+ * @LastEditTime : 2019-12-20 19:57:10
  -->
 
 <template>
@@ -17,7 +17,10 @@
         <template v-slot:header>
           <section>{{item.declare}}</section>
         </template>
-        <imageList :dataList="[item]"></imageList>
+        <imageList
+          :dataList="[item]"
+          :view="dealState === '3'"
+        ></imageList>
       </card>
     </div>
     <nothing
