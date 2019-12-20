@@ -22,6 +22,7 @@
 <script>
   import Vue from 'vue'
   import { NavBar, Icon } from 'vant';
+import { log } from 'util';
 
   Vue.use(NavBar).use(Icon)
   export default {
@@ -29,7 +30,6 @@
     data(){
       return{
         rightMenu: false,
-        rightMenuList:this.$parent.rightMenuList
       }
     },
     methods: {
@@ -49,7 +49,11 @@
       title: '',
       rightFn: Function,
       iconClass:'',
-      goPage:Function
+      goPage:Function,
+      rightMenuList:{
+        type:Array,
+        default:()=> []
+      }
     }
   }
 </script>
