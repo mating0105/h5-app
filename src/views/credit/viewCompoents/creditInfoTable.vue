@@ -5,8 +5,8 @@
         </template>
         <div v-for="(item, index) in dataList" :key="index" class="xh-table-border">
             <van-cell title="客户姓名:" :border="false" :value="item.creditPersonName"/>
-            <van-cell title="征信结果:" :border="false" :class="[item[type] === 'pass' ? 'xh-pass': 'xh-no-pass']"
-                      :value="item[type] === 'pass' ? '通过' : item[type] === 'not_pass' ? '不通过' : ''"/>
+            <van-cell title="征信结果:" :border="false" :class="[item[type] === 'pass' ? 'xh-pass': item[type] === 'not_pass' ? 'xh-no-pass': '']"
+                      :value="item[type] === 'pass' ? '通过' : item[type] === 'not_pass' ? '不通过' : '暂未查询'"/>
             <van-cell title="对象类型:" :border="false" :value="returnText(item.creditObjectType, 'credit_object_type')"/>
             <van-cell title="身份证号:" :border="false" :value="item.cpCertificateNum"/>
             <van-cell title="电话号码:" :border="false" :value="item.telephone"/>

@@ -24,4 +24,18 @@ export function reply(params) {
   })
 }
 
+/**
+ * 驻行回复
+ * @param params
+ */
+export function bankReply(params) {
+  return request({
+    url: 'order/creditProcess/submitBankInsideCreditInfo',
+    method: 'post',
+    data: params
+  })
+}
+
+
+
 

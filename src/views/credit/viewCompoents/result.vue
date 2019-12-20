@@ -1,7 +1,7 @@
 <template>
     <Card>
         <template v-slot:header>
-            {{title}}征信结果
+            {{isBank ? '银行': '大数据'}}征信结果
         </template>
         <div class="xh-electronic-box" v-for="(item, index) in dataList" :key="index">
             <div>
@@ -21,8 +21,8 @@
             </div>
             <div class="xh-contract-status">
                 <div @click="showPopup(item)">
-                    <span v-if="item.bigDataResult === 'pass'" class="xh-contract-true">通过</span>
-                    <span v-else-if="item.bigDataResult === 'not_pass'" class="xh-contract-false">未通过</span>
+                    <span v-if="item[type] === 'pass'" class="xh-contract-true">通过</span>
+                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">未通过</span>
                     <span v-else>请选择征信结果</span>
                     <van-icon class="xh-contract-icon" name="arrow"/>
                 </div>
@@ -59,8 +59,8 @@
       }
     },
     props: {
-      title: String,
-      dataList: Array
+      isBank: Boolean,
+      dataList: Array,
     },
     computed: {
       wordbook () {
@@ -68,6 +68,9 @@
       },
       credit_result () {
         return this.$store.state.user.wordbook.credit_result || []
+      },
+      type () {
+        return this.isBank ? 'creditResult' : 'bigDataResult'
       }
     },
     methods: {
@@ -89,21 +92,19 @@
         this.index = 0
         try {
           this.credit_result.forEach((result, index) => {
-            console.log(item.bigDataResult)
-            console.log(result.value)
-            if (item.bigDataResult === result.value) {
+            if (item[this.type] === result.value) {
               this.index = index
               throw Error()
             }
           })
-        }catch (e) {
+        } catch (e) {
         }
         this.$nextTick(() => {
           this.$refs['picker'].setIndexes([this.index])
         })
       },
       onSelect (item, index) {
-        this.currentData.bigDataResult = item.value
+        this.currentData[this.type] = item.value
         this.show = false
       }
     }
@@ -147,6 +148,7 @@
 
     .xh-contract-status {
         color: #999;
+
         > div {
             position: absolute;
             right: 0;

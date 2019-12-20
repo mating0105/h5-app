@@ -83,6 +83,7 @@
   //0119 担保人银行征信授权书
   //2005 担保人银行卡正反面
 
+  //0109 共债人身份证
   //0110 共债人身份证反面
   //0111 共债人授权书
   //0112 共债人银行征信授权书
@@ -115,7 +116,7 @@
           borrowerSpouse: ['0105', '0106', '0107', '0108', '2002', '0203'],//借款人配偶
           security: ['0120', '0117', '0118', '0119', '2005'],//担保人
           borrower: ['0101', '0102', '0103', '0104', '2001', '0202'],//借款人
-          joiDebtor: ['0110', '0111', '0112', '2003'],//共债人
+          joiDebtor: ['0109', '0110', '0111', '0112', '2003'],//共债人
         },
         changeUserList: [],
         showUser: false,
@@ -211,7 +212,11 @@
             "processDefineKey": "WF_CU_CREDIT_001"
           }
           const {data} = await createTask(params)
+
           this.taskData = data;
+          // if(data.status !== '05') {
+          //
+          // }
           const userParams = {
             "businessKey": this.$route.query.creditRegisterId,
             "commentsDesc": this.remarks,

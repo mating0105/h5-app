@@ -52,7 +52,7 @@
                     <template v-slot:footer>
                         <div style="text-align:right; min-height: 2rem">
                             <van-button
-                                    v-if="item.status === '01'"
+                                    v-if="item.status === '01' || item.status === '-1'"
                                     plain
                                     size="small"
                                     type="danger"

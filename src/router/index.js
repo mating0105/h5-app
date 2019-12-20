@@ -79,6 +79,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/bankQuery',
+    name: 'bankQuery',
+    component: () => import('@/views/credit/bankQuery'),
+    meta: {title: '基本资料'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
