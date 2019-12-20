@@ -108,7 +108,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    // meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '待办', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -277,6 +277,12 @@ export const constantRoutes = [
     meta: {title: '相关文档', icon: 'dashboard'}
   },
   { 
+    path: '/relatedDocs',
+    name: 'RelatedDocs',
+    component: () => import('@/views/relatedDocs/relatedDocs.vue'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  { 
     path: '/creatCustomer',
     name: 'CreatCustomer',
     component: () => import('@/views/createCustomer/index'),
@@ -289,7 +295,7 @@ export const constantRoutes = [
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
   { 
-    path: '/contractUpload',
+    path: '/contractUpload/',
     name: 'contractUpload',
     component: () => import('@/views/contractUpload/upload'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
@@ -301,7 +307,7 @@ export const constantRoutes = [
     meta: {title: '重权补录', icon: 'dashboard'}
   },
   { 
-    path: '/heavyRightManage/:id',
+    path: '/heavyRightManage/:id/:customerNum/:customerId',
     name: 'HeavyRightManage',
     component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
     meta: {title: '重权管理', icon: 'dashboard'},
@@ -313,13 +319,15 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'a',
-        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        path: 'relatedDocs',
+        name: 'HeavyRelatedDocs',
+        component: () => import('@/views/relatedDocs/relatedDocs'),
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'b',
-        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        path: 'approval',
+        name: 'HeavyApproval',
+        component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
       }
     ]

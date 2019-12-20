@@ -1,89 +1,56 @@
 <template>
   <div class="projectInfo">
+
     <Card>
       <template v-slot:header>
         签约人信息
       </template>
       <div class="userInfoBox">
-        <div class="userInfo">
+        <div class="userInfo" v-for="(item, index) in userInfo" :key="index">
           <div>
             <img src="../../assets/new_images/user_black.png">
-            <span class="userName">张三</span>
-            <span class="tag">主借人</span>
+            <span class="userName">{{item.name}}</span>
+            <span class="tag">{{item.tag}}</span>
           </div>
           <div>
             <img src="../../assets/new_images/idCar_black.png">
-            <span>511325199506070053</span>
+            <span>{{item.idCard}}</span>
           </div>
           <div>
             <img src="../../assets/new_images/phone_black.png">
-            <span>13111866951</span>
-          </div>
-        </div>
-        <div class="userInfo">
-          <div>
-            <img src="../../assets/new_images/user_black.png">
-            <span class="userName">李四</span>
-            <span class="tag">主借人配偶</span>
-          </div>
-          <div>
-            <img src="../../assets/new_images/idCar_black.png">
-            <span>511325199506070053</span>
-          </div>
-          <div>
-            <img src="../../assets/new_images/phone_black.png">
-            <span>13111866951</span>
+            <span>{{item.phone}}</span>
           </div>
         </div>
       </div>
-      
     </Card>
+
     <Card>
-      <template v-slot:header>
-        征信查询照片
-      </template>
-      <div class="xh-image-box">
+      <template v-slot:header> 合同照片 </template>
+      <div class="xh-image-box master">
         <div class="xh-box-item">
           <svg-icon icon-class="user" />
-          <span>{{ mainUser.username }}</span>
+          <span>{{ userInfo[0].name }}</span>
           <span class="xh-user-tag">主借人</span>
         </div>
       </div>
-      <imageList :dataList="mainUser.dataList"></imageList>
       <div class="xh-image-box">
         <div class="xh-box-item">
           <svg-icon icon-class="user" />
-          <span>{{ spouse.username }}</span>
+          <span>{{ userInfo[1].name }}</span>
           <span class="xh-user-tag">主借人配偶</span>
         </div>
       </div>
-      <imageList :dataList="spouse.dataList"></imageList>
+      <imageList :dataList="dataList"></imageList>
     </Card>
 
     <Card style="margin-top: 10px;">
-      <template v-slot:header>
-        意见描述
-      </template>
-      <van-field
-        v-model="remarks"
-        :border="false"
-        type="textarea"
-        placeholder="输入说明"
-        rows="1"
-        :autosize="autosize"
-        class="zh-textarea"
-      />
+      <template v-slot:header> 意见描述 </template>
+      <van-field v-model="remark" :border="false" type="textarea" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
     </Card>
 
     <!-- 提交按钮 -->
-    <div
-      style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;"
-    >
-      <van-button
-        size="large"
-        style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;"
-        >提交
-      </van-button>
+    <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+      <van-button size="large" style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;" @click="submitRemark"> 提交 </van-button>
     </div>
   </div>
 </template>
@@ -92,11 +59,12 @@
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card";
 import imageList from "@/components/imageList";
-import { Button, Field } from "vant";
+import { Button, Field, Toast, Notify } from "vant";
 import Vue from "vue";
 import { getDocumentByType } from "@/api/document";
+import api from "@/api/contractUpload";
 
-Vue.use(Button).use(Field);
+Vue.use(Button).use(Field).use(Toast).use(Notify);
 
 export default {
   name: "creditNextStep",
@@ -108,27 +76,37 @@ export default {
   data() {
     return {
       loading: false,
-      remarks: "",
-      activeName: "projectInfo",
+      remark:'',
       autosize: {
         maxHeight: 100,
         minHeight: 80
       },
-      mainUser: {
-        username: "张三",
-        dataList: []
-      },
-      spouse: {
-        username: "李四",
-        dataList: []
-      },
-
-      dataList: []
+      userInfo: [{
+        name: "",
+        tag: "主借人",
+        phone: "",
+        idCard: ""
+      },{
+        name: "",
+        tag: "主借人配偶",
+        phone: "",
+        idCard: ""
+      }],
+      dataList:[]
     };
   },
   computed: {
+    customerId(){
+      return this.$route.query.customerId;
+    },
+    customerNum(){
+      return this.$route.query.customerNum;
+    },
     wordbook() {
       return this.$store.state.user.wordbook;
+    },
+    projectId(){
+      return this.$route.query.projectId;
     },
     documentType() {
       let obj = {};
@@ -140,69 +118,95 @@ export default {
       return obj;
     }
   },
+  activated(){
+    this.remark = this.$route.query.remark;
+    this.resetUserInfo();
+    this.initImage();
+    this.getListDetails();
+  },
   methods: {
-    async getDocumentByType(documentType, obj) {
-      try {
-        const params = {
-          customerNum: "KH190531250007",
-          documentType: documentType
-        };
-        const { data } = await getDocumentByType(params);
-        const declare = this.documentType[documentType]
-          ? this.documentType[documentType].label
-          : "图片描述";
-        data.forEach(item => {
-          item.declare = declare;
-        });
-        obj.dataList.push({
-          declare: declare, //图片描述
-          isRequire: true, //*是否必须
-          deletable: true, //是否可以操作-上传和删除
-          documentType: documentType,
-          customerNum: "KH190531250007",
-          customerId: "190531250007",
-          kind: "1",
-          fileList: data
-        });
-      } catch (e) {
-        console.log(e);
-      }
+    // 获取 userInfo
+    getListDetails(){
+      this.showTostLoading();
+      api.getListDetails({id:"2019121486"}).then(res=>{
+        res.code === 200 ? Toast.clear() : ''
+        let {customerName, certificateNum, contactPhone, spsNm, spsCrdtNo, spsCtcTel} = {...res.data.projectInfo.customer};
+
+        this.userInfo[0].name = customerName;
+        this.userInfo[0].phone = contactPhone;
+        this.userInfo[0].idCard = certificateNum;
+        this.userInfo[1].name = spsNm;
+        this.userInfo[1].phone = spsCtcTel;
+        this.userInfo[1].idCard = spsCrdtNo;
+      })
     },
-    async initImage() {
-      try {
-        await this.getDocumentByType("0103", this.mainUser); // 主借人授权书
-        this.getDocumentByType("0104", this.mainUser); //主借人银行征信授权书
-        this.getDocumentByType("2001", this.mainUser); //主借人银行卡正反面
 
-        this.getDocumentByType("0105", this.spouse); //主借人配偶身份证正面
-        this.getDocumentByType("0106", this.spouse); //主借人配偶身份证反面
-        this.getDocumentByType("0107", this.spouse); //主借人配偶授权书
-        this.getDocumentByType("0108", this.spouse); //主借人配偶银行征信授权书
-        this.getDocumentByType("2002", this.spouse); //主借人配偶银行卡正反面
+    // 图片上传 与 展示
+    async getDocumentByType(documentType) {
+      this.dataList = [];
+      let params = {
+        customerNum: this.customerNum,
+        documentType: documentType
+      };
+      let { data } = await getDocumentByType(params);
+      let declare = this.documentType[documentType]
+        ? this.documentType[documentType].label
+        : "图片描述";
+      data.forEach(item => {
+        item.declare = declare;
+      });
+      this.dataList.push({
+        declare: declare, //图片描述
+        isRequire: true, //*是否必须
+        deletable: true, //是否可以操作-上传和删除
+        documentType: documentType,
+        customerNum: this.customerNum,
+        customerId: this.customerId,
+        kind: "1",
+        fileList: data
+      });
+    },
+    initImage() {
+      this.getDocumentByType("1801"); //主借人 - 融资租赁合同
+      this.getDocumentByType("1806"); //主借人 - 融资租赁业务告知书"
+      this.getDocumentByType("1802"); //主借人 - 抵押合同
+      this.getDocumentByType("1803"); //主借人 - 车辆验收合格单
+      this.getDocumentByType("1804"); //主借人 - 委托扣款授权书
+      this.getDocumentByType("1805"); //主借人 - 加融费用收取证明
+      this.getDocumentByType("1807"); //主借人 - 收车授权委托书
+    },
 
-        //0120   担保人身份证反面
-        //0117   担保人身份证
-        //0118   担保人授权书
-        //0119   担保人银行征信授权书
-        //2005   担保人银行卡正反面
+    // 提交备注
+    submitRemark(){
+      api.submitRemark({projectId:this.projectId, remark:this.remark}).then(res => {
+        if(res.msg === 'OK'){
+          Notify({ type: 'success', message: '操作成功' });
+        }else{
+          Notify({ type: 'danger', message: '操作失败, 请重试!' });
+        }
+      })
+    },
 
-        //2003   共债人银行卡正反面
-        //2004   共债人配偶英航卡正反面
-        // this.getDocumentByType('0109', this.mainUser)//共债人身份证正面
-        // this.getDocumentByType('0110', this.mainUser)//共债人身份证反面
-        // this.getDocumentByType('0111', this.mainUser)//共债人授权书
-        // this.getDocumentByType('0112', this.mainUser)//共债人银行征信授权书
-        // this.getDocumentByType('0113', this.spouse)//共债人配偶身份证正面
-        // this.getDocumentByType('0114', this.spouse)//共债人配偶身份证反面
-        // this.getDocumentByType('0115', this.spouse)//共债人配偶授权书
-        // this.getDocumentByType('0116', this.spouse)//共债人配偶银行征信授权书
-      } catch (e) {
-        console.log(e);
+    // 显示 Loading
+    showTostLoading(){
+      Toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+        duration: 0,
+        loadingType: 'spinner',
+        overlay: true
+      });
+    },
+    // 重置用户信息
+    resetUserInfo(){
+      for (const itemList of this.userInfo) {
+        for (const item in itemList) {
+          if(item !== 'tag'){
+            itemList[item] = '';
+          }
+        }
       }
     }
-  },
-  mounted() {
-    this.initImage();
   }
 };
 </script>
@@ -242,7 +246,9 @@ export default {
   }
 }
 
-
+.master{
+  margin-bottom: 10px;
+}
 .xh-image-box {
   padding: 0 1rem 0 1rem;
 
