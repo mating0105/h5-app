@@ -19,6 +19,7 @@
   import BScroll from 'better-scroll'
   import { Overlay, Loading, Toast } from 'vant';
   import Vue from 'vue'
+import { log } from 'util';
 
   Vue.use(Overlay).use(Loading);
 

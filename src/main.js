@@ -8,7 +8,7 @@ import store from './store'
 import router from './router'
 
 import '@/icons' // icon
-// import '@/permission' // permission control
+import '@/permission' // permission control
 import 'vant/lib/index.css';
 import mixins from "@/mixins/common";
 Vue.mixin(mixins);

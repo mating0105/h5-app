@@ -50,7 +50,10 @@
                   <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="产品性质" :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)" />
+                  <van-cell
+                    title="产品性质"
+                    :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)"
+                  />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
@@ -370,7 +373,14 @@
           </div>
         </div>
         <div class="xh-submit" v-show="stepVal !=3">
-          <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
+          <van-row>
+            <van-col :span="4">
+              <van-button size="large" class="xh-bg-gray" @click="end">终 止</van-button>
+            </van-col>
+            <van-col :span="19" offset="1">
+              <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
+            </van-col>
+          </van-row>
         </div>
       </van-tab>
       <van-tab title="项目信息" name="project">
@@ -417,7 +427,8 @@ import {
   CellGroup,
   DatetimePicker,
   Picker,
-  ActionSheet
+  ActionSheet,
+  Dialog
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
@@ -429,7 +440,8 @@ import {
   getDic,
   submitPay,
   savePay,
-  submitProcess
+  submitProcess,
+  stopTask
 } from "@/api/payment";
 import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
@@ -443,7 +455,8 @@ const Components = [
   CellGroup,
   DatetimePicker,
   Picker,
-  ActionSheet
+  ActionSheet,
+  Dialog
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -587,6 +600,25 @@ export default {
           this.loading = false;
         });
     },
+    //终止流程
+    end() {
+      Dialog.confirm({
+        title: "",
+        message: "确定终止缴费流程吗？"
+      })
+        .then(() => {
+          this.loading = true;
+          stopTask({payInfoId:this.paymentDetail.projPayInfo.id}).then(res =>{
+            this.loading = false;
+            this.$notify({ type: "success", message: "终止成功" });
+          }).catch(e =>{
+            this.loading = false;
+          })
+        })
+        .catch(() => {
+          
+        });
+    },
     //上拉菜单选择
     loadType(title, field) {
       this.selectName = title;
@@ -616,7 +648,7 @@ export default {
     // 获取其他字典接口
     getDict() {
       let arr = [
-        "product_property",//产品性质
+        "product_property", //产品性质
         "pay_method", //缴费方式
         "payType", //走款模式
         "BANK_TYPE_JYR" //银行
@@ -651,14 +683,13 @@ export default {
             }
           });
           break;
-          case 'product_property':
-            this.dicList.product_property.forEach(e => {
+        case "product_property":
+          this.dicList.product_property.forEach(e => {
             if (e.value == val) {
               name = e.label;
             }
           });
           break;
-
       }
       return name;
     },
@@ -883,7 +914,7 @@ export default {
   background: rgb(196, 37, 42);
 }
 .xh-bg-gray {
-  color: rgb(204, 204, 204);
+  background: rgb(204, 204, 204);
 }
 .xh-submit {
   padding: 0 10px 20px 10px;

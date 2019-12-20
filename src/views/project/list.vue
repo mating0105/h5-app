@@ -1,39 +1,49 @@
 <template>
-  <ViewPage>
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      :error.sync="error"
-      error-text="请求失败，点击重新加载"
-      @load="onLoad"
-    >
-      <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-        <Card class="xh-top-10" :bodyPadding='true'>
-          <template v-slot:header>
-            <section class="xh-plus">
-              <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
-            </section>
-          </template>
-          <van-row>
-            <van-col span="24">客户名称：{{ item.customerName }}</van-col>
-            <van-col span="24" class="xh-top-10">身份证：{{ item.certificateNum }}</van-col>
-            <van-col span="24" class="xh-top-10">手机号码：{{ item.contactPhone }}</van-col>
-          </van-row>
-          <template v-slot:footer>
-            <div style="text-align:right;">
-              <van-button
-                plain
-                type="danger"
-                class="xh-radius"
-                style="border-radius: 6px;"
-                @click="startForm(item)"
-              >发起报单</van-button>
-            </div>
-          </template>
-        </Card>
-      </div>
-    </van-list>
+  <ViewPage iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
+    <template v-slot:head>
+      <van-search
+        v-model="params.searchKey"
+        placeholder="请输入搜索关键词"
+        show-action
+        @search="onSearch"
+      />
+    </template>
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
+          <Card class="xh-top-10" :bodyPadding='true'>
+            <template v-slot:header>
+              <section class="xh-plus">
+                <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
+              </section>
+            </template>
+            <van-row>
+              <van-col span="24">客户名称：{{ item.customerName }}</van-col>
+              <van-col span="24" class="xh-top-10">身份证：{{ item.certificateNum }}</van-col>
+              <van-col span="24" class="xh-top-10">手机号码：{{ item.contactPhone }}</van-col>
+            </van-row>
+            <template v-slot:footer>
+              <div style="text-align:right;">
+                <van-button
+                  plain
+                  type="danger"
+                  class="xh-radius"
+                  style="border-radius: 6px;"
+                  @click="startForm(item)"
+                >发起报单</van-button>
+              </div>
+            </template>
+          </Card>
+        </div>
+      </van-list>
+    </van-pull-refresh>
     <div class="xh-fixed-submit">
       <div class="xh-submit">
         <van-button
@@ -55,8 +65,8 @@ import { getProjectList } from "@/api/project";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 // 其他组件
-import { Row, Col, Icon, Cell, Button, List } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List];
+import { Row, Col, Icon, Cell, Button, List, Search, PullRefresh } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh ];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -73,16 +83,17 @@ export default {
       loading: false,
       error: false,
       finished: false,
-      parms: {
+      params: {
         pageIndex: 1,
         pageSize: 10
-      }
+      },
+      rightlist: []
     };
   },
   computed: {
     // 所有字典
     ...mapState({
-      wordbook: state => state.user.wordbook,
+      wordbook: state => state.user.wordbook
     })
   },
   methods: {
@@ -96,29 +107,45 @@ export default {
       });
       return name;
     },
+    // 筛选返回
+    goPage(val) {
+      console.log(val);
+    },
+    onRefresh() {
+      this.params.pageIndex = 1;
+      this.onLoad();
+    },
     onLoad() {
       this.loading = true;
-      getProjectList(this.parms).then(res => {
-        const { code, data, msg } = res;
-        if(code == 200) {
-          setTimeout(() => {
-            data.result.forEach(t => {
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.parms.pageIndex ++;
-            // 数据全部加载完成
-            if (this.list.length == data.totalCount) {
-              this.finished = true;
-            } else {
-              this.finished = false;
-            }
-          }, 500);
-        } else {
-          this.$notify({ type: 'danger', message: msg });
+      getProjectList(this.params).then(res => {
+        const { data } = res;
+        setTimeout(() => {
+          data.result.forEach(t => {
+            this.list.push(t);
+          });
+          // 加载状态结束
           this.loading = false;
-        }
+          this.params.pageIndex ++;
+          const { proj_status } = this.wordbook;
+          proj_status.forEach(t => {
+            t.title = t.label;
+          });
+          this.rightlist = proj_status;
+          // 数据全部加载完成
+          if (this.list.length == data.totalCount) {
+            this.finished = true;
+          } else {
+            this.finished = false;
+          }
+          if(data.result.length == 0) {
+            this.finished = true;
+          }
+        }, 500);
+      }).catch(()=>{
+        this.loading = false;
+        setTimeout(()=> {
+          this.finished = true;
+        },300);
       });
     },
     // 发起报单
@@ -134,7 +161,11 @@ export default {
       }});
     },
     // 新建客户
-    addClint() {}
+    addClint() {},
+    // 搜索
+    onSearch(val) {
+      console.log(val);
+    }
   },
   mounted() {
     this.onLoad();

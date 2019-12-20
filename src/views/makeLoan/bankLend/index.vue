@@ -368,6 +368,7 @@ export default {
                     msgType:'WF_BANK_MAKE_LOAN_YWY',
                     isSendMsg:this.salesmanChecked?1:0,
                     receiver:this.form.projectInfo.clientManager.id,
+                    projectNo:this.salesmanChecked?this.form.projectInfo.projectNo:'',
                 }
             }
             if(this.approvalConclusion=='03'){
@@ -380,6 +381,7 @@ export default {
                     msgType:'WF_BANK_MAKE_LOAN_CW',
                     isSendMsg:this.cashierChecked?1:0,
                     receiver:this.FinanceCashier,
+                    projectNo:this.cashierChecked?this.form.projectInfo.projectNo:'',
                 }
             }
             let bankLoanInfo=Object.assign({},this.bankLoanInfo);

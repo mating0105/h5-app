@@ -17,7 +17,7 @@
                                 <Card class="xh-top-10">
                                     <template v-slot:header>
                                         <section class="xh-plus">
-                                            <van-cell :title="returnText('business_type',item.businesstype)" icon="after-sale"></van-cell>
+                                            <van-cell :title="returnText(dictionaryData,'business_type',item.businesstype)"  icon="after-sale"></van-cell>
                                         </section>
                                     </template>
                                     <van-row style="padding:10px 10px 20px;line-height:22px;" @click="applyPay(item)">
@@ -64,18 +64,20 @@ export default {
         Card
     },
     data() {
-        var newParams=(value)=>{
+        var newParams=(value,status)=>{
+            //value:当前item  status:待办:1,已办:3
             let obj={};
-            obj.id=47;//value.businesskey;
+            obj.id=Number(value.businesskey);
+            obj.dealState=status==1?false:true;
             return obj
         };
         return {
             listData:[],
             tabList:[
-                {name:'待办',value:'3'},
-                {name:'已办',value:'1'}
+                {name:'待办',value:'1'},
+                {name:'已办',value:'3'}
             ],
-            active:'3',//待办
+            active:'1',//待办
             loading: false,
             listLoading:false,
             isLoading: false,
@@ -84,16 +86,45 @@ export default {
             alreadyDone:'',
             pageData:{
                 searchKey:'',
-                status:3,// 待办：3 已办：1
+                status:1,// 待办：1 已办：3
                 pageSize:10,
                 pageIndex:1,
             },
             dictionaryData:{},//字典数据
+            //待办跳转对应页面数据
+            dealWithData:{//待办页面跳转配置
+                activityId:[
+                    {label:'客户经理待办',value:'WF_PROJ_APPR_01_T01',processName:'审批流程'},
+                    {label:'内勤待办',value:'WF_PROJ_APPR_01_T04',processName:'审批流程'},
+                    {label:'审批官待办',value:'WF_PROJ_APPR_01_T52',processName:'审批流程'},
+                    {label:'业务人员待办',value:'WF_CAPTURE_001_T001',processName:'走款流程'},
+                    {label:'财务走款确认待办',value:'WF_CAPTURE_001_T002',processName:'走款流程'},
+                    {label:'客户经理待办',value:'WF_CU_CREDIT_001_T001',processName:'征信流程'},
+                    {label:'驻行人员待办',value:'WF_CU_CREDIT_001_T003',processName:'征信流程'},
+                    {label:'合规文员待办',value:'WF_BANK_MAKE_LOAN_001_T002',processName:'放款流程'},
+                    {label:'驻行内勤待办',value:'WF_BANK_MAKE_LOAN_001_T004',processName:'放款流程'}
+                ]
+            },
             info:{},
-            pathData:[
-                {name:'银行放款',path:'/lendProcess',params:newParams},
-                {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
-            ]
+            pathData:{
+                //待办路径
+                dealwith:[
+                    {name:'客户经理待办',path:'/a',params:{}},
+                    {name:'内勤待办',path:'/b',params:{}},
+                    {name:'审批官待办',path:'/c',params:{}},
+                    {name:'业务人员待办',path:'/d',params:{}},
+                    {name:'财务走款确认待办',path:'/e',params:{}},
+                    {name:'客户经理待办',path:'/f',params:{}},
+                    {name:'驻行人员待办',path:'/g',params:{}},
+                    {name:'合规文员待办',path:'/h',params:{}},
+                    {name:'驻行内勤待办',path:'/m',params:{}},
+                ],
+                //已办路径
+                alreadyDone:[
+                    {name:'银行放款',path:'/lendProcess',params:newParams},
+                    {name:'征信调查',path:'/bigDataQueryDetail',params:{edit:true,lpCertificateNum:'530423199502263320',id:'191204537544'}},
+                ]
+            }
         };
     },
     watch: {
@@ -146,26 +177,30 @@ export default {
             }
         },
         // 字典转换
-        returnText(n, val) {
+        returnText(dataArr,n, val) {
             let name;
-            this.dictionaryData[n].forEach(e => {
+            dataArr[n].forEach(e =>{
                 if (e.value == val) {
                     name = e.label;
                 }
-            });
+            })
             return name;
         },
         // 发起放款
         applyPay(val) {
             this.info=val;
-            this.returnPath(this.returnText('business_type',val.businesstype))
+            if(this.pageData.status==1){//待办
+                this.returnPath(this.returnText(this.dealWithData,'activityId',val.activityId),'dealwith')
+            }else{//已办
+                this.returnPath(this.returnText(this.dictionaryData,'business_type',val.businesstype),'alreadyDone')
+            } 
         },
-        returnPath(value){
-            this.pathData.forEach((item,index)=>{
+        returnPath(value,n){
+            this.pathData[n].forEach((item,index)=>{
                 if(item.name==value){
                     this.$router.push({
                         path:item.path,
-                        query:item.params(this.info)
+                        query:item.params(this.info,this.pageData.status)
                     });
                 }
             })
