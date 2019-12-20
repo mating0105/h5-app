@@ -1,6 +1,6 @@
 <template>
     <ViewPage :loading="loading">
-        <result :dataList="users" title="大数据"></result>
+        <result :dataList="surDtlList" title="大数据" v-if="surDtlList"></result>
         <Card style="margin-top: 1rem">
             <template v-slot:header>
                 大数据征信报告照片
@@ -37,6 +37,7 @@
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
   import { reply } from '@/api/bigData'
+  import _ from 'lodash'
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
 
@@ -64,7 +65,8 @@
           joiDebtor: ['0110', '0111', '0112', '2003'],//共债人
         },
         edit: true,
-        form: {}
+        form: {},
+        surDtlList: null
       }
     },
     computed: {
@@ -94,10 +96,11 @@
         }
         return name;
       },
-      async getDocumentByType (documentType, obj) {
+      async getDocumentByType (documentType, obj, beanData) {
         try {
+          const customerNum = beanData.perInfo ? beanData.perInfo.customerNum : ''
           const params = {
-            customerNum: this.$route.query.customerNum,
+            customerNum: customerNum,
             documentType: documentType
           }
           const {data} = await getDocumentByType(params)
@@ -110,8 +113,8 @@
             isRequire: true,//*是否必须
             deletable: true,//是否可以操作-上传和删除
             documentType: documentType,
-            customerNum: this.$route.query.customerNum,
-            customerId: this.$route.query.customerId,
+            customerNum: customerNum,
+            customerId: beanData.customerId,
             kind: '1',
             fileList: data
           })
@@ -127,16 +130,19 @@
             id: this.$route.query.id
           }
           const {data} = await getCreditInfo(params)
-          data.cuCreditRegister.surDtlList.forEach(item => {
+          const form = data.cuCreditRegister
+          form.surDtlList = data.cuCreditRegister.surDtlList.reverse()
+          const users = _.cloneDeep(form.surDtlList)
+          users.forEach(item => {
             item.dataList = []
             const arr = this.obj[item.creditObjectType]
             arr.forEach(i => {
-              this.getDocumentByType(i, item)
+              this.getDocumentByType(i, item, form)
             })
           })
-          this.form = data.cuCreditRegister
-          this.users = data.cuCreditRegister.surDtlList.reverse()
-          this.form.surDtlList = this.users
+          this.users = users
+          this.form = form
+          this.surDtlList = form.surDtlList
           this.loading = false
         } catch (e) {
           this.loading = false
@@ -146,7 +152,7 @@
       async submit () {
         try {
           this.loading = true
-          await reply(this.form)
+          await reply(this.form.surDtlList)
           this.loading = false
           this.$nextTick(() => {
             Toast.success('提交成功')
