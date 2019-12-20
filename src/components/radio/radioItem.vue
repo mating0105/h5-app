@@ -46,6 +46,9 @@
     },
     methods: {
       changeRadio () {
+        if (this.isDisabled) {
+          return
+        }
         this.$nextTick(() => {
           this.dispatch('radio', 'changeRadio', this.label);
         });
