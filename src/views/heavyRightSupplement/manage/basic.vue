@@ -3,10 +3,11 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 19:18:04
+ * @LastEditTime : 2019-12-20 12:25:15
  -->
 
 <template>
+
   <div class="basic">
     <Card class="xh-top-10">
       <template v-slot:header>
@@ -239,7 +240,7 @@
               title="是否有套票:"
             >
               <singleConnect
-                :default-active-value="details.ispackage"
+                :default-active-value="details.ispackage*1"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="ispackage"
@@ -258,7 +259,7 @@
               placeholder="请输入"
               required
               type="number"
-              v-if="details.ispackage === 1"
+              v-if="details.ispackage*1 === 1"
               v-model="details.packageDeal"
             />
           </section>
@@ -273,7 +274,7 @@
               placeholder="自动计算"
               readonly
               required
-              v-if="details.ispackage === 1"
+              v-if="details.ispackage*1 === 1"
               v-model="details.differenceCarprice"
             />
           </section>
@@ -284,7 +285,7 @@
               title="是否失信客户:"
             >
               <singleConnect
-                :default-active-value="details.dishonestyCustomer"
+                :default-active-value="details.dishonestyCustomer*1"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="dishonestyCustomer"
@@ -336,6 +337,7 @@
 </template>
 
 <script>
+import Qs from "qs";
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
 import {
@@ -484,11 +486,15 @@ export default {
     },
     // 提交表单
     sub() {
-      saveHeavyRightBasic(JSON.stringify(this.details)).then(res => {
+      if (this.details.ispackage * 1 !== 1) {
+        this.details.packageDeal = "";
+        this.details.differenceCarprice = "";
+      }
+      saveHeavyRightBasic(this.details).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {
           this.$notify({ type: "success", message: msg });
-          this.goBack();
+          // this.goBack();
         } else {
           this.$notify({ type: "danger", message: msg });
         }

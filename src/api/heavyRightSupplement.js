@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 14:42:09
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-18 14:42:33
+ * @LastEditTime : 2019-12-20 09:50:30
  */
 
 import request, { serviceOther } from "@/utils/request"; // 报单列表
@@ -28,6 +28,6 @@ export function saveHeavyRightBasic(params) {
   return request({
     url: "/order/projCust/acManagerSave",
     method: "post",
-    params
+    data:params
   });
 }

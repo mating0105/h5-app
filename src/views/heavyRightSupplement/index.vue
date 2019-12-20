@@ -1,5 +1,15 @@
 <template>
   <ViewPage>
+    <template v-slot:head>
+      <van-search
+        @cancel="onSearch"
+        @search="onSearch"
+        @input="onSearch"
+        placeholder="请输入搜索关键词"
+        show-action
+        v-model="params.customerName"
+      />
+    </template>
     <van-list
       :error.sync="error"
       :finished="finished"
@@ -61,14 +71,14 @@ import { queryRightSuppleList } from "@/api/heavyRightSupplement";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 // 其他组件
-import { Row, Col, Icon, Cell, Button, List } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List];
+import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search];
 
 Components.forEach(item => {
   Vue.use(item);
 });
 import { mapState } from "vuex";
-import { log } from 'util';
+import { log } from "util";
 export default {
   components: {
     ViewPage,
@@ -80,7 +90,8 @@ export default {
       loading: false,
       error: false,
       finished: false,
-      parms: {
+      params: {
+        customerName: "",
         pageIndex: 1,
         pageSize: 10
       }
@@ -93,6 +104,12 @@ export default {
     })
   },
   methods: {
+    onSearch() {
+      this.list = [];
+      this.finished = false;
+      this.params.pageIndex = 1;
+      this.onLoad();
+    },
     // 字典转换
     returnText(val) {
       let name;
@@ -105,7 +122,7 @@ export default {
     },
     onLoad() {
       this.loading = true;
-      queryRightSuppleList(this.parms).then(res => {
+      queryRightSuppleList(this.params).then(res => {
         const { code, data, msg } = res;
         if (code == 200) {
           setTimeout(() => {
@@ -114,7 +131,7 @@ export default {
             });
             // 加载状态结束
             this.loading = false;
-            this.parms.pageIndex++;
+            this.params.pageIndex++;
             // 数据全部加载完成
             if (this.list.length == data.totalCount) {
               this.finished = true;
@@ -130,9 +147,12 @@ export default {
     },
     // 重权补录
     supple(rows) {
-      this.$router.push({ name: "HeavyRightBasic",params:{
-        id: rows.projectId
-      }});
+      this.$router.push({
+        name: "HeavyRightBasic",
+        params: {
+          id: rows.projectId
+        }
+      });
     }
   },
   mounted() {

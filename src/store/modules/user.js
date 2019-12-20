@@ -6,7 +6,7 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  wordbook: {}, // 字典集合
+  wordbook: null, // 字典集合
 }
 
 const mutations = {
@@ -121,6 +121,7 @@ const actions = {
       "is_Access_Car", // 是否准入
       "document_type", // 文档类型
       "cu_credit_status", //征信调查状态
+      "credit_result", //征信调查状态
       "credit_object_type", //征信对象类型
       "business_type",//流程类型
       "proj_status", // 项目状态
