@@ -115,9 +115,9 @@ export default {
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},
                     {name:'财务走款确认待办',path:'/paymentSure',params:newParams},
                     {name:'客户经理待办',path:'/f',params:newParams},
-                    {name:'驻行人员待办',path:'/g',params:newParams},
-                    {name:'合规文员待办',path:'/h',params:newParams},
-                    {name:'驻行内勤待办',path:'/m',params:newParams},
+                    {name:'驻行人员待办',path:'/m',params:newParams},
+                    {name:'合规文员待办',path:'/lendProcess',params:newParams},
+                    {name:'驻行内勤待办',path:'/bankLend',params:newParams},
                 ],
                 //已办路径
                 alreadyDone:[
