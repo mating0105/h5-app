@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 19:04:55
+ * @LastEditTime : 2019-12-20 19:09:28
  -->
 
 <template>
@@ -327,6 +327,7 @@
     <!-- 保 存按钮 -->
     <div class="xh-submit xh-page-body">
       <van-button
+        :loading="subLoading"
         @click.native="sub"
         class="xh-bg-main"
         size="large"
@@ -396,6 +397,7 @@ export default {
   },
   data() {
     return {
+      subLoading: false,
       currentDate: new Date(), // 当前日期
       dateIndex: "",
       dateArr: "",
@@ -496,15 +498,21 @@ export default {
         this.details.packageDeal = "";
         this.details.differenceCarprice = "";
       }
-      saveHeavyRightBasic(this.details).then(res => {
-        const { code, data, msg } = res;
-        if (code == 200) {
-          this.$notify({ type: "success", message: msg });
-          // this.goBack();
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
-      });
+      this.subLoading = true;
+      saveHeavyRightBasic(this.details)
+        .then(res => {
+          const { code, data, msg } = res;
+          if (code == 200) {
+            this.$notify({ type: "success", message: msg });
+            // this.goBack();
+          } else {
+            this.$notify({ type: "danger", message: msg });
+          }
+          this.subLoading = false;
+        })
+        .catch(() => {
+          this.subLoading = false;
+        });
     },
     cancelTime() {
       this.datePopFlag = false;
