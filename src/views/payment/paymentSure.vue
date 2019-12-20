@@ -36,30 +36,30 @@
           </van-row>
         </div>
         <div v-show="params.dealState == '1'">
-        <van-cell-group :border="true" class="xh-conclusion">
-          <van-cell title="审批结论" :value="conclusion" is-link @click="chooseConclusion" />
-        </van-cell-group>
-        <card>
-          <template v-slot:header>意见描述</template>
-          <section>
-            <van-cell-group :border="false">
-              <van-field
-                v-model="message"
-                rows="2"
-                autosize
-                label-width="0"
-                :border="false"
-                type="textarea"
-                maxlength="200"
-                placeholder="请输入"
-                show-word-limit
-              />
-            </van-cell-group>
-          </section>
-        </card>
-        <div class="xh-submit">
-          <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
-        </div>
+          <van-cell-group :border="true" class="xh-conclusion">
+            <van-cell title="审批结论" :value="conclusion" is-link @click="chooseConclusion" />
+          </van-cell-group>
+          <card>
+            <template v-slot:header>意见描述</template>
+            <section>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="message"
+                  rows="2"
+                  autosize
+                  label-width="0"
+                  :border="false"
+                  type="textarea"
+                  maxlength="200"
+                  placeholder="请输入"
+                  show-word-limit
+                />
+              </van-cell-group>
+            </section>
+          </card>
+          <div class="xh-submit">
+            <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
+          </div>
         </div>
       </van-tab>
 
@@ -147,7 +147,7 @@ export default {
           name: "相关文档",
           key: 4,
           icon: "icon-document.png",
-          url: "/houseUser"
+          url: "/paymentDocument"
         },
         {
           name: "风控措施",
@@ -185,8 +185,14 @@ export default {
   },
   methods: {
     meunList(row) {
-      this.params.dealState = '3';
-      this.$router.push({ path: row.url, query: this.params });
+      this.params.dealState = "3";
+      this.$router.push({
+        name: row.url,
+        query: {
+          info: JSON.stringify(this.params.info),
+          dealState: this.params.dealState
+        }
+      });
     },
     loadData() {
       getPaymentDetail({
@@ -258,8 +264,10 @@ export default {
     }
   },
   mounted() {
-    this.params = this.$route.query;
-    console.log(this.params);
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadData(); //加载详情数据
   }
 };

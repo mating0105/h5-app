@@ -15,7 +15,7 @@
             />
           </van-cell-group>
           <van-cell title="是否加入关注名单" :border="false" required>
-            <radio v-model="data.projProjectInfo.riskMeasure.isFoucusList" disabled>
+            <radio v-model="data.projProjectInfo.riskMeasure.isFoucusList" :disabled="params.dealState != '1'">
               <radio-item label="1">是</radio-item>
               <radio-item label="0">否</radio-item>
             </radio>
@@ -30,7 +30,7 @@
             />
           </van-cell-group>
           <van-cell title="是否上门" :border="false" required>
-            <radio v-model="data.projProjectInfo.wthrDtd" disabled>
+            <radio v-model="data.projProjectInfo.wthrDtd" :disabled="params.dealState != '1'">
               <radio-item label="1">是</radio-item>
               <radio-item label="0">否</radio-item>
             </radio>
@@ -113,7 +113,15 @@ export default {
   },
   data() {
     return {
-      data: {},
+      data: {
+        projProjectInfo:{
+          customer:{
+          },
+          riskMeasure:{
+
+          }
+        }
+      },
       show: false,
       selectName: "",
       fieldName: "",
@@ -176,7 +184,10 @@ export default {
     submit() {}
   },
   mounted() {
-    this.params = this.$route.query;
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadData();
     this.getDict();
   }

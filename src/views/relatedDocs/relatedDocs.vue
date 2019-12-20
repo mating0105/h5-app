@@ -52,6 +52,7 @@ export default {
       docTypes: state => state.user.wordbook.document_type
     }),
     info() {
+      console.log(this.$route.query)
       return this.getStringToObj(this.$route.query).info;
     },
     dealState() {

@@ -70,7 +70,10 @@ export default {
     }
   },
   mounted() {
-    this.params = this.$route.query;
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadRecord(); //加载审批记录
   }
 };

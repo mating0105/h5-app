@@ -69,3 +69,11 @@ export function stopTask(params) {
         data: params
     })
 }
+// gps列表
+export function gpsList(params) {
+    return request({
+        url: '/order/gpsInstall/list',
+        method: 'get',
+        data: params
+    })
+}
