@@ -3,11 +3,10 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 12:25:15
+ * @LastEditTime : 2019-12-20 19:00:58
  -->
 
 <template>
-
   <div class="basic">
     <Card class="xh-top-10">
       <template v-slot:header>
@@ -337,6 +336,7 @@
 </template>
 
 <script>
+import Validate from '@/utils/commonValidate';
 import Qs from "qs";
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
@@ -362,7 +362,8 @@ import {
   Divider,
   Field,
   ActionSheet,
-  DatetimePicker
+  DatetimePicker,
+  Toast
 } from "vant";
 const Components = [
   Row,
@@ -417,7 +418,13 @@ export default {
     },
     // 查询补录的详情
     queryDetails() {
-      this.$parent.loading = true;
+      this.toast = Toast.loading({
+        message: "加载中...",
+        forbidClick: true,
+        duration: 0,
+        loadingType: "spinner",
+        overlay: true
+      });
       queryRightSuppleDetails({
         projectId: this.id
       })
@@ -428,10 +435,10 @@ export default {
           } else {
             this.$notify({ type: "danger", message: msg });
           }
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         })
         .catch(() => {
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         });
     },
     formatter(type, value) {
