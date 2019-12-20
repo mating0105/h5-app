@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 20:23:37
+ * @LastEditTime : 2019-12-20 20:43:52
  -->
 
 <template>
@@ -16,13 +16,13 @@
         to="basic"
       ></van-tab>
       <van-tab
-        :to="{ name: 'HeavyRelatedDocs', query:JSON.stringify({
-          info:{
+        :to="{ name: 'HeavyRelatedDocs', query:{
+          info:JSON.stringify({
             customerNum,
             customerId
-          },
+          }),
           dealState:'3'
-        })}"
+        }}"
         name="relatedDocs"
         replace
         title="相关文档"
