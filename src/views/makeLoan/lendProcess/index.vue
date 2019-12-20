@@ -21,7 +21,7 @@
                             借款人信息
                         </template>
                         <div>
-                            <van-field label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"/>
+                            <van-field :disabled="dealState" label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"/>
                             <van-field label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" />
                             <van-field label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"/>
                             <van-cell title="主借人性别：" :border="false" value-class='rightClass' is-link v-model="form.borrowerInfo.customerSexDesc"
@@ -229,6 +229,7 @@
                 {value:14,title:'申述意见'},
             ],
             businessKey:0,
+            dealState:false,//false:'待办'  true:'已办'
         };
     },
     methods: {
@@ -556,6 +557,7 @@
                     msgType:'WF_BANK_MAKE_LOAN_YWY',
                     customerNum:this.projectForm.projectInfo.customerNum,
                     customerName:this.projectForm.projectInfo.customerName,
+                    projectNo:this.checked?this.projectForm.projectInfo.projectNo:'',
                 }
                 para.wfCommentInfo=params;
                 this.listLoading=true;
@@ -582,7 +584,8 @@
     created(){
     },
     mounted () {
-        this.businessKey=this.$route.query.id
+        this.businessKey=this.$route.query.id;
+        this.dealState=this.$route.query.dealState
         this.getDictionaryData();
     }
   }

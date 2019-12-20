@@ -64,9 +64,10 @@ export default {
         Card
     },
     data() {
-        var newParams=(value)=>{
+        var newParams=(value,status)=>{
             let obj={};
-            obj.id=47;//value.businesskey;
+            obj.id=Number(value.businesskey);
+            obj.dealState=status==3?false:true;
             return obj
         };
         return {
@@ -165,7 +166,7 @@ export default {
                 if(item.name==value){
                     this.$router.push({
                         path:item.path,
-                        query:item.params(this.info)
+                        query:item.params(this.info,this.pageData.status)
                     });
                 }
             })
