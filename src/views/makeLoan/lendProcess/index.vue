@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightFn='rightFn' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" id="lendProcess">
+    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" id="lendProcess">
         <van-tabs v-model="activeName" v-if="projectForm.projectInfo">
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
@@ -131,13 +131,6 @@
             <van-picker show-toolbar :title="title1" :value-key="'label'" :columns="columns" :loading="loading" @cancel="onCancel"
             @confirm="onConfirm" />
         </van-popup>
-        <!-- 导航栏右上角按钮 -->
-        <div v-if="rightBoxShow" ref="box" class="rightButtonBox" name="rightButtonBox">
-            <div class="sanjiao"></div>
-            <div v-for="(item,index) in rightBoxList" :key="index">
-                <van-button style='text-align:center;width:100%;border:0;' type="default" @click="handleDetailInfo(item.value)">{{item.label}}</van-button>
-            </div>
-        </div>
         <!-- 地图弹框 -->
         <MapSheet :showMap.sync="mapShow" @getProvince="getProvince" :manualClose='false'></MapSheet>
         <!-- 品牌型号 -->
@@ -220,29 +213,30 @@
             }],
             // -----右上角按钮-------
             rightBoxList:[
-                {value:1,label:'项目基本信息'},
-                {value:2,label:'客户及配偶'},
-                {value:3,label:'紧急联系人'},
-                {value:4,label:'房产信息'},
-                {value:5,label:'家庭收入'},
-                {value:6,label:'名下车辆'},
-                {value:7,label:'担保人信息'},
-                {value:8,label:'担保人房产'},
-                {value:9,label:'担保人收入'},
-                {value:10,label:'调查结论'},
-                {value:11,label:'相关文档'},
-                {value:12,label:'GPS安装信息'},
-                {value:13,label:'合同照片'},
-                {value:14,label:'申述意见'},
+                {value:1,title:'项目基本信息'},
+                {value:2,title:'客户及配偶'},
+                {value:3,title:'紧急联系人'},
+                {value:4,title:'房产信息'},
+                {value:5,title:'家庭收入'},
+                {value:6,title:'名下车辆'},
+                {value:7,title:'担保人信息'},
+                {value:8,title:'担保人房产'},
+                {value:9,title:'担保人收入'},
+                {value:10,title:'调查结论'},
+                {value:11,title:'相关文档'},
+                {value:12,title:'GPS安装信息'},
+                {value:13,title:'合同照片'},
+                {value:14,title:'申述意见'},
             ],
-            rightBoxShow:false,
+            businessKey:0,
         };
     },
     methods: {
         // ---------------------导航------------------------------
         //导航右上角的按钮
-        rightFn(){
-            this.rightBoxShow=true;
+        goPage(val){
+            console.log(val,'val')
+
         },
         //返回按钮
         backFn(){
@@ -376,6 +370,17 @@
         getProvince(code,name){
             this.form.borrowerInfo[this.mapShowText]=name;
             this.mapShow = false;
+            switch(this.mapShowText){
+                case 'registerProvCityZon':
+                    this.form.borrowerInfo.registerProvCityZonCode=code;
+                    break;
+                case 'familyAddressProvCityZon':
+                    this.form.borrowerInfo.familyAddProvCityZonCode=code;
+                    break;
+                case 'customerCoProvCityZon':
+                    this.form.borrowerInfo.customerCoProvCityZonCode=code;
+                    break;
+            }
         },
         //通过身份证查性别和出生年月
         getIdcard(e) {
@@ -422,7 +427,7 @@
             try{
                 this.listLoading=true;
                 let para={
-                    id:47
+                    id:this.businessKey
                 }
                 const data=await loanInfoDetail(para);
                 if(data.code==200){
@@ -543,7 +548,7 @@
             try{  
                 let para=Object.assign({},this.form);
                 let params={
-                    businessKey:Number(this.form.borrowerInfo.bankMakeLoanId),
+                    businessKey:this.businessKey,//Number(this.form.borrowerInfo.bankMakeLoanId),
                     nextUser:nextUserObj.id,
                     commentsDesc:this.commentsDesc,
                     isSendMsg:this.checked?1:0,
@@ -556,11 +561,11 @@
                 this.listLoading=true;
                 const data=await submitProcess(para);
                 if(data.code==200&&data.status){
-                    this.listLoading=false;
                     Notify({ type: 'success', message: '流程提交成功' });
                     setTimeout(()=>{
                         this.$router.push({ path:'/lendProcessList'});
                     },1000)
+                    this.listLoading=false;
                 }
             }catch(err){
                 console.log(err)
@@ -575,15 +580,9 @@
         },
     },
     created(){
-        this.$nextTick(()=>{
-            document.addEventListener('click',(e)=>{
-                if(this.rightBoxShow==true&&!this.$refs.box.contains(e.target)){
-                    this.rightBoxShow=false
-                }
-            })
-        })
     },
     mounted () {
+        this.businessKey=this.$route.query.id
         this.getDictionaryData();
     }
   }
@@ -610,32 +609,6 @@
 }
 .van-cell__value--alone{
     text-align: right;
-}
-.rightButtonBox{
-    position: fixed;
-    top: 52px;
-    right: 10px;
-    width:160px;
-    padding: 10px;
-    background-color:#fff;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .2);
-    z-index: 999;
-    border-radius: 10px;
-}
-.sanjiao{
-    position:absolute;
-    top:-18px;
-    right:12px;
-    width:0; 
-    height:0;
-    overflow: hidden;
-    font-size: 0;
-    line-height: 0;
-    border-color:transparent;
-    border-bottom-color: #fff;
-    border-style:solid;
-    border-width:10px;
-
 }
 .rightClass{
     color: #323233;

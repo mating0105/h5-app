@@ -58,6 +58,27 @@ export const constantRoutes = [
   },
 
   {
+    path: '/bigDataQueryList',
+    name: 'bigDataQueryList',
+    component: () => import('@/views/credit/bigDataQuery/list'),
+    meta: {title: '大数据查询'}
+  },
+
+  {
+    path: '/bigDataQueryDetail',
+    name: 'bigDataQueryDetail',
+    component: () => import('@/views/credit/bigDataQuery/detail'),
+    meta: {title: '基本资料'}
+  },
+
+  {
+    path: '/bigDataReply',
+    name: 'bigDataReply',
+    component: () => import('@/views/credit/bigDataQuery/bigDataReply'),
+    meta: {title: '征信回复'}
+  },
+
+  {
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
@@ -80,7 +101,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '银行放款', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -219,12 +240,6 @@ export const constantRoutes = [
     meta: {title: '费用信息', icon: 'dashboard'}
   },
   {
-    path: '/walkInformation',
-    name: 'WalkInformation',
-    component: () => import('@/views/payment/walkInformation'),
-    meta: {title: '走款信息', icon: 'dashboard'}
-  },
-  {
     path: '/controlMeasure',
     name: 'ControlMeasure',
     component: () => import('@/views/payment/controlMeasure'),
@@ -249,6 +264,18 @@ export const constantRoutes = [
     meta: {title: '新建客户', icon: 'dashboard'}
   },
   { 
+    path: '/contractList',
+    name: 'contractList',
+    component: () => import('@/views/contractUpload/index'),
+    meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
+  },
+  { 
+    path: '/contractUpload',
+    name: 'contractUpload',
+    component: () => import('@/views/contractUpload/upload'),
+    meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
+  },
+  {
     path: '/heavyRightSupplement',
     name: 'HeavyRightSupplement',
     component: () => import('@/views/heavyRightSupplement/index'),

@@ -10,14 +10,24 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    /**
+     * @description: 返回几层
+     * @param {number | string} index 返回几层
+     * @return:
+     */
+    goBack(index = -1) {
+      this.$router.go(index);
+    }
+  },
   filters: {
     /**
      * @description: 将code => 中文名
      * @param {string|number} value code的值
      * @param {array} list 当前需要解码的数组
      * @return: 当前code所对应的中文名
-     */  
+     */
+
     codeInToName(value, list) {
       if (!Array.isArray(list)) {
         return "";

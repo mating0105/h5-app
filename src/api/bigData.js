@@ -6,20 +6,22 @@ import request from '@/utils/request'
  */
 export function getList(params) {
   return request({
-    url: '/order/creditInfo/queryCreaditCarList',
+    url: '/order/creditInfo/queryInternetCreaditRegister',
     method: 'get',
     params
   })
 }
 
 /**
- * 车辆评估
+ * 回复
  * @param params
  */
-export function save(params) {
+export function reply(params) {
   return request({
-    url: 'order/creditInfo/assessmentCar',
+    url: 'order/creditInfo/updateCreditResult',
     method: 'post',
     data: params
   })
 }
+
+

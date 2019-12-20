@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightFn='rightFn'>
+    <ViewPage>
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
@@ -23,7 +23,7 @@
                             <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
                         </section>
                     </template>
-                    <van-row>
+                    <van-row style="min-height: 10rem">
                         <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
                         <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
                         <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
@@ -52,51 +52,28 @@
                     <template v-slot:footer>
                         <div style="text-align:right; min-height: 2rem">
                             <van-button
-                                    v-if="item.status === '01'"
                                     plain
                                     size="small"
                                     type="danger"
                                     class="xh-radius"
                                     style="border-radius: 6px;"
                                     @click.stop="startForm(item)"
-                            >发起征信
-                            </van-button>
-                            <van-button
-                                    v-else-if="item.status === '04' || item.status === '03'"
-                                    plain
-                                    size="small"
-                                    type="danger"
-                                    class="xh-radius"
-                                    style="border-radius: 6px;"
-                                    @click.stop="startForm(item)"
-                            >重新发起征信
+                            >查询大数据征信
                             </van-button>
                         </div>
                     </template>
                 </Card>
             </div>
         </van-list>
-        <div class="xh-fixed-submit">
-            <div class="xh-submit">
-                <van-button
-                        icon="plus"
-                        size="large"
-                        class="xh-bg-main"
-                        @click="addClint"
-                >新增客户
-                </van-button>
-            </div>
-        </div>
     </ViewPage>
 </template>
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/credit";
+  import { getList } from "@/api/bigData";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
-  import { removeValue } from '@/utils/session'
   // 其他组件
   import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
 
@@ -108,7 +85,7 @@
   import { mapState } from "vuex";
 
   export default {
-    name: 'creditList',
+    name: 'bigDataQuery',
     components: {
       ViewPage,
       Card
@@ -178,20 +155,13 @@
       startFormFn (item) {
         this.startForm(item, {edit: false})
       },
-      // 发起报单
+      // 详情
       startForm (item, query = {}) {
-        removeValue("credit");
-        this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
+        this.$router.push({path: '/bigDataQueryDetail', query: {edit: true, lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
       },
-      // 新建客户
-      addClint () {
-        this.$router.push({
-          path: '/creatCustomer',
-        })
+      nameToString () {
+        return [...arguments].map(item => item).join('')
       },
-      rightFn () {
-
-      }
     },
     mounted () {
       this.onLoad();

@@ -17,13 +17,13 @@
                 @load="onLoad"
         >
             <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                <Card class="xh-top-10" :bodyPadding='true'>
+                <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
                     <template v-slot:header>
                         <section class="xh-plus">
                             <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
                         </section>
                     </template>
-                    <van-row>
+                    <van-row style="min-height: 10rem">
                         <van-col span="24">车架号：{{ item.chassisNumber }}</van-col>
                         <van-col span="24" class="xh-top-10">品牌型号：{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</van-col>
                     </van-row>
@@ -35,7 +35,7 @@
                                     type="danger"
                                     class="xh-radius"
                                     style="border-radius: 6px;"
-                                    @click="startForm(item)"
+                                    @click.stop="startForm(item)"
                             >{{item.evaluatingPrice?'重新评估':'立即评估'}}
                             </van-button>
                         </div>
@@ -130,13 +130,12 @@
         this.params.pageIndex = 1
         this.onLoad()
       },
-      // 发起报单
-      startForm (item) {
-        this.$router.push({path: '/priceEvaluationDetail', query: item})
+      startFormFn (item) {
+        this.startForm(item, {edit: false})
       },
-      // 新建客户
-      addClint () {
-
+      // 详情
+      startForm (item, query = {}) {
+        this.$router.push({path: '/priceEvaluationDetail', query: {edit: true, ...item, ...query}})
       },
       nameToString () {
         return [...arguments].map(item => item).join('')
