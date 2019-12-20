@@ -56,7 +56,15 @@ export function approvalRecord(params) {
 //提交接口-财务确认走款
 export function submitGo(params) {
     return request({
-        url: 'order/captureExpends/submit',
+        url: '/order/captureExpends/submit',
+        method: 'post',
+        data: params
+    })
+}
+//终止流程
+export function stopTask(params) {
+    return request({
+        url: '/order/captureExpends/stopTask',
         method: 'post',
         data: params
     })
