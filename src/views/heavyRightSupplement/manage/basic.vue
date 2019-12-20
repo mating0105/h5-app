@@ -3,11 +3,10 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 12:25:15
+ * @LastEditTime : 2019-12-20 19:57:22
  -->
 
 <template>
-
   <div class="basic">
     <Card class="xh-top-10">
       <template v-slot:header>
@@ -328,6 +327,7 @@
     <!-- 保 存按钮 -->
     <div class="xh-submit xh-page-body">
       <van-button
+        :loading="subLoading"
         @click.native="sub"
         class="xh-bg-main"
         size="large"
@@ -362,7 +362,8 @@ import {
   Divider,
   Field,
   ActionSheet,
-  DatetimePicker
+  DatetimePicker,
+  Toast
 } from "vant";
 const Components = [
   Row,
@@ -396,6 +397,12 @@ export default {
   },
   data() {
     return {
+      errorMsg:{
+        differenceCarprice:'', // 与贷款金额差价（元）
+        dishonestyCustomer:'', // 是否失信客户
+        ownershipRegisterDate:'', // 重权登记日期
+      },
+      subLoading: false,
       currentDate: new Date(), // 当前日期
       dateIndex: "",
       dateArr: "",
@@ -417,7 +424,13 @@ export default {
     },
     // 查询补录的详情
     queryDetails() {
-      this.$parent.loading = true;
+      this.toast = Toast.loading({
+        message: "加载中...",
+        forbidClick: true,
+        duration: 0,
+        loadingType: "spinner",
+        overlay: true
+      });
       queryRightSuppleDetails({
         projectId: this.id
       })
@@ -428,10 +441,10 @@ export default {
           } else {
             this.$notify({ type: "danger", message: msg });
           }
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         })
         .catch(() => {
-          this.$parent.loading = false;
+          Toast.clear(this.toast);
         });
     },
     formatter(type, value) {
@@ -490,15 +503,21 @@ export default {
         this.details.packageDeal = "";
         this.details.differenceCarprice = "";
       }
-      saveHeavyRightBasic(this.details).then(res => {
-        const { code, data, msg } = res;
-        if (code == 200) {
-          this.$notify({ type: "success", message: msg });
-          // this.goBack();
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
-      });
+      this.subLoading = true;
+      saveHeavyRightBasic(this.details)
+        .then(res => {
+          const { code, data, msg } = res;
+          if (code == 200) {
+            this.$notify({ type: "success", message: msg });
+            // this.goBack();
+          } else {
+            this.$notify({ type: "danger", message: msg });
+          }
+          this.subLoading = false;
+        })
+        .catch(() => {
+          this.subLoading = false;
+        });
     },
     cancelTime() {
       this.datePopFlag = false;

@@ -3,8 +3,8 @@
     <template v-slot:head>
       <van-search
         @cancel="onSearch"
-        @search="onSearch"
         @input="onSearch"
+        @search="onSearch"
         placeholder="请输入搜索关键词"
         show-action
         v-model="params.customerName"
@@ -147,10 +147,13 @@ export default {
     },
     // 重权补录
     supple(rows) {
+      let { projectId, customerNum, customerId } = rows;
       this.$router.push({
         name: "HeavyRightBasic",
         params: {
-          id: rows.projectId
+          id: projectId,
+          customerNum,
+          customerId: customerId ? customerId : customerNum.substr(2)
         }
       });
     }

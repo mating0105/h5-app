@@ -164,16 +164,24 @@
           if (this.isBank) {
             const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
             await bankReply(params)
+            this.loading = false
+            this.$nextTick(() => {
+              Toast.success('提交成功')
+            })
+            this.$nextTick(() => {
+              this.$router.push('/lendProcessList')//todo
+            })
           } else {
             await reply(this.form.surDtlList)
+            this.loading = false
+            this.$nextTick(() => {
+              Toast.success('提交成功')
+            })
+            this.$nextTick(() => {
+              this.$router.push('/bigDataQueryList')//todo
+            })
           }
-          this.loading = false
-          this.$nextTick(() => {
-            Toast.success('提交成功')
-          })
-          this.$nextTick(() => {
-            this.$router.push('/bigDataQueryList')//todo
-          })
+
         } catch (e) {
           this.loading = false
           console.log(e)

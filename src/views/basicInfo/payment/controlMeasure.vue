@@ -11,7 +11,7 @@
               required
               is-link
               :value="returnText('GradeManual',data.projProjectInfo.customer.gradeManual)"
-              @click="params.isView ? '':loadType('手动评级', 'gradeManual')"
+              @click="params.dealState != '1' ? '':loadType('手动评级', 'gradeManual')"
             />
           </van-cell-group>
           <van-cell title="是否加入关注名单" :border="false" required>
@@ -26,7 +26,7 @@
               required
               is-link
               :value="returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition)"
-              @click="params.isView ? '':loadType('风控条件', 'riskCondition')"
+              @click="params.dealState != '1' ? '':loadType('风控条件', 'riskCondition')"
             />
           </van-cell-group>
           <van-cell title="是否上门" :border="false" required>
@@ -38,7 +38,7 @@
           <van-cell-group :border="false" required>
             <van-field
               v-model="data.projProjectInfo.riskMeasure.gpsNum"
-              :disabled="this.params.isView"
+              :disabled="params.dealState != '1'"
               required
               clearable
               label="GPS数量(台)"
@@ -49,7 +49,7 @@
           </van-cell-group>
         </van-row>
       </card>
-      <div class="xh-submit">
+      <div class="xh-submit" v-show="this.params.dealState == '1'">
         <van-button size="large" class="xh-bg-main" @click="submit">保 存</van-button>
       </div>
     </div>
@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     loadData() {
-      getPaymentDetail({ projectId: this.params.projectId }).then(res => {
+      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey }).then(res => {
         if (res.code == 200) {
           this.data = res.data;
         } else {

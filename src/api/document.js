@@ -35,3 +35,10 @@ export const removeDocument = params => serviceOther({
   url: '/document/delete',
   data: params
 })
+
+// app获取图片
+export const queryAllImgs = params => serviceOther({
+  method: 'get',
+  url: '/document/api/queryAllPic',
+  params
+})

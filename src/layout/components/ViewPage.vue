@@ -34,7 +34,7 @@ import { log } from 'util';
       scroll: true,
       margin: true,
       backFn: Function,
-      loading: false,
+      loading: true,
       title: '',
       rightFn:Function,
       goPage:Function,

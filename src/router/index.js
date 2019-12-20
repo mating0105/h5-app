@@ -108,7 +108,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    // meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '待办', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -253,10 +253,22 @@ export const constantRoutes = [
     meta: {title: '费用信息', icon: 'dashboard'}
   },
   {
+    path: '/paymentDocument',
+    name: 'PaymentDocument',
+    component: () => import('@/views/payment/document'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  {
     path: '/controlMeasure',
     name: 'ControlMeasure',
     component: () => import('@/views/payment/controlMeasure'),
     meta: {title: '风控措施', icon: 'dashboard'}
+  },
+  {
+    path: '/gps',
+    name: 'Gps',
+    component: () => import('@/views/gps/index'),
+    meta: {title: 'GPS', icon: 'dashboard'}
   },
   { 
     path: '/survey',
@@ -268,6 +280,12 @@ export const constantRoutes = [
     path: '/proDocument',
     name: 'ProDocment',
     component: () => import('@/views/basicInfo/documents/index.vue'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  { 
+    path: '/relatedDocs',
+    name: 'RelatedDocs',
+    component: () => import('@/views/relatedDocs/relatedDocs.vue'),
     meta: {title: '相关文档', icon: 'dashboard'}
   },
   { 
@@ -283,7 +301,7 @@ export const constantRoutes = [
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
   { 
-    path: '/contractUpload',
+    path: '/contractUpload/',
     name: 'contractUpload',
     component: () => import('@/views/contractUpload/upload'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
@@ -295,7 +313,7 @@ export const constantRoutes = [
     meta: {title: '重权补录', icon: 'dashboard'}
   },
   { 
-    path: '/heavyRightManage/:id',
+    path: '/heavyRightManage/:id/:customerNum/:customerId',
     name: 'HeavyRightManage',
     component: () => import('@/views/heavyRightSupplement/manage/heavyRightManage'),
     meta: {title: '重权管理', icon: 'dashboard'},
@@ -307,13 +325,15 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'a',
-        component: () => import('@/views/heavyRightSupplement/manage/a'),
+        path: 'relatedDocs',
+        name: 'HeavyRelatedDocs',
+        component: () => import('@/views/relatedDocs/relatedDocs'),
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'b',
-        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        path: 'approval',
+        name: 'HeavyApproval',
+        component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
       }
     ]

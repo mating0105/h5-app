@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightFn='rightFn'>
+    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
@@ -8,74 +8,77 @@
                     @search="onSearch"
             />
         </template>
-        <van-list
-                v-model="loading"
-                :finished="finished"
-                finished-text="没有更多了"
-                :error.sync="error"
-                error-text="请求失败，点击重新加载"
-                @load="onLoad"
-        >
-            <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
-                    <template v-slot:header>
-                        <section class="xh-plus">
-                            <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
-                        </section>
-                    </template>
-                    <van-row>
-                        <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
-                        <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
-                        <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
-                        <van-col span="24" class="xh-top-10">申报人：{{ item.applicantName }}</van-col>
-                        <van-col span="24" class="xh-top-10" v-if="item.creditResult === 'pass'">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+            <van-list
+                    style="min-height: 80vh"
+                    v-model="loading"
+                    :finished="finished"
+                    finished-text="没有更多了"
+                    :error.sync="error"
+                    error-text="请求失败，点击重新加载"
+                    @load="onLoad"
+            >
+                <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
+                        <template v-slot:header>
+                            <section class="xh-plus">
+                                <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
+                            </section>
+                        </template>
+                        <van-row>
+                            <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
+                            <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
+                            <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
+                            <van-col span="24" class="xh-top-10">申报人：{{ item.applicantName }}</van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.creditResult === 'pass'">
                             <span class="xh-success-tag">
                                银行征信通过
                             </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-else-if="item.creditResult === 'not_pass'">
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-else-if="item.creditResult === 'not_pass'">
                             <span class="xh-danger-tag">
                                银行征信未通过
                             </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
                             <span class="xh-success-tag">
                                大数据征信通过
                             </span>
-                        </van-col>
-                        <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
                             <span class="xh-danger-tag">
                                大数据征信未通过
                             </span>
-                        </van-col>
-                    </van-row>
-                    <template v-slot:footer>
-                        <div style="text-align:right; min-height: 2rem">
-                            <van-button
-                                    v-if="item.status === '01' || item.status === '-1'"
-                                    plain
-                                    size="small"
-                                    type="danger"
-                                    class="xh-radius"
-                                    style="border-radius: 6px;"
-                                    @click.stop="startForm(item)"
-                            >发起征信
-                            </van-button>
-                            <van-button
-                                    v-else-if="item.status === '04' || item.status === '03'"
-                                    plain
-                                    size="small"
-                                    type="danger"
-                                    class="xh-radius"
-                                    style="border-radius: 6px;"
-                                    @click.stop="startForm(item)"
-                            >重新发起征信
-                            </van-button>
-                        </div>
-                    </template>
-                </Card>
-            </div>
-        </van-list>
+                            </van-col>
+                        </van-row>
+                        <template v-slot:footer>
+                            <div style="text-align:right; min-height: 2rem">
+                                <van-button
+                                        v-if="item.status === '01' || item.status === '-1'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item)"
+                                >发起征信
+                                </van-button>
+                                <van-button
+                                        v-else-if="item.status === '04' || item.status === '03'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item, {again: true})"
+                                >重新发起征信
+                                </van-button>
+                            </div>
+                        </template>
+                    </Card>
+                </div>
+            </van-list>
+        </van-pull-refresh>
         <div class="xh-fixed-submit">
             <div class="xh-submit">
                 <van-button
@@ -98,9 +101,9 @@
   import Card from "@/components/card/index";
   import { removeValue } from '@/utils/session'
   // 其他组件
-  import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
+  import { Row, Col, Icon, Cell, Button, List, Search, PullRefresh, Toast } from "vant";
 
-  const Components = [Row, Col, Icon, Cell, Button, List, Search];
+  const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh, Toast];
 
   Components.forEach(item => {
     Vue.use(item);
@@ -117,12 +120,14 @@
       return {
         list: [],
         loading: false,
+        isLoading: false,
         error: false,
         finished: false,
         params: {
           pageIndex: 1,
           pageSize: 10,
-          searchKey: ''
+          searchKey: '',
+          status: ''
         },
       };
     },
@@ -130,7 +135,10 @@
       // 所有字典
       ...mapState({
         wordbook: state => state.user.wordbook,
-      })
+      }),
+      cuCreditStatus () {
+        return [{label: '全部', value: ''}, ...this.wordbook.cu_credit_status] || []
+      }
     },
     watch: {
       error (value) {
@@ -189,8 +197,21 @@
           path: '/creatCustomer',
         })
       },
-      rightFn () {
-
+      rightFn (item) {
+        this.params.status = item.value
+        this.onSearch()
+      },
+      //下拉刷新
+      onRefresh () {
+        this.list = []
+        this.finished = false
+        this.params.pageIndex = 1
+        this.onLoad();
+        this.loading = false;
+        setTimeout(() => {
+          Toast.success('刷新成功');
+          this.isLoading = false;
+        }, 500);
       }
     },
     mounted () {

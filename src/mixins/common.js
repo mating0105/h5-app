@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-18 17:23:21
+ * @LastEditTime : 2019-12-20 20:06:01
  */
 
 export default {
@@ -12,12 +12,28 @@ export default {
   },
   methods: {
     /**
+     * @description:
+     * @param {string} str json字符串类型
+     * @return: obj
+     */
+    getStringToObj(str) {
+      try {
+        return JSON.parse(str);
+      } catch (error) {
+        return {};
+      }
+    },
+    /**
      * @description: 返回几层
      * @param {number | string} index 返回几层
      * @return:
      */
     goBack(index = -1) {
       this.$router.go(index);
+    },
+    // 加载加载图片防止打包后图片的路径不对
+    loadingImg(imgName) {
+      return require(`../images/${imgName}`);
     }
   },
   filters: {
