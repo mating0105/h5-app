@@ -682,7 +682,6 @@
                 this.listLoading = true
                 const params = {
                     lpCertificateNum: this.projectForm.projectInfo.certificateNum,
-                    id: Number(this.$route.query.info.id)
                 }
                 const res = await getCreditInfo(params)
                 this.dataList = res.data.cuCreditRegister;
