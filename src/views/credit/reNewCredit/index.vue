@@ -546,14 +546,16 @@
     },
     mounted () {
       if(this.$route.query.info && this.$route.query.dealState) {
+        const info = this.getStringToObj(this.$route.query.info)
+        const query = this.$route.query
         this.query = {
-          lpCertificateNum: this.$route.query.info.certificateNum,
-          id: this.$route.query.info.businesskey
+          lpCertificateNum: info.certificateNum,
+          id: info.businesskey
         }
-        if(this.$route.query.dealState == 3) {
+        if(query.dealState == 3) {
           this.edit = false
         }
-        if(this.$route.query.dealState == 1) {
+        if(query.dealState == 1) {
           this.edit = true
         }
         removeValue("credit");
@@ -561,7 +563,6 @@
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       }
-      console.log(this.query)
       this.getCreditInfo()
     },
     destroyed () {
