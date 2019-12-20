@@ -129,7 +129,7 @@ export default {
                     {name:'原单变更申请',path:'/d',params:newParams},
                     {name:'车易贷_征信调查',path:'/f',params:newParams},
                     {name:'项目审批',path:'/g',params:newParams},
-                    {name:'缴费走款',path:'/h',params:newParams},
+                    {name:'缴费走款',path:'/paymentSure',params:newParams},
                     {name:'车商准入',path:'/i',params:newParams},
                 ]
             }

@@ -163,7 +163,7 @@ export default {
   },
   methods: {
     loadData() {
-      getPaymentDetail({ projectId: this.params.projectId }).then(res => {
+      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey }).then(res => {
         this.payDetail = res.data;
       });
     },

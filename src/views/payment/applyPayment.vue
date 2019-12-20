@@ -8,9 +8,9 @@
               <div>
                 <div
                   class="xh-pay-div"
-                >客户姓名及编号：{{paymentDetail.customerName}} {{paymentDetail.customerNum}}</div>
-                <div class="xh-pay-div">证件号码：{{paymentDetail.certificateNum}}</div>
-                <div class="xh-pay-div">电话：{{paymentDetail.contactPhone}}</div>
+                >客户姓名及编号：{{paymentDetail.projProjectInfo.customerName}} {{paymentDetail.projProjectInfo.customerNum}}</div>
+                <div class="xh-pay-div">证件号码：{{paymentDetail.projProjectInfo.certificateNum}}</div>
+                <div class="xh-pay-div">电话：{{paymentDetail.projProjectInfo.contactPhone}}</div>
               </div>
             </template>
           </redCard>
@@ -374,10 +374,10 @@
         </div>
         <div class="xh-submit" v-show="stepVal !=3">
           <van-row>
-            <van-col :span="4">
+            <van-col :span="4" v-show="this.params.info.activityId">
               <van-button size="large" class="xh-bg-gray" @click="end">终 止</van-button>
             </van-col>
-            <van-col :span="19" offset="1">
+            <van-col :span="this.params.info.activityId? '19': '24'" :offset="this.params.info.activityId? '1': '0'">
               <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
             </van-col>
           </van-row>
@@ -551,7 +551,7 @@ export default {
       this.stepVal = val;
     },
     loadData() {
-      getPaymentDetail({ projectId: this.params.projectId })
+      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey })
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
@@ -608,9 +608,12 @@ export default {
       })
         .then(() => {
           this.loading = true;
-          stopTask({payInfoId:this.paymentDetail.projPayInfo.id}).then(res =>{
+          let data = new FormData();
+          data.append('payInfoId', this.paymentDetail.projPayInfo.id);
+          stopTask(data).then(res =>{
             this.loading = false;
             this.$notify({ type: "success", message: "终止成功" });
+            this.$router.go(-1);
           }).catch(e =>{
             this.loading = false;
           })
@@ -725,6 +728,7 @@ export default {
             .then(res => {
               this.loading = false;
               this.$notify({ type: "success", message: "流程提交成功" });
+              this.$router.go(-1);
             })
             .catch(e => {
               this.loading = false;
@@ -784,7 +788,7 @@ export default {
     async getDocumentByType(documentType) {
       try {
         const params = {
-          customerNum: this.params.customerNum,
+          customerNum: this.params.info.customerNum,
           documentType: documentType
         };
         const { data } = await getDocumentByType(params);
@@ -799,8 +803,8 @@ export default {
           isRequire: true, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
-          customerNum: this.params.customerNum,
-          customerId: this.params.customerId,
+          customerNum: this.params.info.customerNum,
+          customerId: this.params.info.customerId,
           kind: "1",
           fileList: data
         });
@@ -811,6 +815,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    console.log(this.params);
     this.loadData();
     this.getDict();
     this.loadImg();
