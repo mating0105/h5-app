@@ -253,6 +253,12 @@ export const constantRoutes = [
     meta: {title: '费用信息', icon: 'dashboard'}
   },
   {
+    path: '/paymentDocument',
+    name: 'PaymentDocument',
+    component: () => import('@/views/payment/document'),
+    meta: {title: '相关文档', icon: 'dashboard'}
+  },
+  {
     path: '/controlMeasure',
     name: 'ControlMeasure',
     component: () => import('@/views/payment/controlMeasure'),

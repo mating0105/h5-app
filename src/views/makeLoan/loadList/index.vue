@@ -208,7 +208,7 @@ export default {
                 if(item.name==value){
                     this.$router.push({
                         path:item.path,
-                        query:item.params(this.info,this.pageData.status)
+                        query:item.params(JSON.stringify(this.info),this.pageData.status)
                     });
                 }
             })
