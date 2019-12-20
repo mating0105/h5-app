@@ -319,8 +319,9 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'b',
-        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        path: 'approval',
+        name: 'HeavyApproval',
+        component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
       }
     ]

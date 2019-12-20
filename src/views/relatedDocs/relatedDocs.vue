@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-20 13:26:57
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 17:59:24
+ * @LastEditTime : 2019-12-20 18:30:48
  -->
 
 <template>
@@ -33,6 +33,8 @@ import { queryAllImgs } from "@/api/document";
 import Card from "@/components/card/index";
 import Nothing from "@/components/Nothing/index";
 import ImageList from "@/components/imageList";
+import { Toast } from "vant";
+
 export default {
   name: "relatedDocs",
   components: { Card, ImageList, Nothing },
@@ -67,12 +69,24 @@ export default {
       this.query();
     },
     query() {
+      this.toast = Toast.loading({
+        message: "加载中...",
+        forbidClick: true,
+        duration: 0,
+        loadingType: "spinner",
+        overlay: true
+      });
       queryAllImgs({
         customerNum: this.info && this.info.customerNum,
         kind: "1"
-      }).then(res => {
-        this.handleImgData(res.data);
-      });
+      })
+        .then(res => {
+          Toast.clear(this.toast);
+          this.handleImgData(res.data);
+        })
+        .catch(() => {
+          Toast.clear(this.toast);
+        });
     },
     // 处理图片数据
     handleImgData(arr) {
