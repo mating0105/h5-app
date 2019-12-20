@@ -108,7 +108,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    // meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '待办', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
