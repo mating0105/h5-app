@@ -108,7 +108,7 @@ export const constantRoutes = [
     path: '/lendProcessList',
     name: 'lendProcessList',
     component: () => import('@/views/makeLoan/loadList/index'),
-    // meta: {title: '银行放款', icon: 'dashboard'}
+    // meta: {title: '待办', icon: 'dashboard'}
   },
   {
     path: '/lendProcess',
@@ -258,6 +258,12 @@ export const constantRoutes = [
     component: () => import('@/views/payment/controlMeasure'),
     meta: {title: '风控措施', icon: 'dashboard'}
   },
+  {
+    path: '/gps',
+    name: 'Gps',
+    component: () => import('@/views/gps/index'),
+    meta: {title: 'GPS', icon: 'dashboard'}
+  },
   { 
     path: '/survey',
     name: 'Survey',
@@ -289,7 +295,7 @@ export const constantRoutes = [
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
   { 
-    path: '/contractUpload',
+    path: '/contractUpload/',
     name: 'contractUpload',
     component: () => import('@/views/contractUpload/upload'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
@@ -319,8 +325,9 @@ export const constantRoutes = [
         meta: {title: '重权管理', icon: 'dashboard'},
       },
       {
-        path: 'b',
-        component: () => import('@/views/heavyRightSupplement/manage/b'),
+        path: 'approval',
+        name: 'HeavyApproval',
+        component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
       }
     ]

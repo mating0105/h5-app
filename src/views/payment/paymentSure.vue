@@ -185,6 +185,7 @@ export default {
   },
   methods: {
     meunList(row) {
+      this.params.dealState = '3';
       this.$router.push({ path: row.url, query: this.params });
     },
     loadData() {

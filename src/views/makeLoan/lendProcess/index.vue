@@ -1,6 +1,6 @@
 <template>
     <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :id="dealState?'':'lendProcess'">
-        <van-tabs v-model="activeName" v-if="projectForm.projectInfo">
+        <van-tabs v-model="activeName" v-if="projectForm.projectInfo" @change='changeTab'>
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
                     <Card>
@@ -12,33 +12,48 @@
                             <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false"/>
                             <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false"/>
                             <van-cell title="制单人员：" :border="false"/>
-                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" is-link v-model="projectForm.projectInfo.payType"
+                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"
                             @click="showPopupType('payType')" :border="false"/>
                         </div>
                     </Card>
+                    <div v-if="dealState"><!-- 已办显示 -->
+                        <!-- 银行放款信息 -->
+                        <Card style="margin-top:15px;" id="bankLend">
+                            <template v-slot:header>
+                                银行放款信息
+                            </template>
+                            <div>
+                                <van-field label="主借人还款卡号：" disabled :border="false" label-width='150' input-align="right" v-model="form.loanInfo.repaymentBankCardNo" />
+                                <van-cell title="还款卡银行：" :border='false' :value="form.loanInfo.accountBank" />
+                                <van-cell title="录机时间：" :border='false' :value="form.loanInfo.advanceInstitutionDate"/>
+                                <van-field :border="false" disabled label-width='150' input-align="right" label="实际放款金额（元）：" v-model="form.loanInfo.factLoanAmt"/>
+                                <van-cell :border='false' disabled title="实际放款时间：" v-model="form.loanInfo.factLoanDate" value="请选择"/>
+                            </div>
+                        </Card>
+                    </div>
                     <Card style="margin-top:15px;">
                         <template v-slot:header>
                             借款人信息
                         </template>
                         <div>
-                            <van-field :disabled="dealState" label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"/>
+                            <van-field name='mainBorrowerName' :disabled="dealState" label="主借人姓名：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge" :error-message="errorMsg.mainBorrowerName"/>
                             <van-field :disabled="dealState" label="主借人身份证：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" />
                             <van-field :disabled="dealState" label="主借人电话：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"/>
-                            <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.customerSexDesc"
+                            <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="form.borrowerInfo.customerSexDesc"
                             @click="showPopupType('customerSex')" />
                             <van-field :disabled="dealState" label="主借人年龄：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerAge"/>
                             <van-field :disabled="dealState" label="主借人月收入（元）：" placeholder="请输入" :border="false" label-width='160' input-align="right" v-model="form.borrowerInfo.mainLoanWage"/>
                             <van-field :disabled="dealState" label="主借人家庭人数：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.fiexdNo" />
-                            <van-cell title="还款来源：" :border="false" is-link :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.paymentSourceDesc"
+                            <van-cell title="还款来源：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.paymentSourceDesc"
                             @click="showPopupType('payment_source')" />
-                            <van-cell title="职务：" is-link :border="false" :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.postDesc"
+                            <van-cell title="职务：" :is-link='!dealState' :border="false" :value-class="dealState?'':'rightClass'" :value="form.borrowerInfo.postDesc"
                             @click="showPopupType('OccupationalStatus')" />
-                            <van-cell title="户籍地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.registerProvCityZon" @click="showMapMethod('registerProvCityZon')"/>
+                            <van-cell title="户籍地址：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="form.borrowerInfo.registerProvCityZon" @click="showMapMethod('registerProvCityZon')"/>
                             <van-field :disabled="dealState" label="户籍详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.registerAddressDetail" />
-                            <van-cell title="家庭地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.familyAddressProvCityZon" @click="showMapMethod('familyAddressProvCityZon')"/>
+                            <van-cell title="家庭地址：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="form.borrowerInfo.familyAddressProvCityZon" @click="showMapMethod('familyAddressProvCityZon')"/>
                             <van-field :disabled="dealState" label="家庭详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.familyAddressDetail" />
                             <van-field :disabled="dealState" label="工作单位名称：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCo" />
-                            <van-cell title="工作单位地址：" :border="false" :value-class="dealState?'':'rightClass'" is-link v-model="form.borrowerInfo.customerCoProvCityZon" @click="showMapMethod('customerCoProvCityZon')" />
+                            <van-cell title="工作单位地址：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="form.borrowerInfo.customerCoProvCityZon" @click="showMapMethod('customerCoProvCityZon')" />
                             <van-field :disabled="dealState" label="工作单位详细地址：" placeholder="请输入" :border="false" label-width='150' input-align="right" v-model="form.borrowerInfo.customerCoAddDetail" />
                         </div>
                     </Card>
@@ -50,15 +65,15 @@
                             {{'车辆信息'+(index+1)}}
                         </template>
                         <div>
-                            <van-cell title="车辆类别：" :border="false" is-link required :value="item.carTypeDesc"
+                            <van-cell title="车辆类别：" :border="false" :is-link='!dealState' required :value="item.carTypeDesc"
                             @click="showPopupType('car_type',index)" :value-class="dealState?'':'rightClass'" @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆性质：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carNatureDesc"
+                            <van-cell title="车辆性质：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required :value="item.carNatureDesc"
                             @click="showPopupType('car_nature',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆规格：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carSpecificationsDesc"
+                            <van-cell title="车辆规格：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required :value="item.carSpecificationsDesc"
                             @click="showPopupType('vehicle_specifications',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="车辆来源" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.carSourceDesc"
+                            <van-cell title="车辆来源" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required :value="item.carSourceDesc"
                             @click="showPopupType('CAR_SOURCE',index)" @blur.prevent="ruleMessge"/>
-                            <van-cell title="品牌型号：" :border="false" is-link :value-class="dealState?'':'rightClass'" required :value="item.brandModel" @click="selectBrand(index)" @blur.prevent="ruleMessge"/>
+                            <van-cell title="品牌型号：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required :value="item.brandModel" @click="selectBrand(index)" @blur.prevent="ruleMessge"/>
                             <van-field :disabled="dealState" label="实际开票价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.actualInvoicedPrice" @blur.prevent="ruleMessge"/>
                             <van-field :disabled="dealState" label="送行车价（元）：" placeholder="请输入" :border="false" label-width='150' input-align="right" required v-model="item.seeingCarPrice" @blur.prevent="ruleMessge"/>
                         </div>
@@ -74,7 +89,7 @@
                             <van-cell title="贷款产品：" :border="false" required @blur.prevent="ruleMessge" v-model="form.loanInfo.loanProductName" />
                             <van-cell title="贷款银行：" :border="false" required @blur.prevent="ruleMessge" :value="form.loanInfo.payPlatformName" />
                             <van-field :disabled="dealState" label="贷款年限：" label-width='150' placeholder="请输入" input-align="right" :border="false" required :value="form.loanInfo.loanYear" @blur.prevent="ruleMessge"/>
-                            <van-cell title="贷款期数：" :value-class="dealState?'':'rightClass'" :border="false" required is-link :value="form.loanInfo.loanTermDesc"
+                            <van-cell title="贷款期数：" :value-class="dealState?'':'rightClass'" :border="false" required :is-link='!dealState' :value="form.loanInfo.loanTermDesc"
                             @click="showPopupType('period_number')" @blur.prevent="ruleMessge"/>
                             <van-field :disabled="dealState" label="贷款成数：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" @blur.prevent="ruleMessge"/>
                             <van-field :disabled="dealState" label="客户利率：" label-width='150' placeholder="请输入" input-align="right" :border="false" required v-model="form.loanInfo.loanRate" @blur.prevent="ruleMessge"/>
@@ -96,7 +111,7 @@
                             <van-field :disabled="dealState" label="收款人银行：" placeholder="请输入"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"/>
                         </div>
                     </Card>
-                    <van-button round type="danger" style="width:100%;margin:30px 0;" @click="updateInfo" :loading='updateLoading'>下一步</van-button>
+                    <van-button  v-if="!dealState" round type="danger" style="width:100%;margin:30px 0;" @click="updateInfo" :loading='updateLoading'>下一步</van-button>
                 </div> 
                 <div v-show="stepIndex==3" style="margin-top:10px;">
                     <Card style="margin-top:15px;">
@@ -119,7 +134,8 @@
                 </div> 
             </van-tab>
             <van-tab title="征信信息" name="2" class="tabBox">
-                
+                <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+                <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             </van-tab>
             <van-tab title="审批记录" name="3" class="tabBox">
                 <ApprovalRecord :recordList='recordList'></ApprovalRecord>
@@ -148,9 +164,11 @@
   import Card from '@/components/card/index';
   import ApprovalRecord from '@/views/basicInfo/approvalRecord/index';
   import MapSheet from "@/components/provinces/index";
-  import brand from '@/components/carBrand/brand'
+  import brand from '@/components/carBrand/brand';
+  import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
   import { getSex,getAge} from "@/utils/customer";
   import { getDic } from "@/api/createCustomer";
+  import { getCreditInfo } from '@/api/credit'
   import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox,Notify} from 'vant';
   import {loanInfoDetail,getProjectInfo,updateLoanInfo,getPeople,submitProcess} from '@/api/makeLoan.js'
 
@@ -167,7 +185,8 @@
       Card,
       ApprovalRecord,
       MapSheet,
-      brand
+      brand,
+      creditInfoTable
     },
     computed: {
       ...mapGetters([
@@ -203,6 +222,14 @@
             checked:false,//通知业务员补充资料 true:是  false：否
             updateLoading:false,//更新
             submitLoading:false,//提交
+            //----tab:2--征信信息
+            dataList: {
+                investigateBank: '',
+                investigateBankName: '',
+                isInternetCredit: '',
+                carInfos: [],
+                surDtlList: []
+            },
             // ---tab:3--审批记录
             recordList:[{
                 name:'名字',
@@ -230,6 +257,12 @@
             ],
             businessKey:0,
             dealState:false,//false:'待办'  true:'已办'
+            //验证字段规则
+            ruleData:[],
+            errorMsg: {
+                mainBorrowerName:'',//主借人姓名
+                
+            },
         };
     },
     methods: {
@@ -253,6 +286,9 @@
         },
         //显示选择弹框
         showPopupType(type,index) {
+            if(this.dealState){
+                return;
+            }
             this.popupShow = true
             this.popupSign = {
                 label:type,
@@ -365,6 +401,9 @@
         },
         //-----------省市区----------------
         showMapMethod(name) {
+            if(this.dealState){
+                return;
+            }
             this.mapShow = true;
             this.mapShowText=name;
         },
@@ -403,6 +442,9 @@
         },
         //-----------品牌型号--------------------
         selectBrand (index) {
+            if(this.dealState){
+                return;
+            }
             this.showBrand = true;
             this.showBrandSign=index;
         },
@@ -578,14 +620,84 @@
         ruleMessge(e) {
             let name = e.target.name;
             let val = e.target.value;
-            // this.errorMsg[name] = this.returnMsg(name, val);
+            this.errorMsg[name] = this.returnMsg(name, val);
+        },
+        // 验证值
+        returnMsg(name, value) {
+            console.log(name,value)
+            return;
+            if (this.ruleData[name]) {
+                let infoObj = this.ruleData[name];
+                let error = ""; // 错误信息
+                if (infoObj.mustFill) {
+                    if (value == "" || value === undefined || value === null) {
+                        error = "必填项，不能为空";
+                    }
+                } else {
+                    if (value == "" || value === undefined || value === null) {
+                        error = "";
+                    }
+                }
+                if (infoObj.regular.length > 0) {
+                    for (let i = 0; i < infoObj.regular.length; i += 1) {
+                        const { rule, message } = infoObj.regular[i];
+                        const reg = new RegExp(rule);
+                        if (!reg.test(value)) {
+                            error = message;
+                        } else {
+                            if (infoObj.urlSuffix) {
+                                this.urlRules(infoObj.urlSuffix, infoObj);
+                            }
+                        }
+                    }
+                }
+                return error;
+            }
+        },
+        // 有接口验证的时候
+        urlRules(urls, rows) {
+            let param = rows.params.split(",");
+            let obj = {};
+            param.forEach(t => {
+                obj[t] = this.formData[t];
+            });
+            requestUrl.getList(urls, obj, "soa").then(res => {
+                if (res.data.code === 200) {
+                let { message } = res.data.data;
+                    this.errorMsg[rows.field] = message;
+                } else {
+                    this.$toast(res.data.msg);
+                }
+            });
+        },
+        changeTab(e){
+            if(e==2){
+                this.getCreditInfo();
+            }
+        },
+        //获取征信信息
+        async getCreditInfo () {
+            console.log(Number(this.$route.query.info.businesskey),'this.businesskey111111111')
+            try {
+                this.listLoading = true
+                const params = {
+                    lpCertificateNum: this.projectForm.projectInfo.certificateNum,
+                }
+                const res = await getCreditInfo(params)
+                this.dataList = res.data.cuCreditRegister;
+                this.listLoading = false
+            } catch (e) {
+                this.listLoading = false
+                console.log(e)
+            }
         },
     },
     created(){
     },
     mounted () {
-        this.businessKey=47;//Number(this.$route.query.info.id);
-        this.dealState=true;//this.$route.query.dealState==1?false:true;
+        console.log(this.$route.query,'this.$route.query')
+        this.businessKey=Number(this.$route.query.info.businesskey);//47;
+        this.dealState=false,//this.$route.query.dealState==1?false:true;//true;
         this.getDictionaryData();
     }
   }

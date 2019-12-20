@@ -3,14 +3,11 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 17:57:33
+ * @LastEditTime : 2019-12-20 18:56:17
  -->
 
 <template>
-  <ViewPage
-    :loading="loading"
-    class="heavy-right-manage"
-  >
+  <ViewPage class="heavy-right-manage">
     <van-tabs v-model="active">
       <van-tab
         name="basic"
@@ -31,10 +28,16 @@
         title="相关文档"
       ></van-tab>
       <van-tab
+        :to="{ name: 'HeavyApproval', query:{
+          info:JSON.stringify({
+            customerNum,
+            customerId
+          }),
+          dealState:'1'
+        }}"
         name="record"
         replace
         title="审批记录"
-        to="b"
       ></van-tab>
     </van-tabs>
     <div class="heavy-right-manage-wrap">
@@ -74,8 +77,7 @@ export default {
   data() {
     return {
       // 基本信息basic 相关文档doc 审批记录record
-      active: "basic",
-      loading: false
+      active: "basic"
     };
   },
   props: {},

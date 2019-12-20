@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :rightMenuList="rightMenuList" :iconClass="'ellipsis'">
+  <ViewPage :rightMenuList="rightMenuList" :goPage="goPage" :iconClass="'ellipsis'">
     <template v-slot:head>
       <van-search
         v-model="params.searchKey"
@@ -39,7 +39,7 @@
             </van-row>
             <template v-slot:footer>
               <div class="upBtn">
-                <van-button round type="info" size="small" @click="goUpload">合同上传</van-button>
+                <van-button round type="info" size="small" @click="goUpload(item)">合同上传</van-button>
               </div>
             </template>
           </Card>
@@ -51,7 +51,7 @@
 
 <script>
 import Vue from "vue";
-import { getList } from "@/api/contractUpload";
+import api from "@/api/contractUpload";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
@@ -84,11 +84,17 @@ export default {
       },
       scroll: 0,
       rightMenuList:[{
-        title:'业务员报单',path:'/contractUpload',params:{id:1,age:18}
+        title:'项目基本信息',path:'/paymentProjectInfo'
       },{
-        title:'财务走款',path:'/b'
+        title:'费用信息',path:'/costDetail'
       },{
-        title:'业务',path:'/c'
+        title:'走款信息',path:'/c'
+      },{
+        title:'相关文档',path:'/proDocument'
+      },{
+        title:'风控措施',path:'/controlMeasure'
+      },{
+        title:'GPS 安装信息',path:'/c'
       }],
     };
   },
@@ -118,7 +124,7 @@ export default {
         this.params.pageIndex = 1;
       }
 
-      getList(this.params).then(res => {
+      api.getList(this.params).then(res => {
         const {code, data, msg} = res;
         setTimeout(() => {
           data.result.forEach(t => {
@@ -142,9 +148,16 @@ export default {
       this.onLoad();
     },
     // 合同上传
-    goUpload() {
+    goUpload(item) {
       this.scroll = this.$refs.listBox.$refs.placeholder.offsetParent.scrollTop;
-      this.$router.push({ path: "/contractUpload", query: {id:123} });
+      this.$router.push({ path: "/contractUpload", query: {
+          customerId:item.customerId,customerNum:item.customerNum,projectId:item.projectId,remark:item.remark,
+          lpCertificateNum:item.certificateNum ,id:item.id
+        } 
+      });
+    },
+    goPage(item){
+      this.$router.push({ path: item.path, query: item.params });
     }
   },
   created() {
