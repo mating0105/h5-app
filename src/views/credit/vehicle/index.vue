@@ -5,7 +5,7 @@
                       :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
                       @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell title="车辆性质：" :border="false" required>
-                <radio v-model="carFrom.carNature" disabled>
+                <radio v-model="carFrom.carNature">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('car_nature')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
@@ -351,12 +351,16 @@
       },
       verifyForm () {
         let flag = true
+        const carFrom = {...this.carFrom}
+        if(carFrom.carNature === 'new_car') {
+          delete carFrom.chassisNumber
+        }
         for (let key in this.rules) {
           if (this.rules.hasOwnProperty(key)) {
             try {
               this.rules[key].forEach(item => {
                 if (item.required) {
-                  if (!this.carFrom[key]) {
+                  if (!carFrom[key]) {
                     this.$toast(item.msg || '提示');
                     flag = false
                     throw Error();
