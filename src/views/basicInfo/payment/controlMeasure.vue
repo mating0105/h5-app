@@ -49,7 +49,7 @@
           </van-cell-group>
         </van-row>
       </card>
-      <div class="xh-submit">
+      <div class="xh-submit" v-show="this.params.dealState == '1'">
         <van-button size="large" class="xh-bg-main" @click="submit">保 存</van-button>
       </div>
     </div>
