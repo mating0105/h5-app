@@ -38,7 +38,7 @@ export default {
   props: {
     requestParams: {
       // {customerNum:'xxx',customerId:'xxxx',dealState:'3'}
-      type: String,
+      type: Object,
       default: () => {}
     },
     types: {
@@ -68,9 +68,12 @@ export default {
   },
   mounted() {
     this.initData();
-    this.$nextTick(()=>{
+    setTimeout(() => {
       this.query();
-    })
+    }, 1000);
+    // this.$nextTick(()=>{
+    //   this.query();
+    // })
   },
   methods: {
     /**
@@ -94,8 +97,6 @@ export default {
       this.query();
     },
     query() {
-      console.log(this.params);
-      console.log(this.params.customerNum);
       this.toast = Toast.loading({
         message: "加载中...",
         forbidClick: true,

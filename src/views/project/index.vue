@@ -352,6 +352,7 @@ export default {
       }
     } else {
       this.params = this.$route.query;
+      this.params.isView = 1;
       this.endActive();
     }
     // this.surDtlList = {
