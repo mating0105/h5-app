@@ -87,6 +87,7 @@
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker } from 'vant';
   import MapSheet from "@/components/provinces/index";
   import dayjs from 'dayjs'
+  import _ from 'lodash'
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker]
   Components.forEach(item => {
@@ -352,13 +353,14 @@
       verifyForm () {
         let flag = true
         const carFrom = {...this.carFrom}
+        const rules = _.cloneDeep(this.rules)
         if(carFrom.carNature === 'new_car') {
-          delete carFrom.chassisNumber
+          delete rules.chassisNumber
         }
         for (let key in this.rules) {
-          if (this.rules.hasOwnProperty(key)) {
+          if (rules.hasOwnProperty(key)) {
             try {
-              this.rules[key].forEach(item => {
+              rules[key].forEach(item => {
                 if (item.required) {
                   if (!carFrom[key]) {
                     this.$toast(item.msg || '提示');

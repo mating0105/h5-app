@@ -87,7 +87,7 @@
           customerNum: '', customerId: '', dealState: '3'
         },
         recordParams: {
-          businessKey: '', businessType: '07'
+          businesskey: '', businesstype: '07'
         }
       }
     },
@@ -103,8 +103,8 @@
           this.dataList = res.data.cuCreditRegister;
           this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
           this.requestParams.customerId = this.dataList.customerId
-          this.recordParams.businessKey = this.dataList.id
-          // this.recordParams.businessType = this.dataList.id
+          this.recordParams.businesskey = this.dataList.id
+          // this.recordParams.businesstype = this.dataList.id
           this.loading = false
 
           this.dataList.surDtlList.forEach(e => {

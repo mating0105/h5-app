@@ -37,7 +37,8 @@ export default {
   },
   data() {
     return {
-      recordList: []
+      recordList: [],
+      params: {}
     };
   },
   props: {
@@ -56,8 +57,8 @@ export default {
   methods: {
     loadRecord() {
       let data = {
-        businessKey: this.params.info.businessKey,
-        businessType: this.params.info.businessType
+        businessKey: this.params.info.businesskey,
+        businessType: this.params.info.businesstype
       };
       approvalRecord(data).then(res => {
         this.recordList = res.data;
@@ -77,7 +78,6 @@ export default {
     }
   },
   mounted() {
-    debugger
     if(this.$route.query.dealState && this.$route.query.info) {
       this.params = {
         info: this.getStringToObj(this.$route.query.info),
