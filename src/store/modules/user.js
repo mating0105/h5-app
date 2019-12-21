@@ -127,6 +127,7 @@ const actions = {
       "business_type",//流程类型
       "proj_status", // 项目状态
       "credit_result", // 征信状态
+      "GPS_IS_DONE",//gps状态
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

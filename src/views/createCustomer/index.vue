@@ -3,12 +3,22 @@
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
-          <van-icon name="plus" style="margin-top:30px;" />
-          <p>身份证正面</p>
+          <div v-if="!src">
+            <van-icon name="plus" style="margin-top:30px;" />
+            <p>身份证正面</p>
+          </div>
+          <div v-else>
+            <img :src="src" alt style="width:100%;" />
+          </div>
         </van-col>
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
-          <van-icon name="plus" style="margin-top:30px;" />
-          <p>身份证反面</p>
+          <div v-if="!srcBack">
+            <van-icon name="plus" style="margin-top:30px;" />
+            <p>身份证反面</p>
+          </div>
+          <div v-else>
+            <img :src="srcBack" alt style="width:100%;" />
+          </div>
         </van-col>
       </van-row>
     </div>
@@ -57,7 +67,13 @@
           <van-cell title="年龄" :value="customerData.age" />
         </van-cell-group>
         <van-cell-group :border="false">
-          <van-cell title="民族" required is-link v-model="customerData.nation" @click="showFamily" />
+          <van-cell
+            title="民族"
+            required
+            is-link
+            v-model="customerData.nationName"
+            @click="showFamily"
+          />
         </van-cell-group>
         <van-cell-group :border="false">
           <van-field
@@ -172,7 +188,6 @@ import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
 import card from "@/components/card/index";
 import { format } from "@/utils/format";
-import bridge from "@/utils/bridge";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
@@ -200,19 +215,19 @@ export default {
   data() {
     return {
       customerData: {
-        "sex": "", //性别
-        "birthday": "",//出生日期
-        "customerName": "",//客户姓名
-        "certificateNum": "",//身份证号码
-        "age": "",//年龄
-        "creditObjectType": "",//征信对象类型
-        "nationName": "",//民族
-        "nation": "",//
-        "familyAddress": "",//身份证住址
-        "signOrg": "",//身份证签发机关
-        "startDate": "",//起始日
-        "endDate": "",//截止日
-        "contactPhone": ""//手机号码
+        sex: "", //性别
+        birthday: "", //出生日期
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号码
+        age: "", //年龄
+        creditObjectType: "", //征信对象类型
+        nationName: "", //民族
+        nation: "", //
+        familyAddress: "", //身份证住址
+        signOrg: "", //身份证签发机关
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "" //手机号码
       },
       show1: false,
       show2: false,
@@ -233,7 +248,9 @@ export default {
       options: [],
       valueKey: "label",
       selectName: "",
-      valueId: "id" // 下拉选择取的哪个value值
+      valueId: "id", // 下拉选择取的哪个value值
+      src: "", //正面图片
+      srcBack: "" //背面图片
     };
   },
   computed: {
@@ -241,6 +258,13 @@ export default {
     ...mapState({
       wordbook: state => state.user.wordbook
     })
+  },
+  watch: {
+    "customerData.certificateNum"(e) {
+      this.customerData.sex = getSex(e);
+      this.customerData.birthday = getBirth(e);
+      this.customerData.age = getAge(e);
+    }
   },
   methods: {
     formatter(type, value) {
@@ -333,7 +357,6 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
-      // this.customerData[this.fieldName + "Name"] = row.label;
     },
     cancel() {},
     //保存信息
@@ -362,11 +385,48 @@ export default {
     loadImg() {
       this.show3 = true;
     },
+    newData(val) {
+      let d = val.split(".");
+      let a = d.join("-");
+      return a;
+    },
     //选择获取图片方式
     onSelect(e) {
-      bridge.callhandler("idCardOCR", { type: e.value }, data => {
-        console.log(data);
-      });
+      this.$bridge.callHandler("idCardOCR", e.value, data => {
+        if (data.ID_TYPE == "正面") {
+          this.$set(this.customerData, "customerName", data.ID_NAME);
+          this.$set(this.customerData, "certificateNum", data.ID_NUM);
+          this.$set(this.customerData, "familyAddress", data.ID_ADDRESS);
+          this.$set(this.customerData, "nation", data.ID_FOLK);
+          if (data.ID_SEX == "女") {
+            this.$set(this.customerData, "sex", "2");
+          } else if (data.ID_SEX == "男") {
+            this.$set(this.customerData, "sex", "1");
+          }
+          alert(data.FRONT_IMG);
+          alert(dataURLtoFile(data.FRONT_IMG));
+          this.src = data.FRONT_IMG
+        } else if (data.ID_TYPE == "背面") {
+          this.$set(this.customerData, "signOrg", data.ID_ISSUE);
+          if (data.ID_VALID.indexOf("-") != -1) {
+            this.$set(
+              this.customerData,
+              "startDate",
+              this.newData(data.ID_VALID.split("-")[0])
+            );
+            if (data.ID_VALID.split("-")[1] == "长期") {
+              this.$set(this.customerData, "endDate", "9999-12-30");
+            } else {
+              this.$set(
+                this.customerData,
+                "endDate",
+                this.newData(data.ID_VALID.split("-")[1])
+              );
+            }
+          }
+          this.srcBack = data.BACK_IMG;
+        }
+      }); //原生直接调用
       this.show3 = false;
     },
     // 字典转换
@@ -387,7 +447,7 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      console.log(this.customerData)
+      console.log(this.customerData);
     }
   },
   mounted() {
