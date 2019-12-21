@@ -126,6 +126,8 @@ const actions = {
       "business_type",//流程类型
       "proj_status", // 项目状态
       "credit_result", // 征信状态
+      "GradeManual", //手动评级
+      "risk_condition" //风控条件
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

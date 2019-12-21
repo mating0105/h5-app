@@ -7,9 +7,9 @@
             name="isHasHouse"
             title="是否有房产："
             required
-            is-link
+            :is-link="isView == 0"
             :value="formData.isHasHouseDesc"
-            @click.native="loadList('是否有房产')"
+            @click.native="isView == 1?'':loadList('是否有房产')"
             @blur.prevent="ruleMessge"
           />
         </section>
@@ -33,9 +33,9 @@
               name="houseType"
               title="房产性质："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.houseTypeDesc"
-              @click.native="loadList('房产性质')"
+              @click.native="isView == 1?'':loadList('房产性质')"
             />
           </section>
           <section>
@@ -43,9 +43,9 @@
               name="houseZon"
               title="房产区域："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.houseZonDesc"
-              @click.native="loadList('房产区域')"
+              @click.native="isView == 1?'':loadList('房产区域')"
             />
           </section>
 
@@ -54,9 +54,9 @@
               name="provCityZon"
               title="房产所在地："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.provCityZon"
-              @click.native="loadList('房产所在地')"
+              @click.native="isView == 1?'':loadList('房产所在地')"
             />
           </section>
           <section>
@@ -166,7 +166,7 @@ export default {
   },
   data() {
     return {
-      isView: 0, // 是否查看
+      isView: 1, // 是否查看
       formData: {
         // 额外提交(上页传递)
         customerNum: "", // 客户编号
@@ -335,8 +335,8 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.type;
     if(this.params.type == 1) {
-      this.isView = this.params.type;
       this.loadData();
     }
   }

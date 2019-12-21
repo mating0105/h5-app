@@ -5,13 +5,13 @@
         <van-row>
           <van-col :span="24">
             <section>
-              <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人')" />
+              <van-cell title="担保人：" required :is-link="isView == 0" :value="form.cuGuaranteeName" @click.native="isView == 1?'':loadList('担保人')" />
             </section>
             <section>
-              <van-cell title="房产性质：" required is-link :value="form.houseTypeDesc" @click.native="loadList('房产性质')" />
+              <van-cell title="房产性质：" required :is-link="isView == 0" :value="form.houseTypeDesc" @click.native="isView == 1?'':loadList('房产性质')" />
             </section>
             <section>
-              <van-cell title="房产区域：" required is-link :value="form.houseZonDesc" @click.native="loadList('房产区域')" />
+              <van-cell title="房产区域：" required :is-link="isView == 0" :value="form.houseZonDesc" @click.native="isView == 1?'':loadList('房产区域')" />
             </section>
             <section>
               <van-field name="propertyValue" v-model="form.propertyValue" type="number" clearable required label="产权价值(万元)："
@@ -22,7 +22,7 @@
                 placeholder="请输入产权所有人" @blur.prevent="ruleMessge" :error-message="errorMsg.ownerProperty"/>
             </section>
             <section>
-              <van-cell title="房产所在地：" required is-link :value="form.provCityZon" @click.native="loadList('房产所在地')" />
+              <van-cell title="房产所在地：" required :is-link="isView == 0" :value="form.provCityZon" @click.native="isView == 1?'':loadList('房产所在地')" />
             </section>
             <section>
               <van-field name="specificAddress" v-model="form.specificAddress" clearable required label="详细地址：" input-align="right"
@@ -106,7 +106,7 @@ Components.forEach(item => {
 export default {
   data() {
     return {
-      isView: 0,
+      isView: 1,
       loading: false,
       form: {
         guaranteeId: '',
@@ -279,8 +279,8 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.type;
     if (this.params.id) {
-      this.isView = 1;
       this.loadData(this.params.id)
     } else {
       this.loadData()

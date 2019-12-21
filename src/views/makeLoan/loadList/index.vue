@@ -110,8 +110,8 @@ export default {
                 //待办路径
                 dealwith:[
                     {name:'客户经理待办',path:'/xhProject',params:newParams},
-                    {name:'内勤待办',path:'/b',params:newParams},
-                    {name:'审批官待办',path:'/c',params:newParams},
+                    {name:'内勤待办',path:'/xhProject',params:newParams},
+                    {name:'审批官待办',path:'/xhProject',params:newParams},
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},
                     {name:'财务走款确认待办',path:'/paymentSure',params:newParams},
                     {name:'客户征信经理待办',path:'/reNewCredit',params:newParams},

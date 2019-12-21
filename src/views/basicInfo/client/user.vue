@@ -48,27 +48,27 @@
               <van-cell
                 title="婚姻状况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.marriageDesc"
-                @click.native="loadList('婚姻状况')"
+                @click.native="isView == 1?'':loadList('婚姻状况')"
               />
             </section>
             <section>
               <van-cell
                 title="文化程度："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.levelEducationDesc"
-                @click.native="loadList('文化程度')"
+                @click.native="isView == 1?'':loadList('文化程度')"
               />
             </section>
             <section>
               <van-cell
                 title="单位性质："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.unitCharDesc"
-                @click.native="loadList('单位性质')"
+                @click.native="isView == 1?'':loadList('单位性质')"
               />
             </section>
             <section>
@@ -88,18 +88,18 @@
               <van-cell
                 title="户籍地址："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.pProvCityZon"
-                @click.native="loadList('户籍地址')"
+                @click.native="isView == 1?'':loadList('户籍地址')"
               />
             </section>
             <section>
               <van-cell
                 title="居住地："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.rProvCityZon"
-                @click.native="loadList('居住地')"
+                @click.native="isView == 1?'':loadList('居住地')"
               />
             </section>
             <section>
@@ -119,18 +119,18 @@
               <van-cell
                 title="子女情况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.childrenSituationDesc"
-                @click.native="loadList('子女情况')"
+                @click.native="isView == 1?'':loadList('子女情况')"
               />
             </section>
             <section v-if="formData.childrenSituationDesc != '无' ">
               <van-cell
                 title="子女上学情况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.schoolSituationDesc"
-                @click.native="loadList('子女上学情况')"
+                @click.native="isView == 1?'':loadList('子女上学情况')"
               />
             </section>
             <section>
@@ -211,18 +211,18 @@
               <van-cell
                 title="配偶文化程度："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.spsCltrDgrDesc"
-                @click.native="loadList('配偶文化程度')"
+                @click.native="isView == 1?'':loadList('配偶文化程度')"
               />
             </section>
             <section>
               <van-cell
                 title="配偶单位性质："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.spsUnitCharDesc"
-                @click.native="loadList('配偶单位性质')"
+                @click.native="isView == 1?'':loadList('配偶单位性质')"
               />
             </section>
           </van-col>
@@ -311,6 +311,7 @@ export default {
   },
   data() {
     return {
+      isView: 1,
       loading: false,
       formData: {
         // 额外提交(上页传递)
@@ -660,7 +661,10 @@ export default {
   },
   created() {
     this.params = this.$route.query;
-    this.loadClient();
+    this.isView = this.params.type;
+    if (this.params.type == 1) {
+      this.loadClient();
+    }
   }
 };
 </script>

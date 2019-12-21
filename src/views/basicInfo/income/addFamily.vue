@@ -6,18 +6,18 @@
           <van-cell
             title="收入人："
             required
-            is-link
+            :is-link="isView == 0"
             :value="formData.incomePeopleDesc"
-            @click.native="loadList('收入人')"
+            @click.native="isView == 1?'':loadList('收入人')"
           />
         </section>
         <section>
           <van-cell
             title="职业状况："
             required
-            is-link
+            :is-link="isView == 0"
             :value="formData.occupationalStatusDesc"
-            @click.native="loadList('职业状况')"
+            @click.native="isView == 1?'':loadList('职业状况')"
           />
         </section>
 
@@ -26,18 +26,18 @@
             <van-cell
               title="单位性质："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.unitCharDesc"
-              @click.native="loadList('单位性质')"
+              @click.native="isView == 1?'':loadList('单位性质')"
             />
           </section>
           <section>
             <van-cell
               title="行业领域："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.idyDmnDesc"
-              @click.native="loadList('行业领域')"
+              @click.native="isView == 1?'':loadList('行业领域')"
             />
           </section>
 
@@ -73,9 +73,9 @@
             <van-cell
               name="provCityZon"
               title="单位地址："
-              is-link
+              :is-link="isView == 0"
               :value="formData.provCityZon"
-              @click.native="loadList('单位地址')"
+              @click.native="isView == 1?'':loadList('单位地址')"
             />
           </section>
           <section>
@@ -123,9 +123,9 @@
               <van-cell
                 title="月固定收入状况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.personalIncomeStatusDesc"
-                @click.native="loadList('月固定收入状况')"
+                @click.native="isView == 1?'':loadList('月固定收入状况')"
               />
             </section>
           </div>
@@ -135,9 +135,9 @@
           <van-cell
             title="收入佐证："
             required
-            is-link
+            :is-link="isView == 0"
             :value="formData.incomeEvidenceDesc"
-            @click.native="loadList('收入佐证')"
+            @click.native="isView == 1?'':loadList('收入佐证')"
           />
         </section>
 
@@ -234,7 +234,7 @@ export default {
   },
   data() {
     return {
-      isView: 0, // 是否查看
+      isView: 1, // 是否查看
       formData: {
         customerNum: '',// 客户编号
         customerId: '',// 客户ID
@@ -476,8 +476,8 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.type;
     if (this.params.type == 1) {
-      this.isView = this.params.type;
       this.loadData();
     }
   }

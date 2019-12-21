@@ -11,6 +11,7 @@
                 v-model="formData.customerName"
                 clearable
                 required
+                :disabled="isView == 1"
                 label="担保人姓名："
                 input-align="right"
                 placeholder="请输入担保人姓名"
@@ -26,6 +27,7 @@
                 v-model="formData.certificateNum"
                 clearable
                 required
+                :disabled="isView == 1"
                 label="证件号码："
                 input-align="right"
                 placeholder="请输入证件号码"
@@ -37,18 +39,18 @@
               <van-cell
                 title="是否共债人："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.isBondsDesc"
-                @click.native="loadList('是否供债人')"
+                @click.native="isView == 1?'':loadList('是否供债人')"
               />
             </section>
             <section>
               <van-cell
                 title="与客户关系："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.relationCusDesc"
-                @click.native="loadList('与客户关系')"
+                @click.native="isView == 1?'':loadList('与客户关系')"
               />
             </section>
             <section>
@@ -57,6 +59,7 @@
                 v-model="formData.contactPhone"
                 clearable
                 required
+                :disabled="isView == 1"
                 label="联系电话："
                 input-align="right"
                 placeholder="请输入联系电话"
@@ -68,15 +71,16 @@
               <van-cell
                 title="文化程度："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.levelEducationDesc"
-                @click.native="loadList('文化程度')"
+                @click.native="isView == 1?'':loadList('文化程度')"
               />
             </section>
             <section>
               <van-field
                 v-model="formData.primarySchool"
                 clearable
+                :disabled="isView == 1"
                 label="曾就读小学："
                 input-align="right"
                 placeholder="请输入曾就读小学"
@@ -86,18 +90,18 @@
               <van-cell
                 title="户籍地址："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.pProvCityZon"
-                @click.native="loadList('户籍地址')"
+                @click.native="isView == 1?'':loadList('户籍地址')"
               />
             </section>
             <section>
               <van-cell
                 title="居住地："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.rProvCityZon"
-                @click.native="loadList('居住地')"
+                @click.native="isView == 1?'':loadList('居住地')"
               />
             </section>
             <section>
@@ -105,6 +109,7 @@
                 v-model="formData.spsRsdncDtlAdr"
                 required
                 clearable
+                :disabled="isView == 1"
                 label="居住地详细地址："
                 input-align="right"
                 placeholder="请输入详细地址"
@@ -114,24 +119,25 @@
               <van-cell
                 title="子女情况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.childrenSituationDesc"
-                @click.native="loadList('子女情况')"
+                @click.native="isView == 1?'':loadList('子女情况')"
               />
             </section>
             <section v-if="formData.childrenSituation != '0'">
               <van-cell
                 title="子女上学情况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.schoolSituationDesc"
-                @click.native="loadList('子女上学情况')"
+                @click.native="isView == 1?'':loadList('子女上学情况')"
               />
             </section>
             <section>
               <van-field
                 v-model="formData.localResidence"
                 clearable
+                :disabled="isView == 1"
                 label="本地居住年限(年)："
                 input-align="right"
                 placeholder="请输入居住年限"
@@ -141,9 +147,9 @@
               <van-cell
                 title="婚姻状况："
                 required
-                is-link
+                :is-link="isView == 0"
                 :value="formData.marriageDesc"
-                @click.native="loadList('婚姻状况')"
+                @click.native="isView == 1?'':loadList('婚姻状况')"
               />
             </section>
           </van-col>
@@ -155,6 +161,7 @@
               v-model="spsNm"
               clearable
               required
+              :disabled="isView == 1"
               label="配偶姓名："
               input-align="right"
               placeholder="请输入配偶姓名"
@@ -170,6 +177,7 @@
               v-model="spsCrdtNo"
               clearable
               required
+              :disabled="isView == 1"
               label="配偶证件号码："
               input-align="right"
               placeholder="请输入配偶证件号码"
@@ -183,6 +191,7 @@
               v-model="spsCtcTel"
               clearable
               required
+              :disabled="isView == 1"
               label="配偶联系电话："
               input-align="right"
               placeholder="请输入配偶联系电话"
@@ -194,18 +203,18 @@
             <van-cell
               title="配偶文化程度："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.spsCltrDgrDesc"
-              @click.native="loadList('配偶文化程度')"
+              @click.native="isView == 1?'':loadList('配偶文化程度')"
             />
           </section>
           <section>
             <van-cell
               title="配偶单位性质："
               required
-              is-link
+              :is-link="isView == 0"
               :value="formData.spsUnitCharDesc"
-              @click.native="loadList('配偶单位性质')"
+              @click.native="isView == 1?'':loadList('配偶单位性质')"
             />
           </section>
           </van-col>
@@ -290,7 +299,7 @@ export default {
   },
   data() {
     return {
-      isView: 0, // 是否查看
+      isView: 1, // 是否查看
       loading: false,
       formData: {
         certificateNum: "",
@@ -624,8 +633,8 @@ export default {
   },
   created() {
     this.params = this.$route.query;
+    this.isView = this.params.type;
     if (this.params.type == 1) {
-      this.isView = this.params.type;
       this.loadClient();
     }
   }

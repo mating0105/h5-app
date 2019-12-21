@@ -77,7 +77,6 @@ export default {
     }
   },
   mounted() {
-    debugger
     if(this.$route.query.dealState && this.$route.query.info) {
       this.params = {
         info: this.getStringToObj(this.$route.query.info),

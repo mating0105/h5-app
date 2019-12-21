@@ -24,7 +24,7 @@ export default {
       params: this.$route.query,
       types: [
         { type: '0306', must: false, dealState: "1", label: '二手车资料' },
-        { type: '0101', must: true, dealState: "1", label: '主借人身份证正面' }
+        // { type: '0101', must: false, dealState: "2", label: '主借人身份证正面' }
       ]
     };
   }

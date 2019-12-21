@@ -43,9 +43,9 @@
               :border="false"
               title="与借款人关系："
               :required="index == 0"
-              is-link
+              :is-link="isView == 0"
               :value="i.borrowerRelationshipDesc"
-              @click.native="loadList(index)"
+              @click.native="isView == 1?'':loadList(index)"
             />
           </van-cell-group>
         </div>
@@ -94,6 +94,7 @@ Components.forEach(item => {
 export default {
   data() {
     return {
+      isView: 1,
       contactlist: [],
       params: {},
       selectShow: false,
@@ -203,7 +204,10 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.loadData();
+    this.isView = this.params.type;
+    if (this.params.type == 1) {
+      this.loadData();
+    }
   }
 };
 </script>

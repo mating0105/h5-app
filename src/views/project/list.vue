@@ -60,7 +60,7 @@
 
 <script>
 import Vue from "vue";
-import { getProjectList } from "@/api/project";
+import { getProjectList, getDeclaration } from "@/api/project";
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
@@ -150,15 +150,20 @@ export default {
     },
     // 发起报单
     startForm(rows) {
-      this.$router.push({ path: '/xhProject', query: {
-        customerName: rows.customerName, //客户姓名
-        contactPhone: rows.contactPhone, //客户身份证
-        certificateNum: rows.certificateNum, //客户手机号码
-        customerId: rows.customerId,
-        customerNum: rows.customerNum,
-        projectNo: rows.projectNo,
-        projectId: rows.projectId,
-      }});
+      getDeclaration({
+        id: rows.id
+      }).then(res => {
+        this.$router.push({ path: '/xhProject', query: {
+          customerName: rows.customerName, //客户姓名
+          contactPhone: rows.contactPhone, //客户身份证
+          certificateNum: rows.certificateNum, //客户手机号码
+          customerId: rows.customerId,
+          customerNum: rows.customerNum,
+          projectNo: rows.projectNo,
+          projectId: rows.projectId,
+          isView: 0
+        }});
+      });
     },
     // 新建客户
     addClint() {

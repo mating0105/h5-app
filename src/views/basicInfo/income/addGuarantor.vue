@@ -5,21 +5,21 @@
         <van-row>
           <van-col :span="24">
             <section>
-              <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人', '1')" />
+              <van-cell title="担保人：" required :is-link="isView == 0" :value="form.cuGuaranteeName" @click.native="isView == 1?'':loadList('担保人', '1')" />
             </section>
             <section>
-              <van-cell title="收入人：" required is-link :value="form.incomePeopleDesc" @click.native="loadList('收入人', 'income_person')" />
+              <van-cell title="收入人：" required :is-link="isView == 0" :value="form.incomePeopleDesc" @click.native="isView == 1?'':loadList('收入人', 'income_person')" />
             </section>
             <section>
-              <van-cell title="职业状况：" required is-link :value="form.occupationalStatusDesc"
-                @click.native="loadList('职业状况','OccupationalStatus')" />
+              <van-cell title="职业状况：" required :is-link="isView == 0" :value="form.occupationalStatusDesc"
+                @click.native="isView == 1?'':loadList('职业状况','OccupationalStatus')" />
             </section>
             <div v-if="form.occupationalStatus != 6">
               <section>
-                <van-cell title="单位性质：" required is-link :value="form.unitCharDesc" @click.native="loadList('单位性质','unit_Property')" />
+                <van-cell title="单位性质：" required :is-link="isView == 0" :value="form.unitCharDesc" @click.native="isView == 1?'':loadList('单位性质','unit_Property')" />
               </section>
               <section>
-                <van-cell title="行业领域：" required is-link :value="form.idyDmnDesc" @click.native="loadList('行业领域','belong_industry')" />
+                <van-cell title="行业领域：" required :is-link="isView == 0" :value="form.idyDmnDesc" @click.native="isView == 1?'':loadList('行业领域','belong_industry')" />
               </section>
               <section>
                 <van-field name="companyName" v-model="form.companyName" clearable required label="单位名称：" input-align="right"
@@ -30,7 +30,7 @@
                   @blur.prevent="ruleMessge" :error-message="errorMsg.companyTel" />
               </section>
               <section>
-                <van-cell title="单位地址：" is-link :value="form.provCityZon" @click.native="addressShow = true" />
+                <van-cell title="单位地址：" :is-link="isView == 0" :value="form.provCityZon" @click.native="addressShow = true" />
               </section>
               <section>
                 <van-field name="detailAddress" v-model="form.detailAddress" clearable label="详细地址：" input-align="right"
@@ -45,11 +45,11 @@
                   placeholder="请输入月固定收入" @blur.prevent="ruleMessge" :error-message="errorMsg.personalIncome"/>
               </section>
               <section>
-                <van-cell title="月固定收入状况：" is-link :value="form.personalIncomeStatusDesc"
-                  @click.native="loadList('月固定收入状况','IncomeStatus')" />
+                <van-cell title="月固定收入状况：" :is-link="isView == 0" :value="form.personalIncomeStatusDesc"
+                  @click.native="isView == 1?'':loadList('月固定收入状况','IncomeStatus')" />
               </section>
               <section>
-                <van-cell title="收入佐证：" is-link :value="form.incomeEvidenceDesc" @click.native="loadList('收入佐证','income_prove')" />
+                <van-cell title="收入佐证：" :is-link="isView == 0" :value="form.incomeEvidenceDesc" @click.native="isView == 1?'':loadList('收入佐证','income_prove')" />
               </section>
               <section>
                 <van-field v-model="form.remark" clearable label="备注" input-align="right" placeholder="请输入备注" />
@@ -120,7 +120,7 @@ Components.forEach(item => {
 export default {
   data() {
     return {
-      isView: 0,
+      isView: 1,
       loading: false,
       form: {
         guaranteeId: '',
@@ -300,8 +300,8 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.type;
     if (this.params.id) {
-      this.isView = 1;
       this.loadData(this.params.id)
     } else {
       this.loadData()
