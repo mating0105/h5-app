@@ -874,6 +874,6 @@
 }
 .labelClass{
     color:#ee0a24;
-    /* text-align: center; */
+    text-align: right;
 }
 </style>
