@@ -20,7 +20,12 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     if(!store.state.user.wordbook) {
-      await store.dispatch("user/getWordBook")
+      try {
+        await store.dispatch("user/getWordBook")
+        next()
+      }catch (e) {
+        next()
+      }
     }
     next()
   } else {
