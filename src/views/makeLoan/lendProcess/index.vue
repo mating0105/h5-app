@@ -44,7 +44,21 @@
                         </template>
                         <div>
                             <van-field name='mainBorrowerName' :disabled="dealState" label="主借人姓名：" :placeholder="dealState?'':'请输入'" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge" :error-message="errorMsg.mainBorrowerName"/>
-                            <van-field name='mainBorrowerId' :disabled="dealState" label="主借人身份证：" :placeholder="dealState?'':'请输入'" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerId" @blur.click="getIdcard" @blur.prevent="ruleMessge" :error-message="errorMsg.mainBorrowerId"/>
+                            <van-field 
+                                name='mainBorrowerId' 
+                                :disabled="dealState" 
+                                label="主借人身份证：" 
+                                :placeholder="dealState?'':'请输入'" 
+                                :border="false" 
+                                label-width='150' 
+                                input-align="right" 
+                                required 
+                                v-model="form.borrowerInfo.mainBorrowerId" 
+                                @blur.click="getIdcard" 
+                                @blur.prevent="ruleMessge" 
+                                :error-message="errorMsg.mainBorrowerId" 
+                                right-icon="scan"
+                                @click-right-icon="discernIdcard"/>
                             <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false" label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge" :error-message="errorMsg.mainBorrowerPhone"/>
                             <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="form.borrowerInfo.customerSexDesc"
                             @click="showPopupType('customerSex')" />
@@ -113,8 +127,32 @@
                             收款人信息
                         </template>
                         <div>
-                            <van-field name='receiptName' :disabled="dealState" label="收款人姓名：" :placeholder="dealState?'':'请输入'" label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptName" @blur.prevent="ruleMessge" :error-message="errorMsg.receiptName"/>
-                            <van-field name='receiptAccount' :disabled="dealState" label="收款人账号：" :placeholder="dealState?'':'请输入'"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptAccount" @blur.prevent="ruleMessge" :error-message="errorMsg.receiptAccount"/>
+                            <van-field 
+                                name='receiptName' 
+                                :disabled="dealState" 
+                                label="收款人姓名：" 
+                                :placeholder="dealState?'':'请输入'" 
+                                label-width='150' 
+                                input-align="right" 
+                                :border="false" 
+                                required 
+                                v-model="form.receiptInfo.receiptName" 
+                                @blur.prevent="ruleMessge" 
+                                :error-message="errorMsg.receiptName"/>
+                            <van-field 
+                                name='receiptAccount' 
+                                :disabled="dealState" 
+                                label="收款人账号：" 
+                                :placeholder="dealState?'':'请输入'"  
+                                label-width='150' 
+                                input-align="right" 
+                                :border="false" 
+                                required 
+                                v-model="form.receiptInfo.receiptAccount" 
+                                @blur.prevent="ruleMessge" 
+                                :error-message="errorMsg.receiptAccount"
+                                right-icon="scan"
+                                @click-right-icon="discernBankCardCum"/>
                             <van-field name='receiptBank' :disabled="dealState" label="收款人银行：" :placeholder="dealState?'':'请输入'"  label-width='150' input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge" :error-message="errorMsg.receiptBank"/>
                         </div>
                     </Card>
@@ -826,6 +864,24 @@
                 console.log(e)
             }
         },
+        /**
+         * 识别
+        */
+        //身份证号
+        discernIdcard (e) {
+            console.log(e,'e')
+            this.$bridge.callHandler('idCardOCR', '', (res) => {
+                console.log(res)
+                this.form.borrowerInfo.mainBorrowerId = res.vin || ''
+            })
+        },
+        //银行卡号
+        discernBankCardCum(e){
+            this.$bridge.callHandler('bankCodeOCR', '', (res) => {
+                console.log(res)
+                this.form.receiptInfo.receiptAccount = res.vin || ''
+            })
+        }
     },
     created(){
     },

@@ -37,7 +37,19 @@
                         银行放款信息
                     </template>
                     <div>
-                        <van-field label="主借人还款卡号：" :border="false" label-width='150' input-align="right" required v-model="bankLoanInfo.repaymentBankCardNo" placeholder="请输入" name='repaymentBankCardNo' @blur.prevent="ruleMessge" :error-message="errorMsg.repaymentBankCardNo"/>
+                        <van-field 
+                            label="主借人还款卡号：" 
+                            :border="false" 
+                            label-width='150' 
+                            input-align="right" 
+                            required 
+                            v-model="bankLoanInfo.repaymentBankCardNo" 
+                            placeholder="请输入" 
+                            name='repaymentBankCardNo' 
+                            @blur.prevent="ruleMessge" 
+                            :error-message="errorMsg.repaymentBankCardNo"
+                            right-icon="scan"
+                            @click-right-icon="discernBankCardCum"/>
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
                         <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
@@ -617,6 +629,16 @@ export default {
             console.log(err)
         });
     },
+    /**
+     * 识别
+    */
+    //银行卡号
+    discernBankCardCum(e){
+        this.$bridge.callHandler('bankCodeOCR', '', (res) => {
+            console.log(res)
+            this.bankLoanInfo.repaymentBankCardNo = res.vin || ''
+        })
+    }
   },
   mounted() {
     this.params = {
