@@ -13,6 +13,9 @@ import 'vant/lib/index.css';
 import mixins from "@/mixins/common";
 Vue.mixin(mixins);
 
+import Bridge from './utils/JSbridge'
+Vue.prototype.$bridge = Bridge
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

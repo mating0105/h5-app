@@ -9,18 +9,18 @@
         <van-cell-group>
             <van-field v-model="value" placeholder="请输入用户名"/>
         </van-cell-group>
-<!--        <van-list-->
-<!--                v-model="loading"-->
-<!--                :finished="finished"-->
-<!--                finished-text="没有更多了"-->
-<!--                @load="getList"-->
-<!--        >-->
-<!--            <van-cell-->
-<!--                    v-for="item in dataList"-->
-<!--                    :key="item.id"-->
-<!--                    :title="item.display_time"-->
-<!--            />-->
-<!--        </van-list>-->
+        <!--        <van-list-->
+        <!--                v-model="loading"-->
+        <!--                :finished="finished"-->
+        <!--                finished-text="没有更多了"-->
+        <!--                @load="getList"-->
+        <!--        >-->
+        <!--            <van-cell-->
+        <!--                    v-for="item in dataList"-->
+        <!--                    :key="item.id"-->
+        <!--                    :title="item.display_time"-->
+        <!--            />-->
+        <!--        </van-list>-->
     </ViewPage>
 
 </template>
@@ -56,7 +56,8 @@
         value: '',
         dataList: [],
         loading: false,
-        finished: false
+        finished: false,
+        msg: 'test data'
       }
     },
     methods: {
@@ -65,17 +66,45 @@
         this.dataList = response.data.items
         this.finished = true
       },
-      clickFn() {
+      //js调app
+      sendMsg (fnName) {
+        let msg = this.msg
+        this.$bridge.callHandler(fnName, msg, (res) => {
+          Toast('获取app响应数据:' + res)
+          this.test = res
+        })
+      },
+      // app调js
+      getAPPDate (fnName) {
+        this.$bridge.registerHandler(fnName, (data, responseCallback) => {
+          Toast('app主动调用js方法，传入数据:' + data)
+          responseCallback(data)
+        })
+      },
+      clickFn () {
         try {
-          if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.callNativeCode) {
-            window.webkit.messageHandlers.callNativeCode.postMessage('callNativeCode')
-          }
-        }catch (e) {
+          this.sendMsg('callNativeCode')
+          // if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.callNativeCode) {
+          //   window.webkit.messageHandlers.callNativeCode.postMessage('callNativeCode')
+          // }
+          // if (window.WebViewJavascriptBridge) {
+          //   //do your work here
+          // } else {
+          //   document.addEventListener(
+          //     'WebViewJavascriptBridgeReady'
+          //     , function () {
+          //       //do your work here
+          //     },
+          //     false
+          //   );
+          // }
+        } catch (e) {
           Toast(e);
         }
       }
     },
     mounted () {
+      this.getAPPDate('callJsCode')
       // this.getList()
     }
   }
