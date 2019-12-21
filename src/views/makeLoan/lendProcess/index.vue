@@ -138,7 +138,7 @@
                 <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             </van-tab>
             <van-tab title="审批记录" name="3" class="tabBox">
-                <ApprovalRecord :recordList='recordList'></ApprovalRecord>
+                <ApprovalRecord></ApprovalRecord>
             </van-tab>
         </van-tabs>
 
@@ -189,9 +189,23 @@
       creditInfoTable
     },
     computed: {
-      ...mapGetters([
-        'name'
-      ])
+        ...mapGetters([
+            'name'
+        ]),
+        // info() {
+        //     console.log(this.getStringToObj(this.$route.query.info),'this.getStringToObj(this.$route.query.info)')
+        //     return this.getStringToObj(this.$route.query.info);
+        // },
+        // dealState() {
+        //     // 1代表可以编辑3不可以编辑
+        //     let state;
+        //     if(this.$route.query.dealState=='1'){
+        //         state=false;
+        //     }else{
+        //         state=true;
+        //     }
+        //     return state;
+        // }
     },
     data() {
         return {
@@ -230,30 +244,22 @@
                 carInfos: [],
                 surDtlList: []
             },
-            // ---tab:3--审批记录
-            recordList:[{
-                name:'名字',
-                processedRole:'角色',
-                createDate:'创建时间',
-                businessType:'类型',
-                commentsDesc:'描述'
-            }],
             // -----右上角按钮-------
             rightBoxList:[
-                {value:1,title:'项目基本信息'},
-                {value:2,title:'客户及配偶'},
-                {value:3,title:'紧急联系人'},
-                {value:4,title:'房产信息'},
-                {value:5,title:'家庭收入'},
-                {value:6,title:'名下车辆'},
-                {value:7,title:'担保人信息'},
-                {value:8,title:'担保人房产'},
-                {value:9,title:'担保人收入'},
-                {value:10,title:'调查结论'},
-                {value:11,title:'相关文档'},
-                {value:12,title:'GPS安装信息'},
-                {value:13,title:'合同照片'},
-                {value:14,title:'申述意见'},
+                {value:1,title:'项目基本信息',url:"/bigDataQueryDetail"},
+                {value:2,title:'客户及配偶',url:"/clientIndex"},
+                {value:3,title:'紧急联系人',url:"/contactPerson"},
+                {value:4,title:'房产信息',url:"/houseUser"},
+                {value:5,title:'家庭收入',url:"/incomeFamily"},
+                {value:6,title:'名下车辆',url:"/vehicleList"},
+                {value:7,title:'担保人信息',url:"/guarantor"},
+                {value:8,title:'担保人房产',url:"/houseGuarantor"},
+                {value:9,title:'担保人收入',url:"/incomeGuarantor"},
+                {value:10,title:'调查结论',url:"/survey"},
+                {value:11,title:'相关文档',url:"/proDocument"},
+                {value:12,title:'GPS安装信息',url:"/A"},
+                {value:13,title:'合同照片',url:"/B"},
+                {value:14,title:'申述意见',url:"/C"},
             ],
             businessKey:0,
             dealState:false,//false:'待办'  true:'已办'
@@ -269,8 +275,7 @@
         // ---------------------导航------------------------------
         //导航右上角的按钮
         goPage(val){
-            console.log(val,'val')
-
+            this.$router.push({ path: val.url, query: this.params });
         },
         //返回按钮
         backFn(){
@@ -622,10 +627,25 @@
             let val = e.target.value;
             this.errorMsg[name] = this.returnMsg(name, val);
         },
+        // 获取验证信息
+        rulesForm() {
+            requestUrl.getList(
+                "/manage/regularConfig/getRegularByServer",
+                { serverName: "order/viceProj" },
+                "soa"
+                )
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.ruleData = res.data.data;
+                } else {
+                    this.$toast(res.data.message);
+                }
+            });
+        },
         // 验证值
         returnMsg(name, value) {
-            console.log(name,value)
-            return;
+            // console.log(name,value)
+            // return;
             if (this.ruleData[name]) {
                 let infoObj = this.ruleData[name];
                 let error = ""; // 错误信息
@@ -677,7 +697,6 @@
         },
         //获取征信信息
         async getCreditInfo () {
-            console.log(Number(this.$route.query.info.businesskey),'this.businesskey111111111')
             try {
                 this.listLoading = true
                 const params = {
@@ -695,9 +714,10 @@
     created(){
     },
     mounted () {
-        console.log(this.$route.query,'this.$route.query')
-        this.businessKey=Number(this.$route.query.info.businesskey);//47;
-        this.dealState=false,//this.$route.query.dealState==1?false:true;//true;
+        this.params = this.$route.query;
+        // console.log(this.params,'this.params')
+        this.businessKey=47,//Number(this.params.info.businesskey);//47;
+        this.dealState=false,//this.params.dealState==1?false:true;//true;
         this.getDictionaryData();
     }
   }

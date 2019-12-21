@@ -326,7 +326,6 @@ export default {
     console.log(this.$route.query);
     let { info, dealState } = this.$route.query;
     if(dealState) { // 待办已办进入
-    alert('909090');
      let obj = JSON.parse(info);
       this.params = {
         customerName: obj.customerName, //客户姓名
@@ -337,6 +336,7 @@ export default {
         projectNo: obj.projectNo,
         projectId: obj.businesskey,
         isView: dealState == 3?1:0,
+        dealState: dealState,
         activityId: obj.activityId
       }
       // 

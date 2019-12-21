@@ -1,6 +1,6 @@
 <template>
     <ViewPage :loading='listLoading' :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass">
-        <van-tabs v-model="activeName" v-if="form.projectInfo">
+        <van-tabs v-model="activeName" v-if="form.projectInfo" @change='changeTab'>
             <van-tab title="银行审批信息" name="1" class="tabBox">
                 <!-- 客户基本信息 -->
                 <red-card label="客户基本信息">
@@ -90,8 +90,13 @@
                 </div>
             </van-tab>
             </van-tab>
-            <van-tab title="征信信息" name="2"></van-tab>
-            <van-tab title="审批记录" name="3"></van-tab>
+            <van-tab title="征信信息" name="2">
+                <creditInfoTable title="人行征信" :dataList="creditList.surDtlList" type="creditResult"></creditInfoTable>
+                <creditInfoTable title="互联网查询" :dataList="creditList.surDtlList" type="bigDataResult"></creditInfoTable>
+            </van-tab>
+            <van-tab title="审批记录" name="3">
+                <ApprovalRecord></ApprovalRecord>
+            </van-tab>
         </van-tabs>
 
         <!-- 图片 -->
@@ -135,7 +140,10 @@
   import Card from '@/components/card/index';
   import redCard from "@/components/redCard/index";
   import imageList from '@/components/imageList';
+  import ApprovalRecord from '@/views/basicInfo/approvalRecord/index';
+  import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
   import { getDocumentByType } from '@/api/document'
+  import { getCreditInfo } from '@/api/credit'
   import {getProjectInfo,getPeople,submitProcess,loanInfoDetail} from '@/api/makeLoan.js';
   import { getDic } from "@/api/createCustomer";
   import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify } from 'vant';
@@ -151,7 +159,18 @@ export default {
     redCard,
     Card,
     ViewPage,
-    imageList
+    imageList,
+    ApprovalRecord,
+    creditInfoTable
+  },
+  computed:{
+    info() {
+        return this.getStringToObj(this.$route.query.info);
+    },
+    dealState() {
+        // 1代表可以编辑3不可以编辑
+        return this.$route.query.dealState;
+    }
   },
   data() {
     return {
@@ -180,33 +199,40 @@ export default {
         currentDate: new Date(),
         dictionaryData:{},//字典数据
         submitloading:false,
-        businessKey:47,
+        businessKey:0,
         projectId:0,
         dataList: [],
         iconClass:'ellipsis',
         rightBoxList:[
-            {value:1,title:'项目基本信息'},
-            {value:2,title:'做单基本信息'},
-            {value:3,title:'客户及配偶'},
-            {value:4,title:'紧急联系人'},
-            {value:5,title:'房产信息'},
-            {value:6,title:'家庭收入'},
-            {value:7,title:'名下车辆'},
-            {value:8,title:'担保人信息'},
-            {value:9,title:'担保人房产'},
-            {value:10,title:'担保人收入'},
-            {value:11,title:'调查结论'},
-            {value:12,title:'相关文档'},
-            {value:13,title:'GPS安装信息'},
-            {value:14,title:'合同照片'},
-        ]
+            {value:1,title:'项目基本信息',url:"/bigDataQueryDetail"},
+            {value:2,title:'做单基本信息',url:"/lendProcess"},
+            {value:3,title:'客户及配偶',url:"/clientIndex"},
+            {value:4,title:'紧急联系人',url:"/contactPerson"},
+            {value:5,title:'房产信息',url:"/houseUser"},
+            {value:6,title:'家庭收入',url:"/incomeFamily"},
+            {value:7,title:'名下车辆',url:"/vehicleList"},
+            {value:8,title:'担保人信息',url:"/guarantor"},
+            {value:9,title:'担保人房产',url:"/houseGuarantor"},
+            {value:10,title:'担保人收入',url:"/incomeGuarantor"},
+            {value:11,title:'调查结论',url:"/survey"},
+            {value:12,title:'相关文档',url:"/proDocument"},
+            {value:13,title:'GPS安装信息',url:"/A"},
+            {value:14,title:'合同照片',url:"/C"},
+        ],
+        //----tab:2--征信信息
+        creditList: {
+            investigateBank: '',
+            investigateBankName: '',
+            isInternetCredit: '',
+            carInfos: [],
+            surDtlList: []
+        },
     };
   },
   methods: {
     //----------导航----------------
     goPage(item){
-        console.log(item,'item')
-
+        this.$router.push({ path: item.url, query: {info:this.info,dealState:this.dealState }});
     },
     //-----------显示选择弹框--------------
     showPopupType(type) {
@@ -469,9 +495,34 @@ export default {
         } catch (e) {
           console.log(e)
         }
-      },
+    },
+    //tab:2--征信信息
+    changeTab(e){
+        if(e==2){
+            this.getCreditInfo();
+        }
+    },
+    //获取征信信息
+    async getCreditInfo () {
+        try {
+            this.listLoading = true
+            const params = {
+                lpCertificateNum: this.form.projectInfo.certificateNum,
+            }
+            const res = await getCreditInfo(params)
+            this.creditList = res.data.cuCreditRegister;
+            this.listLoading = false
+        } catch (e) {
+            this.listLoading = false
+            console.log(e)
+        }
+    },
   },
   mounted() {
+    // this.params = this.$route.query;
+    // console.log(this.$route.query,'this.$route.query')
+    // this.businessKey=47,//Number(this.$route.query.info.businesskey),//||47;
+    // this.dealState=false,//this.$route.query.dealState==1?false:true || false;
     this.getDictionaryData();
     this.getFinanceCashier();
     

@@ -15,6 +15,12 @@
         <template v-else-if="active === 0">
             <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
         </template>
+        <template v-else-if="active === 2">
+            <relatedDocs :requestParams="requestParams"></relatedDocs>
+        </template>
+        <template v-else-if="active === 3">
+            审批记录
+        </template>
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
@@ -38,6 +44,7 @@
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import basicInfo from '../viewCompoents/basicInfo'
   import backspace from '../viewCompoents/backspace'
+  import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import Vue from 'vue';
   import { getCreditInfo } from '@/api/credit'
   import { bankReply } from '@/api/bigData'
@@ -55,7 +62,8 @@
       Card,
       creditInfoTable,
       basicInfo,
-      backspace
+      backspace,
+      relatedDocs
     },
     data () {
       return {
@@ -72,7 +80,10 @@
         perInfoList: [], //客户下面的其他客户数据
         edit: false,
         backVisible: false,
-        query: {}
+        query: {},
+        requestParams: {
+          customerNum: '', customerId: '', dealState: '3'
+        }
       }
     },
     methods: {
@@ -85,6 +96,8 @@
           }
           const res = await getCreditInfo(params)
           this.dataList = res.data.cuCreditRegister;
+          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = this.dataList.customerId
           this.loading = false
 
           this.dataList.surDtlList.forEach(e => {
@@ -128,17 +141,17 @@
       }
     },
     mounted () {
-      if(this.$route.query.info && this.$route.query.dealState) {
+      if (this.$route.query.info && this.$route.query.dealState) {
         const info = this.getStringToObj(this.$route.query.info)
         const query = this.$route.query
         this.query = {
           lpCertificateNum: info.certificateNum,
           id: info.businesskey
         }
-        if(query.dealState == 3) {
+        if (query.dealState == 3) {
           this.edit = false
         }
-        if(query.dealState == 1) {
+        if (query.dealState == 1) {
           this.edit = true
         }
       } else {

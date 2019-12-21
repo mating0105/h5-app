@@ -38,7 +38,6 @@ export default {
   props: {
     requestParams: {
       // {customerNum:'xxx',customerId:'xxxx',dealState:'3'}
-      type: Object,
       default: () => {}
     },
     types: {
@@ -68,12 +67,7 @@ export default {
   },
   mounted() {
     this.initData();
-    setTimeout(() => {
-      this.query();
-    }, 1000);
-    // this.$nextTick(()=>{
-    //   this.query();
-    // })
+    this.query();
   },
   methods: {
     /**
@@ -128,6 +122,7 @@ export default {
     // 处理图片数据
     handleImgData(arr) {
       const { customerNum, customerId, dealState } = this.params;
+      const documentType = ''
       let map = new Map();
       // 公用的参数
       const commonParams = {
