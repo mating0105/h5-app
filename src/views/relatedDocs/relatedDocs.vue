@@ -81,10 +81,11 @@ export default {
         this.params = {
           customerNum,
           customerId,
-          dealState: this.dealState
+          dealState: String(this.dealState)
         };
       } else {
         this.params = this.requestParams;
+        this.params.dealState = String(this.params.dealState)
       }
     },
     nothingChange() {

@@ -19,7 +19,7 @@
             <relatedDocs :requestParams="requestParams"></relatedDocs>
         </template>
         <template v-else-if="active === 3">
-            审批记录
+            <approvalRecord :requestParams="recordParams"></approvalRecord>
         </template>
 
         <!-- 提交按钮 -->
@@ -45,6 +45,7 @@
   import basicInfo from '../viewCompoents/basicInfo'
   import backspace from '../viewCompoents/backspace'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
+  import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
   import { getCreditInfo } from '@/api/credit'
   import { bankReply } from '@/api/bigData'
@@ -63,7 +64,8 @@
       creditInfoTable,
       basicInfo,
       backspace,
-      relatedDocs
+      relatedDocs,
+      approvalRecord
     },
     data () {
       return {
@@ -83,6 +85,9 @@
         query: {},
         requestParams: {
           customerNum: '', customerId: '', dealState: '3'
+        },
+        recordParams: {
+          businessKey: '', businessType: '07'
         }
       }
     },
@@ -98,6 +103,8 @@
           this.dataList = res.data.cuCreditRegister;
           this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
           this.requestParams.customerId = this.dataList.customerId
+          this.recordParams.businessKey = this.dataList.id
+          // this.recordParams.businessType = this.dataList.id
           this.loading = false
 
           this.dataList.surDtlList.forEach(e => {
@@ -148,6 +155,7 @@
           lpCertificateNum: info.certificateNum,
           id: info.businesskey
         }
+        this.requestParams.dealState = query.dealState
         if (query.dealState == 3) {
           this.edit = false
         }
