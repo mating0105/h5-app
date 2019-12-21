@@ -303,7 +303,7 @@ export const constantRoutes = [
   { 
     path: '/contractUpload/',
     name: 'contractUpload',
-    component: () => import('@/views/contractUpload/upload'),
+    component: () => import('@/views/contractUpload/projectInfo'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
   {
