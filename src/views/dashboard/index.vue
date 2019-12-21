@@ -5,10 +5,12 @@
         <van-button type="info">信息按钮</van-button>
         <van-button type="warning">警告按钮</van-button>
         <van-button type="danger">危险按钮</van-button>
-        <van-checkbox v-model="check">复选框</van-checkbox>
-        <van-cell-group>
-            <van-field v-model="value" placeholder="请输入用户名"/>
-        </van-cell-group>
+        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
+        <p style="color: #21C272">{{test}}</p>
+<!--        <van-checkbox v-model="check">复选框</van-checkbox>-->
+<!--        <van-cell-group>-->
+<!--            <van-field v-model="value" placeholder="请输入用户名"/>-->
+<!--        </van-cell-group>-->
         <!--        <van-list-->
         <!--                v-model="loading"-->
         <!--                :finished="finished"-->
@@ -57,7 +59,8 @@
         dataList: [],
         loading: false,
         finished: false,
-        msg: 'test data'
+        msg: 'test data',
+        test: ''
       }
     },
     methods: {
