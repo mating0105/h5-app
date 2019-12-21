@@ -136,7 +136,7 @@ export default {
       if (dealState === "1") {
         this.types.forEach(item => {
           let { type, must, label, dealState: isEdit } = item;
-          map.set(item, {
+          map.set(type, {
             ...commonParams,
             deletable: isEdit === "1", //是否可以操作-上传和删除
             documentType: type, // 文档类型
