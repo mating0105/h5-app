@@ -91,8 +91,6 @@
       </van-tab>
     </van-tabs>
 
-    
-
     <!-- 弹出选项 -->
     <van-action-sheet get-container="#app" v-model="showSheet" class="xh-list">
       <div class="xh-list-body">
@@ -328,19 +326,20 @@ export default {
     console.log(this.$route.query);
     let { info, dealState } = this.$route.query;
     if(dealState) { // 待办已办进入
+     let obj = JSON.parse(info);
       this.params = {
-        customerName: info.customerName, //客户姓名
-        contactPhone: info.contactPhone, //客户身份证
-        certificateNum: info.certificateNum, //客户手机号码
-        customerId: info.customerId,
-        customerNum: info.customerNum,
-        projectNo: info.projectNo,
-        projectId: info.businesskey,
+        customerName: obj.customerName, //客户姓名
+        contactPhone: obj.contactPhone, //客户身份证
+        certificateNum: obj.certificateNum, //客户手机号码
+        customerId: obj.customerId,
+        customerNum: obj.customerNum,
+        projectNo: obj.projectNo,
+        projectId: obj.businesskey,
         isView: dealState == 3?1:0,
-        activityId: info.activityId
+        activityId: obj.activityId
       }
       // 
-      switch (info.activityId) {
+      switch (obj.activityId) {
         case 'WF_PROJ_APPR_01_T01': // 客户经理待办
           // this.completionList.splice(this.completionList.findIndex(item => item.value === '03'), 1);
           break;

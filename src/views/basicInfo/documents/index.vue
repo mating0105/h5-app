@@ -1,6 +1,6 @@
 <template>
   <ViewPage>
-    <imageList :dataList="dataList"></imageList>
+    <relatedDocs :insteadQuery="params"></relatedDocs>
   </ViewPage>
 </template>
 
@@ -10,35 +10,25 @@ import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import imageList from "@/components/imageList";
+import RelatedDocs from "@/views/relatedDocs/relatedDocs";
 
 export default {
   components: {
     imageList,
     ViewPage,
-    Card
+    Card,
+    RelatedDocs
   },
   data() {
     return {
-      dataList: [
-        {
-          declare: "二手车资料",//图片描述
-          isRequire: true,//*是否必须
-          deletable: true,//是否可以操作-上传和删除
-          documentType: "0306",
-          customerNum: this.$route.query.customerNum,
-          customerId: this.$route.query.customerId,
-          kind: '1',
-          fileList: []
-        }
-      ]
-    }
+      params: {}
+    };
   },
   mounted() {
-
+    this.params = this.$route.query;
   }
-}
+};
 </script>
 
 <style lang="scss">
-  
 </style>

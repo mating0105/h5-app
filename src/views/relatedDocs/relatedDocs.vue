@@ -43,7 +43,8 @@ export default {
   components: { Card, ImageList, Nothing },
   data() {
     return {
-      dataList: []
+      dataList: [],
+      queryParams:{},
     };
   },
   computed: {
@@ -59,7 +60,12 @@ export default {
       return this.$route.query.dealState;
     }
   },
-  props: {},
+  props: {
+    insteadQuery:{
+      type:Object,
+      default:()=> {}
+    }
+  },
   mounted() {
     this.query();
   },
@@ -76,7 +82,7 @@ export default {
         overlay: true
       });
       queryAllImgs({
-        customerNum: this.info && this.info.customerNum,
+        customerNum: this.info && this.info.customerNum || this.insteadQuery.customerNum,
         kind: "1"
       })
         .then(res => {
