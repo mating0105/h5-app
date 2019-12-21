@@ -40,6 +40,13 @@ export default {
       recordList: []
     };
   },
+  props: {
+    requestParams: {
+      // {businessKey:'xxx',businessType:'xxxx'}
+      default: () => {
+      }
+    },
+  },
   computed: {
     // 所有字典
     ...mapState({
@@ -70,10 +77,15 @@ export default {
     }
   },
   mounted() {
-    this.params = {
-      info: this.getStringToObj(this.$route.query.info),
-      dealState: this.$route.query.dealState
-    };
+    debugger
+    if(this.$route.query.dealState && this.$route.query.info) {
+      this.params = {
+        info: this.getStringToObj(this.$route.query.info),
+        dealState: this.$route.query.dealState
+      };
+    } else {
+      this.params.info = this.requestParams
+    }
     this.loadRecord(); //加载审批记录
   }
 };
