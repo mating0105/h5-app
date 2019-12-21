@@ -41,7 +41,7 @@ export default {
       default: () => {}
     },
     types: {
-      // [{type:'1111',must:false}] => type 代表的是文档类型,must代表的是是否必传
+      // [{ type: "1111", must: false, dealState: "1",label:'征信' }] => type代表的是文档类型,must代表是否必传,dealState代表是否可以上传或者是查看,label当前文档的名称
       type: Array,
       default: () => []
     }
@@ -85,7 +85,7 @@ export default {
         };
       } else {
         this.params = this.requestParams;
-        this.params.dealState = String(this.params.dealState)
+        this.params.dealState = String(this.params.dealState);
       }
     },
     nothingChange() {
@@ -123,13 +123,11 @@ export default {
     // 处理图片数据
     handleImgData(arr) {
       const { customerNum, customerId, dealState } = this.params;
-      const documentType = ''
       let map = new Map();
       // 公用的参数
       const commonParams = {
         isRequire: false,
         deletable: dealState === "1", //是否可以操作-上传和删除
-        documentType,
         customerNum,
         customerId,
         kind: "1"
@@ -137,12 +135,13 @@ export default {
       // 当可以上传或者修改的时候做处理为了防止请求回来的数据为空,而导致无法上传
       if (dealState === "1") {
         this.types.forEach(item => {
-          let { type, must } = item;
-          let obj = this.findLabel(type);
+          let { type, must, label, dealState: isEdit } = item;
           map.set(item, {
             ...commonParams,
+            deletable: isEdit === "1", //是否可以操作-上传和删除
+            documentType: type, // 文档类型
             isRequire: must, //*是否必须
-            declare: obj.label, //图片描述
+            declare: label, //图片描述
             fileList: []
           });
         });
@@ -153,6 +152,7 @@ export default {
           let obj = this.findLabel(documentType);
           map.set(documentType, {
             ...commonParams,
+            documentType, // 文档类型
             declare: obj.label, //图片描述
             fileList: [item]
           });
