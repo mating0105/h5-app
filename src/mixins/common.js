@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 20:06:01
+ * @LastEditTime : 2019-12-20 22:28:19
  */
 
 export default {
@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     /**
-     * @description:
+     * @description: 将JSON字符串转化成JSON对象
      * @param {string} str json字符串类型
      * @return: obj
      */
