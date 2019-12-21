@@ -1,6 +1,6 @@
 <template>
     <ViewPage>
-        <van-button type="default">默认按钮</van-button>
+        <van-button type="default" @click="clickFn">默认按钮</van-button>
         <van-button type="primary">主要按钮</van-button>
         <van-button type="info">信息按钮</van-button>
         <van-button type="warning">警告按钮</van-button>
@@ -29,10 +29,10 @@
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
   import Vue from 'vue'
-  import { Button, Checkbox, Field, Cell, CellGroup, List } from 'vant';
+  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast } from 'vant';
   import { getList } from '@/api/table'
 
-  const Components = [Button, Checkbox, Field, Cell, CellGroup, List]
+  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -64,6 +64,15 @@
         const response = await getList()
         this.dataList = response.data.items
         this.finished = true
+      },
+      clickFn() {
+        try {
+          if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.callNativeCode) {
+            window.webkit.messageHandlers.callNativeCode.postMessage('callNativeCode')
+          }
+        }catch (e) {
+          Toast(e);
+        }
       }
     },
     mounted () {
