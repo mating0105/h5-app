@@ -5,6 +5,7 @@
         <van-button type="info">信息按钮</van-button>
         <van-button type="warning">警告按钮</van-button>
         <van-button type="danger">危险按钮</van-button>
+        <p>token: {{token}}</p>
         <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
         <p style="color: #21C272">{{test}}</p>
 <!--        <van-checkbox v-model="check">复选框</van-checkbox>-->
@@ -33,6 +34,7 @@
   import Vue from 'vue'
   import { Button, Checkbox, Field, Cell, CellGroup, List, Toast } from 'vant';
   import { getList } from '@/api/table'
+  import { getToken } from '@/utils/auth'
 
   const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast]
 
@@ -60,7 +62,8 @@
         loading: false,
         finished: false,
         msg: 'test data',
-        test: ''
+        test: '',
+        token: getToken()
       }
     },
     methods: {
