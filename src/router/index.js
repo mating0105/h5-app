@@ -270,6 +270,12 @@ export const constantRoutes = [
     component: () => import('@/views/gps/index'),
     meta: {title: 'GPS', icon: 'dashboard'}
   },
+  {
+    path: '/gpsurl',
+    name: 'Gpsurl',
+    component: () => import('@/views/gps/urlPage'),
+    meta: {title: 'GPS', icon: 'dashboard'}
+  },
   { 
     path: '/survey',
     name: 'Survey',

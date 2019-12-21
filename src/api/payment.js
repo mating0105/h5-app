@@ -73,7 +73,7 @@ export function stopTask(params) {
 export function gpsList(params) {
     return request({
         url: '/order/gpsInstall/list',
-        method: 'get',
+        method: 'post',
         data: params
     })
 }

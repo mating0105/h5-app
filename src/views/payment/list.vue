@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :goPage="rightFn" iconClass="ellipsis" :rightMenuList="cuCreditStatus">
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
@@ -45,9 +45,10 @@ import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { paymentList } from "@/api/payment";
+import { mapState } from "vuex";
 // 其他组件
-import { Row, Col, Icon, Cell, Button, List,Search } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List,Search];
+import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -69,6 +70,14 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState({
+        wordbook: state => state.user.wordbook,
+      }),
+      cuCreditStatus () {
+        return [{label: '全部', value: ''}, ...this.wordbook.apply_status] || []
+      }
+    },
   methods: {
     onSearch() {
       this.list = [];
@@ -105,11 +114,15 @@ export default {
       this.$router.push({
         path: "/applyPayment",
         query: {
-          info:rows,
-          dealState:'1'
+          info: JSON.stringify(rows),
+          dealState: "1"
         }
       });
     },
+    rightFn(item) {
+      this.params.status = item.value;
+      this.onLoad();
+    }
   },
   mounted() {
     this.onLoad();

@@ -15,6 +15,12 @@
         <template v-else-if="active === 1">
             <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
         </template>
+        <template v-else-if="active === 2">
+            <relatedDocs :requestParams="requestParams"></relatedDocs>
+        </template>
+        <template v-else-if="active === 3">
+            <approvalRecord :requestParams="recordParams"></approvalRecord>
+        </template>
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
@@ -31,6 +37,8 @@
   import Card from '@/components/card'
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import basicInfo from '../viewCompoents/basicInfo'
+  import relatedDocs from '@/views/relatedDocs/relatedDocs'
+  import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
   import { getCreditInfo } from '@/api/credit'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
@@ -46,7 +54,9 @@
       ViewPage,
       Card,
       creditInfoTable,
-      basicInfo
+      basicInfo,
+      relatedDocs,
+      approvalRecord
     },
     data () {
       return {
@@ -61,7 +71,13 @@
         loading: false,
         form: {},
         perInfoList: [], //客户下面的其他客户数据
-        edit: false
+        edit: false,
+        requestParams: {
+          customerNum: '', customerId: '', dealState: '3'
+        },
+        recordParams: {
+          businesskey: '', businesstype: '07'
+        }
       }
     },
     methods: {
@@ -74,6 +90,9 @@
           }
           const res = await getCreditInfo(params)
           this.dataList = res.data.cuCreditRegister;
+          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = this.dataList.customerId
+          this.recordParams.businesskey = this.dataList.id
           this.loading = false
 
           this.dataList.surDtlList.forEach(e => {

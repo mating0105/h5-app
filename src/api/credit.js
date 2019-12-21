@@ -83,3 +83,15 @@ export function submitCredit(params) {
     data: params
   })
 }
+
+/**
+ * 终止征信
+ * @param params
+ */
+export function stopTask(params) {
+  return request({
+    url: 'order/creditProcess/stopTask',
+    method: 'get',
+    params
+  })
+}

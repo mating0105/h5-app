@@ -1,6 +1,5 @@
 //时间转换 yyyyMMdd hh mm ss
 export function format(date, pattern) {
-    console.log(date);
     var SIGN_REGEXP = /([yMdhsm])(\1*)/g;
     var DEFAULT_PATTERN = 'yyyy-MM-dd';
     pattern = pattern || DEFAULT_PATTERN;

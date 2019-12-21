@@ -20,14 +20,23 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     if(!store.state.user.wordbook) {
-      await store.dispatch("user/getWordBook")
+      try {
+        await store.dispatch("user/getWordBook")
+        next()
+      }catch (e) {
+        next()
+      }
     }
     next()
   } else {
     /* has no token*/
     await store.dispatch("user/login", loginForm)
-    await store.dispatch("user/getWordBook")
-    next()
+    try {
+      await store.dispatch("user/getWordBook")
+      next()
+    }catch (e) {
+      next()
+    }
     // if (whiteList.indexOf(to.path) !== -1) {
     //   // in the free login whitelist, go directly
     //   next()

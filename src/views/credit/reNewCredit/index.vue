@@ -90,7 +90,7 @@
         </Card>
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button v-show="canTermin" size="large" style="width: 20%;" class="xh-btn"
+            <van-button v-show="canTermin" size="large" style="width: 25%; flex: none" class="xh-btn xh-primary" @click="stopTask"
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
@@ -115,7 +115,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo, createTask } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask } from '@/api/credit'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
@@ -176,7 +176,10 @@
           ],
         },
         edit: false,
-        query: {}
+        query: {},
+        recordParams: {
+          businessKey: '', businessType: '07'
+        }
       }
     },
     computed: {
@@ -385,8 +388,8 @@
        **/
       removeCar (index) {
         Dialog.confirm({
-          title: '标题',
-          message: '弹窗内容'
+          title: '删除',
+          message: '确定删除该车'
         }).then(() => {
           this.dataList.carInfos.splice(index, 1)
           this.save()
@@ -446,11 +449,11 @@
        **/
       removePer (index) {
         Dialog.confirm({
-          title: '标题',
-          message: '弹窗内容'
+          title: '删除',
+          message: '确定删除该客户'
         }).then(() => {
           this.perInfoList.splice(index, 1)
-          // this.save()
+          this.save()
           // on confirm
         }).catch(() => {
           // on cancel
@@ -543,6 +546,34 @@
         }
         return flag
       },
+      /**
+       * 终止代办
+       */
+      stopTask() {
+        Dialog.confirm({
+          title: '终止',
+          message: '确定终止该流程'
+        }).then(async () => {
+          try {
+            this.loading = true
+            await stopTask(this.recordParams)
+            this.loading = false
+            this.$nextTick(() => {
+              Toast.success('终止成功')
+            })
+            this.$nextTick(() => {
+              this.$router.push({
+                path: '/lendProcessList'
+              })
+            })
+          }catch (e) {
+            console.log(e)
+          }
+          // on confirm
+        }).catch(() => {
+          // on cancel
+        });
+      }
     },
     mounted () {
       if(this.$route.query.info && this.$route.query.dealState) {
@@ -552,11 +583,13 @@
           lpCertificateNum: info.certificateNum,
           id: info.businesskey
         }
+        this.recordParams.businessKey = info.businesskey
         if(query.dealState == 3) {
           this.edit = false
         }
         if(query.dealState == 1) {
           this.edit = true
+          this.canTermin = true
         }
         removeValue("credit");
       } else {
