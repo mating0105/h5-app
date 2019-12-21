@@ -48,7 +48,7 @@
             <van-cell :border="false" title="审批结论" title-class="xh-blue" is-link :value="completionDesc" @click="linkCode"/>
           </van-row>
 
-          <controlMeasure></controlMeasure>
+          <!-- <controlMeasure></controlMeasure> -->
 
           <!-- 意见 -->
           <Card style="margin: 10px 0;">
@@ -326,6 +326,7 @@ export default {
     console.log(this.$route.query);
     let { info, dealState } = this.$route.query;
     if(dealState) { // 待办已办进入
+    alert('909090');
      let obj = JSON.parse(info);
       this.params = {
         customerName: obj.customerName, //客户姓名
