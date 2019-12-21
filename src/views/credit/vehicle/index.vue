@@ -402,7 +402,9 @@
        * 识别
        */
       discern () {
-
+        this.$bridge.callHandler('vinOCR', '', (res) => {
+          this.carFrom.chassisNumber = res.vin || ''
+        })
       }
     },
     mounted () {
