@@ -43,8 +43,8 @@
 
           <!-- 审批结论 -->
 
-          <!-- <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10" v-if="params.activityId == 'WF_PROJ_APPR_01_T04'"> -->
-          <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10">
+          <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10" v-if="params.activityId == 'WF_PROJ_APPR_01_T04'">
+          <!-- <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10"> -->
             <van-cell :border="false" title="审批结论" title-class="xh-blue" is-link :value="completionDesc" @click="linkCode"/>
           </van-row>
 

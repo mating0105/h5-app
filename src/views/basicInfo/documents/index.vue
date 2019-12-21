@@ -23,7 +23,8 @@ export default {
     return {
       params: this.$route.query,
       types: [
-        { type: '', must: false, dealState: "1", label: '二手车资料' }
+        { type: '0306', must: false, dealState: "1", label: '二手车资料' },
+        { type: '0101', must: true, dealState: "1", label: '主借人身份证正面' }
       ]
     };
   }
