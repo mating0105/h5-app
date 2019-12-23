@@ -354,9 +354,8 @@
           {value: 9, title: '担保人收入', url: "/incomeGuarantor"},
           {value: 10, title: '调查结论', url: "/survey"},
           {value: 11, title: '相关文档', url: "/relatedDocs"},
-          {value: 12, title: 'GPS安装信息', url: "/A"},
-          {value: 13, title: '合同照片', url: "/B"},
-          {value: 14, title: '申述意见', url: "/C"},
+          {value: 12, title: 'GPS安装信息', url: "/gps"},
+          {value: 13, title: '合同照片', url: "/contractUpload/"},
         ],
         businessKey: 0,
         //---已办
@@ -858,13 +857,14 @@
       discernIdcard (e) {
         console.log(e, 'e')
         this.$bridge.callHandler('idCardOCR', '', (res) => {
-          console.log(res)
+          alert(res)
           this.form.borrowerInfo.mainBorrowerId = res.ID_NUM || ''
         })
       },
       //银行卡号
       discernBankCardCum (e) {
         this.$bridge.callHandler('bankCodeOCR', '', (res) => {
+          alert(res)
           this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
         })
       }
