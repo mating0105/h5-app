@@ -44,6 +44,9 @@ export default {
       }
       return new File([u8arr], filename, {type: mime});
     },
+    closeNativeWebView () {
+      this.$bridge.callHandler('returnBack', '', (res) => {})//调用原生关闭webview
+    }
   },
   filters: {
     /**

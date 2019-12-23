@@ -62,7 +62,7 @@
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
                                     :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="discernIdcard"/>
+                                    @click-right-icon="IdcardLoading"/>
                             <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerPhone"/>
@@ -260,6 +260,9 @@
             <brand :visible.sync="showBrand" v-if="showBrand" @change="changeBrand"></brand>
         </transition>
 
+        <!-- 身份证识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discernIdcard" />
+
     </ViewPage>
 </template>
 
@@ -354,9 +357,8 @@
           {value: 9, title: '担保人收入', url: "/incomeGuarantor"},
           {value: 10, title: '调查结论', url: "/survey"},
           {value: 11, title: '相关文档', url: "/relatedDocs"},
-          {value: 12, title: 'GPS安装信息', url: "/A"},
-          {value: 13, title: '合同照片', url: "/B"},
-          {value: 14, title: '申述意见', url: "/C"},
+          {value: 12, title: 'GPS安装信息', url: "/gps"},
+          {value: 13, title: '合同照片', url: "/contractUpload"},
         ],
         businessKey: 0,
         //---已办
@@ -398,13 +400,27 @@
         },
         formData: {},
         errMsg: '',//意见描述报错信息
+        //扫描
+        showScan:false,
+        actions: [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" }
+        ],
       };
     },
     methods: {
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
-        this.$router.push({path: val.url, query: this.params});
+        let queryData={
+            customerId:this.params.customerId,
+            customerNum:this.params.customerNum,
+            projectId:this.projectForm.projectInfo.projectId,
+            remark:this.params.remark,
+            lpCertificateNum:this.params.certificateNum,
+            id:this.params.id
+        }
+        this.$router.push({path: val.url, query: val.value==13?queryData:this.params});
       },
       //返回按钮
       backFn () {
@@ -854,13 +870,15 @@
       /**
        * 识别
        */
+      IdcardLoading(){
+          this.showScan=true;
+      },
       //身份证号
       discernIdcard (e) {
-        console.log(e, 'e')
-        this.$bridge.callHandler('idCardOCR', '', (res) => {
-          console.log(res)
-          this.form.borrowerInfo.mainBorrowerId = res.ID_NUM || ''
+        this.$bridge.callHandler('idCardOCR', e.value, (res) => {
+          this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
         })
+        this.showScan=false;
       },
       //银行卡号
       discernBankCardCum (e) {
