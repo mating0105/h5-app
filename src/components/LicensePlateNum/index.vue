@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-23 14:04:37
+ * @LastEditTime : 2019-12-23 14:55:26
  -->
 
 <template>
@@ -109,6 +109,9 @@ export default {
   props: {
     value: {
       type: [String, null, undefined]
+    },
+    type: {
+      type: String
     }
   },
   data() {
@@ -266,7 +269,8 @@ export default {
         this.judgeCarNum(plateNum, true);
         this.$emit("input", plateNum);
         this.$emit("licensePlateNumChange", {
-          value: plateNum
+          value: plateNum,
+          type: this.type
         });
       });
     },
@@ -279,7 +283,8 @@ export default {
         this.cacheNumArr = numArr;
         this.$emit("input", combinate);
         this.$emit("licensePlateNumChange", {
-          value: combinate
+          value: combinate,
+          type: this.type
         });
         this.clear();
       } else {
