@@ -159,6 +159,7 @@
   import {getProjectInfo,getPeople,submitProcess,loanInfoDetail,fieldRules} from '@/api/makeLoan.js';
   import { getDic } from "@/api/createCustomer";
   import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast } from 'vant';
+  import formValidator from '@/mixins/formValidator'
 
   const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast];
   Components.forEach(item => {
@@ -167,6 +168,7 @@
 
 export default {
   name:'bakLend',
+  mixins: [formValidator],
   components: {
     redCard,
     Card,
@@ -221,7 +223,7 @@ export default {
             {value:9,title:'担保人房产',url:"/houseGuarantor"},
             {value:10,title:'担保人收入',url:"/incomeGuarantor"},
             {value:11,title:'调查结论',url:"/survey"},
-            {value:12,title:'相关文档',url:"/proDocument"},
+            {value:12,title:'相关文档',url:"/relatedDocs"},
             {value:13,title:'GPS安装信息',url:"/A"},
             {value:14,title:'合同照片',url:"/C"},
         ],
@@ -564,55 +566,6 @@ export default {
             console.log(e)
         }
     },
-    //规则验证
-    ruleMessge(e) {
-        let name = e.target.name;
-        let val = e.target.value;
-        this.errorMsg[name] = this.returnMsg(name, val);
-    },
-    // 获取验证信息
-    rulesForm() {
-        let para={
-            serverName:"order-bankloan-zh"//做单页面
-        }
-        fieldRules(para).then((res)=>{
-            if (res.code === 200) {
-                this.ruleData = res.data;
-            }
-        }).catch((err)=>{
-            console.log(err);
-        })
-    },
-    // 验证值
-    returnMsg(name, value) {
-        if (this.ruleData[name]) {
-            let infoObj = this.ruleData[name];
-            let error = ""; // 错误信息
-            if (infoObj.mustFill) {
-                if (value == "" || value === undefined || value === null) {
-                    error = "必填项，不能为空";
-                }
-            } else {
-                if (value == "" || value === undefined || value === null) {
-                    error = "";
-                }
-            }
-            if (infoObj.regular.length > 0) {
-                for (let i = 0; i < infoObj.regular.length; i += 1) {
-                    const { rule, message } = infoObj.regular[i];
-                    const reg = new RegExp(rule);
-                    if (!reg.test(value)) {
-                        error = message;
-                    } else {
-                        if (infoObj.urlSuffix) {
-                            this.urlRules(infoObj.urlSuffix, infoObj);
-                        }
-                    }
-                }
-            }
-            return error;
-        }
-    },
     // 有接口验证的时候
     urlRules(urls, rows) {
         let param = rows.params.split(",");
@@ -650,7 +603,7 @@ export default {
     this.getDictionaryData();
     this.getFinanceCashier();
     if(!this.dealState){
-        this.rulesForm();
+       this.rulesForm("order-bankloan-zh");
     }
   }
 };
