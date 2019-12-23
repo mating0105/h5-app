@@ -6,13 +6,7 @@
         <template slot="header">风控措施</template>
         <van-row>
           <van-cell-group :border="false">
-            <van-cell
-              title="手动评级"
-              required
-              is-link
-              :value="returnText('GradeManual',data.projProjectInfo.customer.gradeManual)"
-              @click="params.dealState != '1' ? '':loadType('手动评级', 'gradeManual')"
-            />
+              <van-cell title="手动评级" :value="returnText('GradeManual',data.projProjectInfo.customer.gradeManual)" />
           </van-cell-group>
           <van-cell title="是否加入关注名单" :border="false" required>
             <radio v-model="data.projProjectInfo.riskMeasure.isFoucusList" :disabled="params.dealState != '1'">
@@ -21,13 +15,7 @@
             </radio>
           </van-cell>
           <van-cell-group :border="false">
-            <van-cell
-              title="风控条件"
-              required
-              is-link
-              :value="returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition)"
-              @click="params.dealState != '1' ? '':loadType('风控条件', 'riskCondition')"
-            />
+              <van-cell title="风控条件" :value="returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition)" />
           </van-cell-group>
           <van-cell title="是否上门" :border="false" required>
             <radio v-model="data.projProjectInfo.wthrDtd" :disabled="params.dealState != '1'">
@@ -36,36 +24,11 @@
             </radio>
           </van-cell>
           <van-cell-group :border="false" required>
-            <van-field
-              v-model="data.projProjectInfo.riskMeasure.gpsNum"
-              :disabled="params.dealState != '1'"
-              required
-              clearable
-              label="GPS数量(台)"
-              input-align="right"
-              placeholder="请输入"
-              @blur.prevent="()=>{ }"
-            />
+              <van-cell title="GPS数量(台)" :value="data.projProjectInfo.riskMeasure.gpsNum" />
           </van-cell-group>
         </van-row>
       </card>
-      <div class="xh-submit" v-show="this.params.dealState == '1'">
-        <van-button size="large" class="xh-bg-main" @click="submit">保 存</van-button>
-      </div>
     </div>
-    <!-- 弹出选项 -->
-    <van-action-sheet get-container="#app" v-model="show" class="xh-list">
-      <div class="xh-list-body">
-        <van-picker
-          :columns="options"
-          show-toolbar
-          :value-key="valueKey"
-          :title="selectName"
-          @confirm="confirm"
-          @cancel="cancel"
-        />
-      </div>
-    </van-action-sheet>
   </ViewPage>
 </template>
 <script>
@@ -160,28 +123,6 @@ export default {
       });
       return name;
     },
-    //上拉菜单选择
-    loadType(title, field) {
-      this.selectName = title;
-      this.fieldName = field;
-      switch (field) {
-        case "gradeManual":
-          this.options = this.dicList.GradeManual;
-          break;
-        case "riskCondition":
-          this.options = this.dicList.risk_condition;
-          break;
-      }
-      this.show = true;
-    },
-    confirm(row) {
-      this.data.projProjectInfo.riskMeasure[this.fieldName] = row.value;
-      this.show = false;
-    },
-    cancel() {
-      this.show = false;
-    },
-    submit() {}
   },
   mounted() {
     this.params = {
