@@ -208,6 +208,8 @@ export default {
     this.isView = this.params.isView;
     if (this.params.type == 1) {
       this.loadData();
+    } else {
+      this.rulesForm("customer/cuEmergencyContact");
     }
   }
 };

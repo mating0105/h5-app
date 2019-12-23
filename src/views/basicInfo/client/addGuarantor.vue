@@ -19,7 +19,7 @@
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.customerName"
                 error-message-align="right"
-                right-icon="photograph"
+                :right-icon="isView?'photograph':''"
                 @click-right-icon="OCRScan(1)"
               />
             </section>
@@ -105,9 +105,9 @@
                 required
                 label-class="labelClass"
                 @blur.prevent="ruleMessge"
-                :label="errorMsg.pProvCityZon"
+                :label="errorMsg.pProvCityZonId"
                 :is-link="isView"
-                :value="formData.pProvCityZonId"
+                :value="formData.pProvCityZon"
                 @click.native="!isView?'':loadList('户籍地址')"
               />
             </section>
@@ -117,9 +117,9 @@
                 required
                 label-class="labelClass"
                 @blur.prevent="ruleMessge"
-                :label="errorMsg.rProvCityZon"
+                :label="errorMsg.rProvCityZonId"
                 :is-link="isView"
-                :value="formData.rProvCityZonId"
+                :value="formData.rProvCityZon"
                 @click.native="!isView?'':loadList('居住地')"
               />
             </section>
@@ -169,6 +169,7 @@
                 type="number"
                 :disabled="!isView"
                 label="本地居住年限(年)："
+                label-width="120px"
                 input-align="right"
                 placeholder="请输入居住年限"
               />
@@ -201,7 +202,7 @@
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsNm"
               error-message-align="right"
-              right-icon="photograph"
+              :right-icon="isView?'photograph':''"
               @click-right-icon="OCRScan(2)"
             />
           </section>
@@ -263,7 +264,7 @@
         </van-row>
       </div>
       <!-- 保 存按钮 -->
-      <div class="xh-submit">
+      <div class="xh-submit" v-if="isView">
         <van-button
           size="large"
           class="xh-bg-main"
@@ -313,7 +314,6 @@ import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
 // 校验
 import formValidator from '@/mixins/formValidator'
-import request from '@/utils/request';
 import { mapState } from "vuex";
 const Components = [
   Dialog,
