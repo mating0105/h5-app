@@ -1,10 +1,10 @@
-import { fieldRules } from '@/api/makeLoan'
+import { fieldRules,fieldRulesNew } from '@/api/makeLoan'
 
 export default {
   data () {
     return {
       ruleData: [],
-      errorMsg: {}
+      errorMsg: {},
     };
   },
   methods: {
@@ -30,13 +30,29 @@ export default {
               error = message;
             } else {
               if (infoObj.urlSuffix) {
-                this.urlRules(infoObj.urlSuffix, infoObj);
+                this.urlRules(infoObj.urlSuffix, infoObj, value);
               }
             }
           }
         }
         return error;
       }
+    },
+    // 有接口验证的时候
+    urlRules (urls, rows,value) {
+        let param = rows.params.split(",");
+        let obj = {};
+        param.forEach(t => {
+            obj[t] = value;
+        });
+        fieldRulesNew({urls, obj}).then(res => {
+            if (res.code === 200) {
+                let {message} = res.data;
+                this.errorMsg[rows.field] = message;
+            }
+        }).catch((err) => {
+            console.log(err)
+        });
     },
     //规则验证
     ruleMessge (e, index) {

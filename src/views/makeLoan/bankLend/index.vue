@@ -223,7 +223,7 @@ export default {
             {value:9,title:'担保人房产',url:"/houseGuarantor"},
             {value:10,title:'担保人收入',url:"/incomeGuarantor"},
             {value:11,title:'调查结论',url:"/survey"},
-            {value:12,title:'相关文档',url:"/proDocument"},
+            {value:12,title:'相关文档',url:"/relatedDocs"},
             {value:13,title:'GPS安装信息',url:"/A"},
             {value:14,title:'合同照片',url:"/C"},
         ],
@@ -566,30 +566,13 @@ export default {
             console.log(e)
         }
     },
-    // 有接口验证的时候
-    urlRules(urls, rows) {
-        let param = rows.params.split(",");
-        let obj = {};
-        param.forEach(t => {
-            obj[t] = this.formData[t];
-        });
-        request({urls, obj}).then(res => {
-            if (res.code === 200) {
-                let { message } = res.data;
-                this.errorMsg[rows.field] = message;
-            }
-        }).catch((err)=>{
-            console.log(err)
-        });
-    },
     /**
      * 识别
     */
     //银行卡号
     discernBankCardCum(e){
         this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-            console.log(res)
-            this.bankLoanInfo.repaymentBankCardNo = res.vin || ''
+            this.bankLoanInfo.repaymentBankCardNo = res.BANK_NUM || ''
         })
     }
   },
