@@ -219,6 +219,7 @@
   import { getDocumentByType } from '@/api/document'
   import { Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox,Notify} from 'vant';
   import {loanInfoDetail,getProjectInfo,updateLoanInfo,getPeople,submitProcess,fieldRules} from '@/api/makeLoan.js'
+  import formValidator from '@/mixins/formValidator'
 
   const Components = [Tab, Tabs, Row, Col, Cell, CellGroup,Popup,Picker,Button,Field,Checkbox,Notify]
 
@@ -228,6 +229,7 @@
 
   export default {
     name: 'lendProcess',
+    mixins: [formValidator],
     components: {
       ViewPage,
       Card,
@@ -740,61 +742,6 @@
                 this.listLoading=false;
             }
         },
-        //规则验证
-        ruleMessge(e,index) {
-            let name = e.target.name;
-            let val = e.target.value;
-            if(index!==undefined){
-                let arr = [];
-                arr[index] = this.returnMsg(name, val);
-                this.errorMsg[name] = arr;
-            }else{
-                this.errorMsg[name] = this.returnMsg(name, val);
-            }
-        },
-        // 获取验证信息
-        rulesForm() {
-            let para={
-                serverName:"order-bankloan-zd"//做单页面
-            }
-            fieldRules(para).then((res)=>{
-                if (res.code === 200) {
-                    this.ruleData = res.data;
-                }
-            }).catch((err)=>{
-                console.log(err);
-            })
-        },
-        // 验证值
-        returnMsg(name, value) {
-            if (this.ruleData[name]) {
-                let infoObj = this.ruleData[name];
-                let error = ""; // 错误信息
-                if (infoObj.mustFill) {
-                    if (value == "" || value === undefined || value === null) {
-                        error = "必填项，不能为空";
-                    }
-                } else {
-                    if (value == "" || value === undefined || value === null) {
-                        error = "";
-                    }
-                }
-                if (infoObj.regular.length > 0) {
-                    for (let i = 0; i < infoObj.regular.length; i += 1) {
-                        const { rule, message } = infoObj.regular[i];
-                        const reg = new RegExp(rule);
-                        if (!reg.test(value)) {
-                            error = message;
-                        } else {
-                            if (infoObj.urlSuffix) {
-                                this.urlRules(infoObj.urlSuffix, infoObj);
-                            }
-                        }
-                    }
-                }
-                return error;
-            }
-        },
         // 有接口验证的时候
         urlRules(urls, rows) {
             let param = rows.params.split(",");
@@ -890,11 +837,11 @@
             info: this.getStringToObj(this.$route.query.info),
             dealState: this.$route.query.dealState
         };
-        this.businessKey=Number(this.params.info.businesskey);
-        this.dealState=this.params.dealState==1?false:true;
+        this.businessKey=2;
+        this.dealState=false;
         this.getDictionaryData();
         if(!this.dealState){
-            this.rulesForm();
+            this.rulesForm("order-bankloan-zd");
         }
     }
   }
