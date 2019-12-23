@@ -358,7 +358,7 @@
           {value: 10, title: '调查结论', url: "/survey"},
           {value: 11, title: '相关文档', url: "/relatedDocs"},
           {value: 12, title: 'GPS安装信息', url: "/gps"},
-          {value: 13, title: '合同照片', url: "/contractUpload/"},
+          {value: 13, title: '合同照片', url: "/contractUpload"},
         ],
         businessKey: 0,
         //---已办
@@ -412,7 +412,15 @@
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
-        this.$router.push({path: val.url, query: this.params});
+        let queryData={
+            customerId:this.params.customerId,
+            customerNum:this.params.customerNum,
+            projectId:this.projectForm.projectInfo.projectId,
+            remark:this.params.remark,
+            lpCertificateNum:this.params.certificateNum,
+            id:this.params.id
+        }
+        this.$router.push({path: val.url, query: val.value==13?queryData:this.params});
       },
       //返回按钮
       backFn () {
@@ -868,7 +876,7 @@
       //身份证号
       discernIdcard (e) {
         this.$bridge.callHandler('idCardOCR', e.value, (res) => {
-          this.form.borrowerInfo.mainBorrowerId = res.ID_NUM || ''
+          this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
         })
         this.showScan=false;
       },
