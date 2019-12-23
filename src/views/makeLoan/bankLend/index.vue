@@ -566,30 +566,13 @@ export default {
             console.log(e)
         }
     },
-    // 有接口验证的时候
-    urlRules(urls, rows) {
-        let param = rows.params.split(",");
-        let obj = {};
-        param.forEach(t => {
-            obj[t] = this.formData[t];
-        });
-        request({urls, obj}).then(res => {
-            if (res.code === 200) {
-                let { message } = res.data;
-                this.errorMsg[rows.field] = message;
-            }
-        }).catch((err)=>{
-            console.log(err)
-        });
-    },
     /**
      * 识别
     */
     //银行卡号
     discernBankCardCum(e){
         this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-            console.log(res)
-            this.bankLoanInfo.repaymentBankCardNo = res.vin || ''
+            this.bankLoanInfo.repaymentBankCardNo = res.BANK_NUM || ''
         })
     }
   },
