@@ -64,3 +64,14 @@
   -webkit-transform: scaleY(.5);
   transform: scaleY(.5);
 }
+
+.van-cell__title .labelClass {
+  color: #ee0a24;
+  text-align: right;
+  position: relative;
+  left: calc(100% + 1.33333rem);
+}
+
+.van-cell .van-field__error-message {
+  text-align: right;
+}
