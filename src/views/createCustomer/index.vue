@@ -31,6 +31,7 @@
             required
             clearable
             label="客户姓名"
+            name="customerName"
             input-align="right"
             error-message-align="right"
             placeholder="请输入"
@@ -43,6 +44,7 @@
             v-model="customerData.certificateNum"
             required
             clearable
+            name="certificateNum"
             label="身份证号码"
             input-align="right"
             error-message-align="right"
@@ -89,6 +91,7 @@
             v-model="customerData.familyAddress"
             required
             clearable
+            name="familyAddress"
             error-message-align="right"
             label="身份证住址"
             input-align="right"
@@ -102,6 +105,7 @@
             v-model="customerData.signOrg"
             required
             clearable
+            name="signOrg"
             error-message-align="right"
             label="身份证签发机关"
             input-align="right"
@@ -390,6 +394,7 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
+      this.errorMsg[this.fieldName] = '';
     },
     cancel() {},
     //保存信息
