@@ -48,3 +48,11 @@ export function findList(params){
         data: params
     })
 }
+//获取页面字段规则
+export function fieldRules(params){
+    return request({
+        url:'/manage/regularConfig/getRegularByServer',
+        method: 'get',
+        params
+    })
+}
