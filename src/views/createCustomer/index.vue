@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
@@ -71,7 +71,7 @@
             title="民族"
             required
             is-link
-            v-model="customerData.nationName"
+            v-model="customerData.nation"
             @click="showFamily"
           />
         </van-cell-group>
@@ -131,7 +131,7 @@
     <div class="xh-notice">*识别信息可能存在误差，请仔细核对后再保存</div>
     <!-- 提交按钮 -->
     <div class="xh-submit" style="padding: 20px 10px;">
-      <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">保 存</van-button>
+      <van-button size="large" class="xh-bg-main" @click="submit">保 存</van-button>
     </div>
     <!-- 时间选择器 -->
     <van-action-sheet get-container="#app" v-model="show1" class="xh-list">
@@ -188,10 +188,12 @@ import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
 import card from "@/components/card/index";
 import { format } from "@/utils/format";
+import { uploadsDocument } from "@/api/document";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
 import { mapState } from "vuex";
+import formValidator from '@/mixins/formValidator'
 const Components = [
   Button,
   Row,
@@ -221,7 +223,6 @@ export default {
         certificateNum: "", //身份证号码
         age: "", //年龄
         creditObjectType: "", //征信对象类型
-        nationName: "", //民族
         nation: "", //
         familyAddress: "", //身份证住址
         signOrg: "", //身份证签发机关
@@ -318,8 +319,7 @@ export default {
       this.show2 = true;
     },
     getFamily(id, label) {
-      this.customerData.nationName = label;
-      this.customerData.nation = id;
+      this.customerData.nation = label;
       this.show2 = false;
     },
     //通过身份证查性别和出生年月、年龄
@@ -370,16 +370,44 @@ export default {
         this.$router.go(-1);
       } else {
         //新建客户，走接口
-        this.loading = true;
-        console.log(this.customerData);
-        submitCreate(this.customerData).then(res => {
-          this.loading = false;
+        if (this.src && this.srcBack) {
+          this.loading = true;
+          submitCreate(this.customerData)
+            .then(res => {
+              const params = {
+                kind: "1",
+                customerNum: res.data.customerNum,
+                customerId: res.data.id
+              };
+              this.uploadImg("0101", params, this.dataURLtoFile(this.src));
+              this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+            })
+            .catch(e => {
+              this.loading = false;
+            });
+        } else {
+          this.$notify({
+            type: "danger",
+            message: "请上传身份证正反面"
+          });
+        }
+      }
+    },
+    uploadImg(val, params, file) {
+      params.documentType = val;
+      params.file = file;
+      uploadsDocument(params)
+        .then(res => {
           this.$notify({
             type: "success",
-            message: "保存成功"
+            message: "建档成功"
           });
+          this.loading = false;
+          this.$router.go(-1);
+        })
+        .catch(e => {
+          this.loading = false;
         });
-      }
     },
     //点击上传身份证图片
     loadImg() {
@@ -403,9 +431,7 @@ export default {
           } else if (data.ID_SEX == "男") {
             this.$set(this.customerData, "sex", "1");
           }
-          alert(data.FRONT_IMG);
-          alert(dataURLtoFile(data.FRONT_IMG));
-          this.src = data.FRONT_IMG
+          this.src = "data:image/jpg;base64," + data.FRONT_IMG;
         } else if (data.ID_TYPE == "背面") {
           this.$set(this.customerData, "signOrg", data.ID_ISSUE);
           if (data.ID_VALID.indexOf("-") != -1) {
@@ -424,7 +450,7 @@ export default {
               );
             }
           }
-          this.srcBack = data.BACK_IMG;
+          this.srcBack = "data:image/jpg;base64," + data.BACK_IMG;
         }
       }); //原生直接调用
       this.show3 = false;
