@@ -284,6 +284,8 @@
           @confirm="onConfirm"
         />
       </van-action-sheet>
+      <!-- 图片选择方式 -->
+      <van-action-sheet v-model="show3" :actions="actions" @select="onSelect" />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -346,6 +348,7 @@ export default {
     return {
       isView: false, // 是否查看
       loading: false,
+      show3: false,
       formData: {
         certificateNum: "",
         childrenSituation: "",
@@ -409,13 +412,18 @@ export default {
       spsNm: "", // 客户配偶名字
       spsCtcTel: "", // 客户配偶电话
       spsCrdtNo: "", // 客户配偶证件号码
-      ruleData: {}
+      ruleData: {},
+      actions: [
+        { name: "相机扫描识别", value: "scan" },
+        { name: "相册导入识别", value: "album" }
+      ],
+      ocrType: ''
     };
   },
   methods: {
-    OCRScan(type) {
-      this.$bridge.callHandler('idCardOCR', '', (res) => {
-        if(type == 1) {
+    onSelect(rows) {
+      this.$bridge.callHandler('idCardOCR', rows.value, (res) => {
+        if(this.ocrType == 1) {
           this.formData.customerName = res.ID_NAME || '';
           this.formData.certificateNum = res.ID_NUM || '';
         } else {
@@ -423,6 +431,10 @@ export default {
           this.formData.spsCrdtNo = res.ID_NUM || '';
         }
       })
+    },
+    OCRScan(type) {
+      this.ocrType = type;
+      this.show3 = true;
     },
     // 字典转换
     returnText(n, val) {
