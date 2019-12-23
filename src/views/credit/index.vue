@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus">
+    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
