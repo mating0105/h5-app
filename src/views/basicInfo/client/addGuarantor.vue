@@ -21,6 +21,7 @@
                 error-message-align="right"
                 :right-icon="isView?'photograph':''"
                 @click-right-icon="OCRScan(1)"
+                class="xh-right-icon"
               />
             </section>
             <section>
@@ -204,6 +205,7 @@
               error-message-align="right"
               :right-icon="isView?'photograph':''"
               @click-right-icon="OCRScan(2)"
+              class="xh-right-icon"
             />
           </section>
           <section>
@@ -628,11 +630,10 @@ export default {
   created() {
     this.params = this.$route.query;
     this.isView = this.params.isView == 0?true:false;
-    if (this.params.isView == 1) {
+    if (this.params.id) {
       this.loadClient();
-    } else {
-      this.rulesForm("order/cuGuarantee");
     }
+    this.rulesForm("order/cuGuarantee");
   }
 };
 </script>

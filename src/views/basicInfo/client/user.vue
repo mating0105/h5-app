@@ -20,6 +20,7 @@
                 error-message-align="right"
                 :right-icon="isView?'photograph':''"
                 @click-right-icon="OCRScan(1)"
+                class="xh-right-icon"
               />
             </section>
             <section>
@@ -181,19 +182,9 @@
                 error-message-align="right"
               />
             </section>
-            <section>
-              <van-field
-                name="remark"
-                v-model="formData.remark"
-                type="textarea"
-                placeholder="请输入备注"
-                rows="1"
-                autosize
-              />
-            </section>
           </van-col>
         </van-row>
-        <van-row style="background: white;" v-if="spouseShow">
+        <van-row style="background: white;" v-if="formData.marriage == 2 || formData.marriage == 4">
           <section>
             <van-field
               name="spsNm"
@@ -209,6 +200,7 @@
               error-message-align="right"
               :right-icon="isView?'photograph':''"
               @click-right-icon="OCRScan(2)"
+              class="xh-right-icon"
             />
           </section>
           <section>
@@ -217,6 +209,7 @@
               v-model="formData.spsCrdtNo"
               clearable
               required
+              :disabled="!isView"
               label="配偶证件号码："
               input-align="right"
               placeholder="请输入配偶证件号码"
@@ -231,6 +224,7 @@
               v-model="formData.spsCtcTel"
               clearable
               required
+              :disabled="!isView"
               label="配偶联系电话："
               input-align="right"
               placeholder="请输入配偶联系电话"
@@ -264,6 +258,16 @@
             />
           </section>
         </van-row>
+        <section>
+          <van-field
+            name="remark"
+            v-model="formData.remark"
+            type="textarea"
+            placeholder="请输入备注"
+            rows="1"
+            autosize
+          />
+        </section>
       </div>
       <!-- 保 存按钮 -->
       <div class="xh-submit" v-if="isView">
@@ -413,7 +417,6 @@ export default {
         contactPhone: '',
         certificateNum: ''
       },
-      spouseShow: false, //显示配偶
       selectShow: false, //下拉选择器显示
       selectLoading: true, //下拉选择 loading
       pickerTitle: "", //下拉列表title
@@ -529,15 +532,6 @@ export default {
           this.formData.spsUnitCharDesc = rows.label;
           break;
       }
-
-      if (
-        this.formData.marriageDesc == "已婚" ||
-        this.formData.marriageDesc == "事实婚姻"
-      ) {
-        this.spouseShow = true;
-      } else {
-        this.spouseShow = false;
-      }
       this.selectShow = false;
     },
 
@@ -585,7 +579,6 @@ export default {
           num++;
         }
       }
-      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }
