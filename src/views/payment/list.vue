@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :goPage="rightFn" iconClass="ellipsis" :rightMenuList="cuCreditStatus">
+  <ViewPage :goPage="rightFn" iconClass="ellipsis" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
@@ -120,6 +120,8 @@ export default {
       });
     },
     rightFn(item) {
+      this.list = [];
+      this.params.pageIndex = 1;
       this.params.status = item.value;
       this.onLoad();
     }

@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :id="dealState?'':'lendProcess'">
+    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :class="dealState?'':'lendProcess'">
         <van-tabs v-model="activeName" v-if="projectForm.projectInfo" @change='changeTab'>
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
@@ -11,7 +11,7 @@
                             <van-cell title="业务员：" v-model="projectForm.projectInfo.clientManager.name" :border="false"/>
                             <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false"/>
                             <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false"/>
-                            <van-cell title="制单人员：" :border="false"/>
+                            <van-cell title="制单人员：" :border="false" :value="userName"/>
                             <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"
                                       @click="showPopupType('payType')" :border="false"/>
                         </div>
@@ -268,7 +268,7 @@
 
 <script>
   import Vue from 'vue';
-  import { mapGetters } from 'vuex';
+  import { mapGetters,mapState } from 'vuex';
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index';
   import ApprovalRecord from '@/views/basicInfo/approvalRecord/index';
@@ -280,6 +280,7 @@
   import { getDic } from "@/api/createCustomer";
   import { getCreditInfo } from '@/api/credit'
   import { getDocumentByType } from '@/api/document'
+  import { getValue } from '@/utils/session'
   import { Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify } from 'vant';
   import { loanInfoDetail, getProjectInfo, updateLoanInfo, getPeople, submitProcess, fieldRules } from '@/api/makeLoan.js'
   import formValidator from '@/mixins/formValidator'
@@ -306,10 +307,14 @@
       ...mapGetters([
         'name'
       ]),
+      ...mapState({
+        name: state => state.user.name,
+      })
     },
     data () {
       return {
         iconClass: 'ellipsis',
+        userName:'',
         //---tab:1--基本信息
         form: {},//车辆信息、贷款信息、收款人信息、借款人信息
         projectForm: {},//项目信息
@@ -894,12 +899,14 @@
         info: this.getStringToObj(this.$route.query.info),
         dealState: this.$route.query.dealState
       };
-      this.businessKey =Number(this.params.info.businesskey);
-      this.dealState =this.params.dealState == 1 ? false : true;
+      this.businessKey =2,//Number(this.params.info.businesskey);
+      this.dealState =false,//this.params.dealState == 1 ? false : true;
+      this.userName=sessionStorage.getItem("userName");
       this.getDictionaryData();
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
       }
+      
     }
   }
 </script>
@@ -936,7 +943,7 @@
         color: #323233;
     }
 
-    #lendProcess .van-cell__right-icon {
+    .lendProcess .van-cell__right-icon {
         color: #323233;
     }
 

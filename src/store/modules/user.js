@@ -1,6 +1,7 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import {login, setBookObj } from '@/api/login'
+import { setValue } from '@/utils/session'
 
 const state = {
   token: getToken(),
@@ -28,6 +29,7 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    setValue("userName", username);
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response

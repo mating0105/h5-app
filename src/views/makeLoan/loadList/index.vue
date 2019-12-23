@@ -1,45 +1,46 @@
 <template>
-  <div>
-    <van-tabs v-model="active" @change='changeState' swipeable>
-        <div v-for="item in tabList" :key="item.value">
-            <van-tab :title="item.name" :name="item.value">
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                    <div class="wrapper" ref="wrapper" style="margin:10px;">
-                        <van-search placeholder="搜索" v-model="pageData.searchKey" input-align='left' clearable @blur.click="onSearch"/>
-                        <van-list 
-                        v-model="loading" 
-                        :finished="finished"
-                        finished-text="没有更多了"
-                        :error.sync="error" 
-                        error-text="请求失败，点击重新加载" 
-                        @load="onLoad">
-                            <div v-for="(item,index) in listData" :key="'loadList'+index" :title="item">
-                                <Card class="xh-top-10">
-                                    <template v-slot:header>
-                                        <section class="xh-plus">
-                                            <van-cell :title="returnText(dictionaryData,'business_type',item.businesstype)"  icon="after-sale"></van-cell>
-                                        </section>
-                                    </template>
-                                    <van-row style="padding:10px 10px 20px;line-height:22px;" @click="applyPay(item)">
-                                        <van-col span="24">
-                                            项目编号：{{item.projectNum}}
-                                        </van-col>
-                                        <van-col span="10" class="xh-top-10">
-                                            客户名称：{{item.customerName}}
-                                        </van-col>
-                                        <van-col span="14" class="xh-top-10" style="text-align:right;">
-                                            {{item.createDate}}
-                                        </van-col>
-                                    </van-row>
-                                </Card>
-                            </div>
-                        </van-list>
+    <ViewPage :loading="loading" :headerShow='true'>
+        <template v-slot:head>
+            <van-tabs v-model="active" @change='changeState' swipeable>
+                <div v-for="item in tabList" :key="item.value">
+                    <van-tab :title="item.name" :name="item.value"></van-tab>
+                </div>
+            </van-tabs>
+        </template> 
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+            <div class="wrapper" ref="wrapper" style="margin:10px;">
+                <van-search placeholder="搜索" v-model="pageData.searchKey" input-align='left' clearable @blur.click="onSearch"/>
+                <van-list 
+                v-model="loading" 
+                :finished="finished"
+                finished-text="没有更多了"
+                :error.sync="error" 
+                error-text="请求失败，点击重新加载" 
+                @load="onLoad">
+                    <div v-for="(item,index) in listData" :key="'loadList'+index" :title="item">
+                        <Card class="xh-top-10">
+                            <template v-slot:header>
+                                <section class="xh-plus">
+                                    <van-cell :title="returnText(dictionaryData,'business_type',item.businesstype)"  icon="after-sale"></van-cell>
+                                </section>
+                            </template>
+                            <van-row style="padding:10px 10px 20px;line-height:22px;" @click="applyPay(item)">
+                                <van-col span="24">
+                                    项目编号：{{item.projectNum}}
+                                </van-col>
+                                <van-col span="10" class="xh-top-10">
+                                    客户名称：{{item.customerName}}
+                                </van-col>
+                                <van-col span="14" class="xh-top-10" style="text-align:right;">
+                                    {{item.createDate}}
+                                </van-col>
+                            </van-row>
+                        </Card>
                     </div>
-                </van-pull-refresh>
-            </van-tab>
-        </div>
-    </van-tabs>
-  </div>
+                </van-list>
+            </div>
+        </van-pull-refresh>
+  </ViewPage>
 </template>
 
 <script>
@@ -47,6 +48,7 @@ import Vue from "vue";
 import Card from "@/components/card/index";
 import { findList } from '@/api/makeLoan.js'
 import { getDic } from "@/api/createCustomer";
+import ViewPage from '@/layout/components/ViewPage';
 // 其他组件
 import { Row, Col, Icon, Cell, List,Tab, Tabs,Search,PullRefresh,Toast} from "vant";
 const Components = [Row, Col, Icon, Cell,List,Tab, Tabs,Search,PullRefresh,Toast];
@@ -61,6 +63,7 @@ export default {
       margin: true
     },
     components: {
+        ViewPage,
         Card
     },
     data() {
