@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 19:57:22
+ * @LastEditTime : 2019-12-23 13:53:46
  -->
 
 <template>
@@ -121,6 +121,8 @@
           <van-col span="24">
             <van-field
               :border="false"
+              :error-message="errorMsg.mortgageTime[index]"
+              @blur.prevent="ruleMessge($event,index)"
               class="info"
               input-align="right"
               label="实际开票价(元):"
@@ -134,7 +136,10 @@
           </van-col>
           <van-col span="24">
             <van-cell
+              :label="errorMsg.mortgageTime[index]"
+              @blur.prevent="ruleMessge($event,index)"
               class="info"
+              label-class="labelClass"
               required
               title="车牌号:"
             >
@@ -144,6 +149,8 @@
           <van-col span="24">
             <van-field
               :border="false"
+              :error-message="errorMsg.engineNum[index]"
+              @blur.prevent="ruleMessge($event,index)"
               class="info"
               input-align="right"
               label="发动机号:"
@@ -156,6 +163,7 @@
           <van-col span="24">
             <van-field
               :border="false"
+              :error-message="errorMsg.insuranceExpire[index]"
               @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
               class="info"
               input-align="right"
@@ -192,6 +200,7 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.mortgageTime"
               @click="dateRowClick('mortgageTime','办理抵押上牌日期')"
               class="info"
               input-align="right"
@@ -208,6 +217,8 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.registeredPlace"
+              @blur.prevent="ruleMessge"
               class="info"
               clearable
               input-align="right"
@@ -220,6 +231,7 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.transactionDate"
               @click="dateRowClick('transactionDate','交易日期')"
               class="info"
               input-align="right"
@@ -234,7 +246,10 @@
           </section>
           <section>
             <van-cell
+              :label="errorMsg.ispackage"
+              @blur.prevent="ruleMessge"
               class="info"
+              label-class="labelClass"
               required
               title="是否有套票:"
             >
@@ -249,6 +264,8 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.packageDeal"
+              @blur.prevent="ruleMessge"
               @input="inputValue"
               class="info"
               input-align="right"
@@ -265,6 +282,8 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.differenceCarprice"
+              @blur.prevent="ruleMessge"
               class="info"
               input-align="right"
               label="与贷款金额差价（元）"
@@ -279,7 +298,10 @@
           </section>
           <section>
             <van-cell
+              :label="errorMsg.dishonestyCustomer"
+              @blur.prevent="ruleMessge"
               class="info"
+              label-class="labelClass"
               required
               title="是否失信客户:"
             >
@@ -294,6 +316,7 @@
           <section>
             <van-field
               :border="false"
+              :error-message="errorMsg.ownershipRegisterDate"
               @click="dateRowClick('ownershipRegisterDate','重权登记日期')"
               class="info"
               input-align="right"
@@ -337,7 +360,6 @@
 </template>
 
 <script>
-import Qs from "qs";
 import Vue from "vue";
 import { YESORNO } from "@/constants/dictionaries";
 import {
@@ -349,6 +371,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import SingleConnect from "@/components/SingleConnect/index";
 import LicensePlateNum from "@/components/LicensePlateNum/index";
+import formValidator from "@/mixins/formValidator";
 
 // 其他组件
 import {
@@ -395,12 +418,23 @@ export default {
       return this.$route.params.id;
     }
   },
+  mixins: [formValidator],
   data() {
     return {
-      errorMsg:{
-        differenceCarprice:'', // 与贷款金额差价（元）
-        dishonestyCustomer:'', // 是否失信客户
-        ownershipRegisterDate:'', // 重权登记日期
+      errorMsg: {
+        actualInvoicedPrice: [], // 实际开票价(元)
+        licensePlateNum: [], // 车牌号
+        engineNum: [], // 发动机号
+        insuranceExpire: [], // 保险到期日
+
+        mortgageTime: "", // 办理抵押上牌日期
+        registeredPlace: "", // 上户地址
+        transactionDate: "", // 交易日期
+        ispackage: "", // 是否有套票
+        packageDeal: "", // 套票成交价(元)
+        differenceCarprice: "", // 与贷款金额差价（元）
+        dishonestyCustomer: "", // 是否失信客户
+        ownershipRegisterDate: "" // 重权登记日期
       },
       subLoading: false,
       currentDate: new Date(), // 当前日期
@@ -415,6 +449,9 @@ export default {
     };
   },
   props: {},
+  created() {
+    this.rulesForm("order/projCust");
+  },
   mounted() {
     this.queryDetails();
   },
@@ -497,27 +534,62 @@ export default {
       }
       this.datePopFlag = false;
     },
+    check() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        if (
+          item === "actualInvoicedPrice" ||
+          item === "licensePlLateNum" ||
+          item === "engineNum" ||
+          item === "insuranceExpire"
+        ) {
+          for (let i = 0; i < this.details.cars.length; i++) {
+            let one = this.details.cars[i];
+            let error = this.returnMsg(item, this.details.cars[i].item);
+            this.errorMsg[item][i] = error;
+            if (error) {
+              num++;
+            }
+          }
+        }
+        this.errorMsg[item] = this.returnMsg(item, this.details[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num > 0) {
+        return false;
+      }
+      return true;
+    },
     // 提交表单
     sub() {
       if (this.details.ispackage * 1 !== 1) {
         this.details.packageDeal = "";
         this.details.differenceCarprice = "";
+        this.errorMsg.packageDeal = "";
+        this.errorMsg.differenceCarprice = "";
       }
-      this.subLoading = true;
-      saveHeavyRightBasic(this.details)
-        .then(res => {
-          const { code, data, msg } = res;
-          if (code == 200) {
-            this.$notify({ type: "success", message: msg });
-            // this.goBack();
-          } else {
-            this.$notify({ type: "danger", message: msg });
-          }
-          this.subLoading = false;
-        })
-        .catch(() => {
-          this.subLoading = false;
-        });
+      let flag = this.check();
+      if (flag) {
+        this.subLoading = true;
+        saveHeavyRightBasic(this.details)
+          .then(res => {
+            const { code, data, msg } = res;
+            if (code == 200) {
+              this.$notify({ type: "success", message: msg });
+              // this.goBack();
+            } else {
+              this.$notify({ type: "danger", message: msg });
+            }
+            this.subLoading = false;
+          })
+          .catch(() => {
+            this.subLoading = false;
+          });
+      } else {
+        this.$notify({ type: "danger", message: "请把必填的填写或者选择完" });
+      }
     },
     cancelTime() {
       this.datePopFlag = false;
@@ -542,5 +614,9 @@ export default {
       color: rgb(196, 37, 42);
     }
   }
+}
+.labelClass {
+  color: #ee0a24;
+  text-align: right;
 }
 </style>
