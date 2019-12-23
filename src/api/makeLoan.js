@@ -57,7 +57,6 @@ export function fieldRules(params){
     })
 }
 export function fieldRulesNew(params){
-    console.log(params,'params')
     return request({
         url:params.urls,
         method: 'get',
