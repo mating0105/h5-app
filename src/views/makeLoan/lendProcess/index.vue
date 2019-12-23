@@ -61,7 +61,7 @@
                                     @blur.click="getIdcard"
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
-                                    right-icon="scan"
+                                    :right-icon="dealState ? '' : 'scan'"
                                     @click-right-icon="discernIdcard"/>
                             <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
@@ -108,9 +108,8 @@
                             <van-cell title="车辆类别：" :border="false" :is-link='!dealState' required :value="item.carTypeDesc"
                                       @click="showPopupType('car_type',index)" :value-class="dealState?'':'rightClass'" label-class='labelClass'
                                       @blur.prevent="ruleMessge($event,index)" :label="errorMsg.carType[index]"/>
-                            <van-cell title="车辆性质：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required
-                                      :value="item.carNatureDesc"
-                                      @click="showPopupType('car_nature',index)"/>
+                            <van-cell title="车辆性质：" :border="false" required
+                                      :value="item.carNatureDesc"/>
                             <van-cell title="车辆规格：" :border="false" :is-link='!dealState' :value-class="dealState?'':'rightClass'" required
                                       :value="item.carSpecificationsDesc"
                                       @click="showPopupType('vehicle_specifications',index)" label-class='labelClass' @blur.prevent="ruleMessge($event,index)"
@@ -207,7 +206,7 @@
                                     v-model="form.receiptInfo.receiptAccount"
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.receiptAccount"
-                                    right-icon="scan"
+                                    :right-icon="dealState ? '' : 'scan'"
                                     @click-right-icon="discernBankCardCum"/>
                             <van-field name='receiptBank' :disabled="dealState" label="收款人银行：" :placeholder="dealState?'':'请输入'" label-width='150'
                                        input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"
@@ -267,7 +266,6 @@
 <script>
   import Vue from 'vue';
   import { mapGetters } from 'vuex';
-  import request from '@/utils/request';
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index';
   import ApprovalRecord from '@/views/basicInfo/approvalRecord/index';
@@ -355,7 +353,7 @@
           {value: 8, title: '担保人房产', url: "/houseGuarantor"},
           {value: 9, title: '担保人收入', url: "/incomeGuarantor"},
           {value: 10, title: '调查结论', url: "/survey"},
-          {value: 11, title: '相关文档', url: "/proDocument"},
+          {value: 11, title: '相关文档', url: "/relatedDocs"},
           {value: 12, title: 'GPS安装信息', url: "/A"},
           {value: 13, title: '合同照片', url: "/B"},
           {value: 14, title: '申述意见', url: "/C"},
@@ -460,10 +458,6 @@
               }
             ]
             break;
-          case 'car_nature':
-            this.title1 = '请选择车辆性质'
-            this.columns = this.dictionaryData.car_nature;
-            break;
           case 'vehicle_specifications':
             this.title1 = '请选择车辆规格'
             this.columns = this.dictionaryData.vehicle_specifications;
@@ -511,10 +505,6 @@
             this.form.carInfos[this.popupSign.value].carType = value[0].value;
             this.form.carInfos[this.popupSign.value].carType2 = value[1].value;
             this.errorMsg.carType[this.popupSign.value] = '';
-            break;
-          case 'car_nature':
-            this.form.carInfos[this.popupSign.value].carNatureDesc = value.label;
-            this.form.carInfos[this.popupSign.value].carNature = value.value;
             break;
           case 'vehicle_specifications':
             this.form.carInfos[this.popupSign.value].carSpecificationsDesc = value.label;
@@ -596,6 +586,10 @@
       },
       //下一步
       nextStep () {
+        if(this.dealState){
+            this.stepIndex++;
+            return;
+        }
         let num = 0;
         for (let item in this.errorMsg) {
           if (item == 'mainBorrowerName' || item == 'mainBorrowerId' || item == 'mainBorrowerPhone') {//借款人信息-borrowerInfo
@@ -795,7 +789,7 @@
           if (data.code == 200 && data.status) {
             Notify({type: 'success', message: '流程提交成功'});
             setTimeout(() => {
-              this.$router.push(-1);
+              this.$router.go(-1);
             }, 1000)
             this.listLoading = false;
           }
@@ -803,22 +797,6 @@
           console.log(err)
           this.listLoading = false;
         }
-      },
-      // 有接口验证的时候
-      urlRules (urls, rows) {
-        let param = rows.params.split(",");
-        let obj = {};
-        param.forEach(t => {
-          obj[t] = this.formData[t];
-        });
-        request({urls, obj}).then(res => {
-          if (res.code === 200) {
-            let {message} = res.data;
-            this.errorMsg[rows.field] = message;
-          }
-        }).catch((err) => {
-          console.log(err)
-        });
       },
       changeTab (e) {
         if (e == 2) {
@@ -899,8 +877,8 @@
         info: this.getStringToObj(this.$route.query.info),
         dealState: this.$route.query.dealState
       };
-      this.businessKey = Number(this.params.info.businesskey);
-      this.dealState = this.params.dealState == 1 ? false : true;
+      this.businessKey =Number(this.params.info.businesskey);
+      this.dealState =this.params.dealState == 1 ? false : true;
       this.getDictionaryData();
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");

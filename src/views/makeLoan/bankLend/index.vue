@@ -223,7 +223,7 @@ export default {
             {value:9,title:'担保人房产',url:"/houseGuarantor"},
             {value:10,title:'担保人收入',url:"/incomeGuarantor"},
             {value:11,title:'调查结论',url:"/survey"},
-            {value:12,title:'相关文档',url:"/proDocument"},
+            {value:12,title:'相关文档',url:"/relatedDocs"},
             {value:13,title:'GPS安装信息',url:"/A"},
             {value:14,title:'合同照片',url:"/C"},
         ],
