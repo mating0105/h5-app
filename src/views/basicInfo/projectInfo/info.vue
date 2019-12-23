@@ -47,7 +47,7 @@
               <van-cell
                 title="单位性质:"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                ::is-link="isView == 0"="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.unitCharName"
                 @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','单位性质', 'unitChar')"
               />
@@ -56,7 +56,7 @@
               <van-cell
                 title="文化程度:"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                ::is-link="isView == 0"="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.levelEducationName"
                 @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','文化程度', 'levelEducation')"
               />
@@ -65,7 +65,7 @@
               <van-cell
                 title="婚姻状况:"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                ::is-link="isView == 0"="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.marriageName"
                 @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('marriage_type','婚姻状况', 'marriage')"
               />
@@ -129,7 +129,7 @@
               <van-cell
                 title="单位性质:"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                ::is-link="isView == 0"="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.spsUnitCharName"
                 @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
               />
@@ -138,7 +138,7 @@
               <van-cell
                 title="文化程度:"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                ::is-link="isView == 0"="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.spsCltrDgrName"
                 @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
               />
@@ -156,7 +156,7 @@
             <van-cell
               title="业务来源:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
               @click="loadType('业务来源','bsnSrc')"
             />
@@ -166,7 +166,7 @@
             <van-cell
               title="车商:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.carDealersIdName"
               @click="loadType('车商', 'carDealersId')"
             />
@@ -175,7 +175,7 @@
             <van-cell
               title="反担保状况:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.counterGuaranteeStatusName"
               @click="isView == 1?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
             />
@@ -184,7 +184,7 @@
             <van-cell
               title="是否拆单:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.wthrBlName"
               @click="isView == 1?'':loadList('yes_no','是否拆单','wthrBl')"
             />
@@ -202,7 +202,7 @@
             <van-cell
               title="预调查地址:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
             />
@@ -239,13 +239,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pullCars"
+              v-if="isView == 0"
             />
           </van-cell>
         </section>
       </template>
       <van-row class="xh-swipe-button">
         <van-col span="24" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
+          <van-swipe-cell :right-width="130" :disabled="(i.isCreditAdd == '1' || isView == 0)?true:false">
             <section>
               <van-cell
                 title="车辆类别:"
@@ -320,7 +321,7 @@
             <van-cell
               title="业务模式:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.businessModelName"
               @click="loadType('业务模式','businessModel')"
             />
@@ -329,7 +330,7 @@
             <van-cell
               title="贷款期限:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.loanTerm"
               @click="loadType('贷款期限','loanTerm')"
             />
@@ -339,7 +340,7 @@
             <van-cell
               title="放款平台:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.dsbrPltfrmNm"
               @click="loadType('放款平台','platform')"
             />
@@ -348,7 +349,7 @@
             <van-cell
               title="产品类别:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.productCategoryIdName"
               @click="loadType('产品类别','productCategoryId')"
             />
@@ -357,7 +358,7 @@
             <van-cell
               title="产品名称:"
               required
-              :is-link="isView == 0"
+              is-link
               :value="projProjectInfo.productIdName"
               @click="loadType('产品名称','productId')"
             />
@@ -388,7 +389,7 @@
               <van-cell
                 title="盗抢险:"
                 required
-                :is-link="isView == 0"
+                is-link
                 :value="projProjectInfo.thiefRescueName"
                 @click="loadType('盗抢险','thiefRescue')"
               />
@@ -397,7 +398,7 @@
               <van-cell
                 title="盗抢险购买平台:"
                 required
-                :is-link="isView == 0"
+                is-link
                 :value="projProjectInfo.rbrinsPltfrmNmName"
                 @click="loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
               />
@@ -485,7 +486,7 @@
           <section v-if="projProjectInfo.isQuickadjust=='1'">
             <van-cell
               title="是否t+0:"
-              :is-link="isView == 0"
+              is-link
               required
               :value="projProjectInfo.isTandzeroName"
               @click="isView == 1?'':loadList('yes_no','是否t+0','isTandzero')"
@@ -508,7 +509,7 @@
           >
             <section>
               <van-cell
-                :is-link="isView == 0"
+                is-link
                 :value="projProjectInfo.marginRatioName"
                 title="保证金比例(%):"
                 @click="isView == 1?'':loadList('Margin_Ratio','保证金比例','marginRatio')"
@@ -1675,7 +1676,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.type;
+    this.isView = this.params.isView;
     this.loanData();
   }
 };

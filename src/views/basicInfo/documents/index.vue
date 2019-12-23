@@ -22,11 +22,16 @@ export default {
   data() {
     return {
       params: this.$route.query,
+      isView: 1,
       types: [
         { type: '0306', must: false, dealState: "1", label: '二手车资料' },
         // { type: '0101', must: false, dealState: "2", label: '主借人身份证正面' }
       ]
     };
+  },
+  mounted() {
+    let query = this.$route.query;
+    this.isView = query.isView;
   }
 };
 </script>

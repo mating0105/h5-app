@@ -690,7 +690,7 @@ export default {
         customerNum: obj.customerNum,
         projectNo: obj.projectNo,
         projectId: obj.businesskey,
-        isView: dealState == 3 ? 1 : 0,
+        isView: dealState == 1 ? 0 : 1,
         dealState: dealState,
         activityId: obj.activityId
       };

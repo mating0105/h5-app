@@ -279,7 +279,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.type;
+    this.isView = this.params.isView;
     if (this.params.id) {
       this.loadData(this.params.id)
     } else {

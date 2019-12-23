@@ -8,6 +8,7 @@
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
+              v-if="isView == 0"
               @click="pullUrl"
             />
           </van-cell>
@@ -91,7 +92,7 @@ export default {
     return {
       carsList: [],
       params: {},
-
+      isView: 1
     }
   },
   methods: {
@@ -153,6 +154,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     this.loadData();
   },
 }

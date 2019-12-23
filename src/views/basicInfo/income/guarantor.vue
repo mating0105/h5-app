@@ -4,7 +4,8 @@
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell title="担保人收入">
-            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"/>
+            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"
+              v-if="isView == 0"/>
           </van-cell>
         </section>
       </template>
@@ -154,6 +155,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     this.loadData();
   }
 };
