@@ -9,53 +9,32 @@
             is-link
             title="车辆品牌型号："
             :value="formData.carModel"
-            @click="getBrand"
+            @click="isView?getBrand():false"
           />
         </section>
         <section>
           <van-field
             name="vim"
             v-model="formData.vim"
-            :required="ruleData.vim.mustFill"
-            :disabled="isView == 1"
+            required
+            :disabled="!isView"
             label="车架号："
             input-align="right"
             placeholder="请输入或扫描"
             @blur.prevent="ruleMessge"
-            :error-message="errorMsg.carNumber"
-            right-icon="scan"
+            :error-message="errorMsg.vim"
+            :right-icon="isView?'scan':''"
+            @click-right-icon="OCRScan"
+            class="xh-right-icon"
           />
         </section>
         <section>
-          <!-- <div class="van-cell van-field">
-            <div class="van-cell__title van-field__label">
-              <span>车牌号：</span>
-            </div>
-            <div class="van-cell__value">
-              <div class="van-field__body">
-                <div class="van-field__control van-field__control--right">
-                  <div class="xh-scan">
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                    <div class="xh-scan-text">1</div>
-                  </div>
-                </div>
-                <div class="van-field__right-icon">
-                  <i class="van-icon van-icon-scan"></i>
-                </div>
-              </div>
-            </div>
-          </div> -->
-          <van-cell
-            required
-            title="车牌号:"
-          >
-            <licensePlateNum v-model="formData.carNumber"></licensePlateNum>
+          <van-cell required title="车牌号:">
+            <licensePlateNum
+              v-model="formData.carNumber"
+              @licensePlateNumChange="licensePlateNumChange"
+              type="carNumber"
+            ></licensePlateNum>
           </van-cell>
         </section>
 
@@ -63,8 +42,8 @@
           <van-field
             name="carAge"
             v-model="formData.carAge"
-            :required="ruleData.carAge.mustFill"
-            :disabled="isView == 1"
+            required
+            :disabled="!isView"
             label="车龄(年)："
             input-align="right"
             placeholder="请输入车龄"
@@ -76,10 +55,10 @@
         <section>
           <van-cell
             title="购买方式："
-            :required="ruleData.buyType.mustFill"
+            required
             is-link
             :value="formData.buyTypeDesc"
-            @click.native="loadList"
+            @click.native="isView?loadList():false"
           />
         </section>
 
@@ -88,8 +67,8 @@
             name="carValue"
             label-width="120px"
             v-model="formData.carValue"
-            :disabled="isView == 1"
-            :required="ruleData.carValue.mustFill"
+            :disabled="!isView"
+            required
             label="车辆价值(万元)："
             input-align="right"
             placeholder="请输入车辆价值"
@@ -120,9 +99,8 @@
         <van-button
           size="large"
           class="xh-bg-main"
-          :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="subLoading"
-          :disabled="subDisabled"
+          :loading="dLoading"
+          :disabled="dLoading"
           @click.native="custSubmit"
         >保 存</van-button>
       </div>
@@ -150,6 +128,8 @@ import brand from "@/components/carBrand/brand";
 import LicensePlateNum from "@/components/LicensePlateNum/index";
 import { setCarsfo, editCarsInfo } from "@/api/client";
 import { mapState } from "vuex";
+// 校验
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Dialog,
   Button,
@@ -168,6 +148,7 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   computed: {
     // 所有字典
     ...mapState({
@@ -181,7 +162,7 @@ export default {
   },
   data() {
     return {
-      isView: 0, // 是否查看
+      isView: false, // 是否查看
       showBrand: false,
       formData: {
         carModel: "",
@@ -193,43 +174,25 @@ export default {
         carAge: "", //车龄(年)
         buyType: "", //购买方式
         carValue: "", //车辆价值(万元)
-        vim: "",
+        vim: ""
       },
       columns: [], //待选择列表
       errorMsg: {
-        ownerProperty: "", //产权所有人
-        specificAddress: "", //详细地址
-        houseArea: "", //房产面积(m²)
-        isHasHouse: "",
-        houseType: "", //房产性质
-        houseZon: "", //房产区域
-        provCityZon: "" //房产所在地
+        carAge: '',
+        carNumber: '',
+        carHomearea:  '',
+        carModelId:  '',
+        buyType:  '',
+        carValue: '',
       },
-
-      searchData: {
-        id: ""
-      },
-
-      subData: {},
 
       params: {},
 
       selectShow: false, //下拉选择器显示
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
-      selectLoading: true, //下拉选择 loading
-      addressTitle: "", //城市下拉列表title
-      areaList: {}, //城市列表 init
 
-      subLoading: false, //提交loading
-      subDisabled: false, //按钮禁用状态
-      ruleData: {
-        carNumber: {},
-        carAge: {},
-        buyType: {},
-        carValue: {},
-        vim: {}
-      }
+      dLoading: false, //提交loading
     };
   },
   methods: {
@@ -280,21 +243,39 @@ export default {
     // 保存
     custSubmit() {
       this.formData.customerId = this.params.customerId;
-      if(this.isView == 0) {
-        setCarsfo(this.formData).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.$router.go(-1);
-        });
-      } else {
+      // let num = 0;
+      // for (let item in this.errorMsg) {
+      //   this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+      //   if (this.errorMsg[item] !== "") {
+      //     num++;
+      //   }
+      // }
+      // console.log(this.errorMsg);
+      // if (num !== 0) {
+      //   return;
+      // }
+      this.dLoading = true;
+      if (this.params.id) {
         editCarsInfo(this.formData).then(res => {
           this.$notify({
             type: "success",
             message: res.msg
           });
           this.$router.go(-1);
+          this.dLoading = false;
+        }).catch(()=> {
+          this.dLoading = false;
+        });
+      } else {
+        setCarsfo(this.formData).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.$router.go(-1);
+          this.dLoading = false;
+        }).catch(()=> {
+          this.dLoading = false;
         });
       }
     },
@@ -305,34 +286,46 @@ export default {
     // 车辆品牌型号返回参数
     changeBrand(carBrand) {
       this.formData.carModel = carBrand.model.fullname;
-      let code = carBrand.brand.id + '/' + carBrand.series.id + '/' + carBrand.model.id;
+      let code =
+        carBrand.brand.id + "/" + carBrand.series.id + "/" + carBrand.model.id;
       this.formData.carId = code;
+    },
+    // 返回车牌号
+    licensePlateNumChange({ value, type }) {
+      this.errorMsg[type] = this.returnMsg(type, this.formData[type]);
+    },
+    // OCR识别车架号
+    OCRScan() {
+      this.$bridge.callHandler('vinOCR', '', (res) => {
+        this.formData.carNumber = res.VIN || '';
+      })
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
-    if (this.params.type == 1) {
+    this.isView = this.params.isView == 0;
+    if (this.params.id) {
       this.formData = this.params;
     }
+    this.rulesForm("cs/cuPersonalCar");
   }
 };
 </script>
 
 <style lang="scss">
-  .xh-scan {
-    display: flex;
-    justify-content: flex-end;
-    .xh-scan-text {
-      width: 25px;
-      height: 25px;
-      text-align: center;
-      line-height: 25px;
-      margin: 0 2px;
-      border: 1px solid #807c7c;
-    }
-    .xh-scan-text:last-child {
-      border: 1px dashed #807c7c;
-    }
+.xh-scan {
+  display: flex;
+  justify-content: flex-end;
+  .xh-scan-text {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+    margin: 0 2px;
+    border: 1px solid #807c7c;
   }
+  .xh-scan-text:last-child {
+    border: 1px dashed #807c7c;
+  }
+}
 </style>

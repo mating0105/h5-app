@@ -9,14 +9,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pathHouse"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button" v-for="(i,index) in houseList" :key="index">
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <section>
               <van-cell title="担保人姓名：" :value="i.customerName" />
             </section>
@@ -89,7 +89,7 @@ export default {
     return {
       houseList: [],
       loading: false,
-      isView: 1
+      isView: false
     }
   },
   computed: {
@@ -139,7 +139,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, isView: 1 } });
     },
     // 删除
     delList(rows) {
@@ -163,7 +163,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0?true:false;
     this.loadData();
   }
 }

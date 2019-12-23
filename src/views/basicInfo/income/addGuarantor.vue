@@ -5,54 +5,181 @@
         <van-row>
           <van-col :span="24">
             <section>
-              <van-cell title="担保人：" required :is-link="isView == 0" :value="form.cuGuaranteeName" @click.native="isView == 1?'':loadList('担保人', '1')" />
+              <van-cell
+                title="担保人："
+                required
+                :is-link="isView"
+                :value="form.cuGuaranteeName"
+                @click.native="!isView?'':loadList('担保人', '1')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.cuGuaranteeName"
+              />
             </section>
             <section>
-              <van-cell title="收入人：" required :is-link="isView == 0" :value="form.incomePeopleDesc" @click.native="isView == 1?'':loadList('收入人', 'income_person')" />
+              <van-cell
+                title="收入人："
+                required
+                :is-link="isView"
+                :value="form.incomePeopleDesc"
+                @click.native="!isView?'':loadList('收入人', 'income_person')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.incomePeople"
+              />
             </section>
             <section>
-              <van-cell title="职业状况：" required :is-link="isView == 0" :value="form.occupationalStatusDesc"
-                @click.native="isView == 1?'':loadList('职业状况','OccupationalStatus')" />
+              <van-cell
+                title="职业状况："
+                required
+                :is-link="isView"
+                :value="form.occupationalStatusDesc"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.occupationalStatus"
+                @click.native="!isView?'':loadList('职业状况','OccupationalStatus')"
+              />
             </section>
             <div v-if="form.occupationalStatus != 6">
               <section>
-                <van-cell title="单位性质：" required :is-link="isView == 0" :value="form.unitCharDesc" @click.native="isView == 1?'':loadList('单位性质','unit_Property')" />
+                <van-cell
+                  title="单位性质："
+                  required
+                  :is-link="isView"
+                  :value="form.unitCharDesc"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.unitChar"
+                  @click.native="!isView?'':loadList('单位性质','unit_Property')"
+                />
               </section>
               <section>
-                <van-cell title="行业领域：" required :is-link="isView == 0" :value="form.idyDmnDesc" @click.native="isView == 1?'':loadList('行业领域','belong_industry')" />
+                <van-cell
+                  title="行业领域："
+                  required
+                  :is-link="isView"
+                  :value="form.idyDmnDesc"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.idyDmn"
+                  @click.native="!isView?'':loadList('行业领域','belong_industry')"
+                />
               </section>
               <section>
-                <van-field name="companyName" v-model="form.companyName" clearable required label="单位名称：" input-align="right"
-                  placeholder="请输入单位名称" @blur.prevent="ruleMessge" :error-message="errorMsg.companyName"/>
+                <van-field
+                  name="companyName"
+                  v-model="form.companyName"
+                  clearable
+                  required
+                  :disabled="!isView"
+                  label="单位名称："
+                  input-align="right"
+                  placeholder="请输入单位名称"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.companyName"
+                  error-message-align="right"
+                />
               </section>
               <section>
-                <van-field name="companyTel" v-model="form.companyTel" clearable label="单位电话：" input-align="right" placeholder="请输入单位电话"
-                  @blur.prevent="ruleMessge" :error-message="errorMsg.companyTel" />
+                <van-field
+                  name="companyTel"
+                  v-model="form.companyTel"
+                  clearable
+                  :disabled="!isView"
+                  label="单位电话："
+                  input-align="right"
+                  placeholder="请输入单位电话"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.companyTel"
+                  error-message-align="right"
+                />
               </section>
               <section>
-                <van-cell title="单位地址：" :is-link="isView == 0" :value="form.provCityZon" @click.native="addressShow = true" />
+                <van-cell
+                  title="单位地址："
+                  :is-link="isView"
+                  :value="form.provCityZon"
+                  @click.native="addressShow = true"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.provCityZon"
+                />
               </section>
               <section>
-                <van-field name="detailAddress" v-model="form.detailAddress" clearable label="详细地址：" input-align="right"
-                  placeholder="请输入详细地址" @blur.prevent="ruleMessge" :error-message="errorMsg.detailAddress"/>
+                <van-field
+                  name="detailAddress"
+                  v-model="form.detailAddress"
+                  clearable
+                  :disabled="!isView"
+                  label="详细地址："
+                  input-align="right"
+                  placeholder="请输入详细地址"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.detailAddress"
+                  error-message-align="right"
+                />
               </section>
               <section>
-                <van-field name="workingYears" v-model="form.workingYears" type="number" clearable required label="从业年限："
-                  input-align="right" placeholder="请输入从业年限" @blur.prevent="ruleMessge" :error-message="errorMsg.workingYears"/>
+                <van-field
+                  name="workingYears"
+                  v-model="form.workingYears"
+                  type="number"
+                  clearable
+                  :disabled="!isView"
+                  required
+                  label="从业年限："
+                  input-align="right"
+                  placeholder="请输入从业年限"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.workingYears"
+                  error-message-align="right"
+                />
               </section>
               <section>
-                <van-field name="personalIncome" v-model="form.personalIncome" type="number" clearable label="月固定收入(元)：" input-align="right"
-                  placeholder="请输入月固定收入" @blur.prevent="ruleMessge" :error-message="errorMsg.personalIncome"/>
+                <van-field
+                  name="personalIncome"
+                  v-model="form.personalIncome"
+                  type="number"
+                  clearable
+                  :disabled="!isView"
+                  label="月固定收入(元)："
+                  input-align="right"
+                  placeholder="请输入月固定收入"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.personalIncome"
+                  error-message-align="right"
+                />
               </section>
               <section>
-                <van-cell title="月固定收入状况：" :is-link="isView == 0" :value="form.personalIncomeStatusDesc"
-                  @click.native="isView == 1?'':loadList('月固定收入状况','IncomeStatus')" />
+                <van-cell
+                  title="月固定收入状况："
+                  :is-link="isView"
+                  :value="form.personalIncomeStatusDesc"
+                  @click.native="!isView?'':loadList('月固定收入状况','IncomeStatus')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.personalIncomeStatus"
+                />
               </section>
               <section>
-                <van-cell title="收入佐证：" :is-link="isView == 0" :value="form.incomeEvidenceDesc" @click.native="isView == 1?'':loadList('收入佐证','income_prove')" />
+                <van-cell
+                  title="收入佐证："
+                  :is-link="isView"
+                  :value="form.incomeEvidenceDesc"
+                  @click.native="!isView?'':loadList('收入佐证','income_prove')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.incomeEvidence"
+                />
               </section>
               <section>
-                <van-field v-model="form.remark" clearable label="备注" input-align="right" placeholder="请输入备注" />
+                <van-field
+                  v-model="form.remark"
+                  clearable
+                  label="备注"
+                  input-align="right"
+                  placeholder="请输入备注"
+                />
               </section>
             </div>
             <!-- 下拉选择器 -->
@@ -69,14 +196,18 @@
 
             <!-- 弹出省市区 -->
             <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
-
           </van-col>
         </van-row>
       </div>
       <!-- 保 存按钮 -->
       <div class="xh-submit">
-        <van-button size="large" class="xh-bg-main" :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="loading" :disabled="subDisabled" @click.native="custSubmit">保 存</van-button>
+        <van-button
+          size="large"
+          class="xh-bg-main"
+          :loading="dLoading"
+          :disabled="dLoading"
+          @click.native="custSubmit"
+        >保 存</van-button>
       </div>
     </div>
   </ViewPage>
@@ -96,10 +227,16 @@ import {
   Area,
   Picker
 } from "vant";
-import { getGuaranteeIncome, setGuaranteeIncome, editGuaranteeIncome } from "@/api/client";
+import {
+  getGuaranteeIncome,
+  setGuaranteeIncome,
+  editGuaranteeIncome
+} from "@/api/client";
 import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
+// 校验
+import formValidator from "@/mixins/formValidator";
 import { mapState } from "vuex";
 const Components = [
   Dialog,
@@ -118,52 +255,53 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   data() {
     return {
-      isView: 1,
+      isView: false,
       loading: false,
       form: {
-        guaranteeId: '',
-        houseArea: '',
-        houseType: '',
-        houseZon: '',
-        ishashouse: '',
-        ownerProperty: '',
-        propertyHolderNum: '',
-        propertyOwneratio: '',
-        propertyValue: '',
-        provCityZonId: '',
-        specificAddress: '',
+        guaranteeId: "",
+        houseArea: "",
+        houseType: "",
+        houseZon: "",
+        ishashouse: "",
+        ownerProperty: "",
+        propertyHolderNum: "",
+        propertyOwneratio: "",
+        propertyValue: "",
+        provCityZonId: "",
+        specificAddress: ""
       },
       errorMsg: {
-        guaranteeId: '',
-        houseArea: '',
-        houseType: '',
-        houseZon: '',
-        ishashouse: '',
-        ownerProperty: '',
-        propertyHolderNum: '',
-        propertyOwneratio: '',
-        propertyValue: '',
-        provCityZonId: '',
-        specificAddress: '',
+        guaranteeId: "",
+        houseArea: "",
+        houseType: "",
+        houseZon: "",
+        ishashouse: "",
+        ownerProperty: "",
+        propertyHolderNum: "",
+        propertyOwneratio: "",
+        propertyValue: "",
+        provCityZonId: "",
+        specificAddress: ""
       },
       selectShow: false, //下拉选择器显示
       selectLoading: true, //下拉选择 loading
-      pickerTitle: '',//下拉列表title
-      addressShow: false,// 城市下拉选择器显示
+      pickerTitle: "", //下拉列表title
+      addressShow: false, // 城市下拉选择器显示
       columns: [], //待选择列表
       // 下拉菜单 List
-      guaranteeList: [],//担保人
+      guaranteeList: [], //担保人
       loading: false, // loading
-      subDisabled: false, //按钮禁用状态
-      projectId: '',//项目id
-      ruleData: {},
-    }
+      dLoading: false, //按钮禁用状态
+      projectId: "", //项目id
+      ruleData: {}
+    };
   },
   components: {
     ViewPage,
-    Provinces,
+    Provinces
   },
   computed: {
     // 所有字典
@@ -185,7 +323,7 @@ export default {
     loadList(key, name) {
       this.pickerTitle = key;
       this.selectShow = true;
-      if(name == '1') {
+      if (name == "1") {
         this.columns = this.guaranteeList;
       } else {
         this.columns = this.wordbook[name];
@@ -193,11 +331,11 @@ export default {
     },
     loadData(id) {
       var dataList = {
-            projectId: this.params.projectId
-          };
-        if (id) {
-          dataList.id = id;
-        }
+        projectId: this.params.projectId
+      };
+      if (id) {
+        dataList.id = id;
+      }
       this.loading = true;
       getGuaranteeIncome(dataList).then(res => {
         try {
@@ -206,22 +344,40 @@ export default {
             this.guaranteeList.push({
               label: e.customerName,
               value: e.id
-            })
-          })
+            });
+          });
           if (id) {
             this.form = data;
-            this.form.incomePeopleDesc = this.returnText('income_person', this.form.incomePeople);
-            this.form.occupationalStatusDesc = this.returnText('OccupationalStatus', this.form.occupationalStatus);
-            this.form.unitCharDesc = this.returnText('unit_Property', this.form.unitChar);
-            this.form.idyDmnDesc = this.returnText('belong_industry', this.form.idyDmn);
-            this.form.personalIncomeStatusDesc = this.returnText('IncomeStatus', this.form.personalIncomeStatus);
-            this.form.incomeEvidenceDesc = this.returnText('income_prove', this.form.incomeEvidence);
+            this.form.incomePeopleDesc = this.returnText(
+              "income_person",
+              this.form.incomePeople
+            );
+            this.form.occupationalStatusDesc = this.returnText(
+              "OccupationalStatus",
+              this.form.occupationalStatus
+            );
+            this.form.unitCharDesc = this.returnText(
+              "unit_Property",
+              this.form.unitChar
+            );
+            this.form.idyDmnDesc = this.returnText(
+              "belong_industry",
+              this.form.idyDmn
+            );
+            this.form.personalIncomeStatusDesc = this.returnText(
+              "IncomeStatus",
+              this.form.personalIncomeStatus
+            );
+            this.form.incomeEvidenceDesc = this.returnText(
+              "income_prove",
+              this.form.incomeEvidence
+            );
           }
           this.loading = false;
         } catch {
           this.loading = false;
         }
-      })
+      });
     },
     onConfirm(rows) {
       switch (this.pickerTitle) {
@@ -265,8 +421,18 @@ export default {
     },
     // 保存
     custSubmit() {
-      this.loading = true;
-      if(this.isView == 0) {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.form[item]);
+        if (this.errorMsg[item] !== "") {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
+      this.dLoading = true;
+      if (!this.form.id) {
         setGuaranteeIncome(this.form).then(res => {
           try {
             this.$notify({
@@ -274,11 +440,11 @@ export default {
               message: res.msg
             });
             this.$router.go(-1);
-            this.loading = false;
+            this.dLoading = false;
           } catch {
-            this.loading = false;
+            this.dLoading = false;
           }
-        })
+        });
       } else {
         editGuaranteeIncome(this.form).then(res => {
           try {
@@ -287,25 +453,23 @@ export default {
               message: res.msg
             });
             this.$router.go(-1);
-            this.loading = false;
+            this.dLoading = false;
           } catch {
-            this.loading = false;
+            this.dLoading = false;
           }
-        })
+        });
       }
-    },
-    ruleMessge() {
-
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     if (this.params.id) {
-      this.loadData(this.params.id)
+      this.loadData(this.params.id);
     } else {
-      this.loadData()
+      this.loadData();
     }
+    this.rulesForm = "order/savePersonalIncomeInfo";
   }
-}
+};
 </script>

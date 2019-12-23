@@ -666,11 +666,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.xh-right-icon {
-  .van-icon {
-    color: rgb(196, 37, 42);
-  }
-}
-</style>
-

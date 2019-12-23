@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
@@ -8,7 +8,7 @@
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
-              v-if="isView == 0"
+              v-if="isView"
               @click="pullUrl"
             />
           </van-cell>
@@ -16,7 +16,7 @@
       </template>
       <van-row class="xh-row">
         <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(item,index) in carsList" :key="index" @click.native="pushUrl(i)">
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <van-col span="24">
               <van-col span="12">
                 <span class="xh-main xh-title">车牌号：</span>
@@ -92,7 +92,8 @@ export default {
     return {
       carsList: [],
       params: {},
-      isView: 1
+      isView: false,
+      loading: false
     }
   },
   methods: {
@@ -110,51 +111,41 @@ export default {
       let dataList = {
         customerId: this.params.customerId
       };
+      this.loading = true;
       getVehicleList(dataList).then(res => {
-        if(res.code == 200) {
-          this.carsList = res.data;
-          this.carsList.forEach(t => {
-            t.buyTypeDesc = this.returnText('Purchase_method', t.buyType);
-          });
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
-      })
+        this.carsList = res.data;
+        this.carsList.forEach(t => {
+          t.buyTypeDesc = this.returnText('Purchase_method', t.buyType);
+        });
+        this.loading = false;
+      }).catch(()=> {
+        this.loading = false;
+      });
     },
     // 跳转新增
     pullUrl(){
-      this.$router.push({ path: '/addCars', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addCars', query: {...this.params, isView: 0 } });
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addCars', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addCars', query: {...rows, projectId: this.params.id, isView: 0 } });
     },
     // 删除
     delList(rows) {
       deleteVehicleList({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
   },
 }

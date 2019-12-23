@@ -7,10 +7,12 @@
             name="isHasHouse"
             title="是否有房产："
             required
-            :is-link="isView == 0"
+            :is-link="isView"
             :value="formData.isHasHouseDesc"
-            @click.native="isView == 1?'':loadList('是否有房产')"
+            label-class="labelClass"
             @blur.prevent="ruleMessge"
+            :label="errorMsg.isHasHouse"
+            @click.native="!isView?'':loadList('是否有房产')"
           />
         </section>
         <div v-if="formData.isHasHouse == '1' || formData.isHasHouse == '' ">
@@ -18,7 +20,7 @@
             <van-field
               name="ownerProperty"
               v-model="formData.ownerProperty"
-              :disabled="isView == 1"
+              :disabled="!isView"
               required
               label="产权所有人："
               input-align="right"
@@ -26,6 +28,7 @@
               placeholder="请输入产权所有人"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.ownerProperty"
+              error-message-align="right"
             />
           </section>
           <section>
@@ -33,9 +36,12 @@
               name="houseType"
               title="房产性质："
               required
-              :is-link="isView == 0"
+              :is-link="isView"
               :value="formData.houseTypeDesc"
-              @click.native="isView == 1?'':loadList('房产性质')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.houseType"
+              @click.native="!isView?'':loadList('房产性质')"
             />
           </section>
           <section>
@@ -43,9 +49,12 @@
               name="houseZon"
               title="房产区域："
               required
-              :is-link="isView == 0"
+              :is-link="isView"
               :value="formData.houseZonDesc"
-              @click.native="isView == 1?'':loadList('房产区域')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.houseZon"
+              @click.native="!isView?'':loadList('房产区域')"
             />
           </section>
 
@@ -54,9 +63,12 @@
               name="provCityZon"
               title="房产所在地："
               required
-              :is-link="isView == 0"
+              :is-link="isView"
               :value="formData.provCityZon"
-              @click.native="isView == 1?'':loadList('房产所在地')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.provCityZon"
+              @click.native="!isView?'':loadList('房产所在地')"
             />
           </section>
           <section>
@@ -64,12 +76,13 @@
               name="specificAddress"
               v-model="formData.specificAddress"
               required
-              :disabled="isView == 1"
+              :disabled="!isView"
               label="详细地址："
               input-align="right"
               placeholder="请输入详细地址"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.specificAddress"
+              error-message-align="right"
             />
           </section>
           <section>
@@ -77,12 +90,13 @@
               name="houseArea"
               v-model="formData.houseArea"
               required
-              :disabled="isView == 1"
+              :disabled="!isView"
               label="房产面积(m²)："
               input-align="right"
               placeholder="请输入房产面积"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.houseArea"
+              error-message-align="right"
             />
           </section>
         </div>
@@ -103,13 +117,13 @@
         <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
       </van-row>
       <!-- 保 存按钮 -->
-      <div class="xh-submit">
+      <div class="xh-submit" v-if="isView">
         <van-button
           size="large"
           class="xh-bg-main"
           :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="subLoading"
-          :disabled="subDisabled"
+          :loading="dLoading"
+          :disabled="dLoading"
           @click.native="custSubmit"
         >保 存</van-button>
       </div>
@@ -136,6 +150,8 @@ import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
 import { getHouseInfo, setHouseInfo, editHouseInfo } from "@/api/client";
 import { mapState } from "vuex";
+// 校验
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Dialog,
   Button,
@@ -154,6 +170,7 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   computed: {
     // 所有字典
     ...mapState({
@@ -183,33 +200,24 @@ export default {
       },
       columns: [], //待选择列表
       errorMsg: {
-        ownerProperty: "", //产权所有人
-        specificAddress: "", //详细地址
-        houseArea: "", //房产面积(m²)
-        isHasHouse: "",
-        houseType: "", //房产性质
-        houseZon: "", //房产区域
-        provCityZon: "" //房产所在地
+        specificAddress: '',
+        houseZon: '',
+        propertyHolderNum: '',
+        isHasHouse: '',
+        houseType: '',
+        houseArea: '',
+        propertyValue: '',
+        ownerProperty: '',
+        provCityZonId: '',
+        propertyOwneratio: '',
+        guaranteeId: ''
       },
-
-      searchData: {
-        id: ""
-      },
-
-      subData: {},
 
       params: {},
 
       selectShow: false, //下拉选择器显示
       pickerTitle: "", //下拉列表title
-      addressShow: false, // 城市下拉选择器显示
-      selectLoading: true, //下拉选择 loading
-      addressTitle: "", //城市下拉列表title
-      areaList: {}, //城市列表 init
-
-      subLoading: false, //提交loading
-      subDisabled: false, //按钮禁用状态
-      ruleData: {} // 验证信息
+      dLoading: false, //按钮禁用状态
     };
   },
   methods: {
@@ -229,11 +237,20 @@ export default {
         projectId: this.params.projectId,
         id: this.params.id
       }).then(res => {
-        if(res.code == 200) {
+        if (res.code == 200) {
           this.formData = res.data;
-          this.formData.isHasHouseDesc = this.returnText('yes_no', this.formData.isHasHouse);
-          this.formData.houseZonDesc = this.returnText('Property_area', this.formData.houseZon);
-          this.formData.houseTypeDesc = this.returnText('Property_nature', this.formData.houseType);
+          this.formData.isHasHouseDesc = this.returnText(
+            "yes_no",
+            this.formData.isHasHouse
+          );
+          this.formData.houseZonDesc = this.returnText(
+            "Property_area",
+            this.formData.houseZon
+          );
+          this.formData.houseTypeDesc = this.returnText(
+            "Property_nature",
+            this.formData.houseType
+          );
         }
       });
     },
@@ -287,6 +304,16 @@ export default {
     },
     // 保存
     custSubmit() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+        if (this.errorMsg[item] !== "") {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       this.formData.customerId = this.params.customerId;
       if (this.formData.isHasHouse == 0) {
         this.formData.ownerProperty = "";
@@ -300,44 +327,39 @@ export default {
         this.formData.houseAreaDesc = "";
         this.formData.wbtProvCityZonCode = "";
       }
-      if(this.isView == 0) {
+      this.dLoading = true;
+      if (!this.params.id) {
         setHouseInfo(this.formData).then(res => {
-          if(res.code == 200) {
-            this.$notify({
-              type: "success",
-              message: res.msg
-            });
-            this.$router.go(-1);
-          } else {
-            this.$notify({
-              type: "danger",
-              message: res.msg
-            });
-          }
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.$router.go(-1);
+          this.dLoading = false;
+        }).catch(()=>{
+          this.dLoading = false;
         });
       } else {
         editHouseInfo(this.formData).then(res => {
-          if(res.code == 200) {
-            this.$notify({
-              type: "success",
-              message: res.msg
-            });
-            this.$router.go(-1);
-          } else {
-            this.$notify({
-              type: "danger",
-              message: res.msg
-            });
-          }
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.$router.go(-1);
+          this.dLoading = false;
+        }).catch(()=>{
+          this.dLoading = false;
         });
       }
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
-    if(this.params.type == 1) {
+    this.isView = this.params.isView == 0;
+    if (this.params.id) {
       this.loadData();
+    } else {
+      this.rulesForm("customer/cuPersonalHouse");
     }
   }
 };

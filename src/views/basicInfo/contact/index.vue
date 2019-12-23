@@ -24,10 +24,14 @@
               name="emergencyContactName"
               v-model="i.emergencyContactName"
               clearable
+              :disabled="!isView"
               :required="index == 0"
               label="联系人名称："
               input-align="right"
               placeholder="请输入紧急联系人名称"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.emergencyContactName"
+              error-message-align="right"
             />
             <van-field
               :border="false"
@@ -35,18 +39,25 @@
               name="contactPhone"
               v-model="i.contactPhone"
               clearable
+              :disabled="!isView"
               :required="index == 0"
               label="联系人电话："
               input-align="right"
               placeholder="请输入联系人电话"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.contactPhone"
+              error-message-align="right"
             />
             <van-cell
               :border="false"
               title="与借款人关系："
               :required="index == 0"
-              :is-link="isView == 0"
+              :is-link="isView"
               :value="i.borrowerRelationshipDesc"
-              @click.native="isView == 1?'':loadList(index)"
+              @click.native="!isView?'':loadList(index)"
+              label-class='labelClass'
+              @blur.prevent="ruleMessge($event,index)" 
+              :label="errorMsg.borrowerRelationship[index]"
             />
           </van-cell-group>
         </div>
@@ -72,7 +83,7 @@
         title="与借款人关系"
         :columns="columns"
         :value-key="'label'"
-        @cancel="onCancel"
+        @cancel="selectShow = false"
         @confirm="onConfirm"
       />
     </van-action-sheet>
@@ -85,6 +96,8 @@ import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import { mapState } from "vuex";
 import { getContactInfo, setContactSave } from "@/api/client";
+// 校验
+import formValidator from '@/mixins/formValidator'
 import { Row, Col, Icon, Cell, CellGroup, Field, Divider, ActionSheet, Picker, Button } from "vant";
 
 const Components = [Row, Col, Icon, Cell, CellGroup, Field, Divider, ActionSheet, Picker, Button];
@@ -93,16 +106,22 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   data() {
     return {
-      isView: 1,
+      isView: false,
       contactlist: [],
       params: {},
       selectShow: false,
       columns: [],
       ofKey: 0,
       subLoading: false,
-      subDisabled: false
+      subDisabled: false,
+      errorMsg: {
+        emergencyContactName: '',
+        contactPhone: '',
+        borrowerRelationship: ''
+      }
     };
   },
   components: {
@@ -141,9 +160,6 @@ export default {
         default:
           break;
       }
-    },
-    onCancel() {
-      this.selectShow = false;
     },
     onConfirm(row) {
       this.contactlist[this.ofKey].borrowerRelationship = row.value;
@@ -194,6 +210,16 @@ export default {
         this.$notify({ type: 'warning', message: '紧急联系人至少一人' })
         return
       }
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.contactlist[0][item]);
+        if (this.errorMsg[item] !== '') {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       setContactSave(this.contactlist).then(res => {
         if(res.code == 200) {
           this.$notify({ type: "success", message: res.msg });
@@ -205,10 +231,9 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
-    if (this.params.type == 1) {
-      this.loadData();
-    }
+    this.isView = this.params.isView == 0?true:false;
+    this.loadData();
+    this.rulesForm("customer/cuEmergencyContact");
   }
 };
 </script>

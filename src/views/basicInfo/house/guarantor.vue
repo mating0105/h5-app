@@ -9,14 +9,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pathHouse"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button"  v-for="(i,index) in houseList" :key="index">
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <div class="xh-form-body">
               <van-col span="24">
                 <van-col span="12">
@@ -83,7 +83,7 @@ export default {
     return {
       houseList: [],
       loading: false,
-      isView: 1
+      isView: false
     }
   },
   computed: {
@@ -108,7 +108,7 @@ export default {
       return name;
     },
     pathHouse() {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addHouseGuarantor', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -130,11 +130,10 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, type: 1 } });
+      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, isView: 0 } });
     },
     // 删除
     delList(rows) {
-      this.loading = true;
       deleteGuaranteeHouse({
         id: rows.id
       }).then(res => {
@@ -142,16 +141,13 @@ export default {
           type: "success",
           message: res.msg
         });
-        this.loading = false;
         this.loadData();
-      }).catch(()=>{
-        this.loading = false;
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
   }
 }
