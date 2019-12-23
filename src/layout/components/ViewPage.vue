@@ -1,7 +1,7 @@
 <template>
     <div id="view-page">
         <div>
-            <NavBar :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass' :rightMenuList="rightMenuList" :goPage='goPage'></NavBar>
+            <NavBar v-if='!headerShow' :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass' :rightMenuList="rightMenuList" :goPage='goPage'></NavBar>
             <slot name="head"></slot>
         </div>
         <div class="wrapper" ref="wrapper">
@@ -27,7 +27,7 @@ import { log } from 'util';
     name: "ViewPage",
     data () {
       return {
-        toast: null
+        toast: null,
       }
     },
     props: {
@@ -42,7 +42,8 @@ import { log } from 'util';
       rightMenuList:{
         type: Array,
         default: () => []
-      }
+      },
+      headerShow:Boolean,//显示返回头部   false/不传:显示；true：不显示
     },
     components: {
       NavBar

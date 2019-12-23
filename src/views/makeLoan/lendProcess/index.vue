@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :id="dealState?'':'lendProcess'">
+    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :class="dealState?'':'lendProcess'">
         <van-tabs v-model="activeName" v-if="projectForm.projectInfo" @change='changeTab'>
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
@@ -936,7 +936,7 @@
         color: #323233;
     }
 
-    #lendProcess .van-cell__right-icon {
+    .lendProcess .van-cell__right-icon {
         color: #323233;
     }
 
