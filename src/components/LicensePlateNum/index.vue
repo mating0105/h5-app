@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 18:39:30
+ * @LastEditTime : 2019-12-23 09:27:52
  -->
 
 <template>
@@ -13,8 +13,8 @@
       :arr="cacheNumArr"
       :first="cacheFirst"
       @click="clickShowKeyboard"
-      isScan
       @scanChange="scanChange"
+      isScan
     ></showList>
     <div class="plate_number">
       <van-popup
@@ -96,8 +96,6 @@
 <script>
 import Vue from "vue";
 import ShowList from "./showList";
-// 其他组件
-import { bridge } from "@/utils/bridge";
 // 其他组件
 import { Popup, Notify } from "vant";
 const Components = [Popup, Notify];
@@ -203,11 +201,11 @@ export default {
     }
   },
   mounted() {
-    this.judgeCarNum(true);
+    this.judgeCarNum(null, true);
   },
   methods: {
-    judgeCarNum(flag) {
-      if (this.value) {
+    judgeCarNum(num, flag) {
+      if (this.value || num) {
         const [first, ...numArr] = this.value.split("");
         this.first = first;
         this.numArr = numArr;
@@ -263,9 +261,9 @@ export default {
     },
     // OCR识别
     scanChange() {
-      // TODO
-      bridge.callhandler("vinOCR",null, data => {
-        console.log(1111,data)
+      this.$bridge.callHandler("plateOCR", null, data => {
+        const { plateNum } = data;
+        this.judgeCarNum(plateNum, true);
       });
     },
     sub() {
