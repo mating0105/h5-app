@@ -859,14 +859,13 @@
         console.log(e, 'e')
         this.$bridge.callHandler('idCardOCR', '', (res) => {
           console.log(res)
-          this.form.borrowerInfo.mainBorrowerId = res.vin || ''
+          this.form.borrowerInfo.mainBorrowerId = res.ID_NUM || ''
         })
       },
       //银行卡号
       discernBankCardCum (e) {
         this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-          console.log(res)
-          this.form.receiptInfo.receiptAccount = res.vin || ''
+          this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
         })
       }
     },

@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-23 09:27:52
+ * @LastEditTime : 2019-12-23 14:04:37
  -->
 
 <template>
@@ -197,16 +197,16 @@ export default {
   },
   watch: {
     value(val) {
-      this.judgeCarNum();
+      this.judgeCarNum(val);
     }
   },
   mounted() {
-    this.judgeCarNum(null, true);
+    this.judgeCarNum(this.value, true);
   },
   methods: {
     judgeCarNum(num, flag) {
-      if (this.value || num) {
-        const [first, ...numArr] = this.value.split("");
+      if (num) {
+        const [first, ...numArr] = num.substr(0, 7).split("");
         this.first = first;
         this.numArr = numArr;
         if (flag) {
@@ -220,7 +220,7 @@ export default {
     },
     // 唤起键盘
     clickShowKeyboard() {
-      this.judgeCarNum();
+      this.judgeCarNum(this.value);
       if (!this.first) {
         this.showChinese = true;
       } else {
@@ -254,7 +254,7 @@ export default {
         // 把选中的值 push 到 numArr 内
         this.numArr.push(this.enNumber[index].name);
         // 如果 numArr 中的值超过 7 个（车牌号的最大位数），删除最后一个
-        if (this.numArr.length > 7) {
+        if (this.numArr.length > 6) {
           this.numArr.pop();
         }
       }
@@ -262,15 +262,19 @@ export default {
     // OCR识别
     scanChange() {
       this.$bridge.callHandler("plateOCR", null, data => {
-        const { plateNum } = data;
+        const { PLATE_NUM: plateNum } = data;
         this.judgeCarNum(plateNum, true);
+        this.$emit("input", plateNum);
+        this.$emit("licensePlateNumChange", {
+          value: plateNum
+        });
       });
     },
     sub() {
       const first = this.first;
       const numArr = this.numArr;
       const combinate = `${first}${numArr.join("")}`;
-      if (combinate.length === 8) {
+      if (combinate.length === 7) {
         this.cacheFirst = first;
         this.cacheNumArr = numArr;
         this.$emit("input", combinate);

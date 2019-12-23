@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 15:14:37
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 15:14:51
+ * @LastEditTime : 2019-12-23 13:57:57
  -->
 
 <template>
@@ -19,7 +19,7 @@
       <li>{{arr[3]}}</li>
       <li>{{arr[4]}}</li>
       <li>{{arr[5]}}</li>
-      <li>{{arr[6]}}</li>
+      <!-- <li>{{arr[6]}}</li> -->
     </div>
     <van-icon
       @click.stop="orcScan"
