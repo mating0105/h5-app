@@ -1,5 +1,5 @@
 <template>
-    <ViewPage>
+    <ViewPage :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
