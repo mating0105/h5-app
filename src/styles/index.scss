@@ -189,5 +189,9 @@ div:focus {
 .xh-fold-panel.is-always-shadow {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
-
+// call 验证的提示颜色
+.labelClass {
+  color: #ee0a24 !important;
+  text-align: right;
+}
 

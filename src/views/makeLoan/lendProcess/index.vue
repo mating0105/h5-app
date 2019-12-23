@@ -945,8 +945,4 @@
         color: #323233;
     }
 
-    .labelClass {
-        color: #ee0a24;
-        text-align: right;
-    }
 </style>
