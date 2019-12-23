@@ -9,6 +9,7 @@
               name="plus"
               style="line-height: inherit;"
               @click="pullUrl"
+              v-if="isView == 0"
             />
           </van-cell>
         </section>
@@ -156,6 +157,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     this.loadData();
   },
 }

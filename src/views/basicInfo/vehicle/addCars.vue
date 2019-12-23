@@ -311,8 +311,8 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     if (this.params.type == 1) {
-      this.isView = this.params.type;
       this.formData = this.params;
     }
   }

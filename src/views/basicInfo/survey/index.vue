@@ -660,6 +660,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     this.loadData();
   }
 };

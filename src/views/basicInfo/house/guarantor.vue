@@ -9,6 +9,7 @@
               name="plus"
               style="line-height: inherit;"
               @click="pathHouse"
+              v-if="isView == 0"
             />
           </van-cell>
         </section>
@@ -81,7 +82,8 @@ export default {
   data() {
     return {
       houseList: [],
-      loading: false
+      loading: false,
+      isView: 1
     }
   },
   computed: {
@@ -149,6 +151,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView;
     this.loadData();
   }
 }

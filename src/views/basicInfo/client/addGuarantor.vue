@@ -633,7 +633,7 @@ export default {
   },
   created() {
     this.params = this.$route.query;
-    this.isView = this.params.type;
+    this.isView = this.params.isView;
     if (this.params.type == 1) {
       this.loadClient();
     }

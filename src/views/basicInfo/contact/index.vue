@@ -9,6 +9,7 @@
               name="plus"
               style="line-height: inherit;"
               @click="addContact"
+              v-if="isView == 0"
             />
           </van-cell>
         </section>
@@ -204,7 +205,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.type;
+    this.isView = this.params.isView;
     if (this.params.type == 1) {
       this.loadData();
     }
