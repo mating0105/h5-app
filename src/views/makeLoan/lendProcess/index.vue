@@ -62,7 +62,7 @@
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
                                     :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="discernIdcard"/>
+                                    @click-right-icon="IdcardLoading"/>
                             <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerPhone"/>
@@ -260,6 +260,9 @@
             <brand :visible.sync="showBrand" v-if="showBrand" @change="changeBrand"></brand>
         </transition>
 
+        <!-- 身份证识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discernIdcard" />
+
     </ViewPage>
 </template>
 
@@ -397,6 +400,12 @@
         },
         formData: {},
         errMsg: '',//意见描述报错信息
+        //扫描
+        showScan:false,
+        actions: [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" }
+        ],
       };
     },
     methods: {
@@ -853,18 +862,19 @@
       /**
        * 识别
        */
+      IdcardLoading(){
+          this.showScan=true;
+      },
       //身份证号
       discernIdcard (e) {
-        console.log(e, 'e')
-        this.$bridge.callHandler('idCardOCR', '', (res) => {
-          alert(res)
+        this.$bridge.callHandler('idCardOCR', e.value, (res) => {
           this.form.borrowerInfo.mainBorrowerId = res.ID_NUM || ''
         })
+        this.showScan=false;
       },
       //银行卡号
       discernBankCardCum (e) {
         this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-          alert(res)
           this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
         })
       }
