@@ -654,7 +654,4 @@ export default {
 </script>
 
 <style lang="scss">
-.labelClass{
-    left:0!important;
-}
 </style>
