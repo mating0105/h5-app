@@ -5,7 +5,7 @@
         <section class="xh-plus">
           <van-cell title="担保人收入">
             <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"
-              v-if="isView == 0"/>
+              v-if="isView"/>
           </van-cell>
         </section>
       </template>
@@ -14,7 +14,7 @@
           v-for="(i,index) in guarantorList"
           :key="index"
         >
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <div class="xh-form-body">
               <section>
                 <van-cell title="担保人姓名：" :value="i.cuGuaranteeName" />
@@ -87,7 +87,8 @@ export default {
     return {
       guarantorList: [],
       projectId: "",
-      params: {}
+      params: {},
+      isView: false
     };
   },
   computed: {
@@ -155,7 +156,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
   }
 };

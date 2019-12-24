@@ -109,7 +109,9 @@ export default {
     },
     // 筛选返回
     goPage(val) {
-      console.log(val);
+      this.params.processState = val.value;
+      this.params.pageIndex = 1;
+      this.onLoad();
     },
     onRefresh() {
       this.params.pageIndex = 1;
@@ -126,11 +128,11 @@ export default {
           // 加载状态结束
           this.loading = false;
           this.params.pageIndex ++;
-          const { proj_status } = this.wordbook;
-          proj_status.forEach(t => {
+          const { apply_status } = this.wordbook;
+          apply_status.forEach(t => {
             t.title = t.label;
           });
-          this.rightlist = proj_status;
+          this.rightlist = apply_status;
           // 数据全部加载完成
           if (this.list.length == data.totalCount) {
             this.finished = true;
@@ -169,9 +171,23 @@ export default {
     addClint() {
       this.$router.push({ path: '/customerList' });
     },
+    // 返回搜索有值的参数
+    returnVal(vals) {
+      let obj = {};
+      for (var i in vals) {
+        if (vals[i] || vals[i] === 0) {
+          obj[i] = vals[i];
+        }
+      }
+      this.params = obj;
+    },
     // 搜索
     onSearch(val) {
-      console.log(val);
+      this.params.pageIndex = 1;
+      this.params.customerName = val;
+      this.returnVal(this.params);
+      this.list = [];
+      this.onLoad();
     }
   },
   mounted() {
