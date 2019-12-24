@@ -639,7 +639,7 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
-        if (this.errorMsg[item] !== "") {
+        if (this.errorMsg[item]) {
           console.log(this.errorMsg[item],item)
           num++;
         }

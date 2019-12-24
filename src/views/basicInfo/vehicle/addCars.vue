@@ -245,11 +245,10 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
-        if (this.errorMsg[item] !== "") {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
-      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }
@@ -297,7 +296,7 @@ export default {
     // OCR识别车架号
     OCRScan() {
       this.$bridge.callHandler('vinOCR', '', (res) => {
-        this.formData.carNumber = res.VIN || '';
+        this.$set(this.formData, 'carNumber', res.VIN || '');
       })
     }
   },
