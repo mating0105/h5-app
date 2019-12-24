@@ -620,9 +620,4 @@ export default {
 #bankLend .van-cell__right-icon{
     color: #323233;
 }
-.labelClass{
-    color:#ee0a24;
-    text-align: right;
-    left: 0!important;
-}
 </style>

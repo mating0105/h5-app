@@ -519,30 +519,37 @@ export default {
         case "婚姻状况":
           this.formData.marriage = rows.value;
           this.formData.marriageDesc = rows.label;
+          this.errorMsg.marriage='';
           break;
         case "文化程度":
           this.formData.levelEducation = rows.value;
           this.formData.levelEducationDesc = rows.label;
+          this.errorMsg.levelEducation='';
           break;
         case "子女情况":
           this.formData.childrenSituation = rows.value;
           this.formData.childrenSituationDesc = rows.label;
+          this.errorMsg.childrenSituation='';
           break;
         case "子女上学情况":
           this.formData.schoolSituation = rows.value;
           this.formData.schoolSituationDesc = rows.label;
+          this.errorMsg.schoolSituation='';
           break;
         case "配偶文化程度":
           this.formData.spsCltrDgr = rows.value;
           this.formData.spsCltrDgrDesc = rows.label;
+          this.errorMsg.spsCltrDgr='';
           break;
         case "单位性质":
           this.formData.unitChar = rows.value;
           this.formData.unitCharDesc = rows.label;
+          this.errorMsg.unitChar='';
           break;
         case "配偶单位性质":
           this.formData.spsUnitChar = rows.value;
           this.formData.spsUnitCharDesc = rows.label;
+          this.errorMsg.spsUnitChar='';
           break;
       }
       this.selectShow = false;
@@ -556,12 +563,14 @@ export default {
           this.formData.pprovCityZon = name;
           this.formData.pProvCityZonId = code;
           this.formData.pProvCityZonCode = code;
+          this.errorMsg.pProvCityZonId='';
           break;
         case '居住地':
           this.formData.rProvCityZon = name;
           this.formData.rprovCityZon = name;
           this.formData.rProvCityZonId = code;
           this.formData.rProvCityZonCode = code;
+          this.errorMsg.rProvCityZonId='';
           break;
         default:
           break;
