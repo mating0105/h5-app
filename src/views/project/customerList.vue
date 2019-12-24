@@ -1,5 +1,5 @@
 <template>
-  <ViewPage iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
+  <ViewPage :loading="allLoading" iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
     <template v-slot:head>
       <van-search
         v-model="searchKey"
@@ -66,7 +66,8 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      rightlist: []
+      rightlist: [],
+      allLoading: false
     };
   },
   computed: {
@@ -198,6 +199,7 @@ export default {
     },
     // 创建一个新报单
     newProject(id) {
+      this.allLoading = true;
       createNewProj({
         id: id
       }).then(res => {
@@ -212,8 +214,9 @@ export default {
           projectNo: projectInfo.projectNo,
           projectId: projectInfo.projectId,
         }});
+        this.allLoading = false;
       }).catch(()=>{
-
+        this.allLoading = false;
       });
     }
   },
