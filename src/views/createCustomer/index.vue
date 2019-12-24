@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="loading" :backFn="closeNativeWebView">
+  <ViewPage :loading="loading">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
@@ -448,7 +448,7 @@ export default {
             message: "建档成功"
           });
           this.loading = false;
-          this.closeNativeWebView()
+          this.$router.go(-1);
         })
         .catch(e => {
           this.loading = false;
