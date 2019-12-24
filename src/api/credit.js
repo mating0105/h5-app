@@ -78,7 +78,7 @@ export function getUsers(params) {
  */
 export function submitCredit(params) {
   return request({
-    url: 'order/creditProcess/submitCredit',
+    url: '/order/creditProcess/submitCredit',
     method: 'post',
     data: params
   })
@@ -90,7 +90,7 @@ export function submitCredit(params) {
  */
 export function stopTask(params) {
   return request({
-    url: 'order/creditProcess/stopTask',
+    url: '/order/creditProcess/stopTask',
     method: 'get',
     params
   })

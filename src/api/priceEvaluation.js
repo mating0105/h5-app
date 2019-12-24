@@ -18,7 +18,7 @@ export function getList(params) {
  */
 export function save(params) {
   return request({
-    url: 'order/creditInfo/assessmentCar',
+    url: '/order/creditInfo/assessmentCar',
     method: 'post',
     data: params
   })
