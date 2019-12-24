@@ -211,6 +211,7 @@
         this.dataList.investigateBank = tempBank.id
         this.dataList.investigateBankName = value[0] + '-' + value[1];
         this.dataList.bankCode = tempBank.bankCode;
+        this.errorMsg.investigateBankName = ''
       },
       onChange (picker, values) {
         picker.setColumnValues(1, this.bankList[values[0]]);

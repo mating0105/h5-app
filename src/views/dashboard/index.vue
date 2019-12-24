@@ -8,22 +8,8 @@
         <p>token: {{token}}</p>
         <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
         <p style="color: #21C272">{{test}}</p>
-<!--        <van-checkbox v-model="check">复选框</van-checkbox>-->
-<!--        <van-cell-group>-->
-<!--            <van-field v-model="value" placeholder="请输入用户名"/>-->
-<!--        </van-cell-group>-->
-        <!--        <van-list-->
-        <!--                v-model="loading"-->
-        <!--                :finished="finished"-->
-        <!--                finished-text="没有更多了"-->
-        <!--                @load="getList"-->
-        <!--        >-->
-        <!--            <van-cell-->
-        <!--                    v-for="item in dataList"-->
-        <!--                    :key="item.id"-->
-        <!--                    :title="item.display_time"-->
-        <!--            />-->
-        <!--        </van-list>-->
+        <input type="file">
+        <van-uploader style='margin-top: 1rem;' v-model="fileList" multiple/>
     </ViewPage>
 
 </template>
@@ -32,11 +18,11 @@
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
   import Vue from 'vue'
-  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast } from 'vant';
+  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader } from 'vant';
   import { getList } from '@/api/table'
   import { getToken } from '@/utils/auth'
 
-  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast]
+  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -63,7 +49,10 @@
         finished: false,
         msg: 'test data',
         test: '',
-        token: getToken()
+        token: getToken(),
+        fileList: [
+          {url: 'https://img.yzcdn.cn/vant/leaf.jpg'},
+        ]
       }
     },
     methods: {
