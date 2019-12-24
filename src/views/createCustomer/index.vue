@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="loading">
+  <ViewPage :loading="loading" :backFn="closeNativeWebView">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
@@ -60,9 +60,6 @@
             is-link
             :value="returnText('credit_object_type',customerData.creditObjectType)"
             @click="loadType('征信对象类型', 'creditObjectType')"
-            label-class="labelClass"
-            @blur.prevent="ruleMessge"
-            :label="errorMsg.creditObjectType"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -143,6 +140,7 @@
             v-model="customerData.contactPhone"
             required
             clearable
+            name="contactPhone"
             error-message-align="right"
             label="手机号码"
             input-align="right"
@@ -281,7 +279,6 @@ export default {
       errorMsg: {
         customerName: "", //客户姓名
         certificateNum: "", //身份证号
-        creditObjectType: "", //征信对象类型
         nation: "", //民族
         familyAddress: "", //身份证住址
         signOrg: "", //身份证签发机关
@@ -451,7 +448,7 @@ export default {
             message: "建档成功"
           });
           this.loading = false;
-          this.$router.go(-1);
+          this.closeNativeWebView()
         })
         .catch(e => {
           this.loading = false;
@@ -521,13 +518,11 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      console.log(this.customerData);
     }
   },
   mounted() {
     this.getFamilyDic();
     this.params = this.$route.query;
-    console.log(this.params);
     this.rulesForm("cs-personal-xh");
     if (this.params.credit) {
       //从征信里进入
