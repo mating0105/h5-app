@@ -353,6 +353,21 @@ export default {
       wordbook: state => state.user.wordbook
     })
   },
+  watch:{
+        "formData.marriage"(newValue,oldValue){
+            var arr=['spsCltrDgr','spsUnitChar','spsNm','spsCtcTel','spsCrdtNo'];
+            if(newValue=='2' || newValue == "4"){
+                arr.forEach((item,index)=>{
+                    this.$set(this.errorMsg,item,'');
+                })
+            }else{
+                arr.forEach((item,index)=>{
+                    Vue.delete(this.errorMsg,item);
+                })
+            }
+        }
+
+  },
   data() {
     return {
       isView: false,
@@ -404,18 +419,16 @@ export default {
         rProvCityZonId: '',
         pProvCityZonId: '',
         schoolSituation: '',
-        spsCtcTel: '',
         customerName: '',
-        spsCrdtNo: '',
         marriage: '',
         childrenSituation: '',
         localResidence: '',
         primarySchool: '',
         levelEducation: '',
         unitChar: '',
-        spsNm: '',
         contactPhone: '',
-        certificateNum: ''
+        certificateNum: '',
+        spsRsdncDtlAdr: '',
       },
       selectShow: false, //下拉选择器显示
       selectLoading: true, //下拉选择 loading
@@ -574,7 +587,7 @@ export default {
     custSubmit() {
       let num = 0;
       for (let item in this.errorMsg) {
-        this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+        this.errorMsg[item]= this.returnMsg(item, this.formData[item]);
         if (this.errorMsg[item] !== '') {
           num++;
         }
