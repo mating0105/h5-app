@@ -415,6 +415,7 @@ export default {
       return name;
     },
     confirm(row) {
+      console.log(row);
       switch (this.typeTitle) {
         case "下一节点处理人":
           this.postFrom.processedBy = row.id;

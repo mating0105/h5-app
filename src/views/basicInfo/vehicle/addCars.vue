@@ -10,6 +10,9 @@
             title="车辆品牌型号："
             :value="formData.carModel"
             @click="isView?getBrand():false"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.carModel"
           />
         </section>
         <section>
@@ -29,7 +32,13 @@
           />
         </section>
         <section>
-          <van-cell required title="车牌号:">
+          <van-cell 
+            required 
+            title="车牌号:"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.carNumber"
+          >
             <licensePlateNum
               v-model="formData.carNumber"
               @licensePlateNumChange="licensePlateNumChange"
@@ -49,6 +58,7 @@
             placeholder="请输入车龄"
             @blur.prevent="ruleMessge"
             :error-message="errorMsg.carAge"
+            error-message-align="right"
           />
         </section>
 
@@ -59,6 +69,9 @@
             is-link
             :value="formData.buyTypeDesc"
             @click.native="isView?loadList():false"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.buyType"
           />
         </section>
 
@@ -74,6 +87,7 @@
             placeholder="请输入车辆价值"
             @blur.prevent="ruleMessge"
             :error-message="errorMsg.carValue"
+            error-message-align="right"
           />
         </section>
 

@@ -223,6 +223,7 @@ export default {
       setContactSave(this.contactlist).then(res => {
         if(res.code == 200) {
           this.$notify({ type: "success", message: res.msg });
+          this.$router.go(-1);
         } else {
           this.$notify({ type: "danger", message: res.msg });
         }
