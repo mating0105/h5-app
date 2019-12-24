@@ -110,7 +110,7 @@ export default {
     },
     documentType() {
       let obj = {};
-      if (this.wordbook.document_type && this.wordbook.document_type.length) {
+      if (this.wordbook.document_type) {
         this.wordbook.document_type.forEach(item => {
           obj[item.value] = item;
         });
