@@ -399,7 +399,7 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.customerData[item]);
-        if (this.errorMsg[item] !== "") {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
