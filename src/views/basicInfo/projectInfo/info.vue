@@ -221,7 +221,7 @@
       </van-row>
     </Card>
     <!-- 车辆信息 -->
-    <Card class="xh-top-10">
+    <Card class="xh-top-10" :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell
@@ -244,9 +244,9 @@
           </van-cell>
         </section>
       </template>
-      <van-row class="xh-swipe-button">
-        <van-col span="24" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="(i.isCreditAdd == '1' || isView)?true:false">
+      <van-row class="xh-row xh-swipe-button">
+        <van-col span="24" class="xh-row-col" v-for="(i,index) in projProjectInfo.cars" :key="index">
+          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
             <section>
               <van-cell
                 title="车辆类别:"
@@ -299,12 +299,12 @@
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsEdit(i)"
+                @click.native="carsEdit(i,index)"
               >修改</van-button>
               <van-button
                 type="danger"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsDel(i)"
+                @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
           </van-swipe-cell>
@@ -610,7 +610,9 @@ import {
   getProductTypeList,
   getLoanPlatformTree,
   getAllTpBuyPlatform,
-  setProjectInfo
+  setProjectInfo,
+  setNewCar,
+  deleteCar
 } from "@/api/project";
 // 自定义组件
 import redCard from "@/components/redCard/index";
@@ -653,7 +655,7 @@ Components.forEach(item => {
 import { mapState } from "vuex";
 
 export default {
-  name: "projectInfo",
+  // name: "projectInfo",
   components: {
     redCard,
     Card,
@@ -737,7 +739,11 @@ export default {
     }
   },
   activated(){
-    console.log('11111111111', this.$store.state.credit.carData);
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(datas) {
+      this.projProjectInfo = datas;
+      this.newCar(this.$store.state.credit.carData);
+    }
   },
   data() {
     return {
@@ -881,27 +887,61 @@ export default {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum
       }
+      sessionStorage.setItem('pro', JSON.stringify(this.projProjectInfo));
       this.$router.push({ path: "/vehicle" , query });
     },
-    // 车辆清空
-    initCar () {
-      const carData = this.$store.state.credit.carData
-      if (carData) {
-        const index = this.$store.state.credit.index
-        if (index === -1) {
-          this.dataList.carInfos.push(carData)
-        } else {
-          const carInfo = this.dataList.carInfos[index]
-          if (carInfo) {
-            for (let key in carData) {
-              if (carData.hasOwnProperty(key)) {
-                carInfo[key] = carData[key] || carInfo[key]
-              }
-            }
-          }
-        }
-        this.$store.dispatch('credit/removeCarData')
+    // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
+    carsEdit(rows, inx) {
+
+    },
+    // 车辆删除
+    carsDel (rows, inx) {
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.projProjectInfo.cars.splice(inx, 1);
+      });
+    },
+    // 新增车辆
+    newCar(data) {
+      let rows = {
+        carType: data.carType,
+        carType2: data.carType2,
+        carNature: data.carNature, // new_car 新车 ----- 1 二手车
+        carSource: data.carSource,
+        carSeries: data.carSeriesId,
+        carSpecifications: data.carSpecifications,
+        automarke: {
+          carModelId: data.carModelId,
+          brndNmId: data.carBrandId,
+          id: "",
+          carSeriesId: data.carSeriesId,
+          delFlag: "0"
+        },
+        salePrice: data.salePrice,
+        remark: data.remark,
+        delFlag: "0",
+        proj: {
+          id: this.params.projectId
+        },
+        ruleFlag: 'Y',
+        carLoanPart: data.carLoanPart, //车辆贷款部分
+        anchoredTransportCompany: data.anchoredTransportCompany, // 挂靠运输公司
+        estimateOriginalPrice: data.estimateOriginalPrice, //评估价
+        hgstAmt: data.hgstAmt, //最高送审金额
+        asesInstNm: data.asesInstNm,
+        assessId: data.assessId,
       }
+      setNewCar(rows).then(res => {
+        this.projProjectInfo.cars = res.data;
+        sessionStorage.removeItem("pro");
+      }).catch(()=>{
+        sessionStorage.removeItem("pro");
+      });
     },
     // 字典转换
     returnText(n, val, list, ids, field) {
@@ -1703,7 +1743,10 @@ export default {
   mounted() {
     this.params = this.$route.query;
     this.isView = this.params.isView == 0;
-    this.loanData();
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(!datas) {
+      this.loanData();
+    }
   }
 };
 </script>

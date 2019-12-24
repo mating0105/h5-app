@@ -127,7 +127,7 @@ export const constantRoutes = [
     path: '/projectInfo',
     name: 'ProjectInfo',
     component: () => import('@/views/basicInfo/projectInfo/index'),
-    meta: {title: '新建报单', icon: 'dashboard', keepAlive: true}
+    meta: {title: '新建报单', keepAlive: true}
   },
   
   { 

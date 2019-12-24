@@ -145,6 +145,21 @@ export function getDeclaration(params) {
     params
   })
 }
-
+// 新增车辆 
+export function setNewCar(params) {
+  return request({
+    url: '/order/project/saveCar',
+    method: 'post',
+    data: params
+  })
+}
+// 删除车辆 
+export function deleteCar(params) {
+  return request({
+    url: '/order/project/deleteCar',
+    method: 'post',
+    data: params
+  })
+}
 
 
