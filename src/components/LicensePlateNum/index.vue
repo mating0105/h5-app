@@ -25,21 +25,12 @@
       >
         <div class="pop-content">
           <div class="operate-btn">
-            <div
-              @click.stop="closeKeyboard"
-              class="cancel"
-            >取消</div>
+            <div @click.stop="closeKeyboard" class="cancel">取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div
-              @click.stop="sub"
-              class="ok"
-            >确定</div>
+            <div @click.stop="sub" class="ok">确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList
-              :arr="numArr"
-              :first="first"
-            ></showList>
+            <showList :arr="numArr" :first="first"></showList>
           </div>
           <div class="plate_chinese_box">
             <!-- 点击对应的汉字，进行输入 -->
@@ -55,27 +46,15 @@
     </div>
     <!-- 英文 数字 键盘 -->
     <div class="allBoard">
-      <van-popup
-        position="bottom"
-        v-model="showAllBoard"
-      >
+      <van-popup position="bottom" v-model="showAllBoard">
         <div class="pop-content">
           <div class="operate-btn">
-            <div
-              @click.stop="closeKeyboard"
-              class="cancel"
-            >取消</div>
+            <div @click.stop="closeKeyboard" class="cancel">取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div
-              @click.stop="sub"
-              class="ok"
-            >确定</div>
+            <div @click.stop="sub" class="ok">确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList
-              :arr="numArr"
-              :first="first"
-            ></showList>
+            <showList :arr="numArr" :first="first"></showList>
           </div>
 
           <div class="plate_number_box">
@@ -199,8 +178,12 @@ export default {
     };
   },
   watch: {
-    value(val) {
-      this.judgeCarNum(val);
+    value(val, oldValue) {
+      if (oldValue !== "") {
+        this.judgeCarNum(val);
+      } else {
+        this.judgeCarNum(val, true);
+      }
     }
   },
   mounted() {

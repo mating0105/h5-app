@@ -15,7 +15,7 @@
         </section>
       </template>
       <van-row class="xh-row">
-        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(item,index) in carsList" :key="index" @click.native="pushUrl(i)">
+        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(item,index) in carsList" :key="index">
           <van-swipe-cell :right-width="130" :disabled="!isView">
             <van-col span="24">
               <van-col span="12">
