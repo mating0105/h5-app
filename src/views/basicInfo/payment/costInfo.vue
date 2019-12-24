@@ -157,7 +157,11 @@ export default {
   },
   data() {
     return {
-      payDetail: {},
+      payDetail: {
+        projProjectInfo:{},
+        projBudgetList:{},
+        projPayInfo:{}
+      },
       params: {}
     };
   },
@@ -192,7 +196,10 @@ export default {
     }
   },
   mounted() {
-    this.params = this.$route.query;
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadData();
     this.getDict();
   }

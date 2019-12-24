@@ -899,8 +899,8 @@
         info: this.getStringToObj(this.$route.query.info),
         dealState: this.$route.query.dealState
       };
-      this.businessKey =2,//Number(this.params.info.businesskey);
-      this.dealState =false,//this.params.dealState == 1 ? false : true;
+      this.businessKey =Number(this.params.info.businesskey);
+      this.dealState =this.params.dealState == 1 ? false : true;
       this.userName=sessionStorage.getItem("userName");
       this.getDictionaryData();
       if (!this.dealState) {

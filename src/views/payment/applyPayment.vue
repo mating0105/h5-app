@@ -49,12 +49,12 @@
                 <van-cell-group :border="false">
                   <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
                 </van-cell-group>
-                <!-- <van-cell-group :border="false">
+                <van-cell-group :border="false">
                   <van-cell
                     title="产品性质"
                     :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)"
                   />
-                </van-cell-group>-->
+                </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
                 </van-cell-group>
@@ -630,7 +630,6 @@ export default {
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
-          this.rulesForm("order-capture-xh");
         })
         .catch(e => {
           this.loading = false;
@@ -640,18 +639,26 @@ export default {
     save() {
       let num = 0;
       for (let item in this.errorMsg) {
-        this.errorMsg[item] = this.returnMsg(
-          item,
-          this.paymentDetail.projBudgetList[item]
-        );
-        console.log(item,this.paymentDetail.projBudgetList[item])
-
-        // this.errorMsg[item] = this.returnMsg(item, this.paymentDetail.projBudgetList[item]);
-        // this.errorMsg[item] = this.returnMsg(item, this.paymentDetail.projProjectInfo[item]);
-        // this.errorMsg[item] = this.returnMsg(item, this.paymentDetail.projPayInfo[item]);
+        if (
+          item == "payType" ||
+          item == "payTime" ||
+          item == "payeeAccount" ||
+          item == "payeeBank" ||
+          item == "payeeSubBank" ||
+          item == "payeeFullName"
+        ) {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projPayInfo[item]
+          );
+        } else {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projBudgetList[item]
+          );
+        }
         if (this.errorMsg[item] !== "") {
           num++;
-          console.log(num)
         }
       }
       if (num !== 0) {
@@ -659,17 +666,16 @@ export default {
       }
       this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
-      console.log(this.paymentDetail);
-      // this.loading = true;
-      // savePay(this.paymentDetail)
-      //   .then(res => {
-      //     this.loading = false;
-      //     this.$notify({ type: "success", message: "保存成功" });
-      //     this.paymentDetail = res.data.project;
-      //   })
-      //   .catch(e => {
-      //     this.loading = false;
-      //   });
+      this.loading = true;
+      savePay(this.paymentDetail)
+        .then(res => {
+          this.loading = false;
+          this.$notify({ type: "success", message: "保存成功" });
+          this.paymentDetail = res.data.project;
+        })
+        .catch(e => {
+          this.loading = false;
+        });
     },
     //提交流程
     submit() {
@@ -927,6 +933,7 @@ export default {
     this.loadData();
     this.getDict();
     this.loadImg();
+    this.rulesForm("order-capture-xh");
   }
 };
 </script>
@@ -1031,5 +1038,10 @@ export default {
 }
 .xh-submit {
   padding: 0 10px 20px 10px;
+}
+.labelClass{
+  color: #ee0a24;
+  text-align: right;
+  left:0!important;
 }
 </style>

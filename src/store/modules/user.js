@@ -29,10 +29,10 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
-    setValue("userName", username);
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        setValue("userName", data.name);
         commit('SET_TOKEN', data && data.token)
         commit('SET_NAME', data && data.name)
         setToken(data.token)
