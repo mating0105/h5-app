@@ -74,6 +74,7 @@
               v-model="formData.companyTel"
               :disabled="!isView"
               label="单位电话："
+              required
               input-align="right"
               placeholder="请输入单位电话"
               type="tel"
@@ -87,6 +88,7 @@
             <van-cell
               name="provCityZon"
               title="单位地址："
+              required
               :is-link="isView"
               :value="formData.provCityZon"
               label-class="labelClass"
@@ -120,9 +122,103 @@
               error-message-align="right"
             />
           </section>
+          <div
+            v-if="formData.occupationalStatus == 1 || formData.occupationalStatus == 2 || formData.occupationalStatus == 3 || formData.occupationalStatus == 4"
+          >
+            <section>
+              <van-field
+                name="employeesNumber"
+                v-model="formData.employeesNumber"
+                :disabled="!isView"
+                label="员工人数(个)："
+                input-align="right"
+                clearable
+                placeholder="请输入员工人数"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.employeesNumber"
+                error-message-align="right"
+              />
+            </section>
+            <section>
+              <van-field
+                name="turnover"
+                v-model="formData.turnover"
+                :disabled="!isView"
+                label="年营业额(万元)："
+                input-align="right"
+                clearable
+                placeholder="请输入年营业额"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.turnover"
+                error-message-align="right"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="场地性质："
+                :is-link="isView"
+                :value="formData.fieldNatureDesc"
+                label-class="labelClass"
+                @click.native="!isView?'':loadList('场地性质')"
+              />
+            </section>
+            <section>
+              <van-field
+                name="turnover"
+                v-model="formData.profit"
+                :disabled="!isView"
+                label="利润比(%)："
+                input-align="right"
+                clearable
+                placeholder="请输入利润比"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.profit"
+                error-message-align="right"
+              />
+            </section>
+          </div>
+          <div v-if="formData.occupationalStatus == 3 || formData.occupationalStatus == 4">
+            <section>
+            <van-cell
+                title="股份构成："
+                :is-link="isView"
+                :value="formData.sharesConstituteDesc"
+                label-class="labelClass"
+                @click.native="!isView?'':loadList('股份构成')"
+              />
+            </section>
+            <section>
+              <van-field
+                name="registerCapital"
+                v-model="formData.registerCapital"
+                :disabled="!isView"
+                label="注册资金(万元)："
+                input-align="right"
+                clearable
+                placeholder="请输入利润比"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.registerCapital"
+                error-message-align="right"
+              />
+            </section>
+            <section>
+              <van-field
+                name="totalShares"
+                v-model="formData.totalShares"
+                :disabled="!isView"
+                label="占股比例(%)："
+                input-align="right"
+                clearable
+                placeholder="请输入利润比"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.totalShares"
+                error-message-align="right"
+              />
+            </section>
+          </div>
 
           <div
-            v-if="formData.occupationalStatusDesc != '承包方' && formData.occupationalStatusDesc != '私营业主' && formData.occupationalStatusDesc != '企业实际掌控者' && formData.occupationalStatusDesc != '股东' "
+            v-if="formData.occupationalStatus != 1 && formData.occupationalStatus != 2 && formData.occupationalStatus != 3 && formData.occupationalStatus != 4 "
           >
             <section>
               <van-field
@@ -132,6 +228,7 @@
                 label="月固定收入(元)："
                 input-align="right"
                 clearable
+                required
                 placeholder="请输入月固定收入"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.personalIncome"
@@ -141,7 +238,6 @@
             <section>
               <van-cell
                 title="月固定收入状况："
-                required
                 :is-link="isView"
                 label-class="labelClass"
                 @blur.prevent="ruleMessge"
@@ -284,42 +380,79 @@ export default {
       },
       columns: [], //待选择列表
       errorMsg: {
-        idyDmn: '',
-        otherAfterTaxSalary: '',
-        unitAddressCode: '',
-        companyName: '',
-        provCityZon: '',
-        workingYears: '',
-        occupationalStatus: '',
-        employeesNumber: '',
-        professional: '',
-        guaranteeId: '',
-        afterTaxSalary: '',
-        personalIncomeStatus: '',
-        personalIncome: '',
-        theTitle: '',
-        turnover: '',
-        profit: '',
-        companyTel: '',
-        incomePeople: '',
-        provCityZonId: '',
-        wbtProvCityZonCode: '',
-        detailAddressD: '',
-        totalShares: '',
-        incomeEvidence: '',
-        businessArea: '',
-        registerCapital: '',
-        detailAddress: '',
-        unitChar: '',
+        incomePeople: "",
+        occupationalStatus: "",
+        unitChar: "",
+        idyDmn: "",
+        companyName: "",
+        workingYears: "",
+        personalIncome: "",
+        incomeEvidence: "",
+        provCityZon: "",
+        companyTel: ""
       },
-
       params: {},
-
       selectShow: false, //下拉选择器显示
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
-      dLoading: false, //按钮禁用状态
+      dLoading: false //按钮禁用状态
     };
+  },
+  watch: {
+    "formData.occupationalStatus"(val) {
+      if (val == 6) {
+        this.errorMsg = {
+          incomePeople: "",
+          occupationalStatus: ""
+        };
+      }else if (val == 1 || val == 2) {
+        this.errorMsg = {
+          incomePeople: "",
+          occupationalStatus: "",
+          unitChar: "",
+          idyDmn: "",
+          companyName: "",
+          workingYears: "",
+          incomeEvidence: "",
+          provCityZon: "",
+          companyTel: "",
+          employeesNumber:"",
+          turnover:"",
+          profit:""
+        };
+      } else if(val == 3 || val == 4){
+        this.errorMsg = {
+          incomePeople: "",
+          occupationalStatus: "",
+          unitChar: "",
+          idyDmn: "",
+          companyName: "",
+          workingYears: "",
+          incomeEvidence: "",
+          provCityZon: "",
+          companyTel: "",
+          employeesNumber:"",
+          turnover:"",
+          profit:"",
+          registerCapital:"",
+          totalShares:""
+        };
+        
+      }else{  
+        this.errorMsg = {
+          incomePeople: "",
+          occupationalStatus: "",
+          unitChar: "",
+          idyDmn: "",
+          companyName: "",
+          workingYears: "",
+          personalIncome: "",
+          incomeEvidence: "",
+          provCityZon: "",
+          companyTel: ""
+        };
+      }
+    }
   },
   methods: {
     // 字典转换
@@ -385,6 +518,14 @@ export default {
           this.selectShow = true;
           this.columns = this.wordbook.income_prove;
           break;
+          case "场地性质":
+          this.selectShow = true;
+          this.columns = this.wordbook.site_Properties;
+          break;
+          case "股份构成":
+          this.selectShow = true;
+          this.columns = this.wordbook.Shares;
+          break;
       }
     },
     onConfirm(rows, index) {
@@ -396,10 +537,12 @@ export default {
         case "职业状况":
           this.formData.occupationalStatus = rows.value;
           this.formData.occupationalStatusDesc = rows.label;
+          console.log(rows.value)
           break;
         case "单位性质":
           this.formData.unitChar = rows.value;
           this.formData.unitCharDesc = rows.label;
+          this.errorMsg.unitChar = '';
           break;
         case "行业领域":
           this.formData.idyDmn = rows.value;
@@ -412,6 +555,15 @@ export default {
         case "收入佐证":
           this.formData.incomeEvidence = rows.value;
           this.formData.incomeEvidenceDesc = rows.label;
+          this.errorMsg.incomeEvidence = '';
+          break;
+        case "场地性质":
+          this.formData.fieldNature = rows.value;
+          this.formData.fieldNatureDesc = rows.label;
+          break;
+          case "股份构成":
+          this.formData.sharesConstitute = rows.value;
+          this.formData.sharesConstituteDesc = rows.label;
           break;
       }
       this.selectShow = false;
@@ -425,6 +577,7 @@ export default {
       this.formData.provCityZon = name;
       this.formData.provCityZonCode = code;
       this.addressShow = false;
+      this.errorMsg.provCityZon = '';
     },
     // 保存
     custSubmit() {
@@ -487,6 +640,7 @@ export default {
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
         if (this.errorMsg[item] !== "") {
+          console.log(this.errorMsg[item],item)
           num++;
         }
       }
@@ -494,16 +648,18 @@ export default {
         return;
       }
       this.dLoading = true;
-      setIncomeInfo(this.formData).then(res => {
-        this.$notify({
-          type: "success",
-          message: res.msg
+      setIncomeInfo(this.formData)
+        .then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.$router.go(-1);
+          this.dLoading = false;
+        })
+        .catch(() => {
+          this.dLoading = false;
         });
-        this.$router.go(-1);
-        this.dLoading = false;
-      }).catch(()=>{
-        this.dLoading = false;
-      });
     }
   },
   mounted() {
@@ -516,3 +672,8 @@ export default {
   }
 };
 </script>
+<style>
+.labelClass {
+  left: 0 !important;
+}
+</style>

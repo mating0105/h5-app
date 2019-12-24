@@ -574,14 +574,19 @@ export default {
     custSubmit() {
       let num = 0;
       for (let item in this.errorMsg) {
+        // console.log(item)
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+        // this.errorMsg['customerName'] = this.returnMsg(item, this.formData['customerName']);
+        console.log('1111',item,this.returnMsg(item, this.formData[item]));
         if (this.errorMsg[item] !== '') {
           num++;
         }
       }
+       console.log(num)
       if (num !== 0) {
         return;
       }
+     
       this.subData = {
         ...this.formData,
         sex: toUserCard(this.formData.certificateNum, 2),
