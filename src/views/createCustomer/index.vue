@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="loading">
+  <ViewPage :loading="loading" :backFn="closeNativeWebView">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
