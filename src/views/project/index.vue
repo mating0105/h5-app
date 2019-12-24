@@ -721,6 +721,10 @@ export default {
       this.endActive();
     }
     this.getIsSaveObj();
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(datas) {
+      sessionStorage.removeItem("pro");
+    }
   }
 };
 </script>

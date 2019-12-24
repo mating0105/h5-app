@@ -74,6 +74,7 @@ export default {
   computed: {
     ...mapState({
       name: state => state.user.name,
+      // accout: state => state.user.accout,
       wordbook: state => state.user.wordbook,
     }),
     cuCreditStatus () {
