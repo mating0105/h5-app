@@ -23,6 +23,7 @@
                 :value="form.houseTypeDesc"
                 label-class="labelClass"
                 :label="errorMsg.houseType"
+                @blur.prevent="ruleMessge"
                 @click.native="!isView?'':loadList('房产性质')"
               />
             </section>
@@ -34,6 +35,7 @@
                 :value="form.houseZonDesc"
                 label-class="labelClass"
                 :label="errorMsg.houseZon"
+                @blur.prevent="ruleMessge"
                 @click.native="!isView?'':loadList('房产区域')"
               />
             </section>
@@ -367,10 +369,11 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.form[item]);
-        if (this.errorMsg[item] !== "") {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
+      
       if (num !== 0) {
         return;
       }

@@ -796,7 +796,7 @@
         try {
           let para = Object.assign({}, this.form);
           let params = {
-            businessKey: this.businessKey,//Number(this.form.borrowerInfo.bankMakeLoanId),
+            businessKey: this.businessKey,
             nextUser: nextUserObj.id,
             commentsDesc: this.commentsDesc,
             isSendMsg: this.checked ? 1 : 0,
@@ -805,6 +805,7 @@
             customerNum: this.projectForm.projectInfo.customerNum,
             customerName: this.projectForm.projectInfo.customerName,
             projectNo: this.checked ? this.projectForm.projectInfo.projectNo : '',
+            conclusionCode:'01'
           }
           para.wfCommentInfo = params;
           this.listLoading = true;

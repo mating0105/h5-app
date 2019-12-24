@@ -27,6 +27,7 @@
                 placeholder="请输入"
                 :disabled="!isView?'':false"
                 :error-message="errorMsg.customerName"
+                error-message-align="right"
               />
             </section>
             <section>
@@ -41,6 +42,7 @@
                 :disabled="!isView?'':false"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.contactPhone"
+                error-message-align="right"
               />
             </section>
             <section>
@@ -49,6 +51,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.unitCharName"
                 @click="!isView?'':loadList('unit_Property','单位性质', 'unitChar')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.unitChar"
               />
             </section>
             <section>
@@ -57,6 +62,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.levelEducationName"
                 @click="!isView?'':loadList('DegreeOfEducation','文化程度', 'levelEducation')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.levelEducation"
               />
             </section>
             <section>
@@ -65,6 +73,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.marriageName"
                 @click="!isView?'':loadList('marriage_type','婚姻状况', 'marriage')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.marriage"
               />
             </section>
           </van-row>
@@ -93,6 +104,9 @@
                 input-align="right"
                 placeholder="请输入"
                 :disabled="!isView?'':false"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsNm"
+                error-message-align="right"
               />
             </section>
             <section>
@@ -107,6 +121,7 @@
                 :disabled="!isView?'':false"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCtcTel"
+                error-message-align="right"
               />
             </section>
             <section>
@@ -120,6 +135,7 @@
                 :disabled="!isView?'':false"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCrdtNo"
+                error-message-align="right"
               />
             </section>
             <section>
@@ -128,6 +144,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.spsUnitCharName"
                 @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.spsUnitChar"
               />
             </section>
             <section>
@@ -136,6 +155,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.spsCltrDgrName"
                 @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.spsCltrDgr"
               />
             </section>
           </van-row>
@@ -154,6 +176,9 @@
               :is-link="isView"
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
               @click="loadType('业务来源','bsnSrc')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.bsnSrc"
             />
           </section>
           <!-- 接口请求 -->
@@ -164,6 +189,9 @@
               :is-link="isView"
               :value="projProjectInfo.carDealersIdName"
               @click="loadType('车商', 'carDealersId')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.carDealersId"
             />
           </section>
           <section>
@@ -173,6 +201,9 @@
               :is-link="isView"
               :value="projProjectInfo.counterGuaranteeStatusName"
               @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.counterGuaranteeStatus"
             />
           </section>
           <section>
@@ -182,6 +213,9 @@
               :is-link="isView"
               :value="projProjectInfo.wthrBlName"
               @click="!isView?'':loadList('yes_no','是否拆单','wthrBl')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.wthrBl"
             />
           </section>
           <section v-if="projProjectInfo.wthrBl=='1'">
@@ -200,6 +234,9 @@
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.wbtProvCityZonCode"
             />
           </section>
           <section>
@@ -210,6 +247,9 @@
               label="具体地址:"
               input-align="right"
               placeholder="请输入详细地址"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.addressDetail"
+              error-message-align="right"
             />
           </section>
         </van-col>
@@ -397,6 +437,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.thiefRescueName"
                 @click="!isView?'':loadType('盗抢险','thiefRescue')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.thiefRescue"
               />
             </section>
             <section>
@@ -406,6 +449,9 @@
                 :is-link="isView"
                 :value="projProjectInfo.rbrinsPltfrmNmName"
                 @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.rbrinsPltfrmNmId"
               />
             </section>
             <section>
@@ -422,72 +468,6 @@
             <van-cell title="返利费率(%):" :value="projProjectInfo.rebateStandard" />
           </section>
 
-          <!-- 是联合贷 -->
-          <div v-if="projProjectInfo.businessModel==2">
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingCarRatio"
-                type="number"
-                required
-                clearable
-                label="加融车价金额(元):"
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.rentingCarRatio"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingServiceFee"
-                type="number"
-                required
-                clearable
-                label="担保服务费(元)："
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.rentingServiceFee"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingRatio"
-                type="number"
-                clearable
-                label="加融车价比例%:"
-                disabled
-                input-align="right"
-                placeholder="加融车价金额/销售价"
-                error
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingAmt"
-                type="number"
-                clearable
-                label="加融总金额(元):"
-                disabled
-                input-align="right"
-                placeholder="加融车价金额+担保服务费"
-                error
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.totalLoanAmt"
-                type="number"
-                clearable
-                required
-                label="贷款总金额(元):"
-                disabled
-                input-align="right"
-                placeholder="银行贷款金额+加融车价金额"
-                error
-              />
-            </section>
-          </div>
           <section v-if="projProjectInfo.isQuickadjust=='1'">
             <van-cell
               title="是否t+0:"
@@ -506,6 +486,9 @@
               input-align="right"
               :required="projProjectInfo.thiefRescue == 0?true:false"
               placeholder="(含GPS加融费用)"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.rentingAmtGps"
+              error-message-align="right"
             />
           </section>
 
@@ -978,6 +961,17 @@ export default {
       setNewCar(rows).then(res => {
         this.projProjectInfo.cars = res.data;
         sessionStorage.removeItem("pro");
+        let cars = this.projProjectInfo.cars;
+        if (Array.isArray(cars) && cars.length > 0) {
+          this.carType = cars[0].carType + "-" + cars[0].carType2;
+          this.carNature = cars[0].carNature;
+          this.productTypeList({
+            type: 1,
+            carType: cars[0].carType + "-" + cars[0].carType2,
+            carNature: cars[0].carNature,
+            companyId: this.projProjectInfo.companyId
+          });
+        }
       }).catch(()=>{
         sessionStorage.removeItem("pro");
       });
@@ -1067,6 +1061,7 @@ export default {
     confirmSelect(code,name) {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
+      this.projProjectInfo.wbtProvCityZonCode = name;
       this.show2 = false;
     },
     // 其他接口数据
@@ -1430,6 +1425,7 @@ export default {
           accountBank: this.returnVal(row.accountBank),
           wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
           wbtProvCityZon: row.wbtProvCityZonCode,
+          wbtProvCityZonCode: row.wbtProvCityZonCode,
           paymentNumber: this.returnVal(row.paymentNumber),
           paymentNumberName: this.returnVal(row.paymentNumberName),
           customerBond: this.returnVal(row.customerBond),
@@ -1769,11 +1765,22 @@ export default {
     },
     // 提交数据
     postProject(dataList) {
+      // let num = 0;
+      // for (let item in this.errorMsg) {
+      //   this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
+      //   if (this.errorMsg[item]) {
+      //     num++;
+      //   }
+      // }
+      // console.log(this.errorMsg);
+      // if (num !== 0) {
+      //   return;
+      // }
       this.dLoading = true;
       setProjectInfo(dataList).then(res => {
-        this.loanData();
-        this.dLoading = false;
         this.$notify({ type: "success", message: res.msg });
+        this.dLoading = false;
+        this.$router.go(-1);
       }).catch(()=> {
         this.dLoading = false;
       });

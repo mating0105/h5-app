@@ -653,59 +653,60 @@ export default {
       };
       this.loading = true;
       getGuaranteeInfo(obj).then(res => {
-        const { code, data, msg } = res;
+        const { data } = res;
         try {
-          this.formData = res.data;
-          // this.formData.birthday = toUserCard(this.formData.certificateNum, 1);
+          this.formData = data;
           this.formData.isBondsDesc = this.returnText(
             "yes_no",
-            this.formData.isBonds
+            data.isBonds
           );
           this.formData.relationCusDesc = this.returnText(
             "relation_Cus",
-            this.formData.relationCus
+            data.relationCus
           );
           this.formData.marriageDesc = this.returnText(
             "marriage_type",
-            this.formData.marriage
+            data.marriage
           );
           this.formData.levelEducationDesc = this.returnText(
             "DegreeOfEducation",
-            this.formData.levelEducation
+            data.levelEducation
           );
           this.formData.childrenSituationDesc = this.returnText(
             "children",
-            this.formData.childrenSituation
+            data.childrenSituation
           );
           this.formData.schoolSituationDesc = this.returnText(
             "school_Situation",
-            this.formData.schoolSituation
+            data.schoolSituation
           );
           this.formData.spsCltrDgrDesc = this.returnText(
             "DegreeOfEducation",
-            this.formData.spsCltrDgr
+            data.spsCltrDgr
           );
           this.formData.unitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.unitChar
+            data.unitChar
           );
           this.formData.spsUnitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.spsUnitChar
+            data.spsUnitChar
           );
 
           this.formData.spsCltrDgrDesc = this.returnText(
             "DegreeOfEducation",
-            this.formData.spsCltrDgr
+            data.spsCltrDgr
           );
           this.formData.spsUnitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.spsUnitChar
+            data.spsUnitChar
           );
           this.formData.unitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.unitChar
+            data.unitChar
           );
+          this.formData.pProvCityZonId = data.pProvCityZonCode;
+          this.formData.rProvCityZonId = data.rProvCityZonCode;
           this.loading = false;
         } catch {
           this.loading = false;
