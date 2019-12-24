@@ -315,6 +315,7 @@
       return {
         iconClass: 'ellipsis',
         userName:'',
+        params:{},//传过来额数据
         //---tab:1--基本信息
         form: {},//车辆信息、贷款信息、收款人信息、借款人信息
         projectForm: {},//项目信息
@@ -418,12 +419,11 @@
       //导航右上角的按钮
       goPage (val) {
         let queryData={
-            customerId:this.params.customerId,
-            customerNum:this.params.customerNum,
+            customerId:this.projectForm.projectInfo.customerId,
+            customerNum:this.projectForm.projectInfo.customerNum,
             projectId:this.projectForm.projectInfo.projectId,
-            remark:this.params.remark,
-            lpCertificateNum:this.params.certificateNum,
-            id:this.params.id,
+            remark:this.params.info.remark,
+            lpCertificateNum:this.projectForm.projectInfo.certificateNum,
             isView:1,//  0:修改  1：查看
             projectNo:this.projectForm.projectInfo.projectNo,
         }
