@@ -188,8 +188,8 @@ export default {
   },
   computed: {
     ...mapState({
-      name: state => state.user.name
-      // token: state => state.user.token,
+      accout: state => state.user.accout,
+      token: state => state.user.token,
     })
   },
   methods: {
@@ -204,12 +204,12 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
-        // this.$router.push({
-        //   path: row.url,
-        //   query: {
-        // url:`http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.name}&token=${this.token}`
-        // }
-        // });
+        this.$router.push({
+          path: row.url,
+          query: {
+        url:`http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&token=${this.token}`
+        }
+        });
       } else {
         this.$router.push({
           path: row.url,

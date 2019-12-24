@@ -74,7 +74,7 @@ export default {
   computed: {
     ...mapState({
       name: state => state.user.name,
-      // accout: state => state.user.accout,
+      accout: state => state.user.accout,
       wordbook: state => state.user.wordbook,
     }),
     cuCreditStatus () {
@@ -183,9 +183,9 @@ export default {
       });
     },
     gpsUrl(name, item) {
-      console.log(name);
+      console.log(this.accout);
       let url = "";
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.name}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}`;
       switch (name) {
         case "申请安装":
           let param = `&loanAmount=${item.loanAmount}&prodqty=${item.prodqty}&insurance=${item.insurance}&ownername=${item.customerName}" +
