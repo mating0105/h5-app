@@ -351,7 +351,7 @@
         },
         // -----右上角按钮-------
         rightBoxList: [
-          {value: 1, title: '项目基本信息', url: "/bigDataQueryDetail"},
+          {value: 1, title: '项目基本信息', url: "/projectInfo"},
           {value: 2, title: '客户及配偶', url: "/clientIndex"},
           {value: 3, title: '紧急联系人', url: "/contactPerson"},
           {value: 4, title: '房产信息', url: "/houseUser"},
@@ -361,7 +361,7 @@
           {value: 8, title: '担保人房产', url: "/houseGuarantor"},
           {value: 9, title: '担保人收入', url: "/incomeGuarantor"},
           {value: 10, title: '调查结论', url: "/survey"},
-          {value: 11, title: '相关文档', url: "/relatedDocs"},
+          {value: 11, title: '相关文档', url: "/proDocument"},
           {value: 12, title: 'GPS安装信息', url: "/gps"},
           {value: 13, title: '合同照片', url: "/contractUpload"},
         ],
@@ -423,9 +423,11 @@
             projectId:this.projectForm.projectInfo.projectId,
             remark:this.params.remark,
             lpCertificateNum:this.params.certificateNum,
-            id:this.params.id
+            id:this.params.id,
+            isView:1,//  0:修改  1：查看
+            projectNo:this.projectForm.projectInfo.projectNo,
         }
-        this.$router.push({path: val.url, query: val.value==13?queryData:this.params});
+        this.$router.push({path: val.url, query: queryData});
       },
       //返回按钮
       backFn () {

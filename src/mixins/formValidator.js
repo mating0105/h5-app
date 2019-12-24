@@ -11,6 +11,7 @@ export default {
     // 验证值
     returnMsg(name, value) {
       if (this.ruleData[name]) {
+        console.log(name, value)
         let infoObj = this.ruleData[name];
         let error = ""; // 错误信息
         if (infoObj.mustFill) {
