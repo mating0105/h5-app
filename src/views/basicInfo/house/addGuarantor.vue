@@ -11,8 +11,7 @@
                 :is-link="isView"
                 :value="form.cuGuaranteeName"
                 label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.cuGuaranteeName"
+                :label="errorMsg.guaranteeId"
                 @click.native="!isView?'':loadList('担保人')"
               />
             </section>
@@ -23,7 +22,6 @@
                 :is-link="isView"
                 :value="form.houseTypeDesc"
                 label-class="labelClass"
-                @blur.prevent="ruleMessge"
                 :label="errorMsg.houseType"
                 @click.native="!isView?'':loadList('房产性质')"
               />
@@ -35,7 +33,6 @@
                 :is-link="isView"
                 :value="form.houseZonDesc"
                 label-class="labelClass"
-                @blur.prevent="ruleMessge"
                 :label="errorMsg.houseZon"
                 @click.native="!isView?'':loadList('房产区域')"
               />
@@ -224,18 +221,16 @@ export default {
   data() {
     return {
       isView: false,
-      loading: false,
       form: {
         guaranteeId: "",
         houseArea: "",
         houseType: "",
         houseZon: "",
-        ishashouse: "",
         ownerProperty: "",
         propertyHolderNum: "",
         propertyOwneratio: "",
         propertyValue: "",
-        provCityZonId: "",
+        provCityZon: "",
         specificAddress: ""
       },
       errorMsg: {
@@ -243,12 +238,11 @@ export default {
         houseArea: "",
         houseType: "",
         houseZon: "",
-        ishashouse: "",
         ownerProperty: "",
         propertyHolderNum: "",
         propertyOwneratio: "",
         propertyValue: "",
-        provCityZonId: "",
+        provCityZon: "",
         specificAddress: ""
       },
       selectShow: false, //下拉选择器显示
@@ -345,14 +339,17 @@ export default {
         case "担保人":
           this.form.cuGuaranteeName = rows.label;
           this.form.guaranteeId = rows.value;
+          this.errorMsg.guaranteeId = '';
           break;
         case "房产性质":
           this.form.houseTypeDesc = rows.label;
           this.form.houseType = rows.value;
+          this.errorMsg.houseType = '';
           break;
         case "房产区域":
           this.form.houseZonDesc = rows.label;
           this.form.houseZon = rows.value;
+          this.errorMsg.houseZon = '';
           break;
       }
       this.selectShow = false;
@@ -361,6 +358,7 @@ export default {
     // 省市区选择
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
+      this.errorMsg.provCityZon = '';
       this.form.provCityZonCode = code;
       this.addressShow = false;
     },
