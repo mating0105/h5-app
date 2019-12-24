@@ -209,6 +209,7 @@
         this.carFrom.carSeries = carBrand.series.name
         this.carFrom.carModelId = carBrand.model.id
         this.carFrom.carModel = carBrand.model.name
+        this.errorMsg.brndNm = ''
       },
       async getDocumentByType (documentType) {
         try {
@@ -283,12 +284,15 @@
         switch (this.isNum) {
           case 9:
             this.carFrom.carType = item.key;
+            this.errorMsg.carType = ''
             break;
           case 12:
             this.carFrom.carSpecifications = item.key;
+            this.errorMsg.carSpecifications = ''
             break;
           case 13:
             this.carFrom.carType2 = item.key;
+            this.errorMsg.carType2 = ''
             break;
           default:
             return;
