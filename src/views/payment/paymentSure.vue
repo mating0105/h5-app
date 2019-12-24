@@ -103,6 +103,7 @@ import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
 import { getPaymentDetail, getDic, submitGo } from "@/api/payment";
+import { mapState } from "vuex";
 const Components = [
   Button,
   Row,
@@ -129,7 +130,9 @@ export default {
     return {
       activeName: "project",
       params: {}, //上个页面接收的数据
-      data: {},
+      data: {
+        projProjectInfo: {}
+      },
       meunRow: [
         {
           name: "项目基本信息",
@@ -159,7 +162,7 @@ export default {
           name: "GPS安装信息",
           key: 6,
           icon: "icon-gps.png",
-          url: "/vehicleList"
+          url: "/gpsurl"
         }
       ],
       show: false,
@@ -183,16 +186,39 @@ export default {
       loading: false
     };
   },
+  computed: {
+    ...mapState({
+      name: state => state.user.name
+      // token: state => state.user.token,
+    })
+  },
   methods: {
     meunList(row) {
       this.params.dealState = "3";
-      this.$router.push({
-        name: row.url,
-        query: {
-          info: JSON.stringify(this.params.info),
-          dealState: this.params.dealState
-        }
-      });
+      if (row.url == "/paymentProjectInfo") {
+        this.$router.push({
+          path: row.url,
+          query: {
+            projectId: this.params.info.businesskey,
+            isView: "1"
+          }
+        });
+      } else if (row.url == "/gpsurl") {
+        // this.$router.push({
+        //   path: row.url,
+        //   query: {
+        // url:`http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.name}&token=${this.token}`
+        // }
+        // });
+      } else {
+        this.$router.push({
+          path: row.url,
+          query: {
+            info: JSON.stringify(this.params.info),
+            dealState: this.params.dealState
+          }
+        });
+      }
     },
     loadData() {
       getPaymentDetail({

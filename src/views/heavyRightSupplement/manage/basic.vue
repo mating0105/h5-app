@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-23 13:53:46
+ * @LastEditTime : 2019-12-23 16:21:42
  -->
 
 <template>
@@ -121,13 +121,13 @@
           <van-col span="24">
             <van-field
               :border="false"
-              :error-message="errorMsg.mortgageTime[index]"
+              :error-message="errorMsg.actualInvoicedPrice[index]"
               @blur.prevent="ruleMessge($event,index)"
               class="info"
               input-align="right"
               label="实际开票价(元):"
               label-width="120"
-              name
+              name="actualInvoicedPrice"
               placeholder="请输入"
               required
               type="number"
@@ -136,14 +136,17 @@
           </van-col>
           <van-col span="24">
             <van-cell
-              :label="errorMsg.mortgageTime[index]"
-              @blur.prevent="ruleMessge($event,index)"
+              :label="errorMsg.licensePlateNum[index]"
               class="info"
               label-class="labelClass"
               required
               title="车牌号:"
             >
-              <licensePlateNum v-model="item.licensePlateNum"></licensePlateNum>
+              <licensePlateNum
+                @licensePlateNumChange="licensePlateNumChange(...arguments,index)"
+                type="licensePlateNum"
+                v-model="item.licensePlateNum"
+              ></licensePlateNum>
             </van-cell>
           </van-col>
           <van-col span="24">
@@ -154,7 +157,7 @@
               class="info"
               input-align="right"
               label="发动机号:"
-              name
+              name="engineNum"
               placeholder="请输入"
               required
               v-model="item.engineNum"
@@ -223,6 +226,7 @@
               clearable
               input-align="right"
               label="上户地点:"
+              name="registeredPlace"
               placeholder="请输入"
               required
               v-model="details.registeredPlace"
@@ -237,7 +241,7 @@
               input-align="right"
               is-link
               label="交易日期:"
-              name
+              name="transactionDate"
               placeholder="请选择"
               readonly
               required
@@ -254,7 +258,7 @@
               title="是否有套票:"
             >
               <singleConnect
-                :default-active-value="details.ispackage*1"
+                :default-active-value="details.ispackage"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="ispackage"
@@ -265,13 +269,13 @@
             <van-field
               :border="false"
               :error-message="errorMsg.packageDeal"
-              @blur.prevent="ruleMessge"
+              @blur.prevent="ruleMessge($event,null,packageDealBlur)"
               @input="inputValue"
               class="info"
               input-align="right"
               label="套票成交价（元）:"
               label-width="120"
-              name
+              name="packageDeal"
               placeholder="请输入"
               required
               type="number"
@@ -288,7 +292,7 @@
               input-align="right"
               label="与贷款金额差价（元）"
               label-width="140"
-              name
+              name="differenceCarprice"
               placeholder="自动计算"
               readonly
               required
@@ -306,7 +310,7 @@
               title="是否失信客户:"
             >
               <singleConnect
-                :default-active-value="details.dishonestyCustomer*1"
+                :default-active-value="details.dishonestyCustomer"
                 :list="YESORNO"
                 @singleChange="singleChange"
                 type="dishonestyCustomer"
@@ -317,12 +321,13 @@
             <van-field
               :border="false"
               :error-message="errorMsg.ownershipRegisterDate"
+              @blur.prevent="ruleMessge"
               @click="dateRowClick('ownershipRegisterDate','重权登记日期')"
               class="info"
               input-align="right"
               is-link
               label="重权登记日期:"
-              name
+              name="ownershipRegisterDate"
               placeholder="请选择"
               readonly
               required
@@ -456,8 +461,21 @@ export default {
     this.queryDetails();
   },
   methods: {
+    packageDealBlur() {
+      this.errorMsg.differenceCarprice = this.returnMsg(
+        "differenceCarprice",
+        this.details.differenceCarprice
+      );
+    },
+    licensePlateNumChange({ value, type }, index) {
+      this.errorMsg[type][index] = this.returnMsg(
+        type,
+        this.details.cars[index][type]
+      );
+    },
     singleChange({ type, item }) {
       this.details[type] = item.value;
+      this.errorMsg[type] = this.returnMsg(type, this.details[type]);
     },
     // 查询补录的详情
     queryDetails() {
@@ -474,6 +492,17 @@ export default {
         .then(res => {
           const { code, data, msg } = res;
           if (code == 200) {
+            // 是否有套票
+            if (data.ispackage !== null && data.ispackage !== "") {
+              data.ispackage = data.ispackage * 1;
+            }
+            // 是否失信客户
+            if (
+              data.dishonestyCustomer !== null &&
+              data.dishonestyCustomer !== ""
+            ) {
+              data.dishonestyCustomer = data.dishonestyCustomer * 1;
+            }
             this.details = data;
           } else {
             this.$notify({ type: "danger", message: msg });
@@ -503,8 +532,18 @@ export default {
         } else {
           this.details.differenceCarprice = value;
         }
+        this.errorMsg.differenceCarprice = "";
+        this.errorMsg.packageDeal = "";
       } else {
         this.details.differenceCarprice = "";
+        this.errorMsg.packageDeal = this.returnMsg(
+          "packageDeal",
+          this.details.packageDeal
+        );
+        this.errorMsg.differenceCarprice = this.returnMsg(
+          "differenceCarprice",
+          this.details.differenceCarprice
+        );
       }
     },
     dateRowClick(type, title, arrStr, index) {
@@ -529,8 +568,10 @@ export default {
       var time = format(value, "yyyy-MM-dd");
       if (this.dateArr) {
         this.details[this.dateArr][this.dateIndex][this.dateSelectType] = time;
+        this.errorMsg[this.dateSelectType][this.dateIndex] = "";
       } else {
         this.details[this.dateSelectType] = time;
+        this.errorMsg[this.dateSelectType] = "";
       }
       this.datePopFlag = false;
     },
@@ -539,22 +580,32 @@ export default {
       for (let item in this.errorMsg) {
         if (
           item === "actualInvoicedPrice" ||
-          item === "licensePlLateNum" ||
+          item === "licensePlateNum" ||
           item === "engineNum" ||
           item === "insuranceExpire"
         ) {
           for (let i = 0; i < this.details.cars.length; i++) {
             let one = this.details.cars[i];
-            let error = this.returnMsg(item, this.details.cars[i].item);
+            let error = this.returnMsg(item, one[item]);
             this.errorMsg[item][i] = error;
             if (error) {
               num++;
             }
           }
-        }
-        this.errorMsg[item] = this.returnMsg(item, this.details[item]);
-        if (this.errorMsg[item]) {
-          num++;
+        } else {
+          if (
+            this.details.ispackage * 1 !== 1 &&
+            (item === "packageDeal" || item === "differenceCarprice")
+          ) {
+            this.details[item] = "";
+            this.errorMsg[item] = "";
+          } else {
+            let error = this.returnMsg(item, this.details[item]);
+            this.errorMsg[item] = error;
+            if (error) {
+              num++;
+            }
+          }
         }
       }
       if (num > 0) {
@@ -564,12 +615,6 @@ export default {
     },
     // 提交表单
     sub() {
-      if (this.details.ispackage * 1 !== 1) {
-        this.details.packageDeal = "";
-        this.details.differenceCarprice = "";
-        this.errorMsg.packageDeal = "";
-        this.errorMsg.differenceCarprice = "";
-      }
       let flag = this.check();
       if (flag) {
         this.subLoading = true;

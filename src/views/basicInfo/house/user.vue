@@ -9,14 +9,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pathHouse"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button" v-for="(list,index) in houseList" :key="index">
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <section>
               <van-cell title="是否有房产:" :value="list.isHasHouse == '1'?'有房产':'没有房产'" />
             </section>
@@ -92,7 +92,7 @@ export default {
     return {
       houseList: [],
       loading: false,
-      isView: 1
+      isView: false
     }
   },
   computed: {
@@ -141,7 +141,6 @@ export default {
     },
     // 删除
     delList(rows) {
-      this.loading = true;
       deleteHouseList({
         id: rows.id
       }).then(res => {
@@ -149,16 +148,13 @@ export default {
           type: "success",
           message: res.msg
         });
-        this.loading = false;
         this.loadData();
-      }).catch(()=>{
-        this.loading = false;
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
   }
 }

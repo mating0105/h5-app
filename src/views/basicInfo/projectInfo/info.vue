@@ -25,7 +25,7 @@
                 input-align="right"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :disabled="!isView?'':false"
                 :error-message="errorMsg.customerName"
               />
             </section>
@@ -38,7 +38,7 @@
                 input-align="right"
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :disabled="!isView?'':false"
                 @blur.prevent="()=>{ return errorMsg.contactPhone = rules('phone',$event,this)}"
                 :error-message="errorMsg.contactPhone"
               />
@@ -49,7 +49,7 @@
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.unitCharName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','单位性质', 'unitChar')"
+                @click="!isView?'':loadList('unit_Property','单位性质', 'unitChar')"
               />
             </section>
             <section>
@@ -58,7 +58,7 @@
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.levelEducationName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','文化程度', 'levelEducation')"
+                @click="!isView?'':loadList('DegreeOfEducation','文化程度', 'levelEducation')"
               />
             </section>
             <section>
@@ -67,7 +67,7 @@
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.marriageName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('marriage_type','婚姻状况', 'marriage')"
+                @click="!isView?'':loadList('marriage_type','婚姻状况', 'marriage')"
               />
             </section>
           </van-row>
@@ -95,7 +95,7 @@
                 label="配偶姓名:"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :disabled="!isView?'':false"
               />
             </section>
             <section>
@@ -107,7 +107,7 @@
                 label="联系电话:"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :disabled="!isView?'':false"
                 @blur.prevent="()=>{ return errorMsg.spsCtcTel = rules('phone',$event,this)}"
                 :error-message="errorMsg.spsCtcTel"
               />
@@ -120,7 +120,7 @@
                 label="证件号码:"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :disabled="!isView?'':false"
                 @blur.prevent="()=>{ return errorMsg.spsCrdtNo = cpCertificateNum($event)}"
                 :error-message="errorMsg.spsCrdtNo"
               />
@@ -131,7 +131,7 @@
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.spsUnitCharName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
+                @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
               />
             </section>
             <section>
@@ -140,7 +140,7 @@
                 :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 :value="projProjectInfo.spsCltrDgrName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
+                @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
               />
             </section>
           </van-row>
@@ -177,7 +177,7 @@
               required
               is-link
               :value="projProjectInfo.counterGuaranteeStatusName"
-              @click="isView == 1?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
+              @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
             />
           </section>
           <section>
@@ -186,7 +186,7 @@
               required
               is-link
               :value="projProjectInfo.wthrBlName"
-              @click="isView == 1?'':loadList('yes_no','是否拆单','wthrBl')"
+              @click="!isView?'':loadList('yes_no','是否拆单','wthrBl')"
             />
           </section>
           <section v-if="projProjectInfo.wthrBl=='1'">
@@ -221,7 +221,7 @@
       </van-row>
     </Card>
     <!-- 车辆信息 -->
-    <Card class="xh-top-10">
+    <Card class="xh-top-10" :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell
@@ -239,14 +239,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pullCars"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
-      <van-row class="xh-swipe-button">
-        <van-col span="24" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="(i.isCreditAdd == '1' || isView == 0)?true:false">
+      <van-row class="xh-row xh-swipe-button">
+        <van-col span="24" class="xh-row-col" v-for="(i,index) in projProjectInfo.cars" :key="index">
+          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
             <section>
               <van-cell
                 title="车辆类别:"
@@ -299,12 +299,12 @@
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsEdit(i)"
+                @click.native="carsEdit(i,index)"
               >修改</van-button>
               <van-button
                 type="danger"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsDel(i)"
+                @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
           </van-swipe-cell>
@@ -323,7 +323,7 @@
               required
               is-link
               :value="projProjectInfo.businessModelName"
-              @click="loadType('业务模式','businessModel')"
+              @click="!isView?'':loadType('业务模式','businessModel')"
             />
           </section>
           <section>
@@ -332,7 +332,7 @@
               required
               is-link
               :value="projProjectInfo.loanTerm"
-              @click="loadType('贷款期限','loanTerm')"
+              @click="!isView?'':loadType('贷款期限','loanTerm')"
             />
           </section>
           <!-- 请求接口 -->
@@ -342,7 +342,7 @@
               required
               is-link
               :value="projProjectInfo.dsbrPltfrmNm"
-              @click="loadType('放款平台','platform')"
+              @click="!isView?'':loadType('放款平台','platform')"
             />
           </section>
           <section>
@@ -351,7 +351,7 @@
               required
               is-link
               :value="projProjectInfo.productCategoryIdName"
-              @click="loadType('产品类别','productCategoryId')"
+              @click="!isView?'':loadType('产品类别','productCategoryId')"
             />
           </section>
           <section>
@@ -360,7 +360,7 @@
               required
               is-link
               :value="projProjectInfo.productIdName"
-              @click="loadType('产品名称','productId')"
+              @click="!isView?'':loadType('产品名称','productId')"
             />
           </section>
           <section>
@@ -391,7 +391,7 @@
                 required
                 is-link
                 :value="projProjectInfo.thiefRescueName"
-                @click="loadType('盗抢险','thiefRescue')"
+                @click="!isView?'':loadType('盗抢险','thiefRescue')"
               />
             </section>
             <section>
@@ -400,7 +400,7 @@
                 required
                 is-link
                 :value="projProjectInfo.rbrinsPltfrmNmName"
-                @click="loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
+                @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
               />
             </section>
             <section>
@@ -489,7 +489,7 @@
               is-link
               required
               :value="projProjectInfo.isTandzeroName"
-              @click="isView == 1?'':loadList('yes_no','是否t+0','isTandzero')"
+              @click="!isView?'':loadList('yes_no','是否t+0','isTandzero')"
             />
           </section>
           <section>
@@ -512,7 +512,7 @@
                 is-link
                 :value="projProjectInfo.marginRatioName"
                 title="保证金比例(%):"
-                @click="isView == 1?'':loadList('Margin_Ratio','保证金比例','marginRatio')"
+                @click="!isView?'':loadList('Margin_Ratio','保证金比例','marginRatio')"
                 :disabled="projProjectInfo.businessModel==2?true:false"
               />
             </section>
@@ -610,7 +610,9 @@ import {
   getProductTypeList,
   getLoanPlatformTree,
   getAllTpBuyPlatform,
-  setProjectInfo
+  setProjectInfo,
+  setNewCar,
+  deleteCar
 } from "@/api/project";
 // 自定义组件
 import redCard from "@/components/redCard/index";
@@ -653,7 +655,7 @@ Components.forEach(item => {
 import { mapState } from "vuex";
 
 export default {
-  name: "projectInfo",
+  // name: "projectInfo",
   components: {
     redCard,
     Card,
@@ -734,6 +736,13 @@ export default {
           productId: val
         });
       }
+    }
+  },
+  activated(){
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(datas) {
+      this.projProjectInfo = datas;
+      this.newCar(this.$store.state.credit.carData);
     }
   },
   data() {
@@ -869,14 +878,71 @@ export default {
       carType: "", //车辆类型
       carType2: "", //车辆类型2
       platformId: "", //
-      isView: 1
+      isView: false
     };
   },
   methods: {
     pullCars() {
-      this.$router.push("/vehicle");
+      const query = {
+        customerId: this.params.customerId,
+        customerNum: this.params.customerNum
+      }
+      sessionStorage.setItem('pro', JSON.stringify(this.projProjectInfo));
+      this.$router.push({ path: "/vehicle" , query });
     },
-    //
+    // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
+    carsEdit(rows, inx) {
+
+    },
+    // 车辆删除
+    carsDel (rows, inx) {
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.projProjectInfo.cars.splice(inx, 1);
+      });
+    },
+    // 新增车辆
+    newCar(data) {
+      let rows = {
+        carType: data.carType,
+        carType2: data.carType2,
+        carNature: data.carNature, // new_car 新车 ----- 1 二手车
+        carSource: data.carSource,
+        carSeries: data.carSeriesId,
+        carSpecifications: data.carSpecifications,
+        automarke: {
+          carModelId: data.carModelId,
+          brndNmId: data.carBrandId,
+          id: "",
+          carSeriesId: data.carSeriesId,
+          delFlag: "0"
+        },
+        salePrice: data.salePrice,
+        remark: data.remark,
+        delFlag: "0",
+        proj: {
+          id: this.params.projectId
+        },
+        ruleFlag: 'Y',
+        carLoanPart: data.carLoanPart, //车辆贷款部分
+        anchoredTransportCompany: data.anchoredTransportCompany, // 挂靠运输公司
+        estimateOriginalPrice: data.estimateOriginalPrice, //评估价
+        hgstAmt: data.hgstAmt, //最高送审金额
+        asesInstNm: data.asesInstNm,
+        assessId: data.assessId,
+      }
+      setNewCar(rows).then(res => {
+        this.projProjectInfo.cars = res.data;
+        sessionStorage.removeItem("pro");
+      }).catch(()=>{
+        sessionStorage.removeItem("pro");
+      });
+    },
     // 字典转换
     returnText(n, val, list, ids, field) {
       let name;
@@ -1676,8 +1742,11 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
-    this.loanData();
+    this.isView = this.params.isView == 0;
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(!datas) {
+      this.loanData();
+    }
   }
 };
 </script>

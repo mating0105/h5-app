@@ -623,5 +623,6 @@ export default {
 .labelClass{
     color:#ee0a24;
     text-align: right;
+    left: 0!important;
 }
 </style>

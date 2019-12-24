@@ -89,7 +89,7 @@ export const constantRoutes = [
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
-    meta: {title: '项目报单', icon: 'dashboard'}
+    meta: {title: '项目报单', icon: 'dashboard', keepAlive: true}
   },
   {
     path: '/vehicle',
@@ -127,7 +127,7 @@ export const constantRoutes = [
     path: '/projectInfo',
     name: 'ProjectInfo',
     component: () => import('@/views/basicInfo/projectInfo/index'),
-    meta: {title: '新建报单', icon: 'dashboard'}
+    meta: {title: '新建报单', keepAlive: true}
   },
   
   { 

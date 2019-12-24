@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
@@ -9,14 +9,14 @@
               name="plus"
               style="line-height: inherit;"
               @click="pullUrl"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <van-row class="xh-row">
         <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index" @click.native="pushUrl(i)">
-          <van-swipe-cell :right-width="130">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
             <van-col span="24">
               <van-col span="24">
                 <van-col span="12">
@@ -94,7 +94,8 @@ export default {
     return {
       homelist: [],
       params: {},
-
+      isView: false,
+      loading: false
     }
   },
   methods: {
@@ -112,52 +113,42 @@ export default {
       let dataList = {
         customerId: this.params.customerId
       };
+      this.loading = true;
       getIncomeList(dataList).then(res => {
-        if(res.code == 200) {
-          this.homelist = res.data;
-          this.homelist.forEach(t => {
-            t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
-            t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
-          });
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
-      })
+        this.homelist = res.data;
+        this.homelist.forEach(t => {
+          t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
+          t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
+        });
+        this.loading = false;
+      }).catch(()=> {
+        this.loading = false;
+      });
     },
     // 跳转新增
     pullUrl(){
-      this.$router.push({ path: '/addIncome', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addIncome', query: {...this.params, isView: 0 } });
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.id, isView: 0 } });
     },
     // 删除
     delList(rows) {
       deleteIncomeList({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
   },
 }

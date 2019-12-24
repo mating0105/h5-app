@@ -31,9 +31,12 @@
             required
             clearable
             label="客户姓名"
+            name="customerName"
             input-align="right"
+            error-message-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.customerName"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -41,11 +44,13 @@
             v-model="customerData.certificateNum"
             required
             clearable
+            name="certificateNum"
             label="身份证号码"
             input-align="right"
+            error-message-align="right"
             placeholder="请输入"
-            @blur.click="getIdcard"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.certificateNum"
           />
         </van-cell-group>
         <van-cell-group :border="false" v-show="params.credit">
@@ -55,6 +60,9 @@
             is-link
             :value="returnText('credit_object_type',customerData.creditObjectType)"
             @click="loadType('征信对象类型', 'creditObjectType')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.creditObjectType"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -73,6 +81,9 @@
             is-link
             v-model="customerData.nation"
             @click="showFamily"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.nation"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -80,10 +91,13 @@
             v-model="customerData.familyAddress"
             required
             clearable
+            name="familyAddress"
+            error-message-align="right"
             label="身份证住址"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.familyAddress"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -91,10 +105,13 @@
             v-model="customerData.signOrg"
             required
             clearable
+            name="signOrg"
+            error-message-align="right"
             label="身份证签发机关"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.signOrg"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -104,6 +121,9 @@
             is-link
             v-model="customerData.startDate"
             @click="showTime('jrnlDateStart')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.startDate"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -113,6 +133,9 @@
             is-link
             v-model="customerData.endDate"
             @click="showTime('jrnlDateEnd')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.endDate"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -120,10 +143,12 @@
             v-model="customerData.contactPhone"
             required
             clearable
+            error-message-align="right"
             label="手机号码"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.contactPhone"
           />
         </van-cell-group>
       </div>
@@ -193,7 +218,7 @@ import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
 import { mapState } from "vuex";
-import formValidator from '@/mixins/formValidator'
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Button,
   Row,
@@ -214,6 +239,7 @@ export default {
     card,
     MapSheet
   },
+  mixins: [formValidator],
   data() {
     return {
       customerData: {
@@ -251,7 +277,18 @@ export default {
       selectName: "",
       valueId: "id", // 下拉选择取的哪个value值
       src: "", //正面图片
-      srcBack: "" //背面图片
+      srcBack: "", //背面图片
+      errorMsg: {
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号
+        creditObjectType: "", //征信对象类型
+        nation: "", //民族
+        familyAddress: "", //身份证住址
+        signOrg: "", //身份证签发机关
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "" //手机号
+      }
     };
   },
   computed: {
@@ -323,11 +360,11 @@ export default {
       this.show2 = false;
     },
     //通过身份证查性别和出生年月、年龄
-    getIdcard(e) {
-      this.customerData.sex = getSex(e.target.value);
-      this.customerData.birthday = getBirth(e.target.value);
-      this.customerData.age = getAge(e.target.value);
-    },
+    // getIdcard(e) {
+    //   this.customerData.sex = getSex(e.target.value);
+    //   this.customerData.birthday = getBirth(e.target.value);
+    //   this.customerData.age = getAge(e.target.value);
+    // },
     //获取民族
     getFamilyDic() {
       let arr = [
@@ -357,10 +394,21 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
+      this.errorMsg[this.fieldName] = '';
     },
     cancel() {},
     //保存信息
     submit() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.customerData[item]);
+        if (this.errorMsg[item] !== "") {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
         this.$store.dispatch("credit/setCustomerData", {
@@ -480,6 +528,7 @@ export default {
     this.getFamilyDic();
     this.params = this.$route.query;
     console.log(this.params);
+    this.rulesForm("cs-personal-xh");
     if (this.params.credit) {
       //从征信里进入
       this.loadData();
