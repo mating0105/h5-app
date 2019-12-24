@@ -57,7 +57,7 @@
               </van-cell-group>
             </section>
           </card>
-          <div class="xh-submit">
+          <div class="xh-submit" style="padding:0 10px 10px 10px;">
             <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
           </div>
         </div>
@@ -221,13 +221,18 @@ export default {
       }
     },
     loadData() {
+      this.loading = true;
       getPaymentDetail({
         projectId: this.params.info.projectId,
         businesskey: this.params.info.businesskey
       })
         .then(res => {
-          this.loading = false;
           this.data = res.data;
+          console.log(this.data.projProjectInfo.riskMeasure.gpsNum)
+          if(this.data.projProjectInfo.riskMeasure.gpsNum == "0"){
+            this.meunRow.splice(4,1);
+          }
+          this.loading = false;
         })
         .catch(e => {
           this.loading = false;
