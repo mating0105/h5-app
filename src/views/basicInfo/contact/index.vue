@@ -9,7 +9,7 @@
               name="plus"
               style="line-height: inherit;"
               @click="addContact"
-              v-if="isView == 0"
+              v-if="isView"
             />
           </van-cell>
         </section>
@@ -56,7 +56,7 @@
               :value="i.borrowerRelationshipDesc"
               @click.native="!isView?'':loadList(index)"
               label-class='labelClass'
-              @blur.prevent="ruleMessge($event,index)" 
+              @blur.prevent="ruleMessge" 
               :label="errorMsg.borrowerRelationship[index]"
             />
           </van-cell-group>
@@ -231,7 +231,7 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView == 0?true:false;
+    this.isView = this.params.isView == 0;
     this.loadData();
     this.rulesForm("customer/cuEmergencyContact");
   }

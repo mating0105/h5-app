@@ -180,7 +180,6 @@ export default {
       errorMsg: {
         carAge: '',
         carNumber: '',
-        carHomearea:  '',
         carModelId:  '',
         buyType:  '',
         carValue: '',
@@ -243,17 +242,17 @@ export default {
     // 保存
     custSubmit() {
       this.formData.customerId = this.params.customerId;
-      // let num = 0;
-      // for (let item in this.errorMsg) {
-      //   this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
-      //   if (this.errorMsg[item] !== "") {
-      //     num++;
-      //   }
-      // }
-      // console.log(this.errorMsg);
-      // if (num !== 0) {
-      //   return;
-      // }
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+        if (this.errorMsg[item] !== "") {
+          num++;
+        }
+      }
+      console.log(this.errorMsg);
+      if (num !== 0) {
+        return;
+      }
       this.dLoading = true;
       if (this.params.id) {
         editCarsInfo(this.formData).then(res => {
@@ -288,10 +287,11 @@ export default {
       this.formData.carModel = carBrand.model.fullname;
       let code =
         carBrand.brand.id + "/" + carBrand.series.id + "/" + carBrand.model.id;
-      this.formData.carId = code;
+      this.formData.carModelId = code;
     },
     // 返回车牌号
     licensePlateNumChange({ value, type }) {
+      console.log(value, type);
       this.errorMsg[type] = this.returnMsg(type, this.formData[type]);
     },
     // OCR识别车架号
@@ -306,6 +306,7 @@ export default {
     this.isView = this.params.isView == 0;
     if (this.params.id) {
       this.formData = this.params;
+      this.formData.carModelId = (this.params.carId.split('/')).join('-');
     }
     this.rulesForm("cs/cuPersonalCar");
   }

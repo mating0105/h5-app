@@ -91,6 +91,18 @@
               />
             </section>
             <section>
+              <van-cell
+                title="单位性质："
+                required
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.unitChar"
+                :is-link="isView"
+                :value="formData.unitCharDesc"
+                @click.native="!isView?'':loadList('单位性质')"
+              />
+            </section>
+            <section>
               <van-field
                 v-model="formData.primarySchool"
                 clearable
@@ -381,14 +393,9 @@ export default {
       rules: {}, //验证 方法
       // cpCertificateNum: cpCertificateNum,//身份证验证
       errorMsg: {
-        localResidence: "", //本地居住年限(年)
         spsRsdncDtlAdr: "", //居住地详细地址
-        spsNm: "", //配偶姓名
-        spsCrdtNo: "", //配偶证件号码
-        spsCtcTel: "", //配偶联系电话
         contactPhone: "", //联系电话
         primarySchool: "", //曾就读小学
-
         certificateNum: "",
         childrenSituation: "",
         customerName: "",
@@ -398,7 +405,6 @@ export default {
         marriage: "",
         relationCus: "",
         schoolSituation: "",
-        unitChar: "",
         rProvCityZonId: "",
         pProvCityZonId: ""
       },
@@ -421,6 +427,49 @@ export default {
       ],
       ocrType: ''
     };
+  },
+  watch: {
+    'formData.marriage'(val) {
+      if(val == 2 || val == 4) {
+        this.errorMsg = {
+          spsRsdncDtlAdr: "", //居住地详细地址
+          spsNm: "", //配偶姓名
+          spsCrdtNo: "", //配偶证件号码
+          spsCtcTel: "", //配偶联系电话
+          contactPhone: "", //联系电话
+          primarySchool: "", //曾就读小学
+          certificateNum: "",
+          childrenSituation: "",
+          customerName: "",
+          emgrCtcpsnNm: "",
+          isBonds: "",
+          levelEducation: "",
+          marriage: "",
+          relationCus: "",
+          schoolSituation: "",
+          unitChar: "",
+          rProvCityZonId: "",
+          pProvCityZonId: ""
+        }
+      } else {
+        this.errorMsg = {
+          spsRsdncDtlAdr: "", //居住地详细地址
+          contactPhone: "", //联系电话
+          primarySchool: "", //曾就读小学
+          certificateNum: "",
+          childrenSituation: "",
+          customerName: "",
+          emgrCtcpsnNm: "",
+          isBonds: "",
+          levelEducation: "",
+          marriage: "",
+          relationCus: "",
+          schoolSituation: "",
+          rProvCityZonId: "",
+          pProvCityZonId: ""
+        }
+      }
+    }
   },
   methods: {
     onSelect(rows) {
@@ -463,6 +512,10 @@ export default {
           this.columns = this.wordbook.DegreeOfEducation;
           this.selectShow = true;
           break;
+        case "单位性质":
+          this.columns = this.wordbook.unit_Property;
+          this.selectShow = true;
+          break;
         case "户籍地址":
           this.addressShow = true;
           break;
@@ -479,6 +532,14 @@ export default {
           break;
         case "婚姻状况":
           this.columns = this.wordbook.marriage_type;
+          this.selectShow = true;
+          break;
+        case "配偶文化程度":
+          this.columns = this.wordbook.DegreeOfEducation;
+          this.selectShow = true;
+          break;
+        case "配偶单位性质":
+          this.columns = this.wordbook.unit_Property;
           this.selectShow = true;
           break;
       }
@@ -508,6 +569,18 @@ export default {
         case "婚姻状况":
           this.formData.marriageDesc = rows.label;
           this.formData.marriage = rows.value;
+          break;
+        case "单位性质":
+          this.formData.unitCharDesc = rows.label;
+          this.formData.unitChar = rows.value;
+          break;
+        case "配偶文化程度":
+          this.formData.spsCltrDgrDesc = rows.label;
+          this.formData.spsCltrDgr = rows.value;
+          break;
+        case "配偶单位性质":
+          this.formData.spsUnitCharDesc = rows.label;
+          this.formData.spsUnitChar = rows.value;
           break;
       }
       this.selectShow = false;
@@ -552,7 +625,7 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
-        if (this.errorMsg[item] !== '') {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
@@ -620,6 +693,19 @@ export default {
             "unit_Property",
             this.formData.spsUnitChar
           );
+
+          this.formData.spsCltrDgrDesc = this.returnText(
+            "DegreeOfEducation",
+            this.formData.spsCltrDgr
+          );
+          this.formData.spsUnitCharDesc = this.returnText(
+            "unit_Property",
+            this.formData.spsUnitChar
+          );
+          this.formData.unitCharDesc = this.returnText(
+            "unit_Property",
+            this.formData.unitChar
+          );
           this.loading = false;
         } catch {
           this.loading = false;
@@ -629,7 +715,7 @@ export default {
   },
   created() {
     this.params = this.$route.query;
-    this.isView = this.params.isView == 0?true:false;
+    this.isView = this.params.isView == 0;
     if (this.params.id) {
       this.loadClient();
     }

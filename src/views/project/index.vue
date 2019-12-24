@@ -184,7 +184,10 @@
         <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3">
-        <ApprovalRecord></ApprovalRecord>
+        <ApprovalRecord :requestParams="{
+          businessKey: params.projectId,
+          businessType: 11
+        }"></ApprovalRecord>
       </van-tab>
     </van-tabs>
 
@@ -717,7 +720,8 @@ export default {
       this.loading = false;
       this.params = this.$route.query;
       this.params.isView = 0;
-      this.params.businesskey = this.params.businesskey;
+      this.params.dealState = 1; // 图片 上传 1 ----  查看 3
+      this.params.businesskey = this.$route.projectId;
       this.endActive();
     }
     this.getIsSaveObj();

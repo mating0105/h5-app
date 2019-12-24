@@ -7,50 +7,68 @@
             <van-cell
               title="首付款是否为自有资金："
               required
-              is-link
+              :is-link="isView"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.paymentOwnCapital"
               :value="ruleForm.paymentOwnCapitalDesc"
               :border="false"
-              @click.native="loadList('首付款是否为自有资金','yes_no')"
+              @click.native="!isView?'':loadList('首付款是否为自有资金','yes_no')"
             />
             <van-cell
               title="是否清楚车价："
               required
-              is-link
+              :is-link="isView"
               :border="false"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.clearCarPrice"
               :value="ruleForm.clearCarPriceDesc"
-              @click.native="loadList('是否清楚车价','yes_no')"
+              @click.native="!isView?'':loadList('是否清楚车价','yes_no')"
             />
             <van-cell
               title="是否有驾驶证："
               required
-              is-link
+              :is-link="isView"
               :border="false"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.driveLicence"
               :value="ruleForm.driveLicenceDesc"
-              @click.native="loadList('是否有驾驶证','yes_no')"
+              @click.native="!isView?'':loadList('是否有驾驶证','yes_no')"
             />
             <van-cell
               title="调查中是否有陪同："
               required
-              is-link
+              :is-link="isView"
               :border="false"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.accompany"
               :value="ruleForm.accompanyDesc"
-              @click.native="loadList('调查中是否有陪同','yes_no')"
+              @click.native="!isView?'':loadList('调查中是否有陪同','yes_no')"
             />
             <van-cell
               title="是否人车匹配："
               required
-              is-link
+              :is-link="isView"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.match"
               :value="ruleForm.matchDesc"
               :border="false"
-              @click.native="loadList('是否人车匹配','yes_no')"
+              @click.native="!isView?'':loadList('是否人车匹配','yes_no')"
             />
             <van-cell
               title="是否涉及消费返利："
               required
-              is-link
+              :is-link="isView"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.involveConsumeRebate"
               :border="false"
               :value="ruleForm.involveConsumeRebateDesc"
-              @click.native="loadList('是否涉及消费返利','yes_no')"
+              @click.native="!isView?'':loadList('是否涉及消费返利','yes_no')"
             />
             <div v-show="isquick">
               <van-row>
@@ -76,8 +94,12 @@
                 type="textarea"
                 rows="1"
                 :border="false"
+                :disabled="!isView"
                 disabled
                 autosize
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.houseReport"
+                error-message-align="right"
               />
               <van-field
                 v-model="ruleForm.responseReport"
@@ -88,8 +110,12 @@
                 type="textarea"
                 rows="1"
                 :border="false"
+                :disabled="!isView"
                 disabled
                 autosize
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.responseReport"
+                error-message-align="right"
               />
               <van-field
                 v-model="ruleForm.gnrHsptyAndIncmRpt"
@@ -100,8 +126,11 @@
                 type="textarea"
                 rows="1"
                 :border="false"
-                disabled
+                :disabled="!isView"
                 autosize
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.gnrHsptyAndIncmRpt"
+                error-message-align="right"
               />
             </div>
             <van-field
@@ -113,10 +142,12 @@
               rows="1"
               autosize
               :border="false"
+              :disabled="!isView"
               input-align="right"
               label-width="100px"
-              @blur.prevent="()=>{ return errorMsg.inveInfo = rules('',$event,this)}"
+              @blur.prevent="ruleMessge"
               :error-message="errorMsg.inveInfo"
+              error-message-align="right"
             />
             <van-field
               v-model="ruleForm.infoDetail"
@@ -126,51 +157,60 @@
               type="textarea"
               rows="1"
               :border="false"
+              :disabled="!isView"
               input-align="right"
               label-width="100px"
               autosize
-              @blur.prevent="()=>{ return errorMsg.infoDetail = rules('',$event,this)}"
+              @blur.prevent="ruleMessge"
               :error-message="errorMsg.infoDetail"
+              error-message-align="right"
             />
             <van-cell
               title="实际调查地址："
               required
-              is-link
+              :is-link="isView"
               v-model="ruleForm.actSurvyAdr"
               :border="false"
-              @click="popaddress('实际调查地址')"
+              @click="!isView?'':popaddress('实际调查地址')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.actSurvyAdr"
             />
             <van-cell
               title="购车用途："
-              is-link
+              :is-link="isView"
               :value="ruleForm.carUseDesc"
               :border="false"
-              @click.native="loadList('购车用途','car_use')"
+              @click.native="!isView?'':loadList('购车用途','car_use')"
             />
             <van-cell
               title="上户地："
               required
-              is-link
+              :is-link="isView"
               v-model="ruleForm.upAccLnd"
               :border="false"
-              @click="popaddress('上户地')"
+              @click="!isView?'':popaddress('上户地')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.upAccLnd"
             />
             <van-cell
               title="提供人："
               :required="bankWaterFlag"
-              is-link
+              :is-link="isView"
               :value="ruleForm.providerDesc"
               :border="false"
-              @click.native="loadList('提供人','provider_type')"
+              :disabled="!isView"
+              @click.native="!isView?'':loadList('提供人','provider_type')"
             />
             <van-cell
               title="姓名："
               :required="bankWaterFlag"
-              is-link
+              :is-link="isView"
               :value="ruleForm.providerName"
               :border="false"
               @click.native="loadList('姓名','1')"
-              :disabled="providerNameable"
+              :disabled="!isView"
             />
             <van-field
               v-model="ruleForm.providerPhone"
@@ -191,18 +231,26 @@
             <van-cell
               title="流水开始日期："
               :required="bankWaterFlag"
-              is-link
+              :is-link="isView"
               :border="false"
+              :disabled="!isView"
               v-model="ruleForm.jrnlDateStart"
-              @click="showPopupTime('流水开始日期','jrnlDateStart')"
+              @click="!isView?'':showPopupTime('流水开始日期','jrnlDateStart')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.jrnlDateStart"
             />
             <van-cell
               title="流水截止日期："
               :required="bankWaterFlag"
-              is-link
+              :is-link="isView"
               :border="false"
+              :disabled="!isView"
               v-model="ruleForm.jrnlDateEnd"
-              @click="showPopupTime('流水截止日期','jrnlDateEnd')"
+              @click="!isView?'':showPopupTime('流水截止日期','jrnlDateEnd')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.jrnlDateEnd"
             />
             <van-field
               v-model="ruleForm.cardNumber"
@@ -210,7 +258,8 @@
               :required="bankWaterFlag"
               input-align="right"
               label="银行卡号："
-              right-icon="photograph"
+              :disabled="!isView"
+              :right-icon="!isView?'':'photograph'"
               placeholder="请输入卡号"
               class="xh-right-icon"
               @click-right-icon="OCRScan"
@@ -240,6 +289,8 @@
         @confirm="onConfirm"
       />
     </van-action-sheet>
+    <!-- 图片选择方式 -->
+    <van-action-sheet v-model="show3" :actions="actions" @select="onSelect" />
 
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -263,7 +314,9 @@ import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import Provinces from "@/components/provinces/index";
-import { format } from "@/utils/format"
+import { format } from "@/utils/format";
+// 校验
+import formValidator from "@/mixins/formValidator";
 import {
   getSurveyInfo,
   getProvider,
@@ -305,6 +358,7 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   components: {
     Card,
     ViewPage,
@@ -318,6 +372,7 @@ export default {
   },
   data() {
     return {
+      isView: false,
       loading: false, // loading
       isQuickadjust: "", //是否快提快调
       title2: "",
@@ -326,8 +381,34 @@ export default {
       // rules: rules, //验证 方法
       columns: [], //待选择列表
       errorMsg: {
-        inveInfo: "", //调查意见情况
-        infoDetail: "" //差资料明细
+        paymentOwnCapital: "",
+        clearCarPrice: "",
+        driveLicence: "",
+        accompany: "",
+        match: "",
+        involveConsumeRebate: "",
+        houseReport: "",
+        responseReport: "",
+        gnrHsptyAndIncmRpt: "",
+        inveInfo: "",
+        infoDetail: "",
+        actSurvyAdr: "",
+        upAccLnd: ""
+        // jrnlCardno: '',
+        // providerPhone: '',
+        // debitCardAccountName: '',
+        // provider: '',
+        // providerName: '',
+        // upAccLndId: '',
+        // providerIdCard: '',
+        // carUse: '',
+        // debitCardAccount: '',
+        // jrnlDateEnd: '',
+        // debitCardCertificateNo: '',
+        // debitCardBoundPhone: '',
+        // actSurvyAdrId: '',
+        // jrnlDateStart: '',
+        // debitCardBank: ''
       },
 
       bankWaterFlag: false, // 流水是否必填
@@ -368,13 +449,21 @@ export default {
         upAccLnd: ""
       },
       addressShow: false,
-      providerList: [] // 提供人
+      providerList: [], // 提供人
+      show3: false,
+      actions: [
+        { name: "相机扫描识别", value: "scan" },
+        { name: "相册导入识别", value: "album" }
+      ]
     };
   },
   methods: {
     OCRScan() {
-      bridge.callhandler("OCRScan", "0", data => {
-        this.$set(this, "cardNumber", data.BANK_NUM);
+      this.show3 = true;
+    },
+    onSelect(rows) {
+      this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
+        this.$set(this.ruleForm, "cardNumber", data.BANK_NUM);
       });
     },
     // 字典转换
@@ -397,13 +486,38 @@ export default {
           const { projConclusion } = res.data;
           this.isQuickadjust = projConclusion.isQuickadjust;
           this.ruleForm = projConclusion;
-          this.ruleForm.paymentOwnCapitalDesc = this.returnText('yes_no', projConclusion.paymentOwnCapital);
-          this.ruleForm.clearCarPriceDesc = this.returnText('yes_no', projConclusion.clearCarPrice);
-          this.ruleForm.driveLicenceDesc = this.returnText('yes_no', projConclusion.driveLicence);
-          this.ruleForm.accompanyDesc = this.returnText('yes_no', projConclusion.accompany);
-          this.ruleForm.matchDesc = this.returnText('yes_no', projConclusion.match);
-          this.ruleForm.involveConsumeRebateDesc = this.returnText('yes_no', projConclusion.involveConsumeRebate);
-          this.ruleForm.carUseDesc = this.returnText('car_use', projConclusion.carUse);
+          this.ruleForm.paymentOwnCapitalDesc = this.returnText(
+            "yes_no",
+            projConclusion.paymentOwnCapital
+          );
+          this.ruleForm.clearCarPriceDesc = this.returnText(
+            "yes_no",
+            projConclusion.clearCarPrice
+          );
+          this.ruleForm.driveLicenceDesc = this.returnText(
+            "yes_no",
+            projConclusion.driveLicence
+          );
+          this.ruleForm.accompanyDesc = this.returnText(
+            "yes_no",
+            projConclusion.accompany
+          );
+          this.ruleForm.matchDesc = this.returnText(
+            "yes_no",
+            projConclusion.match
+          );
+          this.ruleForm.involveConsumeRebateDesc = this.returnText(
+            "yes_no",
+            projConclusion.involveConsumeRebate
+          );
+          this.ruleForm.carUseDesc = this.returnText(
+            "car_use",
+            projConclusion.carUse
+          );
+          this.ruleForm.providerDesc = this.returnText(
+            "provider_type",
+            projConclusion.provider
+          );
           this.loading = false;
         })
         .catch(() => {
@@ -521,18 +635,30 @@ export default {
       getCheckReport({
         projectId: this.params.projectId,
         customerId: this.params.customerId
-      }).then(res => {
-        let { data } = res;
-        this.ruleForm.houseReport = data.houseReport; //借款人信息及房产报告
-        this.ruleForm.responseReport = data.responseReport; //借款人收入负债报告
-        this.ruleForm.gnrHsptyAndIncmRpt = data.gnrHsptyAndIncmRpt; //担保人房产及收入报告
-        this.scbgDisabled = false;
-      }).catch(()=>{
-        this.scbgDisabled = false;
-      });
+      })
+        .then(res => {
+          let { data } = res;
+          this.ruleForm.houseReport = data.houseReport; //借款人信息及房产报告
+          this.ruleForm.responseReport = data.responseReport; //借款人收入负债报告
+          this.ruleForm.gnrHsptyAndIncmRpt = data.gnrHsptyAndIncmRpt; //担保人房产及收入报告
+          this.scbgDisabled = false;
+        })
+        .catch(() => {
+          this.scbgDisabled = false;
+        });
     },
     // 保存调查报告
     submitWay() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.ruleForm[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       setSurvey(this.ruleForm)
         .then(res => {
           this.$notify({
@@ -541,78 +667,14 @@ export default {
           });
           this.subDisabled = false;
           this.loadData();
-        }).catch(()=>{
+        })
+        .catch(() => {
           this.subDisabled = false;
         });
     },
     custSubmit() {
       this.subDisabled = true;
       this.submitWay();
-    },
-    // 有接口验证的时候
-    urlRules(urls, rows, msg) {
-      let param = rows.params.split(",");
-      let obj = {};
-      param.forEach(t => {
-        obj[t] = this.form[t];
-      });
-      requestUrl.getList(urls, obj, "soa").then(res => {
-        if (res.data.code === 200) {
-          let { message } = res.data.data;
-          this.errorMsg[msg] = message;
-        } else {
-          this.$toast(res.data.msg);
-        }
-      });
-    },
-    // 验证值
-    returnMsg(name, value) {
-      let infoObj = this.ruleData[name];
-      let error = ""; // 错误信息
-      if (infoObj.mustFill) {
-        if (value == "" || value === undefined || value === null) {
-          error = "必填项，不能为空";
-        }
-      } else {
-        if (value == "" || value === undefined || value === null) {
-          error = "";
-        }
-      }
-      if (infoObj.regular.length > 0) {
-        for (let i = 0; i < infoObj.regular.length; i += 1) {
-          const { rule, message } = infoObj.regular[i];
-          const reg = new RegExp(rule);
-          if (!reg.test(value)) {
-            error = message;
-          } else {
-            if (infoObj.urlSuffix) {
-              this.urlRules(infoObj.urlSuffix, infoObj, name);
-            }
-          }
-        }
-      }
-      return error;
-    },
-    ruleMessge(e) {
-      let name = e.target.name;
-      let val = e.target.value;
-      this.errorMsg[name] = this.returnMsg(name, val);
-    },
-    // 获取验证信息
-    rulesForm() {
-      requestUrl
-        .getList(
-          "/manage/regularConfig/getRegularByServer",
-          { serverName: "order/projConclusion" },
-          "soa"
-        )
-        .then(res => {
-          if (res.data.code === 200) {
-            this.ruleData = res.data.data;
-          } else {
-            this.$toast(res.data.message);
-          }
-        });
     },
 
     // 获取主借人和配偶的姓名
@@ -660,8 +722,9 @@ export default {
   },
   mounted() {
     this.params = this.$route.query;
-    this.isView = this.params.isView;
+    this.isView = this.params.isView == 0;
     this.loadData();
+    this.rulesForm("order/projConclusion");
   }
 };
 </script>
