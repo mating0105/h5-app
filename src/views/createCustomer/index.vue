@@ -448,7 +448,7 @@ export default {
             message: "建档成功"
           });
           this.loading = false;
-          this.$router.go(-1);
+          this.closeNativeWebView()
         })
         .catch(e => {
           this.loading = false;
