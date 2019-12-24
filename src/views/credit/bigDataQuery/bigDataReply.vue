@@ -190,7 +190,7 @@
     },
     mounted () {
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      // this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isBank = Boolean(this.$route.query.isBank)
     }
   }

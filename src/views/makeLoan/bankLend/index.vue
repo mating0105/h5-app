@@ -183,6 +183,7 @@ export default {
     return {
         activeName: "1",
         listLoading:false,
+        params:{},//跳转接收的数据
         columns: [],
         imgWalkList: [],//图片
         popupShow: false,
@@ -212,7 +213,7 @@ export default {
         dataList: [],
         iconClass:'ellipsis',
         rightBoxList:[
-            {value:1,title:'项目基本信息',url:"/bigDataQueryDetail"},
+            {value:1,title:'项目基本信息',url:"/projectInfo"},
             {value:2,title:'做单基本信息',url:"/lendProcess"},
             {value:3,title:'客户及配偶',url:"/clientIndex"},
             {value:4,title:'紧急联系人',url:"/contactPerson"},
@@ -223,9 +224,9 @@ export default {
             {value:9,title:'担保人房产',url:"/houseGuarantor"},
             {value:10,title:'担保人收入',url:"/incomeGuarantor"},
             {value:11,title:'调查结论',url:"/survey"},
-            {value:12,title:'相关文档',url:"/relatedDocs"},
+            {value:12,title:'相关文档',url:"/proDocument"},
             {value:13,title:'GPS安装信息',url:"/gps"},
-            {value:14,title:'合同照片',url:"/contractUpload/"},
+            {value:14,title:'合同照片',url:"/contractUpload"},
         ],
         //----tab:2--征信信息
         creditList: {
@@ -249,7 +250,16 @@ export default {
   methods: {
     //----------导航----------------
     goPage(item){
-        this.$router.push({ path: item.url, query: this.params});
+        let queryData={
+            customerId:this.projectForm.projectInfo.customerId,
+            customerNum:this.projectForm.projectInfo.customerNum,
+            projectId:this.projectForm.projectInfo.projectId,
+            remark:this.params.info.remark,
+            lpCertificateNum:this.projectForm.projectInfo.certificateNum,
+            isView:1,//  0:修改  1：查看
+            projectNo:this.projectForm.projectInfo.projectNo,
+        }
+        this.$router.push({path: val.url, query:item.value==2 ? this.$route.query : queryData});
     },
     //-----------显示选择弹框--------------
     showPopupType(type) {

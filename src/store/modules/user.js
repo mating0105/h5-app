@@ -7,6 +7,7 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
+  accout:'',
   wordbook: null, // 字典集合
 }
 
@@ -19,6 +20,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ACCOUT: (state, accout) => {
+    state.accout = accout
   },
   SET_WORDBOOK: (state, wordbook) => {
     state.wordbook = wordbook
@@ -35,6 +39,7 @@ const actions = {
         setValue("userName", data.name);
         commit('SET_TOKEN', data && data.token)
         commit('SET_NAME', data && data.name)
+        commit('SET_ACCOUT', data && data.loginName)
         setToken(data.token)
         resolve()
       }).catch(error => {
