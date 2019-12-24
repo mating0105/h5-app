@@ -24,12 +24,12 @@
                 <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
               </section>
             </template>
-            <van-row>
+            <van-row @click.native="seeView(item)">
               <van-col span="24">客户名称：{{ item.customerName }}</van-col>
               <van-col span="24" class="xh-top-10">身份证：{{ item.certificateNum }}</van-col>
               <van-col span="24" class="xh-top-10">手机号码：{{ item.contactPhone }}</van-col>
             </van-row>
-            <template v-slot:footer>
+            <template v-slot:footer v-if="item.processState == '01'">
               <div style="text-align:right;">
                 <van-button
                   plain
@@ -188,6 +188,10 @@ export default {
       this.returnVal(this.params);
       this.list = [];
       this.onLoad();
+    },
+    // 查看
+    seeView() {
+      
     }
   },
   mounted() {

@@ -657,7 +657,7 @@ export default {
             this.paymentDetail.projBudgetList[item]
           );
         }
-        if (this.errorMsg[item] !== "") {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
