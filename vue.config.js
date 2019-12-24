@@ -42,7 +42,7 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       // '/user': {
-      //   target: `http://172.16.10.4:8086`,
+      //   target: `http://119.3.165.2:8085`,
       //   changeOrigin: true
       // },
       [process.env.VUE_APP_BASE_API]: {
@@ -53,21 +53,21 @@ module.exports = {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       },
-      // '/document': {
-      //   target: `http://119.3.165.2:8085`,
-      //   changeOrigin: true
-      // },
-      // '/group1': {
-      //   target: `http://119.3.165.2:8085`
-      // },
-      // '/customer': {
-      //   target: `http://192.168.0.81:8086`,
-      //   changeOrigin: true
-      // },
-      // '/product': {
-      //   target: `http://119.3.165.2:8085`,
-      //   changeOrigin: true
-      // }
+      '/document': {
+        target: `http://172.16.10.4:8085`,
+        changeOrigin: true
+      },
+      '/group1': {
+        target: `http://172.16.10.4:8085`
+      },
+      '/customer': {
+        target: `http://172.16.10.4:8085`,
+        changeOrigin: true
+      },
+      '/product': {
+        target: `http://172.16.10.4:8085`,
+        changeOrigin: true
+      }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
