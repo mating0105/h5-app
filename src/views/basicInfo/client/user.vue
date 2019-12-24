@@ -356,24 +356,31 @@ export default {
     })
   },
   watch:{
-        "formData.marriage"(newValue,oldValue){
-            var arr=['spsCltrDgr','spsUnitChar','spsNm','spsCtcTel','spsCrdtNo'];
-            if(newValue=='2' || newValue == "4"){
-                arr.forEach((item,index)=>{
-                    this.$set(this.errorMsg,item,'');
-                })
-            }else{
-                arr.forEach((item,index)=>{
-                    Vue.delete(this.errorMsg,item);
-                })
-            }
-        }
-
+    "formData.marriage"(newValue,oldValue){
+      var arr=['spsCltrDgr','spsUnitChar','spsNm','spsCtcTel','spsCrdtNo'];
+      if(newValue=='2' || newValue == "4"){
+        arr.forEach((item,index)=>{
+          this.$set(this.errorMsg,item,'');
+        })
+      }else{
+        arr.forEach((item,index)=>{
+          Vue.delete(this.errorMsg,item);
+        })
+      }
+    },
+    "formData.childrenSituation"(newValue,oldValue) {
+      if(newValue=='1'){
+        this.$set(this.errorMsg,'schoolSituation','');
+      }else{
+        Vue.delete(this.errorMsg,'schoolSituation');
+      }
+    }
   },
   data() {
     return {
       isView: false,
       loading: false,
+      show3: false,
       formData: {
         // 额外提交(上页传递)
         projectId: "", //项目Id
@@ -420,7 +427,6 @@ export default {
       errorMsg: {
         rProvCityZonId: '',
         pProvCityZonId: '',
-        schoolSituation: '',
         customerName: '',
         marriage: '',
         childrenSituation: '',
@@ -599,11 +605,11 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item]= this.returnMsg(item, this.formData[item]);
-        if (this.errorMsg[item] !== '') {
+        if (this.errorMsg[item]) {
           num++;
         }
       }
-       console.log(num)
+      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }

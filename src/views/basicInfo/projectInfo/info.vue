@@ -978,6 +978,17 @@ export default {
       setNewCar(rows).then(res => {
         this.projProjectInfo.cars = res.data;
         sessionStorage.removeItem("pro");
+        let cars = this.projProjectInfo.cars;
+        if (Array.isArray(cars) && cars.length > 0) {
+          this.carType = cars[0].carType + "-" + cars[0].carType2;
+          this.carNature = cars[0].carNature;
+          this.productTypeList({
+            type: 1,
+            carType: cars[0].carType + "-" + cars[0].carType2,
+            carNature: cars[0].carNature,
+            companyId: this.projProjectInfo.companyId
+          });
+        }
       }).catch(()=>{
         sessionStorage.removeItem("pro");
       });
