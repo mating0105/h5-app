@@ -282,31 +282,6 @@
 
           this.initCar()
           this.initCustomerData()
-
-          // 判断征信终止按钮隐藏和显示
-          // if (this.isInternet == '0' && this.dataList.status == "05") {
-          //   this.canTermin = true
-          // } else {
-          //   this.canTermin = false
-          // }
-          //
-          // if (this.isInternet != '1') {
-          //   if (this.dataList.isSCICBC == '1') {
-          //     this.isInternet = '2'
-          //   } else if (this.dataList.isSCICBC == '2') {
-          //     this.isInternet = '3'
-          //   }
-          // }
-          //
-          // if (!this.dataList.isSCICBC) {
-          //   this.dataList.isSCICBC = '0';
-          // }
-          // if (!this.form.relation) {
-          //   this.form.relation = '1';
-          // }
-          // if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
-          //   this.form.isSupplement = '0'
-          // }
         } catch (e) {
           this.loading = false
           console.log(e)
