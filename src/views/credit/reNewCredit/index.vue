@@ -374,9 +374,9 @@
       editCar (car, index) {
         const query = {
           customerId: this.dataList.customerId,
-          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
           index: index,
-          ...car
+          ...car,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
         }
         this.$router.push({
           path: '/vehicle',
