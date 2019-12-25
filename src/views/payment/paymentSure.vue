@@ -199,7 +199,7 @@ export default {
         this.$router.push({
           path: row.url,
           query: {
-            projectId: this.params.info.businesskey,
+            projectId: this.data.projBudgetList.projectId,
             isView: "1"
           }
         });
