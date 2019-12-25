@@ -263,8 +263,9 @@
     <Card class="xh-top-10" :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell
-            :title="projProjectInfo.cars && projProjectInfo.cars.length > 0 && projProjectInfo.isAses != '1'?'车辆信息（请侧滑进行编辑或删除）':'车辆信息'"
+          车辆信息
+          <!-- <van-cell
+            title=""
           >
             <van-icon
               slot="right-icon"
@@ -273,12 +274,12 @@
               @click="pullCars"
               v-if="isView"
             />
-          </van-cell>
+          </van-cell> -->
         </section>
       </template>
       <van-row class="xh-row xh-swipe-button">
-        <van-col span="24" class="xh-row-col" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
+        <van-col span="24" class="xh-row-col" style="padding: 0;" v-for="(i,index) in projProjectInfo.cars" :key="index">
+          <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
             <section>
               <van-cell
                 title="车辆类别:"
@@ -312,8 +313,26 @@
             <section>
               <van-cell title="销售价(元):" :value="i.salePrice" />
             </section>
+            <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
+            <div v-if="i.carNature == 'old_car'">
+              <section>
+                <van-cell title="发动机号:" :value="i.engineNum" />
+              </section>
+              <section>
+                <van-cell title="车架号:" :value="i.chassisNumber" />
+              </section>
+              <section>
+                <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
+              </section>
+              <section>
+                <van-cell title="行驶里程（万公里）:" :value="i.roadHaul" />
+              </section>
+              <section>
+                <van-cell title="上牌日期:" :value="i.plateDate" />
+              </section>
+            </div>
             <!-- 二手车是否已评估 isAses 评估后显示-->
-            <div v-if="projProjectInfo.isAses == '1'">
+            <div v-if="i.isAses == '1'">
               <section>
                 <van-cell title="评估价(元):" :value="i.estimateOriginalPrice" />
               </section>
@@ -327,10 +346,11 @@
             <section>
               <van-cell title="备注：" :value="i.remark" />
             </section>
-            <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
+            <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
+                :disabled="i.isCreditAdd == '1'?true:false"
                 @click.native="carsEdit(i,index)"
               >修改</van-button>
               <van-button
@@ -339,7 +359,7 @@
                 @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
-          </van-swipe-cell>
+          </van-swipe-cell> -->
         </van-col>
       </van-row>
     </Card>
@@ -755,14 +775,14 @@ export default {
       }
     }
   },
-  activated(){
-    let datas = JSON.parse(sessionStorage.getItem('pro'));
-    console.log(datas);
-    if(datas) {
-      this.projProjectInfo = datas;
-      this.newCar(this.$store.state.credit.carData);
-    }
-  },
+  // activated(){
+  //   let datas = JSON.parse(sessionStorage.getItem('pro'));
+  //   console.log(datas);
+  //   if(datas) {
+  //     this.projProjectInfo = datas;
+  //     this.newCar(this.$store.state.credit.carData);
+  //   }
+  // },
   data() {
     return {
       actions: [
@@ -833,6 +853,7 @@ export default {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum
       }
+      this.$store.dispatch('credit/removeCarData')
       sessionStorage.setItem('pro', JSON.stringify(this.projProjectInfo));
       this.$router.push({ path: "/vehicle" , query });
     },
@@ -909,6 +930,7 @@ export default {
         if (Array.isArray(cars) && cars.length > 0) {
           this.carType = cars[0].carType + "-" + cars[0].carType2;
           this.carNature = cars[0].carNature;
+          this.$store.dispatch('credit/removeCarData')
           this.productTypeList({
             type: 1,
             carType: cars[0].carType + "-" + cars[0].carType2,
@@ -1541,45 +1563,6 @@ export default {
           }
         }
         if (yanzheng) {
-          if (this.projProjectInfo.isChangeProj == "1") {
-            [this.projProjectInfo.customerName, this.projProjectInfo.spsNm] = [
-              this.projProjectInfo.spsNm,
-              this.projProjectInfo.customerName
-            ];
-            [
-              this.projProjectInfo.certificateNum,
-              this.projProjectInfo.spsCrdtNo
-            ] = [
-              this.projProjectInfo.spsCrdtNo,
-              this.projProjectInfo.certificateNum
-            ];
-            [
-              this.projProjectInfo.contactPhone,
-              this.projProjectInfo.spsCtcTel
-            ] = [
-              this.projProjectInfo.spsCtcTel,
-              this.projProjectInfo.contactPhone
-            ];
-            [
-              this.projProjectInfo.levelEducation,
-              this.projProjectInfo.spsCltrDgr
-            ] = [
-              this.projProjectInfo.spsCltrDgr,
-              this.projProjectInfo.levelEducation
-            ];
-            [
-              this.projProjectInfo.unitChar,
-              this.projProjectInfo.spsUnitChar
-            ] = [
-              this.projProjectInfo.spsUnitChar,
-              this.projProjectInfo.unitChar
-            ];
-          }
-
-          // let wbtProvCityName = this.$refs.cascader.currentLabels?this.$refs.cascader.currentLabels:this.$refs.cascader.inputValue;
-          // if(Array.isArray(wbtProvCityName)) {
-          //   wbtProvCityName = wbtProvCityName.join('-');
-          // }
           let formList = { ...this.projProjectInfo };
           var dataList = {
             projectId: formList.projectId,
@@ -1702,7 +1685,7 @@ export default {
         } else {
           this.$notify({
             type: "danger",
-            message: "保存失败,请检查车辆信息填写是否完整"
+            message: "有车辆价格未填"
           });
         }
       }
