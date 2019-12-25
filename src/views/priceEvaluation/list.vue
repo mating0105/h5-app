@@ -55,9 +55,9 @@
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
   // 其他组件
-  import { Row, Col, Icon, Cell, Button, List, Search, Toast } from "vant";
+  import { Row, Col, Icon, Cell, Button, List, Search, Toast, PullRefresh } from "vant";
 
-  const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast];
+  const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast, PullRefresh];
 
   Components.forEach(item => {
     Vue.use(item);
@@ -148,6 +148,7 @@
         this.list = []
         this.params.pageIndex = 1
         this.finished = false
+        this.onLoad()
         setTimeout(() => {
           Toast.success('刷新成功');
         }, 500);

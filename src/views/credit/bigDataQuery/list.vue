@@ -171,6 +171,7 @@
         this.list = []
         this.params.pageIndex = 1
         this.finished = false
+        this.onLoad()
         setTimeout(() => {
           Toast.success('刷新成功');
         }, 500);
