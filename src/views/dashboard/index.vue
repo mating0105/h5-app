@@ -6,6 +6,8 @@
         <van-button type="warning">警告按钮</van-button>
         <van-button type="danger">危险按钮</van-button>
         <p>token: {{token}}</p>
+        <p>name：{{userName}}</p>
+        <p>cookieKeys:{{cookieKeys}}</p>
         <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
         <p style="color: #21C272">{{test}}</p>
         <input type="file">
@@ -21,6 +23,7 @@
   import { Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader } from 'vant';
   import { getList } from '@/api/table'
   import { getToken } from '@/utils/auth'
+  import Cookies from 'js-cookie'
 
   const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader]
 
@@ -50,6 +53,8 @@
         msg: 'test data',
         test: '',
         token: getToken(),
+        userName:'',
+        cookieKeys:{},
         fileList: [
           {url: 'https://img.yzcdn.cn/vant/leaf.jpg'},
         ]
@@ -101,6 +106,8 @@
     mounted () {
       this.getAPPDate('callJsCode')
       // this.getList()
+      this.userName=Cookies.get('name');
+      this.cookieKeys=Cookies.get();
     }
   }
 </script>
