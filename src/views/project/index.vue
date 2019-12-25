@@ -160,7 +160,7 @@
             <div class="xh-submit" v-if="isActive">
               <van-row>
                 <van-col :span="4">
-                  <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;">终止</van-button>
+                  <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;" @click="submitStop">终止</van-button>
                 </van-col>
                 <van-col :span="20">
                   <van-button
@@ -229,7 +229,9 @@ import {
   getProjectInfo,
   getAcceptList,
   postWindControl,
-  getIsSave
+  getIsSave,
+  setProcessBack,
+  setProcessStop
 } from "@/api/project";
 import { getCreditInfo } from '@/api/credit'
 import { mapState } from "vuex";
@@ -522,6 +524,7 @@ export default {
     postProcess() {
       if (this.completion != "01" && this.message == "") {
         this.$toast("请填写您的意见");
+        this.dLoading = false;
         return;
       }
       if (this.message == "") {
@@ -531,7 +534,37 @@ export default {
       }
       this.postFrom.conclusionCode = this.completion;
       this.postFrom.businessKey = this.params.projectId;
-      setProjectProcess(this.postFrom).then(res => {
+      if(this.completion == '03') {
+        setProcessBack(this.postFrom).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      } else {
+        setProjectProcess(this.postFrom).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      }
+    },
+    // 流程终止 
+    submitStop() {
+      this.dLoading = true;
+      setProcessStop({
+        businessKey: this.params.projectId,
+        businessType: 11
+      }).then(res => {
         this.$notify({
           type: "success",
           message: res.msg
@@ -728,9 +761,9 @@ export default {
       this.params.dealState = this.params.isView == 0?1:3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
-      this.endActive();
     }
     this.getIsSaveObj();
+    this.endActive();
     let datas = JSON.parse(sessionStorage.getItem('pro'));
     if(datas) {
       sessionStorage.removeItem("pro");
