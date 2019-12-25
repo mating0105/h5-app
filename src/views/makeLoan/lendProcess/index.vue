@@ -263,7 +263,7 @@
         <!-- 身份证识别 -->
         <van-action-sheet v-model="showScan" :actions="actions" @select="discernIdcard" />
         <!-- 银行卡识别 -->
-        <van-action-sheet v-model="showScan" :actions="actions" @select="discernBankCardCum" />
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discernBankCardCum"/>
 
     </ViewPage>
 </template>
@@ -895,10 +895,11 @@
       },
       //银行卡号
       discernBankCardCum (e) {
-        this.$bridge.callHandler('bankCodeOCR', 'e.value', (res) => {
+        this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
           this.$set(this.form.receiptInfo, "receiptAccount", res.BANK_NUM);
         //   this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
         })
+        this.showScan=false;
       }
     },
     created () {
