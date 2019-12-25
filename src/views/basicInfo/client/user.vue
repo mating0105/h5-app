@@ -266,6 +266,7 @@
             placeholder="请输入备注"
             rows="1"
             autosize
+            :disabled="!isView"
           />
         </section>
       </div>
