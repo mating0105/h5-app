@@ -109,8 +109,7 @@
         return name;
       },
       onLoad () {
-        this.isLoading = false;
-        this.loading = true;
+        this.loading = !this.isLoading;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
           data.result.forEach(t => {
@@ -121,6 +120,7 @@
           this.params.pageIndex++;
           // 数据全部加载完成
           this.finished = this.list.length === data.totalCount;
+          this.isLoading = false;
         }).catch(() => {
           this.error = true
           this.loading = false
@@ -130,6 +130,7 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
       },
       startFormFn (item) {
