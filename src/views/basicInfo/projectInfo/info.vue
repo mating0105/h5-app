@@ -232,6 +232,7 @@
             <van-cell
               title="预调查地址:"
               required
+              :border="false"
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
@@ -673,6 +674,8 @@ export default {
     })
   },
   watch: {
+    // ""
+
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
       if (val) {
@@ -880,10 +883,11 @@ export default {
         addressDetail: "",
         wthrBl: "",
         marriage: "",
-        businessModelId: "",
+        businessModel: "",
         unitChar: "",
         levelEducation: "",
         contactPhone: "",
+        carDealersId: ""
       },
       carNature: "", //车辆性质
       carType: "", //车辆类型

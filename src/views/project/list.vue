@@ -118,7 +118,11 @@ export default {
       this.onLoad();
     },
     onRefresh() {
-      this.params.pageIndex = 1;
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10
+      }
+      this.list = [];
       this.onLoad();
     },
     onLoad() {
