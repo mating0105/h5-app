@@ -3,29 +3,21 @@
     <Card>
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="联系人信息">
-            <van-icon
-              slot="right-icon"
-              name="plus"
-              style="line-height: inherit;"
-              @click="addContact"
-              v-if="isView"
-            />
-          </van-cell>
+          联系人信息
         </section>
       </template>
       <div class="xh-row">
-        <div v-for="(i,index) in contactlist" :key="index">
-          <van-divider content-position="left">{{ '第'+ numberHun(index) +'联系人信息' }}</van-divider>
+        <div>
+          <van-divider content-position="left">第一联系人信息</van-divider>
           <van-cell-group :border="false">
             <van-field
               :border="false"
               label-width="100px"
               name="emergencyContactName"
-              v-model="i.emergencyContactName"
+              v-model="contactlist1.emergencyContactName"
               clearable
               :disabled="!isView"
-              :required="index == 0"
+              required
               label="联系人名称："
               input-align="right"
               placeholder="请输入紧急联系人名称"
@@ -37,10 +29,10 @@
               :border="false"
               label-width="100px"
               name="contactPhone"
-              v-model="i.contactPhone"
+              v-model="contactlist1.contactPhone"
               clearable
               :disabled="!isView"
-              :required="index == 0"
+              required
               label="联系人电话："
               input-align="right"
               placeholder="请输入联系人电话"
@@ -51,13 +43,81 @@
             <van-cell
               :border="false"
               title="与借款人关系："
-              :required="index == 0"
+              required
               :is-link="isView"
-              :value="i.borrowerRelationshipDesc"
-              @click.native="!isView?'':loadList(index)"
+              :value="contactlist1.borrowerRelationshipDesc"
+              @click.native="!isView?'':loadList(1)"
               label-class='labelClass'
               @blur.prevent="ruleMessge" 
-              :label="errorMsg.borrowerRelationship[index]"
+              :label="errorMsg.borrowerRelationship"
+            />
+          </van-cell-group>
+        </div>
+        <div>
+          <van-divider content-position="left">第二联系人信息</van-divider>
+          <van-cell-group :border="false">
+            <van-field
+              :border="false"
+              label-width="100px"
+              name="emergencyContactName2"
+              v-model="contactlist2.emergencyContactName"
+              clearable
+              :disabled="!isView"
+              label="联系人名称："
+              input-align="right"
+              placeholder="请输入紧急联系人名称"
+            />
+            <van-field
+              :border="false"
+              label-width="100px"
+              name="contactPhone2"
+              v-model="contactlist2.contactPhone"
+              clearable
+              :disabled="!isView"
+              label="联系人电话："
+              input-align="right"
+              placeholder="请输入联系人电话"
+            />
+            <van-cell
+              :border="false"
+              title="与借款人关系："
+              :is-link="isView"
+              :value="contactlist2.borrowerRelationshipDesc"
+              @click.native="!isView?'':loadList(2)"
+            />
+          </van-cell-group>
+        </div>
+        <div>
+          <van-divider content-position="left">第三联系人信息</van-divider>
+          <van-cell-group :border="false">
+            <van-field
+              :border="false"
+              label-width="100px"
+              name="emergencyContactName3"
+              v-model="contactlist3.emergencyContactName"
+              clearable
+              :disabled="!isView"
+              label="联系人名称："
+              input-align="right"
+              placeholder="请输入紧急联系人名称"
+            />
+            <van-field
+              :border="false"
+              label-width="100px"
+              name="contactPhone3"
+              v-model="contactlist3.contactPhone"
+              clearable
+              :disabled="!isView"
+              label="联系人电话："
+              input-align="right"
+              placeholder="请输入联系人电话"
+            />
+            <van-cell
+              :border="false"
+              title="与借款人关系："
+              :is-link="isView"
+              :value="contactlist3.borrowerRelationshipDesc"
+              @click.native="!isView?'':loadList(3)"
             />
           </van-cell-group>
         </div>
@@ -110,7 +170,27 @@ export default {
   data() {
     return {
       isView: false,
-      contactlist: [],
+      contactlist1: {
+        emergencyContactName: "",
+        contactPhone: "",
+        borrowerRelationshipDesc: "",
+        borrowerRelationship: "",
+        contactType: 1
+      },
+      contactlist2: {
+        emergencyContactName: "",
+        contactPhone: "",
+        borrowerRelationshipDesc: "",
+        borrowerRelationship: "",
+        contactType: 2
+      },
+      contactlist3: {
+        emergencyContactName: "",
+        contactPhone: "",
+        borrowerRelationshipDesc: "",
+        borrowerRelationship: "",
+        contactType: 3
+      },
       params: {},
       selectShow: false,
       columns: [],
@@ -162,25 +242,9 @@ export default {
       }
     },
     onConfirm(row) {
-      this.contactlist[this.ofKey].borrowerRelationship = row.value;
-      this.contactlist[this.ofKey].borrowerRelationshipDesc = row.label;
+      this['contactlist'+this.ofKey].borrowerRelationship = row.value;
+      this['contactlist'+this.ofKey].borrowerRelationshipDesc = row.label;
       this.selectShow = false;
-    },
-    // 添加联系人
-    addContact() {
-      let num = this.contactlist.length + 1;
-      if(this.contactlist.length < 3) {
-        this.contactlist.push({
-          emergencyContactName: "",
-          contactPhone: "",
-          borrowerRelationshipDesc: "",
-          borrowerRelationship: "",
-          customerId: this.params.customerId,
-          contactType: num
-        });
-      } else {
-
-      }
     },
     // 获取数据
     loadData(params) {
@@ -189,10 +253,13 @@ export default {
       };
       getContactInfo(dataList).then(res => {
         if (res.code == 200) {
-          this.contactlist = res.data;
-          this.contactlist.forEach(t => {
+          let list = res.data;
+          list.forEach(t => {
             t.borrowerRelationshipDesc = this.returnText('kinship_type', t.borrowerRelationship);
           });
+          this.contactlist1 = list[0];
+          this.contactlist2 = list[1];
+          this.contactlist3 = list[2];
         } else {
           this.$notify({ type: "danger", message: res.msg });
         }
@@ -206,13 +273,9 @@ export default {
     },
     // 保存
     custSubmit() {
-      if(this.contactlist.length < 1) {
-        this.$notify({ type: 'warning', message: '紧急联系人至少一人' })
-        return
-      }
       let num = 0;
       for (let item in this.errorMsg) {
-        this.errorMsg[item] = this.returnMsg(item, this.contactlist[0][item]);
+        this.errorMsg[item] = this.returnMsg(item, this.contactlist1[item]);
         if (this.errorMsg[item] !== '') {
           num++;
         }
@@ -220,7 +283,21 @@ export default {
       if (num !== 0) {
         return;
       }
-      setContactSave(this.contactlist).then(res => {
+      let arr = [
+        {
+          ...this.contactlist1,
+          customerId: this.params.customerId,
+        },
+        {
+          ...this.contactlist2,
+          customerId: this.params.customerId,
+        },
+        {
+          ...this.contactlist3,
+          customerId: this.params.customerId,
+        }
+      ]
+      setContactSave(arr).then(res => {
         if(res.code == 200) {
           this.$notify({ type: "success", message: res.msg });
           this.$router.go(-1);
