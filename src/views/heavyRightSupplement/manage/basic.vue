@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-23 16:21:42
+ * @LastEditTime : 2019-12-25 17:16:48
  -->
 
 <template>
@@ -327,6 +327,7 @@
               input-align="right"
               is-link
               label="重权登记日期:"
+              label-width="140"
               name="ownershipRegisterDate"
               placeholder="请选择"
               readonly
