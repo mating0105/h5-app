@@ -216,18 +216,7 @@
               <template slot="header">缴费明细</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="totalCharges"
-                    required
-                    clearable
-                    name="totalCharges"
-                    error-message-align="right"
-                    label="费用合计"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="ruleMessge"
-                    :error-message="errorMsg.totalCharges"
-                  />
+                  <van-cell title="费用合计" :value="totalCharges" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -244,18 +233,7 @@
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="actincmAmt"
-                    required
-                    clearable
-                    name="actincmAmt"
-                    error-message-align="right"
-                    label="实收金额(元)"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="ruleMessge"
-                    :error-message="errorMsg.actincmAmt"
-                  />
+                  <van-cell title="实收金额(元)" :value="actincmAmt" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
@@ -553,17 +531,15 @@ export default {
         doolBail: "",
         agreeBail: "",
         collectCarDealer: "",
-        totalCharges: "",
         dcnAmt: "",
-        actincmAmt: "",
         pyfDt: "",
         pyfMod: "",
         payType: "",
-        payTime: "",
-        payeeAccount: "",
-        payeeBank: "",
-        payeeSubBank: "",
-        payeeFullName: ""
+        payTime: ""
+        // payeeAccount: "",
+        // payeeBank: "",
+        // payeeSubBank: "",
+        // payeeFullName: ""
       }
     };
   },
@@ -617,6 +593,7 @@ export default {
       return obj;
     }
   },
+  watch: {},
   methods: {
     stepVhange(val) {
       this.stepVal = val;
@@ -680,6 +657,34 @@ export default {
     //提交流程
     submit() {
       this.loading = true;
+      let num = 0;
+      for (let item in this.errorMsg) {
+        if (
+          item == "payType" ||
+          item == "payTime" ||
+          item == "payeeAccount" ||
+          item == "payeeBank" ||
+          item == "payeeSubBank" ||
+          item == "payeeFullName"
+        ) {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projPayInfo[item]
+          );
+        } else {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projBudgetList[item]
+          );
+        }
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        this.loading = false;
+        return;
+      }
       this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
       submitPay(this.paymentDetail)
@@ -819,6 +824,45 @@ export default {
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
           this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
           this.errorMsg[this.fieldName] = "";
+          if (row.value == 1) {
+            this.errorMsg = {
+              estimateCharges: "",
+              investigateCharges: "",
+              gpsCharges: "",
+              colligateCharges: "",
+              notarialFees: "",
+              allopatryCharges: "",
+              doolBail: "",
+              agreeBail: "",
+              collectCarDealer: "",
+              dcnAmt: "",
+              pyfDt: "",
+              pyfMod: "",
+              payType: "",
+              payTime: ""
+            };
+          } else {
+            this.errorMsg = {
+              estimateCharges: "",
+              investigateCharges: "",
+              gpsCharges: "",
+              colligateCharges: "",
+              notarialFees: "",
+              allopatryCharges: "",
+              doolBail: "",
+              agreeBail: "",
+              collectCarDealer: "",
+              dcnAmt: "",
+              pyfDt: "",
+              pyfMod: "",
+              payType: "",
+              payTime: "",
+              payeeAccount: "",
+              payeeBank: "",
+              payeeSubBank: "",
+              payeeFullName: ""
+            };
+          }
           break;
         case "payeeBank":
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
@@ -1039,9 +1083,9 @@ export default {
 .xh-submit {
   padding: 0 10px 20px 10px;
 }
-.labelClass{
+.labelClass {
   color: #ee0a24;
   text-align: right;
-  left:0!important;
+  left: 0 !important;
 }
 </style>
