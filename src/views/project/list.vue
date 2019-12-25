@@ -213,22 +213,18 @@ export default {
     },
     // 查看
     seeView(rows) {
-      getDeclaration({
-        id: rows.id
-      }).then(res => {
-        this.$router.push({
-          path: "/xhProject",
-          query: {
-            customerName: rows.customerName, //客户姓名
-            contactPhone: rows.contactPhone, //客户身份证
-            certificateNum: rows.certificateNum, //客户手机号码
-            customerId: rows.customerId,
-            customerNum: rows.customerNum,
-            projectNo: rows.projectNo,
-            projectId: rows.projectId,
-            isView: 1
-          }
-        });
+      this.$router.push({
+        path: "/xhProject",
+        query: {
+          customerName: rows.customerName, //客户姓名
+          contactPhone: rows.contactPhone, //客户身份证
+          certificateNum: rows.certificateNum, //客户手机号码
+          customerId: rows.customerId,
+          customerNum: rows.customerNum,
+          projectNo: rows.projectNo,
+          projectId: rows.projectId,
+          isView: 1
+        }
       });
     }
   },

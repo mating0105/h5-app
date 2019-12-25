@@ -26,6 +26,7 @@
                 label="客户姓名:*"
                 input-align="right"
                 placeholder="请输入"
+                @blur.prevent="ruleMessge"
                 :error-message="errorMsg.customerName"
                 error-message-align="right"
               />
@@ -425,15 +426,15 @@
             />
           </section>
           <!-- 中建投 -->
-          <div v-if="projProjectInfo.businessModel==4">
+          <!-- <div v-if="projProjectInfo.businessModel==4">
             <section>
               <van-cell title="客户首付成数:" :value="projProjectInfo.paymentNumberName" />
             </section>
             <section>
               <van-cell title="客户保证金(%):" :value="projProjectInfo.customerBond" />
             </section>
-          </div>
-          <div v-if="projProjectInfo.businessModel != 4">
+          </div> -->
+          <!-- <div v-if="projProjectInfo.businessModel != 4"> -->
             <section>
               <van-cell
                 title="盗抢险:"
@@ -461,7 +462,7 @@
             <section>
               <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
             </section>
-          </div>
+          <!-- </div> -->
           <section>
             <van-cell title="银行费率(%):" :value="projProjectInfo.bankNewRate" />
           </section>
@@ -472,7 +473,7 @@
             <van-cell title="返利费率(%):" :value="projProjectInfo.rebateStandard" />
           </section>
 
-          <section v-if="projProjectInfo.isQuickadjust=='1'">
+          <!-- <section v-if="projProjectInfo.isQuickadjust=='1'">
             <van-cell
               title="是否t+0:"
               :is-link="isView"
@@ -480,7 +481,7 @@
               :value="projProjectInfo.isTandzeroName"
               @click="!isView?'':loadList('yes_no','是否t+0','isTandzero')"
             />
-          </section>
+          </section> -->
           <section>
             <van-field
               v-model="projProjectInfo.rentingAmtGps"
@@ -489,7 +490,7 @@
               :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
-              :required="projProjectInfo.thiefRescue == 0?true:false"
+              :required="projProjectInfo.thiefRescue == 0"
               placeholder="(含GPS加融费用)"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
@@ -497,7 +498,7 @@
             />
           </section>
 
-          <div
+          <!-- <div
             v-if="projProjectInfo.businessModel==1 || projProjectInfo.businessModel==2 || projProjectInfo.businessModel==3"
           >
             <section>
@@ -561,7 +562,7 @@
                 placeholder="请输入"
               />
             </section>
-          </div>
+          </div> -->
           <section>
             <van-field
               v-model="projProjectInfo.surcharge"
@@ -578,7 +579,7 @@
     </Card>
 
     <!-- 提交按钮 -->
-    <div class="xh-submit" style="padding: 20px 10px;">
+    <div class="xh-submit" style="padding: 20px 10px;" v-if="isView">
       <van-button size="large" class="xh-bg-main" @click="submitProject" :loading="dLoading" :disabled="dLoading">保 存</van-button>
     </div>
 
@@ -674,8 +675,19 @@ export default {
     })
   },
   watch: {
-    // ""
-
+    // 婚姻状况
+    "projProjectInfo.marriage"(newValue,oldValue){
+      var arr=['spsCltrDgr','spsUnitChar','spsNm','spsCtcTel','spsCrdtNo'];
+      if(newValue=='2' || newValue == "4"){
+        arr.forEach((item,index)=>{
+          this.$set(this.errorMsg,item,'');
+        })
+      }else{
+        arr.forEach((item,index)=>{
+          Vue.delete(this.errorMsg,item);
+        })
+      }
+    },
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
       if (val) {
@@ -778,94 +790,14 @@ export default {
       bankGuaranteeRate: "",
       bankRate: "",
       businessList: [], //业务来源
-
-      isNum: "",
-      isVal: "",
       selectName: "",
       fieldName: "", // 选择字段名
-      areaList: {
-        province_list: {},
-        city_list: {},
-        county_list: {}
-      },
-      bankArr: [], //银行数组
-      bankList: {},
-      customerName: "", // 客户名字
-      contactPhone: "", // 客户电话
-      certificateNum: "", // 客户证件号码
-      certificateTypeName: "", // 客户证件描述
-      spsNm: "", // 客户配偶名字
-      spsCtcTel: "", // 客户配偶电话
-      spsCrdtNo: "", // 客户配偶证件号码
-      spsCrdtTpName: "", // 客户配偶证件描述
-      selectType: "", //选择的类别
+      // 初始化数据
       projProjectInfo: {
         loanPlatfomrs: [],
-        companyName: "",
-        officeName: "",
-        groupName: "",
-        businessGroupIds: "",
-        contactPhone: "",
-        levelEducation: "",
-        unitChar: "",
-        marriage: "",
-        customerName: "",
-        certificateNum: "",
-        spsCltrDgr: "",
-        spsUnitChar: "",
-        bsnSrc: "",
-        isAccessCar: "",
-        carDealersId: "",
-        counterGuaranteeStatus: "",
-        wthrBl: "",
-        blRsn: "",
-        addressDetail: "",
-        sngldayPrd: "",
-        productCategoryId: "",
-        productCategoryIdName: "",
-        loanPlatfomrId: "",
-        productId: "",
-        thiefRescue: "",
-        businessModel: "",
-        businessModelName: "",
-        rbrinsPltfrmNmId: "",
-        rbrinsPltfrmNmName: "", // 盗抢险购买平台
-        loanTerm: "",
-        loanAmt: "",
-        isQuickadjust: "",
-        isTandzero: "",
-        guaranteeRate: "",
-        bankNewRate: "",
-        rebateStandard: "",
-        loanRegion: "",
-        rentingAmtGps: "",
-        rentingCarRatio: "",
-        rentingServiceFee: "",
-        rentingAmt: "",
-        marginRatio: "",
-        keepPrice: "",
-        concactNum: "",
-        accountNum: "",
-        accountName: "",
-        accountBank: "",
-        spsNm: "",
-        spsCrdtNo: "",
-        spsCtcTel: "",
         wbtProvCityId: [],
-        wbtProvCityZonName: "",
-        productIdName: "",
-        customerBond: "",
-        paymentNumber: "",
-        paymentNumberName: "",
-        ruleFlag: "",
         cars: []
       },
-      getProductCategory: [], //产品类别
-      pattern: [], //产品名称
-      loanRegion: "", //贷款区间
-      buyPlatform: [], //盗抢险购买平台
-      rules: {},
-      imgList: [], //图片
       errorMsg: {
         loanPlatfomrId: "",
         wbtProvCityZonCode: "",
@@ -877,7 +809,6 @@ export default {
         loanAmt: "",
         customerName: "",
         cars: "",
-        carDealersName: "",
         loanTerm: "",
         productCategoryId: "",
         addressDetail: "",
@@ -1778,17 +1709,17 @@ export default {
     },
     // 提交数据
     postProject(dataList) {
-      // let num = 0;
-      // for (let item in this.errorMsg) {
-      //   this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
-      //   if (this.errorMsg[item]) {
-      //     num++;
-      //   }
-      // }
-      // console.log(this.errorMsg);
-      // if (num !== 0) {
-      //   return;
-      // }
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      console.log(this.errorMsg);
+      if (num !== 0) {
+        return;
+      }
       this.dLoading = true;
       setProjectInfo(dataList).then(res => {
         this.$notify({ type: "success", message: res.msg });
@@ -1831,6 +1762,10 @@ export default {
     .van-cell__right-icon {
       color: #fff;
     }
+    .labelClass, .van-field__error-message {
+      text-align: right;
+      color: #d3d3d3;
+    }
   }
   .xh-card-head {
     .xh-OCR {
@@ -1840,6 +1775,9 @@ export default {
       padding-right: 10px;
       padding-top: 0;
     }
+  }
+  .van-field__control:disabled {
+    -webkit-text-fill-color: #fff;
   }
 }
 </style>
