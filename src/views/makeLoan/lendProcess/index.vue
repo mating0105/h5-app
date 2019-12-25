@@ -642,12 +642,12 @@
             this.form.borrowerInfo.customerSexDesc = this.switchSex(data.data.borrowerInfo.customerSex);
             this.form.borrowerInfo.paymentSourceDesc = this.returnText('payment_source', this.form.borrowerInfo.paymentSource);
             this.form.borrowerInfo.postDesc = this.returnText('OccupationalStatus', this.form.borrowerInfo.post);
-            this.form.loanInfo.loanTermDesc = this.returnText('period_number', this.form.loanInfo.loanTerm);
+            this.form.loanInfo.loanTermDesc = this.form.loanInfo.loanTerm?this.returnText('period_number', this.form.loanInfo.loanTerm):null;
             this.form.carInfos.forEach((item, index) => {
               item.carNatureDesc = this.returnText('car_nature', item.carNature);
-              item.carSpecificationsDesc = this.returnText('vehicle_specifications', Number(item.carSpecifications));
+              item.carSpecificationsDesc = item.carSpecifications?this.returnText('vehicle_specifications', Number(item.carSpecifications)):null;
               item.carSourceDesc = this.returnText('CAR_SOURCE', item.carSource);
-              item.carTypeDesc = this.returnText('car_type', item.carType) + '-' + this.returnText('car_type2', item.carType2);
+              item.carTypeDesc = (item.carType&&item.carType2)?this.returnText('car_type', item.carType) + '-' + this.returnText('car_type2', item.carType2):null;
               item.brandModel = item.carBrand ? item.carBrand : '' + ' ' + item.carSeries ? item.carSeries : '' + ' ' + item.carModel ? item.carModel : '';
             })
             this.getProjectInfo(data.data.borrowerInfo.projectId);
@@ -703,6 +703,9 @@
       },
       // 字典转换
       returnText (n, val) {
+        if(!val){
+            return val;
+        }
         let name;
         this.dictionaryData[n].forEach(e => {
           if (e.value == val) {
@@ -730,7 +733,6 @@
               var arr = [];
               arr[index] = this.returnMsg(item, this.form.carInfos[index][item])
               this.errorMsg[item] = arr;
-              console.log(item,this.errorMsg[item][index],'this.errorMsg[item][index]')
               if (this.errorMsg[item][index] !== '') {
                 num++;
               }
