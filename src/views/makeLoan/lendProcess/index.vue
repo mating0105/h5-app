@@ -905,7 +905,7 @@
       };
       this.businessKey =Number(this.params.info.businesskey);
       this.dealState =this.params.dealState == 1 ? false : true;
-      this.userName=Cookies.get('name');
+      this.userName=Cookies.get('token');
       this.getDictionaryData();
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
