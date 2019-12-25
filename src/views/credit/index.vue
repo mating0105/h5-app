@@ -180,6 +180,7 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
       },
       startFormFn (item) {
