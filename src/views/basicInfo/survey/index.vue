@@ -464,6 +464,7 @@ export default {
     onSelect(rows) {
       this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
         this.$set(this.ruleForm, "cardNumber", data.BANK_NUM);
+        this.show3 = false;
       });
     },
     // 字典转换

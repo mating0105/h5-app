@@ -1719,6 +1719,7 @@ export default {
       this.$bridge.callHandler('idCardOCR', rows.value, (res) => {
         this.projProjectInfo.spsNm = res.ID_NAME || '';
         this.projProjectInfo.spsCrdtNo = res.ID_NUM || '';
+        this.show4 = false;
       })
     },
   },
