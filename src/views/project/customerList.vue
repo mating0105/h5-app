@@ -207,6 +207,7 @@ export default {
       }).then(res => {
         let { data } = res;
         let projectInfo = data.projectInfo;
+        this.allLoading = false;
         this.$router.push({ path: '/xhProject', query: {
           customerName: projectInfo.customerName, //客户姓名
           contactPhone: projectInfo.contactPhone, //客户身份证
@@ -217,7 +218,6 @@ export default {
           projectId: projectInfo.projectId,
           isView: 0
         }});
-        this.allLoading = false;
       }).catch(()=>{
         this.allLoading = false;
       });
