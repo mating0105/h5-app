@@ -227,6 +227,7 @@ export default {
           customerNum: projectInfo.customerNum,
           projectNo: projectInfo.projectNo,
           projectId: projectInfo.projectId,
+          isView: 0
         }});
         this.allLoading = false;
       }).catch(()=>{
