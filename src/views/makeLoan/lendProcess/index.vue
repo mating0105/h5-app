@@ -269,6 +269,7 @@
 <script>
   import Vue from 'vue';
   import { mapGetters,mapState } from 'vuex';
+  import Cookies from 'js-cookie'
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index';
   import ApprovalRecord from '@/views/basicInfo/approvalRecord/index';
@@ -904,7 +905,7 @@
       };
       this.businessKey =Number(this.params.info.businesskey);
       this.dealState =this.params.dealState == 1 ? false : true;
-      this.userName=sessionStorage.getItem("userName");
+      this.userName=Cookies.get('loginName');
       this.getDictionaryData();
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
