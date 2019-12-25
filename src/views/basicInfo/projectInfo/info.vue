@@ -263,8 +263,9 @@
     <Card class="xh-top-10" :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell
-            :title="projProjectInfo.cars && projProjectInfo.cars.length > 0 && projProjectInfo.isAses != '1'?'车辆信息（请侧滑进行编辑或删除）':'车辆信息'"
+          车辆信息
+          <!-- <van-cell
+            title=""
           >
             <van-icon
               slot="right-icon"
@@ -273,12 +274,12 @@
               @click="pullCars"
               v-if="isView"
             />
-          </van-cell>
+          </van-cell> -->
         </section>
       </template>
       <van-row class="xh-row xh-swipe-button">
-        <van-col span="24" class="xh-row-col" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="!isView">
+        <van-col span="24" class="xh-row-col" style="padding: 0;" v-for="(i,index) in projProjectInfo.cars" :key="index">
+          <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
             <section>
               <van-cell
                 title="车辆类别:"
@@ -345,7 +346,7 @@
             <section>
               <van-cell title="备注：" :value="i.remark" />
             </section>
-            <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
+            <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
@@ -358,7 +359,7 @@
                 @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
-          </van-swipe-cell>
+          </van-swipe-cell> -->
         </van-col>
       </van-row>
     </Card>
@@ -774,14 +775,14 @@ export default {
       }
     }
   },
-  activated(){
-    let datas = JSON.parse(sessionStorage.getItem('pro'));
-    console.log(datas);
-    if(datas) {
-      this.projProjectInfo = datas;
-      this.newCar(this.$store.state.credit.carData);
-    }
-  },
+  // activated(){
+  //   let datas = JSON.parse(sessionStorage.getItem('pro'));
+  //   console.log(datas);
+  //   if(datas) {
+  //     this.projProjectInfo = datas;
+  //     this.newCar(this.$store.state.credit.carData);
+  //   }
+  // },
   data() {
     return {
       actions: [
