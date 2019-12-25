@@ -132,8 +132,7 @@
         return name;
       },
       onLoad () {
-        this.isLoading = false;
-        this.loading = true;
+        this.loading = !this.isLoading;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
           data.result.forEach(t => {
@@ -144,6 +143,7 @@
           this.params.pageIndex++;
           // 数据全部加载完成
           this.finished = this.list.length === data.totalCount;
+          this.isLoading = false;
         }).catch(() => {
           this.error = true
           this.loading = false
