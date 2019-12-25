@@ -391,7 +391,7 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
-      this.errorMsg[this.fieldName] = '';
+      this.errorMsg[this.fieldName] = "";
     },
     cancel() {},
     //保存信息
@@ -415,27 +415,34 @@ export default {
         this.$router.go(-1);
       } else {
         //新建客户，走接口
-        if (this.src && this.srcBack) {
-          this.loading = true;
-          submitCreate(this.customerData)
-            .then(res => {
-              const params = {
-                kind: "1",
-                customerNum: res.data.customerNum,
-                customerId: res.data.id
-              };
-              this.uploadImg("0101", params, this.dataURLtoFile(this.src));
-              this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
-            })
-            .catch(e => {
-              this.loading = false;
+        // if (this.src && this.srcBack) {
+        this.loading = true;
+        submitCreate(this.customerData)
+          .then(res => {
+            // const params = {
+            //   kind: "1",
+            //   customerNum: res.data.customerNum,
+            //   customerId: res.data.id
+            // };
+            // this.uploadImg("0101", params, this.dataURLtoFile(this.src));
+            // this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+
+            this.$notify({
+              type: "success",
+              message: "建档成功"
             });
-        } else {
-          this.$notify({
-            type: "danger",
-            message: "请上传身份证正反面"
+            this.loading = false;
+            this.$router.go(-1);
+          })
+          .catch(e => {
+            this.loading = false;
           });
-        }
+        // } else {
+        //   this.$notify({
+        //     type: "danger",
+        //     message: "请上传身份证正反面"
+        //   });
+        // }
       }
     },
     uploadImg(val, params, file) {
