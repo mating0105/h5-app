@@ -1,6 +1,6 @@
 <template>
   <!-- 所有基本信息入口 -->
-  <ViewPage :loading="loading">
+  <ViewPage>
     <van-tabs v-model="activeName">
       <van-tab title="项目信息" name="1">
         <div class="xh-page-body">
@@ -682,7 +682,7 @@ export default {
   },
   mounted() {
     let { info, dealState } = this.$route.query;
-    this.loading = true;
+    // this.loading = true;
     if (dealState) {
       // 待办已办进入
       let obj = JSON.parse(info);

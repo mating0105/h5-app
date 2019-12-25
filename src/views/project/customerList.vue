@@ -163,18 +163,6 @@ export default {
         },300);
       });
     },
-    // 发起报单
-    startForm(rows) {
-      this.$router.push({ path: '/xhProject', query: {
-        customerName: rows.customerName, //客户姓名
-        contactPhone: rows.contactPhone, //客户身份证
-        certificateNum: rows.certificateNum, //客户手机号码
-        customerId: rows.customerId,
-        customerNum: rows.customerNum,
-        projectNo: rows.projectNo,
-        projectId: rows.projectId,
-      }});
-    },
     confirmInfo(msg) {
       this.$notify({
         type: "success",

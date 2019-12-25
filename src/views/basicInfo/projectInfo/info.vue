@@ -675,7 +675,7 @@ export default {
   },
   watch: {
     // ""
-    
+
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
       if (val) {
@@ -1778,17 +1778,17 @@ export default {
     },
     // 提交数据
     postProject(dataList) {
-      let num = 0;
-      for (let item in this.errorMsg) {
-        this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
-        if (this.errorMsg[item]) {
-          num++;
-        }
-      }
-      console.log(this.errorMsg);
-      if (num !== 0) {
-        return;
-      }
+      // let num = 0;
+      // for (let item in this.errorMsg) {
+      //   this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
+      //   if (this.errorMsg[item]) {
+      //     num++;
+      //   }
+      // }
+      // console.log(this.errorMsg);
+      // if (num !== 0) {
+      //   return;
+      // }
       this.dLoading = true;
       setProjectInfo(dataList).then(res => {
         this.$notify({ type: "success", message: res.msg });
