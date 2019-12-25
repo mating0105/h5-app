@@ -49,7 +49,7 @@
                             @blur.prevent="ruleMessge" 
                             :error-message="errorMsg.repaymentBankCardNo"
                             right-icon="scan"
-                            @click-right-icon="discernBankCardCum"/>
+                            @click-right-icon="IdcardLoading"/>
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
                         <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
@@ -140,6 +140,8 @@
                 @confirm="confirmTime"
                 @cancel="cancelTime"/>
         </van-popup>
+        <!-- 身份证识别/银行卡识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discern" />
     </ViewPage>
 </template>
 
@@ -158,10 +160,10 @@
   import { getCreditInfo } from '@/api/credit'
   import {getProjectInfo,getPeople,submitProcess,loanInfoDetail,fieldRules} from '@/api/makeLoan.js';
   import { getDic } from "@/api/createCustomer";
-  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast } from 'vant';
+  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast,ActionSheet  } from 'vant';
   import formValidator from '@/mixins/formValidator'
-
-  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast];
+  
+  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast,ActionSheet ];
   Components.forEach(item => {
     Vue.use(item);
   });
@@ -244,7 +246,14 @@ export default {
             repaymentBankCardNo:'',//主借人还款卡号
         },
         formData:{},
-        errMsg:''
+        errMsg:'',
+        //识别
+        showScan:false,
+        actions: [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" }
+        ],
+
     };
   },
   methods: {
@@ -579,11 +588,15 @@ export default {
     /**
      * 识别
     */
-    //银行卡号
-    discernBankCardCum(e){
-        this.$bridge.callHandler('bankCodeOCR', '', (res) => {
+    IdcardLoading(){
+        this.showScan=true;
+    },
+    //银行卡
+    discern(e){
+        this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
             this.bankLoanInfo.repaymentBankCardNo = res.BANK_NUM || ''
         })
+        this.showScan=false;
     }
   },
   mounted() {

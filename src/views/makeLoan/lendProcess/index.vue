@@ -62,7 +62,7 @@
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
                                     :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="IdcardLoading"/>
+                                    @click-right-icon="IdcardLoading('idCardOCR')"/>
                             <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerPhone"/>
@@ -207,7 +207,7 @@
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.receiptAccount"
                                     :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="discernBankCardCum"/>
+                                    @click-right-icon="IdcardLoading('bankCodeOCR')"/>
                             <van-field name='receiptBank' :disabled="dealState" label="收款人银行：" :placeholder="dealState?'':'请输入'" label-width='150'
                                        input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.receiptBank"/>
@@ -260,8 +260,8 @@
             <brand :visible.sync="showBrand" v-if="showBrand" @change="changeBrand"></brand>
         </transition>
 
-        <!-- 身份证识别 -->
-        <van-action-sheet v-model="showScan" :actions="actions" @select="discernIdcard" />
+        <!-- 身份证识别/银行卡识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discern" />
 
     </ViewPage>
 </template>
@@ -282,11 +282,11 @@
   import { getCreditInfo } from '@/api/credit'
   import { getDocumentByType } from '@/api/document'
   import { getValue } from '@/utils/session'
-  import { Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify } from 'vant';
+  import { Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify,ActionSheet  } from 'vant';
   import { loanInfoDetail, getProjectInfo, updateLoanInfo, getPeople, submitProcess, fieldRules } from '@/api/makeLoan.js'
   import formValidator from '@/mixins/formValidator'
 
-  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify]
+  const Components = [Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify,ActionSheet ]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -409,6 +409,7 @@
         errMsg: '',//意见描述报错信息
         //扫描
         showScan:false,
+        scanName:'',
         actions: [
             { name: "相机扫描识别", value: "scan" },
             { name: "相册导入识别", value: "album" }
@@ -728,7 +729,8 @@
             this.form.carInfos.forEach((i, index) => {
               var arr = [];
               arr[index] = this.returnMsg(item, this.form.carInfos[index][item])
-              this.errorMsg[item][index] = arr[index];
+              this.errorMsg[item] = arr;
+              console.log(item,this.errorMsg[item][index],'this.errorMsg[item][index]')
               if (this.errorMsg[item][index] !== '') {
                 num++;
               }
@@ -745,6 +747,7 @@
             }
           }
         }
+        console.log(num,'num')
         if (num !== 0) {
           return;
         }
@@ -877,24 +880,24 @@
         }
       },
       /**
-       * 识别
+       * 识别   idCardOCR:身份证    bankCodeOCR：银行卡
        */
-      IdcardLoading(){
+      IdcardLoading(name){
           this.showScan=true;
+          this.scanName=name;
       },
-      //身份证号
-      discernIdcard (e) {
-        this.$bridge.callHandler('idCardOCR', e.value, (res) => {
-          this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
+      //身份证号/银行卡
+      discern (e) {
+        this.$bridge.callHandler(this.scanName, e.value, (res) => {
+            if(this.scanName=='idCardOCR'){
+                this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
+            }else{
+                this.$set(this.form.receiptInfo, "receiptAccount", res.BANK_NUM);
+            }
+          
         })
         this.showScan=false;
       },
-      //银行卡号
-      discernBankCardCum (e) {
-        this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-          this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
-        })
-      }
     },
     created () {
     },
