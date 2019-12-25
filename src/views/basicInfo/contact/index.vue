@@ -65,7 +65,7 @@
     </Card>
 
     <!-- 保 存按钮 -->
-    <div class="xh-submit xh-page-body">
+    <div class="xh-submit xh-page-body" v-if="isView">
       <van-button
         size="large"
         class="xh-bg-main"

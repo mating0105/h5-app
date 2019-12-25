@@ -6,6 +6,7 @@
         placeholder="请输入客户名称"
         show-action
         @search="onSearch"
+        @cancel="onCancel"
       />
     </template>
     <van-pull-refresh v-model="loading" @refresh="onRefresh">
@@ -109,6 +110,15 @@ export default {
       this.params.pageIndex = 1;
       this.params.customerName = val;
       this.returnVal(this.params);
+      this.list = [];
+      this.onLoad();
+    },
+    // 取消搜索
+    onCancel() {
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10
+      }
       this.list = [];
       this.onLoad();
     },
