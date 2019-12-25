@@ -132,19 +132,18 @@
         return name;
       },
       onLoad () {
+        this.isLoading = false;
         this.loading = true;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
-          setTimeout(() => {
-            data.result.forEach(t => {
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.params.pageIndex++;
-            // 数据全部加载完成
-            this.finished = this.list.length === data.totalCount;
-          }, 500);
+          data.result.forEach(t => {
+            this.list.push(t);
+          });
+          // 加载状态结束
+          this.loading = false;
+          this.params.pageIndex++;
+          // 数据全部加载完成
+          this.finished = this.list.length === data.totalCount;
         }).catch(() => {
           this.error = true
           this.loading = false
@@ -169,13 +168,10 @@
       //下拉刷新
       onRefresh () {
         this.list = []
-        this.finished = false
         this.params.pageIndex = 1
-        this.onLoad();
-        this.loading = false;
+        this.finished = false
         setTimeout(() => {
           Toast.success('刷新成功');
-          this.isLoading = false;
         }, 500);
       }
     },
