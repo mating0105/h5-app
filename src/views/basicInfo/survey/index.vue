@@ -71,7 +71,7 @@
               @click.native="!isView?'':loadList('是否涉及消费返利','yes_no')"
             />
             <div v-show="isquick">
-              <van-row>
+              <van-row v-if="isView">
                 <van-col
                   :span="24"
                   class="xh-submit xh-text-right"
@@ -209,7 +209,7 @@
               :is-link="isView"
               :value="ruleForm.providerName"
               :border="false"
-              @click.native="loadList('姓名','1')"
+              @click.native="!isView?'':loadList('姓名','1')"
               :disabled="!isView"
             />
             <van-field
@@ -268,7 +268,7 @@
         </van-col>
       </van-row>
       <!-- 保 存按钮 -->
-      <div class="xh-submit">
+      <div class="xh-submit" v-if="isView">
         <van-button
           size="large"
           class="xh-bg-main"

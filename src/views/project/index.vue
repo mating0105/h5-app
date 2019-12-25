@@ -720,7 +720,6 @@ export default {
     } else {
       this.loading = false;
       this.params = this.$route.query;
-      this.params.isView = 0;
       this.params.dealState = 1; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.projectId;
       this.endActive();

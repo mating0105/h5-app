@@ -1,12 +1,11 @@
 <template>
-  <ViewPage iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
+  <ViewPage 
+  iconClass="filter-o" 
+  :rightMenuList="rightlist" 
+  :goPage="goPage"
+  :backFn="closeNativeWebView">
     <template v-slot:head>
-      <van-search
-        v-model="params.searchKey"
-        placeholder="请输入搜索关键词"
-        show-action
-        @search="onSearch"
-      />
+      <van-search v-model="params.searchKey" placeholder="请输入搜索关键词" show-action @search="onSearch" @cancel="onCancel"/>
     </template>
     <van-pull-refresh v-model="loading" @refresh="onRefresh">
       <van-list
@@ -18,10 +17,14 @@
         @load="onLoad"
       >
         <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-          <Card class="xh-top-10" :bodyPadding='true'>
+          <Card class="xh-top-10" :bodyPadding="true">
             <template v-slot:header>
               <section class="xh-plus">
-                <van-cell :title="item.customerNum" :value="returnText(item.processState)" icon="notes-o"></van-cell>
+                <van-cell
+                  :title="item.customerNum"
+                  :value="returnText(item.processState)"
+                  icon="notes-o"
+                ></van-cell>
               </section>
             </template>
             <van-row @click.native="seeView(item)">
@@ -66,7 +69,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 // 其他组件
 import { Row, Col, Icon, Cell, Button, List, Search, PullRefresh } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh ];
+const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -101,7 +104,7 @@ export default {
     returnText(val) {
       let name;
       this.wordbook.apply_status.forEach(e => {
-        if(e.value == val) {
+        if (e.value == val) {
           name = e.label;
         }
       });
@@ -111,6 +114,7 @@ export default {
     goPage(val) {
       this.params.processState = val.value;
       this.params.pageIndex = 1;
+      this.list = [];
       this.onLoad();
     },
     onRefresh() {
@@ -119,57 +123,62 @@ export default {
     },
     onLoad() {
       this.loading = true;
-      getProjectList(this.params).then(res => {
-        const { data } = res;
-        setTimeout(() => {
-          data.result.forEach(t => {
-            this.list.push(t);
-          });
-          // 加载状态结束
+      getProjectList(this.params)
+        .then(res => {
+          const { data } = res;
+          setTimeout(() => {
+            data.result.forEach(t => {
+              this.list.push(t);
+            });
+            // 加载状态结束
+            this.loading = false;
+            this.params.pageIndex++;
+            const { apply_status } = this.wordbook;
+            apply_status.forEach(t => {
+              t.title = t.label;
+            });
+            this.rightlist = apply_status;
+            // 数据全部加载完成
+            if (this.list.length == data.totalCount) {
+              this.finished = true;
+            } else {
+              this.finished = false;
+            }
+            if (data.result.length == 0) {
+              this.finished = true;
+            }
+          }, 500);
+        })
+        .catch(() => {
           this.loading = false;
-          this.params.pageIndex ++;
-          const { apply_status } = this.wordbook;
-          apply_status.forEach(t => {
-            t.title = t.label;
-          });
-          this.rightlist = apply_status;
-          // 数据全部加载完成
-          if (this.list.length == data.totalCount) {
+          setTimeout(() => {
             this.finished = true;
-          } else {
-            this.finished = false;
-          }
-          if(data.result.length == 0) {
-            this.finished = true;
-          }
-        }, 500);
-      }).catch(()=>{
-        this.loading = false;
-        setTimeout(()=> {
-          this.finished = true;
-        },300);
-      });
+          }, 300);
+        });
     },
     // 发起报单
     startForm(rows) {
       getDeclaration({
         id: rows.id
       }).then(res => {
-        this.$router.push({ path: '/xhProject', query: {
-          customerName: rows.customerName, //客户姓名
-          contactPhone: rows.contactPhone, //客户身份证
-          certificateNum: rows.certificateNum, //客户手机号码
-          customerId: rows.customerId,
-          customerNum: rows.customerNum,
-          projectNo: rows.projectNo,
-          projectId: rows.projectId,
-          isView: 0
-        }});
+        this.$router.push({
+          path: "/xhProject",
+          query: {
+            customerName: rows.customerName, //客户姓名
+            contactPhone: rows.contactPhone, //客户身份证
+            certificateNum: rows.certificateNum, //客户手机号码
+            customerId: rows.customerId,
+            customerNum: rows.customerNum,
+            projectNo: rows.projectNo,
+            projectId: rows.projectId,
+            isView: 0
+          }
+        });
       });
     },
     // 新建客户
     addClint() {
-      this.$router.push({ path: '/customerList' });
+      this.$router.push({ path: "/customerList" });
     },
     // 返回搜索有值的参数
     returnVal(vals) {
@@ -189,9 +198,34 @@ export default {
       this.list = [];
       this.onLoad();
     },
+    // 取消搜索
+    onCancel() {
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10
+      }
+      this.list = [];
+      this.onLoad();
+    },
     // 查看
-    seeView() {
-      
+    seeView(rows) {
+      getDeclaration({
+        id: rows.id
+      }).then(res => {
+        this.$router.push({
+          path: "/xhProject",
+          query: {
+            customerName: rows.customerName, //客户姓名
+            contactPhone: rows.contactPhone, //客户身份证
+            certificateNum: rows.certificateNum, //客户手机号码
+            customerId: rows.customerId,
+            customerNum: rows.customerNum,
+            projectNo: rows.projectNo,
+            projectId: rows.projectId,
+            isView: 1
+          }
+        });
+      });
     }
   },
   mounted() {

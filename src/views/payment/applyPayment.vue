@@ -534,6 +534,7 @@ export default {
         dcnAmt: "",
         pyfDt: "",
         pyfMod: "",
+        // ---------------- 走款信息
         payType: "",
         payTime: ""
         // payeeAccount: "",
@@ -638,6 +639,7 @@ export default {
           num++;
         }
       }
+      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }

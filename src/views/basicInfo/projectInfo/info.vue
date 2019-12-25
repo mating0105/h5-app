@@ -21,11 +21,11 @@
               <van-field
                 v-model="projProjectInfo.customerName"
                 clearable
+                :disabled="!isView"
                 label-width="100px"
                 label="客户姓名:*"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="!isView?'':false"
                 :error-message="errorMsg.customerName"
                 error-message-align="right"
               />
@@ -35,11 +35,11 @@
                 v-model="projProjectInfo.contactPhone"
                 type="number"
                 clearable
+                :disabled="!isView"
                 label-width="100px"
                 label="联系电话:*"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="!isView?'':false"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.contactPhone"
                 error-message-align="right"
@@ -103,7 +103,7 @@
                 label="配偶姓名:*"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="!isView?'':false"
+                :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsNm"
                 error-message-align="right"
@@ -118,7 +118,7 @@
                 label="联系电话:*"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="!isView?'':false"
+                :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCtcTel"
                 error-message-align="right"
@@ -132,7 +132,7 @@
                 label="证件号码:*"
                 input-align="right"
                 placeholder="请输入"
-                :disabled="!isView?'':false"
+                :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCrdtNo"
                 error-message-align="right"
@@ -175,10 +175,10 @@
               required
               :is-link="isView"
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
-              @click="loadType('业务来源','bsnSrc')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.bsnSrc"
+              @click="!isView?'':loadType('业务来源','bsnSrc')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.bsnSrc"
             />
           </section>
           <!-- 接口请求 -->
@@ -188,10 +188,10 @@
               required
               :is-link="isView"
               :value="projProjectInfo.carDealersIdName"
-              @click="loadType('车商', 'carDealersId')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.carDealersId"
+              @click="!isView?'':loadType('车商', 'carDealersId')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.carDealersId"
             />
           </section>
           <section>
@@ -201,9 +201,9 @@
               :is-link="isView"
               :value="projProjectInfo.counterGuaranteeStatusName"
               @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.counterGuaranteeStatus"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.counterGuaranteeStatus"
             />
           </section>
           <section>
@@ -213,15 +213,16 @@
               :is-link="isView"
               :value="projProjectInfo.wthrBlName"
               @click="!isView?'':loadList('yes_no','是否拆单','wthrBl')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.wthrBl"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.wthrBl"
             />
           </section>
           <section v-if="projProjectInfo.wthrBl=='1'">
             <van-field
               v-model="projProjectInfo.blRsn"
               clearable
+              :disabled="!isView"
               label="拆单原因:"
               input-align="right"
               placeholder="请输入拆单原因"
@@ -234,9 +235,9 @@
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.wbtProvCityZonCode"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.wbtProvCityZonCode"
             />
           </section>
           <section>
@@ -244,6 +245,7 @@
               v-model="projProjectInfo.addressDetail"
               required
               clearable
+              :disabled="!isView"
               label="具体地址:"
               input-align="right"
               placeholder="请输入详细地址"
@@ -412,6 +414,7 @@
               type="number"
               required
               clearable
+              :disabled="!isView"
               label="银行贷款金额(元):"
               input-align="right"
               placeholder="请输入"
@@ -482,6 +485,7 @@
               v-model="projProjectInfo.rentingAmtGps"
               type="number"
               clearable
+              :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
               :required="projProjectInfo.thiefRescue == 0?true:false"
@@ -519,6 +523,7 @@
               <van-field
                 v-model="projProjectInfo.concactNum"
                 clearable
+                :disabled="!isView"
                 label="合同编号:"
                 input-align="right"
                 placeholder="请输入"
@@ -529,6 +534,7 @@
                 v-model="projProjectInfo.accountNum"
                 type="number"
                 clearable
+                :disabled="!isView"
                 label="还款卡号:"
                 input-align="right"
                 placeholder="请输入"
@@ -538,6 +544,7 @@
               <van-field
                 v-model="projProjectInfo.accountName"
                 clearable
+                :disabled="!isView"
                 label="还款卡账户名称:"
                 input-align="right"
                 placeholder="请输入"
@@ -547,6 +554,7 @@
               <van-field
                 v-model="projProjectInfo.accountBank"
                 clearable
+                :disabled="!isView"
                 label="还款卡开户行:"
                 input-align="right"
                 placeholder="请输入"
@@ -558,6 +566,7 @@
               v-model="projProjectInfo.surcharge"
               type="number"
               clearable
+              :disabled="!isView"
               label="附加费(元):"
               input-align="right"
               placeholder="请填写附加费"
