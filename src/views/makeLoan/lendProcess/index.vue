@@ -207,7 +207,7 @@
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.receiptAccount"
                                     :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="discernBankCardCum"/>
+                                    @click-right-icon="IdcardLoading"/>
                             <van-field name='receiptBank' :disabled="dealState" label="收款人银行：" :placeholder="dealState?'':'请输入'" label-width='150'
                                        input-align="right" :border="false" required v-model="form.receiptInfo.receiptBank" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.receiptBank"/>
@@ -262,6 +262,8 @@
 
         <!-- 身份证识别 -->
         <van-action-sheet v-model="showScan" :actions="actions" @select="discernIdcard" />
+        <!-- 银行卡识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discernBankCardCum" />
 
     </ViewPage>
 </template>
@@ -728,7 +730,8 @@
             this.form.carInfos.forEach((i, index) => {
               var arr = [];
               arr[index] = this.returnMsg(item, this.form.carInfos[index][item])
-              this.errorMsg[item][index] = arr[index];
+              this.errorMsg[item] = arr;
+              console.log(item,this.errorMsg[item][index],'this.errorMsg[item][index]')
               if (this.errorMsg[item][index] !== '') {
                 num++;
               }
@@ -745,6 +748,7 @@
             }
           }
         }
+        console.log(num,'num')
         if (num !== 0) {
           return;
         }
@@ -891,8 +895,9 @@
       },
       //银行卡号
       discernBankCardCum (e) {
-        this.$bridge.callHandler('bankCodeOCR', '', (res) => {
-          this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
+        this.$bridge.callHandler('bankCodeOCR', 'e.value', (res) => {
+          this.$set(this.form.receiptInfo, "receiptAccount", res.BANK_NUM);
+        //   this.form.receiptInfo.receiptAccount = res.BANK_NUM || ''
         })
       }
     },
