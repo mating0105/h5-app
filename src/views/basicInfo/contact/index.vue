@@ -257,7 +257,7 @@ export default {
           list.forEach(t => {
             t.borrowerRelationshipDesc = this.returnText('kinship_type', t.borrowerRelationship);
           });
-          this.contactlist1 = list[0];
+          this.contactlist1 = list[0]?list[0]:{};
           this.contactlist2 = list[1]?list[1]:{};
           this.contactlist3 = list[2]?list[2]:{};
         } else {
