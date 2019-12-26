@@ -45,6 +45,7 @@
         background-color:#fff;
         li{
            background-color:#fff; 
+           font-size:1.6rem!important;
         }
     }
 }
