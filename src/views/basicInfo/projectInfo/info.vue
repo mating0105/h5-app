@@ -258,79 +258,85 @@
               @click="pullCars"
               v-if="isView"
             />
-          </van-cell> -->
+          </van-cell>-->
         </section>
       </template>
       <van-row class="xh-row xh-swipe-button">
-        <van-col span="24" class="xh-row-col" style="padding: 0;" v-for="(i,index) in projProjectInfo.cars" :key="index">
+        <van-col
+          span="24"
+          class="xh-row-col"
+          style="padding: 0;"
+          v-for="(i,index) in projProjectInfo.cars"
+          :key="index"
+        >
           <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
+          <section>
+            <van-cell
+              title="车辆类别:"
+              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
+            />
+          </section>
+          <section>
+            <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
+          </section>
+          <section>
+            <van-cell
+              title="车辆规格:"
+              :value="returnText('vehicle_specifications',i.carSpecifications)"
+            />
+          </section>
+          <section>
+            <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
+          </section>
+          <section>
+            <van-cell title="车辆品牌:" :value="i.automarke.brndNm" />
+          </section>
+          <section>
+            <van-cell title="车系:" :value="i.automarke.carSeries" />
+          </section>
+          <section>
+            <van-cell title="车辆型号:" :value="i.automarke.carModel" />
+          </section>
+          <section v-show="i.chassisNumber">
+            <van-cell title="车架号:" :value="i.chassisNumber" />
+          </section>
+          <section>
+            <van-cell title="销售价(元):" :value="i.salePrice" />
+          </section>
+          <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
+          <div v-if="i.carNature == 'old_car'">
             <section>
-              <van-cell
-                title="车辆类别:"
-                :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
-              />
+              <van-cell title="发动机号:" :value="i.engineNum" />
             </section>
             <section>
-              <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
-            </section>
-            <section>
-              <van-cell
-                title="车辆规格:"
-                :value="returnText('vehicle_specifications',i.carSpecifications)"
-              />
-            </section>
-            <section>
-              <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
-            </section>
-            <section>
-              <van-cell title="车辆品牌:" :value="i.automarke.brndNm" />
-            </section>
-            <section>
-              <van-cell title="车系:" :value="i.automarke.carSeries" />
-            </section>
-            <section>
-              <van-cell title="车辆型号:" :value="i.automarke.carModel" />
-            </section>
-            <section v-show="i.chassisNumber">
               <van-cell title="车架号:" :value="i.chassisNumber" />
             </section>
             <section>
-              <van-cell title="销售价(元):" :value="i.salePrice" />
+              <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
             </section>
-            <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
-            <div v-if="i.carNature == 'old_car'">
-              <section>
-                <van-cell title="发动机号:" :value="i.engineNum" />
-              </section>
-              <section>
-                <van-cell title="车架号:" :value="i.chassisNumber" />
-              </section>
-              <section>
-                <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
-              </section>
-              <section>
-                <van-cell title="行驶里程（万公里）:" :value="i.roadHaul" />
-              </section>
-              <section>
-                <van-cell title="上牌日期:" :value="i.plateDate" />
-              </section>
-            </div>
-            <!-- 二手车是否已评估 isAses 评估后显示-->
-            <div v-if="i.isAses == '1'">
-              <section>
-                <van-cell title="评估价(元):" :value="i.estimateOriginalPrice" />
-              </section>
-              <section>
-                <van-cell title="最高送审金额(元):" :value="i.hgstAmt" />
-              </section>
-              <section>
-                <van-cell title="评估公司:" :value="i.asesInstNm" />
-              </section>
-            </div>
             <section>
-              <van-cell title="备注：" :value="i.remark" />
+              <van-cell title="行驶里程（万公里）:" :value="i.roadHaul" />
             </section>
-            <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
+            <section>
+              <van-cell title="上牌日期:" :value="i.plateDate" />
+            </section>
+          </div>
+          <!-- 二手车是否已评估 isAses 评估后显示-->
+          <div v-if="i.isAses == '1'">
+            <section>
+              <van-cell title="评估价(元):" :value="i.estimateOriginalPrice" />
+            </section>
+            <section>
+              <van-cell title="最高送审金额(元):" :value="i.hgstAmt" />
+            </section>
+            <section>
+              <van-cell title="评估公司:" :value="i.asesInstNm" />
+            </section>
+          </div>
+          <section>
+            <van-cell title="备注：" :value="i.remark" />
+          </section>
+          <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
@@ -343,7 +349,7 @@
                 @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
-          </van-swipe-cell> -->
+          </van-swipe-cell>-->
         </van-col>
       </van-row>
     </Card>
@@ -437,35 +443,35 @@
             <section>
               <van-cell title="客户保证金(%):" :value="projProjectInfo.customerBond" />
             </section>
-          </div> -->
+          </div>-->
           <!-- <div v-if="projProjectInfo.businessModel != 4"> -->
-            <section>
-              <van-cell
-                title="盗抢险:"
-                :required="isView"
-                :is-link="isView"
-                :value="projProjectInfo.thiefRescueName"
-                @click="!isView?'':loadType('盗抢险','thiefRescue')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.thiefRescue"
-              />
-            </section>
-            <section>
-              <van-cell
-                title="盗抢险购买平台:"
-                :required="isView"
-                :is-link="isView"
-                :value="projProjectInfo.rbrinsPltfrmNmName"
-                @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-                :label="errorMsg.rbrinsPltfrmNmId"
-              />
-            </section>
-            <section>
-              <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
-            </section>
+          <section>
+            <van-cell
+              title="盗抢险:"
+              :required="isView"
+              :is-link="isView"
+              :value="projProjectInfo.thiefRescueName"
+              @click="!isView?'':loadType('盗抢险','thiefRescue')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.thiefRescue"
+            />
+          </section>
+          <section>
+            <van-cell
+              title="盗抢险购买平台:"
+              :required="isView"
+              :is-link="isView"
+              :value="projProjectInfo.rbrinsPltfrmNmName"
+              @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.rbrinsPltfrmNmId"
+            />
+          </section>
+          <section>
+            <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
+          </section>
           <!-- </div> -->
           <section>
             <van-cell title="银行费率(%):" :value="projProjectInfo.bankNewRate" />
@@ -485,7 +491,7 @@
               :value="projProjectInfo.isTandzeroName"
               @click="!isView?'':loadList('yes_no','是否t+0','isTandzero')"
             />
-          </section> -->
+          </section>-->
           <section>
             <van-field
               v-model="projProjectInfo.rentingAmtGps"
@@ -566,7 +572,7 @@
                 placeholder="请输入"
               />
             </section>
-          </div> -->
+          </div>-->
           <section>
             <van-field
               v-model="projProjectInfo.surcharge"
@@ -584,7 +590,13 @@
 
     <!-- 提交按钮 -->
     <div class="xh-submit" style="padding: 20px 10px;" v-if="isView">
-      <van-button size="large" class="xh-bg-main" @click="submitProject" :loading="dLoading" :disabled="dLoading">保 存</van-button>
+      <van-button
+        size="large"
+        class="xh-bg-main"
+        @click="submitProject"
+        :loading="dLoading"
+        :disabled="dLoading"
+      >保 存</van-button>
     </div>
 
     <!-- 弹出选项 -->
@@ -680,22 +692,27 @@ export default {
   },
   watch: {
     // 婚姻状况
-    "projProjectInfo.marriage"(newValue,oldValue){
-      var arr=['spsCltrDgr','spsUnitChar','spsNm','spsCtcTel','spsCrdtNo'];
-      if(newValue=='2' || newValue == "4"){
-        arr.forEach((item,index)=>{
-          this.$set(this.errorMsg,item,'');
-        })
-      }else{
-        arr.forEach((item,index)=>{
-          Vue.delete(this.errorMsg,item);
-        })
+    "projProjectInfo.marriage"(newValue, oldValue) {
+      var arr = [
+        "spsCltrDgr",
+        "spsUnitChar",
+        "spsNm",
+        "spsCtcTel",
+        "spsCrdtNo"
+      ];
+      if (newValue == "2" || newValue == "4") {
+        arr.forEach((item, index) => {
+          this.$set(this.errorMsg, item, "");
+        });
+      } else {
+        arr.forEach((item, index) => {
+          Vue.delete(this.errorMsg, item);
+        });
       }
     },
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
       if (val) {
-
         this.productTypeList({
           type: 2,
           carType: this.carType,
@@ -708,7 +725,7 @@ export default {
     // 查询放款平台
     "projProjectInfo.loanTerm"(val) {
       if (val && this.projProjectInfo.businessModel) {
-        this.loanPlatformTree();
+        this.loanPlatformTree(val);
       }
     },
     // 获取放款平台name 和 产品类别
@@ -743,7 +760,6 @@ export default {
     // 获取产品list
     "projProjectInfo.productCategoryId"(val) {
       if (val) {
-
         this.productTypeList({
           type: 4,
           companyId: this.projProjectInfo.companyId,
@@ -838,10 +854,10 @@ export default {
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum
-      }
-      this.$store.dispatch('credit/removeCarData')
-      sessionStorage.setItem('pro', JSON.stringify(this.projProjectInfo));
-      this.$router.push({ path: "/vehicle" , query });
+      };
+      this.$store.dispatch("credit/removeCarData");
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
+      this.$router.push({ path: "/vehicle", query });
     },
     // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
     carsEdit(rows, inx) {
@@ -854,15 +870,15 @@ export default {
         carSeriesId: rows.automarke.carSeriesId,
         index: inx,
         ...rows
-      }
-      sessionStorage.setItem('pro', JSON.stringify(this.projProjectInfo));
+      };
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
       this.$router.push({
-        path: '/vehicle',
+        path: "/vehicle",
         query
-      })
+      });
     },
     // 车辆删除
-    carsDel (rows, inx) {
+    carsDel(rows, inx) {
       deleteCar({
         id: rows.id
       }).then(res => {
@@ -895,38 +911,40 @@ export default {
         proj: {
           id: this.params.projectId
         },
-        ruleFlag: 'Y',
+        ruleFlag: "Y",
         carLoanPart: data.carLoanPart, //车辆贷款部分
         anchoredTransportCompany: data.anchoredTransportCompany, // 挂靠运输公司
         estimateOriginalPrice: data.estimateOriginalPrice, //评估价
         hgstAmt: data.hgstAmt, //最高送审金额
         asesInstNm: data.asesInstNm,
-        assessId: data.assessId,
-      }
+        assessId: data.assessId
+      };
       if (data.id) {
         rows.id = data.id;
       }
       // if(data.ruleFlag == 'Y'){
       //   rows.id = this.params.projCarId;
       // }
-      setNewCar(rows).then(res => {
-        this.projProjectInfo.cars = res.data;
-        sessionStorage.removeItem("pro");
-        let cars = this.projProjectInfo.cars;
-        if (Array.isArray(cars) && cars.length > 0) {
-          this.carType = cars[0].carType + "-" + cars[0].carType2;
-          this.carNature = cars[0].carNature;
-          this.$store.dispatch('credit/removeCarData')
-          this.productTypeList({
-            type: 1,
-            carType: cars[0].carType + "-" + cars[0].carType2,
-            carNature: cars[0].carNature,
-            companyId: this.projProjectInfo.companyId
-          });
-        }
-      }).catch(()=>{
-        sessionStorage.removeItem("pro");
-      });
+      setNewCar(rows)
+        .then(res => {
+          this.projProjectInfo.cars = res.data;
+          sessionStorage.removeItem("pro");
+          let cars = this.projProjectInfo.cars;
+          if (Array.isArray(cars) && cars.length > 0) {
+            this.carType = cars[0].carType + "-" + cars[0].carType2;
+            this.carNature = cars[0].carNature;
+            this.$store.dispatch("credit/removeCarData");
+            this.productTypeList({
+              type: 1,
+              carType: cars[0].carType + "-" + cars[0].carType2,
+              carNature: cars[0].carNature,
+              companyId: this.projProjectInfo.companyId
+            });
+          }
+        })
+        .catch(() => {
+          sessionStorage.removeItem("pro");
+        });
     },
     // 字典转换
     returnText(n, val, list, ids, field) {
@@ -1010,7 +1028,7 @@ export default {
       this.$set(this.projProjectInfo, "productId", ids);
     },
     // 省市区选择
-    confirmSelect(code,name) {
+    confirmSelect(code, name) {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
       this.projProjectInfo.wbtProvCityZonCode = name;
@@ -1045,12 +1063,6 @@ export default {
           if (this.termList.length == 0) {
             return;
           }
-          // 初始数据
-          let arr3 = ['dsbrPltfrmNm','loanPlatfomrId','productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
-          arr3.forEach(t => {
-            this.projProjectInfo[t] = '';
-          });
-          // 其他
           this.valueKey = "loanCount";
           this.valueId = "loanCount";
           this.fieldName = "loanTerm";
@@ -1061,12 +1073,6 @@ export default {
           if (this.platform.length == 0) {
             return;
           }
-          // 初始数据
-          let arr2 = ['productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
-          arr2.forEach(t => {
-            this.projProjectInfo[t] = '';
-          });
-          // 其他
           this.valueKey = "orgName";
           this.valueId = "id";
           this.fieldName = "isRoot";
@@ -1077,12 +1083,6 @@ export default {
           if (this.businessModellist.length == 0) {
             return;
           }
-          // 初始数据
-          let arr = ['loanTerm','dsbrPltfrmNm','loanPlatfomrId','productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
-          arr.forEach(t => {
-            this.projProjectInfo[t] = '';
-          });
-          // 其他
           this.valueKey = "businessModeDesc";
           this.valueId = "businessMode";
           this.fieldName = "businessModel";
@@ -1093,12 +1093,6 @@ export default {
           if (this.productTypeRows.length == 0) {
             return;
           }
-          // 初始数据
-          let arr1 = ['thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
-          arr1.forEach(t => {
-            this.projProjectInfo[t] = '';
-          });
-          // 其他
           this.valueKey = "productCategory";
           this.valueId = "id";
           this.fieldName = field;
@@ -1109,12 +1103,6 @@ export default {
           if (this.productTypeName.length == 0) {
             return;
           }
-          // 初始数据
-          let arr4 = ['thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
-          arr4.forEach(t => {
-            this.projProjectInfo[t] = '';
-          });
-          // 其他
           this.valueKey = "productName";
           this.valueId = "productId";
           this.fieldName = field;
@@ -1168,6 +1156,26 @@ export default {
             }
             break;
           case "业务模式":
+            // 初始数据
+            let arr = [
+              "loanTerm",
+              "dsbrPltfrmNm",
+              "loanPlatfomrId",
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             this.productTypeList({
               type: 2,
               carType: this.carType,
@@ -1177,9 +1185,44 @@ export default {
             });
             break;
           case "贷款期限":
-            this.loanPlatformTree();
+            // 初始数据
+            let arr3 = [
+              "dsbrPltfrmNm",
+              "loanPlatfomrId",
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr3.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // this.loanPlatformTree(row.value);
             break;
           case "放款平台":
+            // 初始数据
+            let arr2 = [
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr2.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             if (this.fieldName == "isRoot") {
               this.valueKey = "dsbrPltfrmNm";
               this.valueId = "id";
@@ -1202,6 +1245,19 @@ export default {
             }
             break;
           case "产品类别":
+            // 初始数据
+            let arr1 = [
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr1.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             this.productTypeList({
               type: 4,
               companyId: this.projProjectInfo.companyId,
@@ -1209,6 +1265,17 @@ export default {
             });
             break;
           case "产品名称":
+            // 初始数据
+            let arr4 = [
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr4.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
             this.productTypeList({
               type: 5,
               productId: row.productId
@@ -1257,227 +1324,235 @@ export default {
     // 获取报单数据
     loanData() {
       Toast.loading({
-        message: '加载中...',
+        message: "加载中...",
         forbidClick: true,
         duration: 0,
-        loadingType: 'spinner',
+        loadingType: "spinner",
         overlay: true
       });
       getProjectInfo({
         id: this.params.projectId
-      }).then(res => {
-        const { code, data, msg } = res;
-        const {
-          projectInfo,
-          courseMap,
-          thiefRescue,
-          lpmsBusinessSource,
-          ruleFlag
-        } = data;
-        let row = projectInfo;
-        this.courseMap = courseMap;
-        this.thiefRescueList = thiefRescue; // 获取盗抢险
-        this.businessList = lpmsBusinessSource;
+      })
+        .then(res => {
+          const { code, data, msg } = res;
+          const {
+            projectInfo,
+            courseMap,
+            thiefRescue,
+            lpmsBusinessSource,
+            ruleFlag
+          } = data;
+          let row = projectInfo;
+          this.courseMap = courseMap;
+          this.thiefRescueList = thiefRescue; // 获取盗抢险
+          this.businessList = lpmsBusinessSource;
 
-        let loanPlatfomr = row.loanPlatfomr
-          ? row.loanPlatfomr
-          : {
-              id: "",
-              blngInstid: null,
-              dsbrPltfrmNm: ""
-            };
-        let carDealer = row.carDealer
-          ? row.carDealer
-          : {
-              id: ""
-            };
-        let customer = row.customer
-          ? row.customer
-          : {
-              levelEducation: "",
-              unitChar: "",
-              marriage: "",
-              customerName: "",
-              certificateNum: "",
-              contactPhone: "",
-              spsNm: "",
-              spsCrdtNo: "",
-              spsCtcTel: "",
-              spsCltrDgr: "",
-              spsUnitChar: ""
-            };
+          let loanPlatfomr = row.loanPlatfomr
+            ? row.loanPlatfomr
+            : {
+                id: "",
+                blngInstid: null,
+                dsbrPltfrmNm: ""
+              };
+          let carDealer = row.carDealer
+            ? row.carDealer
+            : {
+                id: ""
+              };
+          let customer = row.customer
+            ? row.customer
+            : {
+                levelEducation: "",
+                unitChar: "",
+                marriage: "",
+                customerName: "",
+                certificateNum: "",
+                contactPhone: "",
+                spsNm: "",
+                spsCrdtNo: "",
+                spsCtcTel: "",
+                spsCltrDgr: "",
+                spsUnitChar: ""
+              };
 
-        let clientManager = row.clientManager
-          ? row.clientManager
-          : {
-              groupName: "",
-              businessGroupIds: ""
-            };
-        let loanProductModel = row.loanProductModel
-          ? row.loanProductModel
-          : {
-              id: "",
-              isAccessCar: ""
-            };
-        let cars = row.cars ? row.cars : [];
-        let proPat = row.proPat
-          ? row.proPat
-          : {
-              id: ""
-            };
-        let riskMeasure = row.riskMeasure ? row.riskMeasure : {};
+          let clientManager = row.clientManager
+            ? row.clientManager
+            : {
+                groupName: "",
+                businessGroupIds: ""
+              };
+          let loanProductModel = row.loanProductModel
+            ? row.loanProductModel
+            : {
+                id: "",
+                isAccessCar: ""
+              };
+          let cars = row.cars ? row.cars : [];
+          let proPat = row.proPat
+            ? row.proPat
+            : {
+                id: ""
+              };
+          let riskMeasure = row.riskMeasure ? row.riskMeasure : {};
 
-        if (Array.isArray(cars) && cars.length > 0) {
-          this.carType = cars[0].carType + "-" + cars[0].carType2;
-          this.carNature = cars[0].carNature;
-          this.productTypeList({
-            type: 1,
-            carType: cars[0].carType + "-" + cars[0].carType2,
-            carNature: cars[0].carNature,
-            companyId: row.companyId
-          });
-        }
+          if (Array.isArray(cars) && cars.length > 0) {
+            this.carType = cars[0].carType + "-" + cars[0].carType2;
+            this.carNature = cars[0].carNature;
+            this.productTypeList({
+              type: 1,
+              carType: cars[0].carType + "-" + cars[0].carType2,
+              carNature: cars[0].carNature,
+              companyId: row.companyId
+            });
+          }
 
-        this.projProjectInfo = {
-          loanPlatfomr: loanPlatfomr,
-          carDealer: carDealer,
-          customer: customer,
-          cars: cars,
-          clientManager: clientManager,
-          loanProductModel: loanProductModel,
-          proPat: proPat,
-          riskMeasure: riskMeasure,
-          wbtProvCityId:
-            row.wbtProvCityZonCode == null
-              ? []
-              : row.wbtProvCityZonCode.split("-"),
-          groupName: this.returnVal(clientManager.groupName),
-          thiefRescue: this.returnVal(row.thiefRescue),
-          carDealersId: carDealer.id,
-          carDealersIdName: carDealer.carDealersName,
-          bsnSrc: this.returnVal(loanProductModel.id),
-          isAccessCar: this.returnVal(row.isAccessCar),
-          businessGroupIds: this.returnVal(clientManager.businessGroupIds),
-          customerName: this.returnVal(customer.customerName),
-          levelEducation: this.returnVal(customer.levelEducation),
-          unitChar: this.returnVal(customer.unitChar),
-          marriage: this.returnVal(customer.marriage),
-          certificateNum: this.returnVal(customer.certificateNum),
-          contactPhone: this.returnVal(customer.contactPhone),
-          spsNm: this.returnVal(customer.spsNm),
-          spsCrdtNo: this.returnVal(customer.spsCrdtNo),
-          spsCtcTel: this.returnVal(customer.spsCtcTel),
-          spsCltrDgr: this.returnVal(customer.spsCltrDgr),
-          spsUnitChar: this.returnVal(customer.spsUnitChar),
-          rbrinsPltfrmNmId: this.returnVal(row.rbrinsPltfrmNmId, "number"),
-          productCategoryId: this.returnVal(row.productCategoryId),
-          loanPlatfomrId: this.returnVal(row.loanPlatId),
-          loanPlatfomrs: this.returnVal(row.loanPlatId, "number")
-            ? this.loanPlatfomrsReturn(
-                this.returnVal(loanPlatfomr.blngInstid, "number"),
-                this.returnVal(row.loanPlatId, "number")
-              )
-            : [],
-          companyName: this.returnVal(row.companyName),
-          officeName: this.returnVal(row.officeName),
-          counterGuaranteeStatus: this.returnVal(row.counterGuaranteeStatus),
-          wthrBl: this.returnVal(row.wthrBl),
-          blRsn: this.returnVal(row.blRsn),
-          addressDetail: this.returnVal(row.addressDetail),
-          // sngldayPrd: this.custData.type === 'NEWOBL' ? utils.formatDate.format(new Date(), 'yyyyMMdd') : this.returnVal(row.sngldayPrd),
-          businessModel: this.returnVal(row.businessModelId),
-          rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
-          loanTerm: this.returnVal(row.loanTerm),
-          loanAmt: this.returnVal(row.loanAmt),
-          isQuickadjust: "0",
-          isTandzero: this.returnVal(row.isTandzero),
-          guaranteeRate: this.returnVal(row.guaranteeRate),
-          bankNewRate: this.returnVal(row.bankNewRate),
-          rebateStandard: this.returnVal(row.rebateStandard),
-          loanRegion: this.returnVal(row.loanRegion),
-          rentingAmtGps: this.returnVal(row.rentingAmtGps),
-          rentingCarRatio: this.returnVal(row.rentingCarRatio),
-          rentingServiceFee: this.returnVal(row.rentingServiceFee),
-          rentingAmt: this.returnVal(row.rentingAmt),
-          marginRatio: this.returnVal(row.marginRatio),
-          keepPrice: this.returnVal(row.keepPrice),
-          concactNum: this.returnVal(row.concactNum),
-          accountNum: this.returnVal(row.accountNum),
-          accountName: this.returnVal(row.accountName),
-          accountBank: this.returnVal(row.accountBank),
-          wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
-          wbtProvCityZon: row.wbtProvCityZonCode,
-          wbtProvCityZonCode: row.wbtProvCityZonCode,
-          paymentNumber: this.returnVal(row.paymentNumber),
-          paymentNumberName: this.returnVal(row.paymentNumberName),
-          customerBond: this.returnVal(row.customerBond),
-          projectId: row.projectId,
-          projectNo: row.projectNo,
-          id: row.projectId,
-          customerNum: row.customerNum,
-          customerRate: row.customerRate,
-          loanPercentage: row.loanPercentage,
-          productCategoryIdName: row.productCategoryName,
-          bankGuaranteeRate: row.bankGuaranteeRate,
-          wbtProvCityZon: row.wbtProvCityZon,
-          companyId: row.companyId,
-          isChange: row.isChange,
-          isChangeProj: row.isChangeProj,
-          ruleFlag: ruleFlag,
-          // 字典转换 --------------
-          unitCharName: this.returnText("unit_Property", customer.unitChar),
-          levelEducationName: this.returnText(
-            "DegreeOfEducation",
-            customer.levelEducation
-          ),
-          marriageName: this.returnText("marriage_type", customer.marriage),
-          spsUnitCharName: this.returnText(
-            "unit_Property",
-            customer.spsUnitChar
-          ),
-          spsCltrDgrName: this.returnText(
-            "DegreeOfEducation",
-            customer.spsCltrDgr
-          ),
-          bsnSrcName: this.returnText(
-            "",
-            loanProductModel.id,
-            this.businessList,
-            "id",
-            "labelName"
-          ),
-          isAccessCarName: this.returnText("is_Access_Car", row.isAccessCar),
-          counterGuaranteeStatusName: this.returnText(
-            "counter_Guarantee_Status",
-            row.counterGuaranteeStatus
-          ),
-          wthrBlName: this.returnText("yes_no", row.wthrBl),
-          onHouseTypeName: this.returnText("ON_HOUSE_TYPE", row.onHouseType),
-          isTandzeroName: this.returnText("yes_no", row.isTandzero),
-          marginRatioName: this.returnText("Margin_Ratio", row.marginRatio),
-          productIdName: proPat.productName,
-          thiefRescueName: this.returnText("", row.thiefRescue, thiefRescue, 'id','name')
-        };
+          this.projProjectInfo = {
+            loanPlatfomr: loanPlatfomr,
+            carDealer: carDealer,
+            customer: customer,
+            cars: cars,
+            clientManager: clientManager,
+            loanProductModel: loanProductModel,
+            proPat: proPat,
+            riskMeasure: riskMeasure,
+            wbtProvCityId:
+              row.wbtProvCityZonCode == null
+                ? []
+                : row.wbtProvCityZonCode.split("-"),
+            groupName: this.returnVal(clientManager.groupName),
+            thiefRescue: this.returnVal(row.thiefRescue),
+            carDealersId: carDealer.id,
+            carDealersIdName: carDealer.carDealersName,
+            bsnSrc: this.returnVal(loanProductModel.id),
+            isAccessCar: this.returnVal(row.isAccessCar),
+            businessGroupIds: this.returnVal(clientManager.businessGroupIds),
+            customerName: this.returnVal(customer.customerName),
+            levelEducation: this.returnVal(customer.levelEducation),
+            unitChar: this.returnVal(customer.unitChar),
+            marriage: this.returnVal(customer.marriage),
+            certificateNum: this.returnVal(customer.certificateNum),
+            contactPhone: this.returnVal(customer.contactPhone),
+            spsNm: this.returnVal(customer.spsNm),
+            spsCrdtNo: this.returnVal(customer.spsCrdtNo),
+            spsCtcTel: this.returnVal(customer.spsCtcTel),
+            spsCltrDgr: this.returnVal(customer.spsCltrDgr),
+            spsUnitChar: this.returnVal(customer.spsUnitChar),
+            rbrinsPltfrmNmId: this.returnVal(row.rbrinsPltfrmNmId, "number"),
+            productCategoryId: this.returnVal(row.productCategoryId),
+            loanPlatfomrId: this.returnVal(row.loanPlatId),
+            loanPlatfomrs: this.returnVal(row.loanPlatId, "number")
+              ? this.loanPlatfomrsReturn(
+                  this.returnVal(loanPlatfomr.blngInstid, "number"),
+                  this.returnVal(row.loanPlatId, "number")
+                )
+              : [],
+            companyName: this.returnVal(row.companyName),
+            officeName: this.returnVal(row.officeName),
+            counterGuaranteeStatus: this.returnVal(row.counterGuaranteeStatus),
+            wthrBl: this.returnVal(row.wthrBl),
+            blRsn: this.returnVal(row.blRsn),
+            addressDetail: this.returnVal(row.addressDetail),
+            // sngldayPrd: this.custData.type === 'NEWOBL' ? utils.formatDate.format(new Date(), 'yyyyMMdd') : this.returnVal(row.sngldayPrd),
+            businessModel: this.returnVal(row.businessModelId),
+            rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
+            loanTerm: this.returnVal(row.loanTerm),
+            loanAmt: this.returnVal(row.loanAmt),
+            isQuickadjust: "0",
+            isTandzero: this.returnVal(row.isTandzero),
+            guaranteeRate: this.returnVal(row.guaranteeRate),
+            bankNewRate: this.returnVal(row.bankNewRate),
+            rebateStandard: this.returnVal(row.rebateStandard),
+            loanRegion: this.returnVal(row.loanRegion),
+            rentingAmtGps: this.returnVal(row.rentingAmtGps),
+            rentingCarRatio: this.returnVal(row.rentingCarRatio),
+            rentingServiceFee: this.returnVal(row.rentingServiceFee),
+            rentingAmt: this.returnVal(row.rentingAmt),
+            marginRatio: this.returnVal(row.marginRatio),
+            keepPrice: this.returnVal(row.keepPrice),
+            concactNum: this.returnVal(row.concactNum),
+            accountNum: this.returnVal(row.accountNum),
+            accountName: this.returnVal(row.accountName),
+            accountBank: this.returnVal(row.accountBank),
+            wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
+            wbtProvCityZon: row.wbtProvCityZonCode,
+            wbtProvCityZonCode: row.wbtProvCityZonCode,
+            paymentNumber: this.returnVal(row.paymentNumber),
+            paymentNumberName: this.returnVal(row.paymentNumberName),
+            customerBond: this.returnVal(row.customerBond),
+            projectId: row.projectId,
+            projectNo: row.projectNo,
+            id: row.projectId,
+            customerNum: row.customerNum,
+            customerRate: row.customerRate,
+            loanPercentage: row.loanPercentage,
+            productCategoryIdName: row.productCategoryName,
+            bankGuaranteeRate: row.bankGuaranteeRate,
+            wbtProvCityZon: row.wbtProvCityZon,
+            companyId: row.companyId,
+            isChange: row.isChange,
+            isChangeProj: row.isChangeProj,
+            ruleFlag: ruleFlag,
+            // 字典转换 --------------
+            unitCharName: this.returnText("unit_Property", customer.unitChar),
+            levelEducationName: this.returnText(
+              "DegreeOfEducation",
+              customer.levelEducation
+            ),
+            marriageName: this.returnText("marriage_type", customer.marriage),
+            spsUnitCharName: this.returnText(
+              "unit_Property",
+              customer.spsUnitChar
+            ),
+            spsCltrDgrName: this.returnText(
+              "DegreeOfEducation",
+              customer.spsCltrDgr
+            ),
+            bsnSrcName: this.returnText(
+              "",
+              loanProductModel.id,
+              this.businessList,
+              "id",
+              "labelName"
+            ),
+            isAccessCarName: this.returnText("is_Access_Car", row.isAccessCar),
+            counterGuaranteeStatusName: this.returnText(
+              "counter_Guarantee_Status",
+              row.counterGuaranteeStatus
+            ),
+            wthrBlName: this.returnText("yes_no", row.wthrBl),
+            onHouseTypeName: this.returnText("ON_HOUSE_TYPE", row.onHouseType),
+            isTandzeroName: this.returnText("yes_no", row.isTandzero),
+            marginRatioName: this.returnText("Margin_Ratio", row.marginRatio),
+            productIdName: proPat.productName,
+            thiefRescueName: this.returnText(
+              "",
+              row.thiefRescue,
+              thiefRescue,
+              "id",
+              "name"
+            )
+          };
 
-        setTimeout(() => {
-          // 处理产品破数据
-          this.changeRows(row);
+          setTimeout(() => {
+            // 处理产品破数据
+            this.changeRows(row);
 
-          this.getCustomer();
-          this.getPlatform();
+            this.getCustomer();
+            this.getPlatform();
+            Toast.clear();
+          }, 500);
+        })
+        .catch(() => {
           Toast.clear();
-        }, 500);
-      }).catch(()=> {
-        Toast.clear();
-      });
+        });
     },
     // 查询放款平台
-    loanPlatformTree() {
+    loanPlatformTree(val) {
       let obj = {
-        loanCount: this.projProjectInfo.loanTerm,
+        loanCount: val,
         businessMode: this.projProjectInfo.businessModel
       };
-      getLoanPlatformTree().then(res => {
+      getLoanPlatformTree(obj).then(res => {
         if (res.code == 200) {
           this.platform = res.data;
           console.log(this.projProjectInfo.loanPlatfomrId);
@@ -1710,7 +1785,7 @@ export default {
     postProject(dataList) {
       let num = 0;
       for (let item in this.errorMsg) {
-        this.errorMsg[item]= this.returnMsg(item, this.projProjectInfo[item]);
+        this.errorMsg[item] = this.returnMsg(item, this.projProjectInfo[item]);
         if (this.errorMsg[item]) {
           num++;
         }
@@ -1720,30 +1795,32 @@ export default {
         return;
       }
       this.dLoading = true;
-      setProjectInfo(dataList).then(res => {
-        this.$notify({ type: "success", message: res.msg });
-        this.dLoading = false;
-        this.$router.go(-1);
-      }).catch(()=> {
-        this.dLoading = false;
-      });
+      setProjectInfo(dataList)
+        .then(res => {
+          this.$notify({ type: "success", message: res.msg });
+          this.dLoading = false;
+          this.$router.go(-1);
+        })
+        .catch(() => {
+          this.dLoading = false;
+        });
     },
     OCRScan() {
       this.show4 = true;
     },
     onSelect(rows) {
-      this.$bridge.callHandler('idCardOCR', rows.value, (res) => {
-        this.projProjectInfo.spsNm = res.ID_NAME || '';
-        this.projProjectInfo.spsCrdtNo = res.ID_NUM || '';
+      this.$bridge.callHandler("idCardOCR", rows.value, res => {
+        this.projProjectInfo.spsNm = res.ID_NAME || "";
+        this.projProjectInfo.spsCrdtNo = res.ID_NUM || "";
         this.show4 = false;
-      })
-    },
+      });
+    }
   },
   mounted() {
     this.params = this.$route.query;
     this.isView = this.params.isView == 0;
-    let datas = JSON.parse(sessionStorage.getItem('pro'));
-    if(!datas) {
+    let datas = JSON.parse(sessionStorage.getItem("pro"));
+    if (!datas) {
       this.loanData();
     }
     this.rulesForm("order-project-xh");
@@ -1762,7 +1839,8 @@ export default {
     .van-cell__right-icon {
       color: #fff;
     }
-    .labelClass, .van-field__error-message {
+    .labelClass,
+    .van-field__error-message {
       text-align: right;
       color: #d3d3d3;
     }
