@@ -1,6 +1,6 @@
 <template>
   <!-- 所有基本信息入口 -->
-  <ViewPage :loading="loading">
+  <ViewPage>
     <van-tabs v-model="activeName">
       <van-tab title="项目信息" name="1">
         <div class="xh-page-body">
@@ -26,7 +26,7 @@
                     <van-col :span="8">证件号码：</van-col>
                     <van-col
                       :span="16"
-                      class="xh-text-right xh-ellipsis"
+                      class="xh-text-right van-ellipsis"
                     >{{ params.certificateNum?params.certificateNum + ' | 身份证':'--' }}</van-col>
                   </van-row>
                 </div>
@@ -43,139 +43,140 @@
                 <div class="xh-icon">
                   <img :src="require('./../../assets/old_images/'+i.icon)" alt />
                 </div>
-                <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
+                <div class="van-multi-ellipsis--l2 xh-top-10" style="font-size:14px;">{{ i.name }}</div>
                 <!-- 徽章 -->
                 <xh-badge toTop="15" toRight="30" v-if="i.show == 1"></xh-badge>
               </van-col>
             </van-row>
           </div>
 
-          <!-- 审批结论 -->
+          <div v-if="isView">
+            <!-- 审批结论 -->
 
-          <van-row
-            class="xh-page-mian xh-card-box xh-radius xh-top-10"
-            v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
-          >
-            <van-cell
-              :border="false"
-              title="审批结论"
-              title-class="xh-blue"
-              is-link
-              :value="completionDesc"
-              @click="linkCode"
-            />
-          </van-row>
+            <van-row
+              class="xh-page-mian xh-card-box xh-radius xh-top-10"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
+            >
+              <van-cell
+                :border="false"
+                title="审批结论"
+                title-class="xh-blue"
+                is-link
+                :value="completionDesc"
+                @click="linkCode"
+              />
+            </van-row>
 
-          <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52'">
+            <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52'">
+              <Card style="margin: 10px 0;">
+                <template slot="header">风控措施</template>
+                <van-row>
+                  <van-cell-group :border="false">
+                    <van-cell
+                      title="手动评级"
+                      required
+                      is-link
+                      :border="false"
+                      :value="returnText('GradeManual', windControl.gradeManual)"
+                      @click="params.dealState != '1' ? '':loadType('手动评级', 'GradeManual')"
+                    />
+                    <van-cell title="是否加入关注名单" :border="false" required>
+                      <radio
+                        v-model="windControl.isFoucusList"
+                        :disabled="params.dealState != '1'"
+                      >
+                        <radio-item label="1">是</radio-item>
+                        <radio-item label="0">否</radio-item>
+                      </radio>
+                    </van-cell>
+                    <van-cell
+                      title="风控条件"
+                      required
+                      is-link
+                      :border="false"
+                      :value="returnText('risk_condition', windControl.riskCondition)"
+                      @click="params.dealState != '1' ? '':loadType('风控条件', 'risk_condition')"
+                    />
+                    <van-cell title="是否上门" :border="false" required>
+                      <radio
+                        v-model="windControl.wthrDtd"
+                        :disabled="params.dealState != '1'"
+                      >
+                        <radio-item label="1">是</radio-item>
+                        <radio-item label="0">否</radio-item>
+                      </radio>
+                    </van-cell>
+                    <van-field
+                      v-model="windControl.gpsNum"
+                      :disabled="params.dealState != '1'"
+                      required
+                      clearable
+                      type="number"
+                      :border="false"
+                      label="GPS数量(台)"
+                      input-align="right"
+                      placeholder="请输入"
+                      @blur.prevent="()=>{ }"
+                    />
+                  </van-cell-group>
+                </van-row>
+              </Card>
+            </div>
+
+            <!-- 审批官选择做单文员 -->
+            <van-row
+              class="xh-page-mian xh-card-box xh-radius xh-top-10"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52'"
+            >
+              <van-cell
+                :border="false"
+                title="选择做单文员"
+                title-class="xh-blue"
+                is-link
+                :value="windControl.acceptPersonlDesc"
+                @click="acceptCode"
+              />
+            </van-row>
+            <!-- 意见 -->
             <Card style="margin: 10px 0;">
-              <template slot="header">风控措施</template>
-              <van-row>
+              <template v-slot:header>意见描述</template>
+              <section>
                 <van-cell-group :border="false">
-                  <van-cell
-                    title="手动评级"
-                    required
-                    is-link
-                    :border="false"
-                    :value="returnText('GradeManual', windControl.gradeManual)"
-                    @click="params.dealState != '1' ? '':loadType('手动评级', 'GradeManual')"
-                  />
-                  <van-cell title="是否加入关注名单" :border="false" required>
-                    <radio
-                      v-model="windControl.isFoucusList"
-                      :disabled="params.dealState != '1'"
-                    >
-                      <radio-item label="1">是</radio-item>
-                      <radio-item label="0">否</radio-item>
-                    </radio>
-                  </van-cell>
-                  <van-cell
-                    title="风控条件"
-                    required
-                    is-link
-                    :border="false"
-                    :value="returnText('risk_condition', windControl.riskCondition)"
-                    @click="params.dealState != '1' ? '':loadType('风控条件', 'risk_condition')"
-                  />
-                  <van-cell title="是否上门" :border="false" required>
-                    <radio
-                      v-model="windControl.wthrDtd"
-                      :disabled="params.dealState != '1'"
-                    >
-                      <radio-item label="1">是</radio-item>
-                      <radio-item label="0">否</radio-item>
-                    </radio>
-                  </van-cell>
                   <van-field
-                    v-model="windControl.gpsNum"
-                    :disabled="params.dealState != '1'"
-                    required
-                    clearable
-                    type="number"
+                    v-model="message"
+                    rows="2"
+                    autosize
+                    label-width="0"
                     :border="false"
-                    label="GPS数量(台)"
-                    input-align="right"
+                    type="textarea"
+                    maxlength="200"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    show-word-limit
                   />
                 </van-cell-group>
-              </van-row>
+              </section>
             </Card>
-          </div>
-
-          <!-- 审批官选择做单文员 -->
-          <van-row
-            class="xh-page-mian xh-card-box xh-radius xh-top-10"
-            v-if="params.activityId == 'WF_PROJ_APPR_01_T52'"
-          >
-            <van-cell
-              :border="false"
-              title="选择做单文员"
-              title-class="xh-blue"
-              is-link
-              :value="windControl.acceptPersonlDesc"
-              @click="acceptCode"
-            />
-          </van-row>
-
-          <!-- 意见 -->
-          <Card style="margin: 10px 0;">
-            <template v-slot:header>意见描述</template>
-            <section>
-              <van-cell-group :border="false">
-                <van-field
-                  v-model="message"
-                  rows="2"
-                  autosize
-                  label-width="0"
-                  :border="false"
-                  type="textarea"
-                  maxlength="200"
-                  placeholder="请输入"
-                  show-word-limit
-                />
-              </van-cell-group>
-            </section>
-          </Card>
-          <!-- 有终止的提交按钮 -->
-          <div class="xh-submit" v-if="isActive">
-            <van-row>
-              <van-col :span="4">
-                <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;">终止</van-button>
-              </van-col>
-              <van-col :span="20">
-                <van-button
-                  size="large"
-                  class="xh-bg-main"
-                  @click="submitTask"
-                  :loading="dLoading"
-                  :disabled="dLoading"
-                >提 交</van-button>
-              </van-col>
-            </van-row>
-          </div>
-          <!-- 提交按钮 -->
-          <div class="xh-submit" v-else>
-            <van-button size="large" class="xh-bg-main" @click="submitTask" :disabled="dLoading" :loading="dLoading">提 交</van-button>
+            <!-- 有终止的提交按钮 -->
+            <div class="xh-submit" v-if="isActive">
+              <van-row>
+                <van-col :span="4">
+                  <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;" @click="submitStop">终止</van-button>
+                </van-col>
+                <van-col :span="20">
+                  <van-button
+                    size="large"
+                    class="xh-bg-main"
+                    @click="submitTask"
+                    :loading="dLoading"
+                    :disabled="dLoading"
+                  >提 交</van-button>
+                </van-col>
+              </van-row>
+            </div>
+            <!-- 提交按钮 -->
+            <div class="xh-submit" v-else>
+              <van-button size="large" class="xh-bg-main" @click="submitTask" :disabled="dLoading" :loading="dLoading">提 交</van-button>
+            </div>
           </div>
         </div>
       </van-tab>
@@ -228,7 +229,9 @@ import {
   getProjectInfo,
   getAcceptList,
   postWindControl,
-  getIsSave
+  getIsSave,
+  setProcessBack,
+  setProcessStop
 } from "@/api/project";
 import { getCreditInfo } from '@/api/credit'
 import { mapState } from "vuex";
@@ -286,6 +289,7 @@ export default {
   },
   data() {
     return {
+      isView: false,
       activeName: "1",
       selected: 1,
       showSheet: false,
@@ -520,6 +524,7 @@ export default {
     postProcess() {
       if (this.completion != "01" && this.message == "") {
         this.$toast("请填写您的意见");
+        this.dLoading = false;
         return;
       }
       if (this.message == "") {
@@ -529,7 +534,37 @@ export default {
       }
       this.postFrom.conclusionCode = this.completion;
       this.postFrom.businessKey = this.params.projectId;
-      setProjectProcess(this.postFrom).then(res => {
+      if(this.completion == '03') {
+        setProcessBack(this.postFrom).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      } else {
+        setProjectProcess(this.postFrom).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      }
+    },
+    // 流程终止 
+    submitStop() {
+      this.dLoading = true;
+      setProcessStop({
+        businessKey: this.params.projectId,
+        businessType: 11
+      }).then(res => {
         this.$notify({
           type: "success",
           message: res.msg
@@ -682,7 +717,7 @@ export default {
   },
   mounted() {
     let { info, dealState } = this.$route.query;
-    this.loading = true;
+    // this.loading = true;
     if (dealState) {
       // 待办已办进入
       let obj = JSON.parse(info);
@@ -698,21 +733,24 @@ export default {
         dealState: dealState,
         activityId: obj.activityId
       };
-      this.loading = false;
+      this.loading = dealState == 1;
+      this.isView = true;
       // 待办已办
       switch (obj.activityId) {
         case "WF_PROJ_APPR_01_T01": // 客户经理待办
-          // this.completionList.splice(this.completionList.findIndex(item => item.value === '03'), 1);
+          this.params.isView = 0;
           break;
         case "WF_PROJ_APPR_01_T04": // 内勤待办
           this.completionList.splice(
             this.completionList.findIndex(item => item.value === "04"),
             1
           );
+          this.params.isView = 1;
           break;
         case "WF_PROJ_APPR_01_T52":
           this.getAcceptPersonl();
           this.loadData();
+          this.params.isView = 1;
           break;
         default:
           break;
@@ -720,11 +758,12 @@ export default {
     } else {
       this.loading = false;
       this.params = this.$route.query;
-      this.params.dealState = 1; // 图片 上传 1 ----  查看 3
-      this.params.businesskey = this.$route.projectId;
-      this.endActive();
+      this.params.dealState = this.params.isView == 0?1:3; // 图片 上传 1 ----  查看 3
+      this.params.businesskey = this.$route.query.projectId;
+      this.isView = this.params.isView == 0;
     }
     this.getIsSaveObj();
+    this.endActive();
     let datas = JSON.parse(sessionStorage.getItem('pro'));
     if(datas) {
       sessionStorage.removeItem("pro");

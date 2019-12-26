@@ -1,11 +1,12 @@
 <template>
-    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
+    <ViewPage :goPage='rightFn' iconClass="filter-o" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
+                    action-text="清空"
             />
         </template>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -159,19 +160,18 @@
         return name;
       },
       onLoad () {
-        this.loading = true;
+        this.loading = !this.isLoading;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
-          setTimeout(() => {
-            data.result.forEach(t => {
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.params.pageIndex++;
-            // 数据全部加载完成
-            this.finished = this.list.length === data.totalCount;
-          }, 500);
+          data.result.forEach(t => {
+            this.list.push(t);
+          });
+          // 加载状态结束
+          this.params.pageIndex++;
+          // 数据全部加载完成
+          this.finished = this.list.length === data.totalCount;
+          this.loading = false;
+          this.isLoading = false;
         }).catch(() => {
           this.error = true
           this.loading = false
@@ -181,6 +181,7 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
       },
       startFormFn (item) {
@@ -204,13 +205,14 @@
       //下拉刷新
       onRefresh () {
         this.list = []
-        this.finished = false
         this.params.pageIndex = 1
-        this.onLoad();
-        this.loading = false;
+        if(this.finished) {
+          this.finished = false
+        } else {
+          this.onLoad()
+        }
         setTimeout(() => {
           Toast.success('刷新成功');
-          this.isLoading = false;
         }, 500);
       }
     },

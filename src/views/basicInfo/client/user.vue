@@ -468,6 +468,7 @@ export default {
           this.formData.spsNm = res.ID_NAME || '';
           this.formData.spsCrdtNo = res.ID_NUM || '';
         }
+        this.show3 = false;
       })
     },
     OCRScan(type) {

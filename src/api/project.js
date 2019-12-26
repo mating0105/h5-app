@@ -161,5 +161,20 @@ export function deleteCar(params) {
     data: params
   })
 }
-
+// 报单流程回退
+export function setProcessBack(params) {
+  return request({
+    url: '/order/projProject/returnTask',
+    method: 'post',
+    data: params
+  })
+}
+// 报单流程终止
+export function setProcessStop(params) {
+  return request({
+    url: '/order/creditProcess/stopTask',
+    method: 'get',
+    params
+  })
+}
 

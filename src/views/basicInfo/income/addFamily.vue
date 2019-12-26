@@ -1,5 +1,5 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <div class="xh-page-body">
       <van-row class="xh-card-box xh-radius">
         <section>
@@ -322,7 +322,7 @@ import {
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
-import { getHouseInfo, setIncomeInfo } from "@/api/client";
+import { getIncomeInfo, setIncomeInfo } from "@/api/client";
 import { mapState } from "vuex";
 // 校验
 import formValidator from "@/mixins/formValidator";
@@ -395,7 +395,8 @@ export default {
       selectShow: false, //下拉选择器显示
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
-      dLoading: false //按钮禁用状态
+      dLoading: false, //按钮禁用状态
+      loading: false
     };
   },
   watch: {
@@ -467,24 +468,40 @@ export default {
     },
     // 获取详情
     loadData() {
-      getHouseInfo({
+      this.loading = true;
+      getIncomeInfo({
         projectId: this.params.projectId,
         id: this.params.id
       }).then(res => {
-        if (res.code == 200) {
+        try {
           this.formData = res.data;
-          this.formData.isHasHouseDesc = this.returnText(
-            "yes_no",
-            this.formData.isHasHouse
+          this.formData.incomePeopleDesc = this.returnText(
+            "income_person",
+            this.formData.incomePeople
           );
-          this.formData.houseZonDesc = this.returnText(
-            "Property_area",
-            this.formData.houseZon
+          this.formData.occupationalStatusDesc = this.returnText(
+            "OccupationalStatus",
+            this.formData.occupationalStatus
           );
-          this.formData.houseTypeDesc = this.returnText(
-            "Property_nature",
-            this.formData.houseType
+          this.formData.unitCharDesc = this.returnText(
+            "unit_Property",
+            this.formData.unitChar
           );
+          this.formData.idyDmnDesc = this.returnText(
+            "belong_industry",
+            this.formData.idyDmn
+          );
+          this.formData.personalIncomeStatusDesc = this.returnText(
+            "IncomeStatus",
+            this.formData.personalIncomeStatus
+          );
+          this.formData.incomeEvidenceDesc = this.returnText(
+            "income_prove",
+            this.formData.incomeEvidence
+          );
+          this.loading = false;
+        } catch {
+          this.loading = false;
         }
       });
     },
@@ -537,7 +554,6 @@ export default {
         case "职业状况":
           this.formData.occupationalStatus = rows.value;
           this.formData.occupationalStatusDesc = rows.label;
-          console.log(rows.value)
           break;
         case "单位性质":
           this.formData.unitChar = rows.value;

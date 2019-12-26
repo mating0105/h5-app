@@ -23,3 +23,15 @@ export function save(params) {
     data: params
   })
 }
+
+/**
+ * 检查贷款金额和评估价
+ * @param params
+ */
+export function checkAssessmentCar(params) {
+  return request({
+    url: 'order/creditInfo/checkAssessmentCar',
+    method: 'get',
+    params
+  })
+}

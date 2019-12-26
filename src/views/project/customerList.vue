@@ -123,7 +123,11 @@ export default {
       this.onLoad();
     },
     onRefresh() {
-      this.params.pageIndex = 1;
+      this.params = {
+        pageIndex: 1,
+        pageSize: 10
+      }
+      this.list = [];
       this.onLoad();
     },
     onLoad() {
@@ -158,18 +162,6 @@ export default {
           this.finished = true;
         },300);
       });
-    },
-    // 发起报单
-    startForm(rows) {
-      this.$router.push({ path: '/xhProject', query: {
-        customerName: rows.customerName, //客户姓名
-        contactPhone: rows.contactPhone, //客户身份证
-        certificateNum: rows.certificateNum, //客户手机号码
-        customerId: rows.customerId,
-        customerNum: rows.customerNum,
-        projectNo: rows.projectNo,
-        projectId: rows.projectId,
-      }});
     },
     confirmInfo(msg) {
       this.$notify({
@@ -215,6 +207,7 @@ export default {
       }).then(res => {
         let { data } = res;
         let projectInfo = data.projectInfo;
+        this.allLoading = false;
         this.$router.push({ path: '/xhProject', query: {
           customerName: projectInfo.customerName, //客户姓名
           contactPhone: projectInfo.contactPhone, //客户身份证
@@ -223,8 +216,8 @@ export default {
           customerNum: projectInfo.customerNum,
           projectNo: projectInfo.projectNo,
           projectId: projectInfo.projectId,
+          isView: 0
         }});
-        this.allLoading = false;
       }).catch(()=>{
         this.allLoading = false;
       });

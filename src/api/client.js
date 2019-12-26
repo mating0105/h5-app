@@ -83,6 +83,14 @@ export function getIncomeList(params) {
     params
   })
 }
+// 获取主借人收入信息
+export function getIncomeInfo(params) {
+  return request({
+    url: '/customer/cs/cuIncomeDtl/getInfo',
+    method: 'get',
+    params
+  })
+}
 // 删除主借人收入列表信息
 export function deleteIncomeList(params) {
   return request({

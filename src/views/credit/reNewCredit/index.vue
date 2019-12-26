@@ -65,7 +65,7 @@
 
         <Card style="margin-top: 1rem;">
             <template v-slot:header>
-                征信客户
+                {{perInfoList.length === 0 ? '新增': ''}}征信客户
                 <div class="card-icon" @click="addPer" v-if="edit">
                     <van-icon name="add-o"/>
                 </div>
@@ -328,6 +328,7 @@
             return
           }
           this.loading = true
+          this.dataList.surDtlList = [this.form, ...this.perInfoList]
           const {data} = await saveCreditInfo(this.dataList)
 
           const query = {
@@ -374,9 +375,9 @@
       editCar (car, index) {
         const query = {
           customerId: this.dataList.customerId,
-          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
           index: index,
-          ...car
+          ...car,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
         }
         this.$router.push({
           path: '/vehicle',
