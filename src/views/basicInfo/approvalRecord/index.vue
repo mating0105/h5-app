@@ -1,6 +1,6 @@
 // 审批记录
 <template>
-  <div>
+  <div class="xh-approval">
     <Card v-for="item in recordList" style="margin-top:10px;">
       <van-row>
         <van-col class="xh-approval-name">
@@ -57,13 +57,13 @@ export default {
   methods: {
     loadRecord() {
       let data = {
-        businessKey: this.params.info.businesskey,
-        businessType: this.params.info.businesstype
+        businessKey: this.params.info.businessKey ? this.params.info.businessKey : (this.params.info.id? this.params.info.id:this.params.info.payInfoId),
+        businessType: this.params.info.businessType
       };
       approvalRecord(data).then(res => {
         this.recordList = res.data;
         this.recordList.forEach(e => {
-          e.createDate = format(new Date(e.createDate), "yyyy-MM-dd");
+          e.createDate = format(new Date(e.createDate), "yyyy-MM-dd hh:mm:ss");
         });
       });
     },
@@ -83,6 +83,7 @@ export default {
         info: this.getStringToObj(this.$route.query.info),
         dealState: this.$route.query.dealState
       };
+      console.log(this.params)
     } else {
       this.params.info = this.requestParams
     }
@@ -91,8 +92,11 @@ export default {
 };
 </script>
 <style>
+.xh-approval .van-cell{
+  padding:1px 14px;
+}
 .xh-approval-name {
-  padding: 0 14px;
+  padding: 5px 14px;
   color: #ee0a24;
   margin: 5px 0;
 }

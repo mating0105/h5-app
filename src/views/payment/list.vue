@@ -18,7 +18,7 @@
               <van-cell :title="item.projectNo" :value="item.processStateDesc" icon="notes-o"></van-cell>
             </section>
           </template>
-          <van-row>
+          <van-row @click="showDetail(item)">
             <van-col span="24">客户名称：{{item.customerName}}</van-col>
             <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
             <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
@@ -116,6 +116,16 @@ export default {
         query: {
           info: JSON.stringify(rows),
           dealState: "1"
+        }
+      });
+    },
+    //查看详情
+    showDetail(rows){
+      this.$router.push({
+        path: "/paymentSure",
+        query: {
+          info: JSON.stringify(rows),
+          dealState: "3"
         }
       });
     },
