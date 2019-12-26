@@ -410,7 +410,6 @@
         <van-datetime-picker
           :title="timetitle"
           type="datetime"
-          :formatter="formatter"
           v-model="currentDate"
           @confirm="confirmTime"
           @cancel="cancelTime"
@@ -575,11 +574,11 @@ export default {
         colligateCharges +
         doolBail +
         gpsCharges
-      );
+      ).toFixed(2);
     },
     actincmAmt() {
       let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0; //打折金额
-      return parseFloat(this.totalCharges) - dcnAmt;
+      return (parseFloat(this.totalCharges) - dcnAmt).toFixed(2);
     },
     wordbook() {
       return this.$store.state.user.wordbook;
@@ -911,21 +910,21 @@ export default {
           break;
       }
     },
-    formatter(type, value) {
-      if (type == "minute") {
-        return `0`;
-      } else if (type == "year") {
-        return `${value}年`;
-      } else if (type == "month") {
-        return `${value}月`;
-      } else if (type == "day") {
-        return `${value}日`;
-      } else if (type == "hour") {
-        return `${value}时`;
-      }
-    },
+    // formatter(type, value) {
+    //   if (type == "minute") {
+    //     return `0`;
+    //   } else if (type == "year") {
+    //     return `${value}年`;
+    //   } else if (type == "month") {
+    //     return `${value}月`;
+    //   } else if (type == "day") {
+    //     return `${value}日`;
+    //   } else if (type == "hour") {
+    //     return `${value}时`;
+    //   }
+    // },
     confirmTime(value) {
-      var time = format(value, "yyyyMMdd hh");
+      var time = format(value, "yyyyMMdd hh:mm");
       switch (this.timeType) {
         case "pyfDt":
           this.paymentDetail.projBudgetList.pyfDt = time;
@@ -958,7 +957,7 @@ export default {
         });
         this.dataList.push({
           declare: declare, //图片描述
-          isRequire: true, //*是否必须
+          isRequire: false, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
           customerNum: this.params.info.customerNum,
