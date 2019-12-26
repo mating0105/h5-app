@@ -1,11 +1,12 @@
 <template>
-    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
+    <ViewPage :goPage='rightFn' iconClass="filter-o" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
+                    action-text="清空"
             />
         </template>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -205,8 +206,11 @@
       onRefresh () {
         this.list = []
         this.params.pageIndex = 1
-        this.onLoad()
-        this.finished = false
+        if(this.finished) {
+          this.finished = false
+        } else {
+          this.onLoad()
+        }
         setTimeout(() => {
           Toast.success('刷新成功');
         }, 500);
