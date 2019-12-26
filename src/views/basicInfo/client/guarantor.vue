@@ -139,7 +139,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.id, isView: 0 } });
+      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.projectId, isView: 0 } });
     },
     // 删除
     delList(rows) {
