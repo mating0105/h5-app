@@ -25,15 +25,17 @@
         <ul>
         <li>为维护社会公众的利益。</li>
         </ul>
-        <p>&nbsp;</p>
     </section>
 </template>
 <style scoped lang='scss'>
 #box{
     background-color:#fff;
+    height: 100%;
+    padding: 15px 0;
     p{
         font-size:1.6rem!important;
         background-color:#fff;
+        margin: 0;
         strong{
             font-size:1.6rem!important;
         }
