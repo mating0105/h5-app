@@ -341,9 +341,15 @@ export const constantRoutes = [
         name: 'HeavyApproval',
         component: () => import('@/views/heavyRightSupplement/manage/approval'),
         meta: {title: '重权管理', icon: 'dashboard'},
-      }
+      },
     ]
    
+  },
+  {
+    path: '/userAgreement',
+    name: 'userAgreement',
+    component: () => import('@/views/userAgreement/index'),
+    //meta: {title: '用户协议', icon: 'dashboard'},
   },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
