@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-25 17:16:48
+ * @LastEditTime : 2019-12-26 09:52:11
  -->
 
 <template>
@@ -42,7 +42,7 @@
           <van-cell
             :value="details.creditObjectType | codeInToName(wordbook.credit_object_type)"
             class="info"
-            title="征信对象类型"
+            title="征信对象类型:"
           />
         </van-col>
         <van-col span="24">
@@ -57,6 +57,13 @@
             :value="details.intentionPrice"
             class="info"
             title="意向贷款金额(元):"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="details.loanAmt"
+            class="info"
+            title="贷款金额(元):"
           />
         </van-col>
       </van-row>
@@ -101,14 +108,14 @@
             <van-cell
               :value="item.carSeries"
               class="info"
-              title="车系"
+              title="车系:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.carModel"
               class="info"
-              title="车辆型号"
+              title="车辆型号:"
             />
           </van-col>
           <van-col span="24">
@@ -528,7 +535,7 @@ export default {
       // 与贷款金额的差价 = 套票成交价-贷款金额
       this.details.packageDeal = value;
       if (value) {
-        if (this.details.differenceCarprice) {
+        if (this.details.loanAmt) {
           this.details.differenceCarprice = value * 1 - this.details.loanAmt;
         } else {
           this.details.differenceCarprice = value;
