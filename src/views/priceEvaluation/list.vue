@@ -32,6 +32,7 @@
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
+                                        v-if="item.yn != 1"
                                         plain
                                         size="small"
                                         type="danger"
