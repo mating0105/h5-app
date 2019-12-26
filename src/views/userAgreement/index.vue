@@ -22,7 +22,7 @@
         <li>按照相关政府主管部门的要求；</li>
         </ul>
         <p>&nbsp;</p>
-        <ul>
+        <ul style="padding: 0 0 15px 0;">
         <li>为维护社会公众的利益。</li>
         </ul>
     </section>
@@ -30,10 +30,22 @@
 <style scoped lang='scss'>
 #box{
     background-color:#fff;
+    height: 100%;
+    padding: 15px 0 15px 0;
     p{
         font-size:1.6rem!important;
+        background-color:#fff;
+        margin: 0;
+        line-height: 28px;
         strong{
             font-size:1.6rem!important;
+        }
+    }
+    ul{
+        background-color:#fff;
+        li{
+           background-color:#fff; 
+           font-size:1.6rem!important;
         }
     }
 }
