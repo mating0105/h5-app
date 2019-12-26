@@ -79,7 +79,7 @@
                     <template v-slot:header>
                         <div class="notice">
                             <p>通知业务员</p>
-                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">{{form.projectInfo.customerName}}</van-checkbox>
+                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">{{form.projectInfo.clientManager.name}}</van-checkbox>
                         </div>
                     </template>
                 </Card>
