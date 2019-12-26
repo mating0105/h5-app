@@ -7,7 +7,7 @@
             <section>
               <van-cell
                 title="担保人："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.cuGuaranteeName"
                 @click.native="!isView?'':loadList('担保人', '1')"
@@ -19,7 +19,7 @@
             <section>
               <van-cell
                 title="收入人："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.incomePeopleDesc"
                 @click.native="!isView?'':loadList('收入人', 'income_person')"
@@ -31,7 +31,7 @@
             <section>
               <van-cell
                 title="职业状况："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.occupationalStatusDesc"
                 label-class="labelClass"
@@ -44,7 +44,7 @@
               <section>
                 <van-cell
                   title="单位性质："
-                  required
+                  :required="isView"
                   :is-link="isView"
                   :value="form.unitCharDesc"
                   label-class="labelClass"
@@ -56,7 +56,7 @@
               <section>
                 <van-cell
                   title="行业领域："
-                  required
+                  :required="isView"
                   :is-link="isView"
                   :value="form.idyDmnDesc"
                   label-class="labelClass"
@@ -70,7 +70,7 @@
                   name="companyName"
                   v-model="form.companyName"
                   clearable
-                  required
+                  :required="isView"
                   :disabled="!isView"
                   label="单位名称："
                   input-align="right"
@@ -126,7 +126,7 @@
                   type="number"
                   clearable
                   :disabled="!isView"
-                  required
+                  :required="isView"
                   label="从业年限："
                   input-align="right"
                   placeholder="请输入从业年限"

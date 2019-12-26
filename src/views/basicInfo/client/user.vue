@@ -9,7 +9,7 @@
               <van-field
                 name="customerName"
                 v-model="formData.customerName"
-                required
+                :required="isView"
                 :disabled="!isView"
                 clearable
                 label="客户姓名："
@@ -27,7 +27,7 @@
               <van-field
                 name="certificateNum"
                 v-model="formData.certificateNum"
-                required
+                :required="isView"
                 clearable
                 :disabled="!isView"
                 label="证件号码："
@@ -43,7 +43,7 @@
                 name="contactPhone"
                 v-model="formData.contactPhone"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="联系电话："
                 input-align="right"
@@ -55,7 +55,7 @@
             <section>
               <van-cell
                 title="婚姻状况："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.marriageDesc"
                 label-class="labelClass"
@@ -67,7 +67,7 @@
             <section>
               <van-cell
                 title="文化程度："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.levelEducationDesc"
                 label-class="labelClass"
@@ -79,7 +79,7 @@
             <section>
               <van-cell
                 title="单位性质："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.unitCharDesc"
                 label-class="labelClass"
@@ -93,7 +93,7 @@
                 name="primarySchool"
                 v-model="formData.primarySchool"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="曾就读小学："
                 input-align="right"
@@ -106,7 +106,7 @@
             <section>
               <van-cell
                 title="户籍地址："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.pProvCityZon"
                 label-class="labelClass"
@@ -118,7 +118,7 @@
             <section>
               <van-cell
                 title="居住地："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.rProvCityZon"
                 label-class="labelClass"
@@ -131,7 +131,7 @@
               <van-field
                 name="spsRsdncDtlAdr"
                 v-model="formData.spsRsdncDtlAdr"
-                required
+                :required="isView"
                 clearable
                 :disabled="!isView"
                 label="居住地详细地址："
@@ -145,7 +145,7 @@
             <section>
               <van-cell
                 title="子女情况："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.childrenSituationDesc"
                 label-class="labelClass"
@@ -157,7 +157,7 @@
             <section v-if="formData.childrenSituationDesc != '无' ">
               <van-cell
                 title="子女上学情况："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="formData.schoolSituationDesc"
                 label-class="labelClass"
@@ -171,7 +171,7 @@
                 name="localResidence"
                 v-model="formData.localResidence"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 type="number"
                 label="本地居住年限(年)："
@@ -190,7 +190,7 @@
               name="spsNm"
               v-model="formData.spsNm"
               clearable
-              required
+              :required="isView"
               :disabled="!isView"
               label="配偶姓名："
               input-align="right"
@@ -208,7 +208,7 @@
               name="spsCrdtNo"
               v-model="formData.spsCrdtNo"
               clearable
-              required
+              :required="isView"
               :disabled="!isView"
               label="配偶证件号码："
               input-align="right"
@@ -223,7 +223,7 @@
               name="spsCtcTel"
               v-model="formData.spsCtcTel"
               clearable
-              required
+              :required="isView"
               :disabled="!isView"
               label="配偶联系电话："
               input-align="right"
@@ -236,7 +236,7 @@
           <section>
             <van-cell
               title="配偶文化程度："
-              required
+              :required="isView"
               :is-link="isView"
               :value="formData.spsCltrDgrDesc"
               label-class="labelClass"
@@ -248,7 +248,7 @@
           <section>
             <van-cell
               title="配偶单位性质："
-              required
+              :required="isView"
               :is-link="isView"
               label-class="labelClass"
               @blur.prevent="ruleMessge"

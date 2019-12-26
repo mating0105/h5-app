@@ -17,7 +17,7 @@
               v-model="contactlist1.emergencyContactName"
               clearable
               :disabled="!isView"
-              required
+              :required="isView"
               label="联系人名称："
               input-align="right"
               placeholder="请输入紧急联系人名称"
@@ -32,7 +32,7 @@
               v-model="contactlist1.contactPhone"
               clearable
               :disabled="!isView"
-              required
+              :required="isView"
               label="联系人电话："
               input-align="right"
               placeholder="请输入联系人电话"
@@ -43,7 +43,7 @@
             <van-cell
               :border="false"
               title="与借款人关系："
-              required
+              :required="isView"
               :is-link="isView"
               :value="contactlist1.borrowerRelationshipDesc"
               @click.native="!isView?'':loadList(1)"
