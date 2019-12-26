@@ -27,7 +27,10 @@
                         </template>
                         <van-row style="min-height: 10rem">
                             <van-col span="24">车架号：{{ item.chassisNumber }}</van-col>
-                            <van-col span="24" class="xh-top-10">品牌型号：{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</van-col>
+                            <van-col span="24" class="xh-top-10" style="display: flex">
+                                <div style="white-space:nowrap;">品牌型号：</div>
+                                <div>{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</div>
+                            </van-col>
                         </van-row>
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
@@ -132,7 +135,7 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
-        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g, '');
         this.onLoad()
       },
       startFormFn (item) {
@@ -150,7 +153,7 @@
         this.list = []
         this.params.pageIndex = 1
         this.finished = false
-        if(this.finished) {
+        if (this.finished) {
           this.finished = false
         } else {
           this.onLoad()
