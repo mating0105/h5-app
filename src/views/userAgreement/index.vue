@@ -1,6 +1,8 @@
 <template>
     <section>
-        <p><strong>软件用户隐私权政策</strong></p>
+        <div id="box">
+        <p>&nbsp;</p>
+        <p><strong><strong>软件用户隐私权政策</strong></strong></p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>欢迎您使用本软件。我们非常重视你的隐私保护和个人信息保护。本隐私权政策适用于《四川万网鑫成信息科技有限公司》提供的产品和服务（包括但不限于APP、网站、小程序、API/SDK及其后台系统、操作系统等），以及包含前述产品和服务的硬件终端。</p>
@@ -27,16 +29,14 @@
         <li>为维护社会公众的利益。</li>
         </ul>
         <p>&nbsp;</p>
+        </div>
         
     </section>
 </template>
-<script>
-export default {
-    name:'userAgreement'
-
+<style scoped>
+#box{
+    background-color:#fff;
+    font-size:2.3rem!important;
+    
 }
-</script>
-
-<style>
-
 </style>
