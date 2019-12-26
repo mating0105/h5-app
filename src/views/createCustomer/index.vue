@@ -205,7 +205,8 @@ import {
   CellGroup,
   DatetimePicker,
   ActionSheet,
-  Picker
+  Picker,
+  Toast
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
@@ -226,7 +227,8 @@ const Components = [
   CellGroup,
   DatetimePicker,
   ActionSheet,
-  Picker
+  Picker,
+  Toast
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -408,6 +410,10 @@ export default {
       }
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
+        if(this.customerData.creditObjectType === 'borrower') {
+          Toast.fail('不能添加借款人');
+          return;
+        }
         this.$store.dispatch("credit/setCustomerData", {
           data: this.customerData,
           index: this.$route.query.index

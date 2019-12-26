@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-23 14:55:26
+ * @LastEditTime : 2019-12-26 09:28:55
  -->
 
 <template>
@@ -15,6 +15,7 @@
       @click="clickShowKeyboard"
       @scanChange="scanChange"
       isScan
+      :isNew="false"
     ></showList>
     <div class="plate_number">
       <van-popup
@@ -192,7 +193,7 @@ export default {
   methods: {
     judgeCarNum(num, flag) {
       if (num) {
-        const [first, ...numArr] = num.substr(0, 7).split("");
+        const [first, ...numArr] = num.substr(0, 8).split("");
         this.first = first;
         this.numArr = numArr;
         if (flag) {
@@ -240,7 +241,7 @@ export default {
         // 把选中的值 push 到 numArr 内
         this.numArr.push(this.enNumber[index].name);
         // 如果 numArr 中的值超过 7 个（车牌号的最大位数），删除最后一个
-        if (this.numArr.length > 6) {
+        if (this.numArr.length > 7) {
           this.numArr.pop();
         }
       }
@@ -261,7 +262,7 @@ export default {
       const first = this.first;
       const numArr = this.numArr;
       const combinate = `${first}${numArr.join("")}`;
-      if (combinate.length === 7) {
+      if (combinate.length === 7 || combinate.length === 8) {
         this.cacheFirst = first;
         this.cacheNumArr = numArr;
         this.$emit("input", combinate);

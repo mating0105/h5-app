@@ -205,6 +205,7 @@
       onRefresh () {
         this.list = []
         this.params.pageIndex = 1
+        this.onLoad()
         this.finished = false
         setTimeout(() => {
           Toast.success('刷新成功');
