@@ -25,6 +25,7 @@
         <ul>
         <li>为维护社会公众的利益。</li>
         </ul>
+        <p>&nbsp;</p>
     </section>
 </template>
 <style scoped lang='scss'>
@@ -32,6 +33,7 @@
     background-color:#fff;
     p{
         font-size:1.6rem!important;
+        background-color:#fff;
         strong{
             font-size:1.6rem!important;
         }
