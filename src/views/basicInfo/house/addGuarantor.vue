@@ -7,7 +7,7 @@
             <section>
               <van-cell
                 title="担保人："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.cuGuaranteeName"
                 label-class="labelClass"
@@ -18,7 +18,7 @@
             <section>
               <van-cell
                 title="房产性质："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.houseTypeDesc"
                 label-class="labelClass"
@@ -30,7 +30,7 @@
             <section>
               <van-cell
                 title="房产区域："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.houseZonDesc"
                 label-class="labelClass"
@@ -45,7 +45,7 @@
                 v-model="form.propertyValue"
                 type="number"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="产权价值(万元)："
                 input-align="right"
@@ -60,7 +60,7 @@
                 name="ownerProperty"
                 v-model="form.ownerProperty"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="产权所有人："
                 input-align="right"
@@ -73,7 +73,7 @@
             <section>
               <van-cell
                 title="房产所在地："
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="form.provCityZon"
                 label-class="labelClass"
@@ -87,7 +87,7 @@
                 name="specificAddress"
                 v-model="form.specificAddress"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="详细地址："
                 input-align="right"
@@ -103,7 +103,7 @@
                 v-model="form.houseArea"
                 type="number"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="房产面积(m２)："
                 input-align="right"
@@ -119,7 +119,7 @@
                 v-model="form.propertyHolderNum"
                 type="number"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="产权共有人数(个)："
                 input-align="right"
@@ -135,7 +135,7 @@
                 v-model="form.propertyOwneratio"
                 type="number"
                 clearable
-                required
+                :required="isView"
                 :disabled="!isView"
                 label="本人产权占有比(%)："
                 input-align="right"

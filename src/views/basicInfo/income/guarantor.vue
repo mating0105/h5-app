@@ -132,7 +132,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 1 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 0 } });
     },
     // 删除
     delList(rows) {

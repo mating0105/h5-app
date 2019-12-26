@@ -34,7 +34,7 @@ router.beforeEach(async(to, from, next) => {
     try {
       await store.dispatch("user/getWordBook")
       next()
-    }catch (e) {
+    } catch (e) {
       next()
     }
     // if (whiteList.indexOf(to.path) !== -1) {

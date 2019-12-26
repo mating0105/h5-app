@@ -146,7 +146,7 @@ export const constantRoutes = [
     path: '/addGuarantor',
     name: 'AddGuarantor',
     component: () => import('@/views/basicInfo/client/addGuarantor'),
-    meta: {title: '新增担保人', icon: 'dashboard'}
+    meta: {title: '担保人', icon: 'dashboard'}
   },
 
   { 
@@ -166,7 +166,7 @@ export const constantRoutes = [
     path: '/addHouseUser',
     name: 'AddHouseUser',
     component: () => import('@/views/basicInfo/house/addUser'),
-    meta: {title: '新增房产信息', icon: 'dashboard'}
+    meta: {title: '房产信息', icon: 'dashboard'}
   },
   { 
     path: '/guarantor',
@@ -184,7 +184,7 @@ export const constantRoutes = [
     path: '/addHouseGuarantor',
     name: 'AddHouseGuarantor',
     component: () => import('@/views/basicInfo/house/addGuarantor'),
-    meta: {title: '新增房产担保人', icon: 'dashboard'}
+    meta: {title: '房产担保人', icon: 'dashboard'}
   },
   { 
     path: '/incomeFamily',
@@ -196,13 +196,13 @@ export const constantRoutes = [
     path: '/addIncome',
     name: 'AddIncome',
     component: () => import('@/views/basicInfo/income/addFamily.vue'),
-    meta: {title: '新增家庭收入', icon: 'dashboard'}
+    meta: {title: '家庭收入', icon: 'dashboard'}
   },
   { 
     path: '/addGuarantorIncome',
     name: 'AddGuarantorIncome',
     component: () => import('@/views/basicInfo/income/addGuarantor.vue'),
-    meta: {title: '新增担保人收入', icon: 'dashboard'}
+    meta: {title: '担保人收入', icon: 'dashboard'}
   },
   { 
     path: '/incomeGuarantor',
@@ -220,7 +220,7 @@ export const constantRoutes = [
     path: '/addCars',
     name: 'AddCars',
     component: () => import('@/views/basicInfo/vehicle/addCars.vue'),
-    meta: {title: '新增名下车辆', icon: 'dashboard'}
+    meta: {title: '名下车辆', icon: 'dashboard'}
   },
   {
     path: '/applyPayment',

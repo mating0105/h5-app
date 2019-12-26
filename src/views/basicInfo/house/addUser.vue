@@ -6,7 +6,7 @@
                     <van-cell
                             name="isHasHouse"
                             title="是否有房产："
-                            required
+                            :required="isView"
                             :is-link="isView"
                             :value="formData.isHasHouseDesc"
                             label-class="labelClass"
@@ -21,7 +21,7 @@
                                 name="ownerProperty"
                                 v-model="formData.ownerProperty"
                                 :disabled="!isView"
-                                required
+                                :required="isView"
                                 label="产权所有人："
                                 input-align="right"
                                 label-width="100px"
@@ -35,7 +35,7 @@
                         <van-cell
                                 name="houseType"
                                 title="房产性质："
-                                required
+                                :required="isView"
                                 :is-link="isView"
                                 :value="formData.houseTypeDesc"
                                 label-class="labelClass"
@@ -48,7 +48,7 @@
                         <van-cell
                                 name="houseZon"
                                 title="房产区域："
-                                required
+                                :required="isView"
                                 :is-link="isView"
                                 :value="formData.houseZonDesc"
                                 label-class="labelClass"
@@ -62,7 +62,7 @@
                         <van-cell
                                 name="provCityZon"
                                 title="房产所在地："
-                                required
+                                :required="isView"
                                 :is-link="isView"
                                 :value="formData.provCityZon"
                                 label-class="labelClass"
@@ -75,7 +75,7 @@
                         <van-field
                                 name="specificAddress"
                                 v-model="formData.specificAddress"
-                                required
+                                :required="isView"
                                 :disabled="!isView"
                                 label="详细地址："
                                 input-align="right"
@@ -89,7 +89,7 @@
                         <van-field
                                 name="houseArea"
                                 v-model="formData.houseArea"
-                                required
+                                :required="isView"
                                 :disabled="!isView"
                                 label="房产面积(m²)："
                                 input-align="right"

@@ -5,7 +5,7 @@
         <section>
           <van-cell
             title="收入人："
-            required
+            :required="isView"
             :is-link="isView"
             :value="formData.incomePeopleDesc"
             label-class="labelClass"
@@ -17,7 +17,7 @@
         <section>
           <van-cell
             title="职业状况："
-            required
+            :required="isView"
             :is-link="isView"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
@@ -31,7 +31,7 @@
           <section>
             <van-cell
               title="单位性质："
-              required
+              :required="isView"
               :is-link="isView"
               :value="formData.unitCharDesc"
               label-class="labelClass"
@@ -43,7 +43,7 @@
           <section>
             <van-cell
               title="行业领域："
-              required
+              :required="isView"
               :is-link="isView"
               :value="formData.idyDmnDesc"
               label-class="labelClass"
@@ -57,7 +57,7 @@
             <van-field
               name="companyName"
               v-model="formData.companyName"
-              required
+              :required="isView"
               :disabled="!isView"
               label="单位名称："
               clearable
@@ -74,7 +74,7 @@
               v-model="formData.companyTel"
               :disabled="!isView"
               label="单位电话："
-              required
+              :required="isView"
               input-align="right"
               placeholder="请输入单位电话"
               type="tel"
@@ -88,7 +88,7 @@
             <van-cell
               name="provCityZon"
               title="单位地址："
-              required
+              :required="isView"
               :is-link="isView"
               :value="formData.provCityZon"
               label-class="labelClass"
@@ -111,7 +111,7 @@
               name="workingYears"
               v-model="formData.workingYears"
               :disabled="!isView"
-              required
+              :required="isView"
               type="number"
               clearable
               label="从业年限(年)："
@@ -128,29 +128,25 @@
             <section>
               <van-field
                 name="employeesNumber"
+                type="number"
                 v-model="formData.employeesNumber"
                 :disabled="!isView"
                 label="员工人数(个)："
                 input-align="right"
                 clearable
                 placeholder="请输入员工人数"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.employeesNumber"
-                error-message-align="right"
               />
             </section>
             <section>
               <van-field
                 name="turnover"
+                type="number"
                 v-model="formData.turnover"
                 :disabled="!isView"
                 label="年营业额(万元)："
                 input-align="right"
                 clearable
                 placeholder="请输入年营业额"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.turnover"
-                error-message-align="right"
               />
             </section>
             <section>
@@ -164,16 +160,13 @@
             </section>
             <section>
               <van-field
-                name="turnover"
+                name="profit"
                 v-model="formData.profit"
                 :disabled="!isView"
                 label="利润比(%)："
                 input-align="right"
                 clearable
                 placeholder="请输入利润比"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.profit"
-                error-message-align="right"
               />
             </section>
           </div>
@@ -228,7 +221,7 @@
                 label="月固定收入(元)："
                 input-align="right"
                 clearable
-                required
+                :required="isView"
                 placeholder="请输入月固定收入"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.personalIncome"
@@ -252,7 +245,7 @@
         <section v-if="formData.occupationalStatusDesc != '待业' ">
           <van-cell
             title="收入佐证："
-            required
+            :required="isView"
             :is-link="isView"
             :value="formData.incomeEvidenceDesc"
             label-class="labelClass"
@@ -417,9 +410,9 @@ export default {
           incomeEvidence: "",
           provCityZon: "",
           companyTel: "",
-          employeesNumber:"",
-          turnover:"",
-          profit:""
+          // employeesNumber:"",
+          // turnover:"",
+          // profit:""
         };
       } else if(val == 3 || val == 4){
         this.errorMsg = {
@@ -432,9 +425,9 @@ export default {
           incomeEvidence: "",
           provCityZon: "",
           companyTel: "",
-          employeesNumber:"",
-          turnover:"",
-          profit:"",
+          // employeesNumber:"",
+          // turnover:"",
+          // profit:"",
           registerCapital:"",
           totalShares:""
         };
@@ -521,7 +514,7 @@ export default {
           break;
         case "单位性质":
           this.selectShow = true;
-          this.columns = this.wordbook.Property_area;
+          this.columns = this.wordbook.unit_Property;
           break;
         case "行业领域":
           this.selectShow = true;
