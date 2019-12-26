@@ -9,7 +9,7 @@
                     action-text="清空"
             />
         </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="margin-bottom: 4rem">
             <van-list
                     style="min-height: 80vh"
                     v-model="loading"
