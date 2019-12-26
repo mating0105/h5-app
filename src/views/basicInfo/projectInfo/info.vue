@@ -29,38 +29,9 @@
                 <div class="van-cell__value">{{ projProjectInfo.contactPhone }}</div>
               </div>
             </section>
-            <!-- <section>
-              <van-field
-                v-model="projProjectInfo.customerName"
-                clearable
-                :disabled="!isView"
-                label-width="100px"
-                label="客户姓名:*"
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.customerName"
-                error-message-align="right"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.contactPhone"
-                type="number"
-                clearable
-                :disabled="!isView"
-                label-width="100px"
-                label=":*"
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.contactPhone"
-                error-message-align="right"
-              />
-            </section> -->
             <section>
               <van-cell
-                title="单位性质:*"
+                :title="'单位性质:'+(isView?'*':'')"
                 :is-link="isView"
                 :value="projProjectInfo.unitCharName"
                 @click="!isView?'':loadList('unit_Property','单位性质', 'unitChar')"
@@ -71,7 +42,7 @@
             </section>
             <section>
               <van-cell
-                title="文化程度:*"
+                :title="'文化程度:'+(isView?'*':'')"
                 :is-link="isView"
                 :value="projProjectInfo.levelEducationName"
                 @click="!isView?'':loadList('DegreeOfEducation','文化程度', 'levelEducation')"
@@ -82,7 +53,7 @@
             </section>
             <section>
               <van-cell
-                title="婚姻状况:*"
+                :title="'婚姻状况:'+(isView?'*':'')"
                 :is-link="isView"
                 :value="projProjectInfo.marriageName"
                 @click="!isView?'':loadList('marriage_type','婚姻状况', 'marriage')"
@@ -102,6 +73,7 @@
               :src="require('./../../../assets/old_images/icon-ocr2.png')"
               class="xh-OCR"
               @click="OCRScan"
+              v-if="isView"
             />
           </div>
           <van-row
@@ -113,7 +85,7 @@
                 v-model="projProjectInfo.spsNm"
                 clearable
                 label-width="100px"
-                label="配偶姓名:*"
+                :label="'配偶姓名:'+(isView?'*':'')"
                 input-align="right"
                 placeholder="请输入"
                 :disabled="!isView"
@@ -128,7 +100,7 @@
                 type="number"
                 clearable
                 label-width="100px"
-                label="联系电话:*"
+                :label="'联系电话:'+(isView?'*':'')"
                 input-align="right"
                 placeholder="请输入"
                 :disabled="!isView"
@@ -142,7 +114,7 @@
                 v-model="projProjectInfo.spsCrdtNo"
                 clearable
                 label-width="100px"
-                label="证件号码:*"
+                :label="'证件号码:'+(isView?'*':'')"
                 input-align="right"
                 placeholder="请输入"
                 :disabled="!isView"
@@ -153,7 +125,7 @@
             </section>
             <section>
               <van-cell
-                title="单位性质:*"
+                :title="'单位性质:'+(isView?'*':'')"
                 :is-link="isView"
                 :value="projProjectInfo.spsUnitCharName"
                 @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
@@ -164,7 +136,7 @@
             </section>
             <section>
               <van-cell
-                title="文化程度:*"
+                :title="'文化程度:'+(isView?'*':'')"
                 :is-link="isView"
                 :value="projProjectInfo.spsCltrDgrName"
                 @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
@@ -185,7 +157,7 @@
           <section>
             <van-cell
               title="业务来源:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
               @click="!isView?'':loadType('业务来源','bsnSrc')"
@@ -198,7 +170,7 @@
           <section>
             <van-cell
               title="车商:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.carDealersIdName"
               @click="!isView?'':loadType('车商', 'carDealersId')"
@@ -210,7 +182,7 @@
           <section>
             <van-cell
               title="反担保状况:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.counterGuaranteeStatusName"
               @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
@@ -222,7 +194,7 @@
           <section>
             <van-cell
               title="是否拆单:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.wthrBlName"
               @click="!isView?'':loadList('yes_no','是否拆单','wthrBl')"
@@ -244,7 +216,7 @@
           <section>
             <van-cell
               title="预调查地址:"
-              required
+              :required="isView"
               :border="false"
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
@@ -257,7 +229,7 @@
           <section>
             <van-field
               v-model="projProjectInfo.addressDetail"
-              required
+              :required="isView"
               clearable
               :disabled="!isView"
               label="具体地址:"
@@ -384,7 +356,7 @@
           <section>
             <van-cell
               title="业务模式:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.businessModelName"
               @click="!isView?'':loadType('业务模式','businessModel')"
@@ -396,7 +368,7 @@
           <section>
             <van-cell
               title="贷款期限:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.loanTerm"
               @click="!isView?'':loadType('贷款期限','loanTerm')"
@@ -409,7 +381,7 @@
           <section>
             <van-cell
               title="放款平台:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.dsbrPltfrmNm"
               @click="!isView?'':loadType('放款平台','platform')"
@@ -421,7 +393,7 @@
           <section>
             <van-cell
               title="产品类别:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.productCategoryIdName"
               @click="!isView?'':loadType('产品类别','productCategoryId')"
@@ -433,7 +405,7 @@
           <section>
             <van-cell
               title="产品名称:"
-              required
+              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.productIdName"
               @click="!isView?'':loadType('产品名称','productId')"
@@ -446,7 +418,7 @@
             <van-field
               v-model="projProjectInfo.loanAmt"
               type="number"
-              required
+              :required="isView"
               clearable
               :disabled="!isView"
               label="银行贷款金额(元):"
@@ -470,7 +442,7 @@
             <section>
               <van-cell
                 title="盗抢险:"
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="projProjectInfo.thiefRescueName"
                 @click="!isView?'':loadType('盗抢险','thiefRescue')"
@@ -482,7 +454,7 @@
             <section>
               <van-cell
                 title="盗抢险购买平台:"
-                required
+                :required="isView"
                 :is-link="isView"
                 :value="projProjectInfo.rbrinsPltfrmNmName"
                 @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
@@ -509,7 +481,7 @@
             <van-cell
               title="是否t+0:"
               :is-link="isView"
-              required
+              :required="isView"
               :value="projProjectInfo.isTandzeroName"
               @click="!isView?'':loadList('yes_no','是否t+0','isTandzero')"
             />
@@ -522,7 +494,7 @@
               :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
-              :required="projProjectInfo.thiefRescue == 0"
+              :required="isView?projProjectInfo.thiefRescue == 0:false"
               placeholder="(含GPS加融费用)"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"

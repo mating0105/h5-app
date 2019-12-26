@@ -26,7 +26,7 @@
                     <van-col :span="8">证件号码：</van-col>
                     <van-col
                       :span="16"
-                      class="xh-text-right xh-ellipsis"
+                      class="xh-text-right van-ellipsis"
                     >{{ params.certificateNum?params.certificateNum + ' | 身份证':'--' }}</van-col>
                   </van-row>
                 </div>
@@ -43,7 +43,7 @@
                 <div class="xh-icon">
                   <img :src="require('./../../assets/old_images/'+i.icon)" alt />
                 </div>
-                <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
+                <div class="van-multi-ellipsis--l2 xh-top-10" style="font-size:14px;">{{ i.name }}</div>
                 <!-- 徽章 -->
                 <xh-badge toTop="15" toRight="30" v-if="i.show == 1"></xh-badge>
               </van-col>

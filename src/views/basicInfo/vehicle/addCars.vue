@@ -5,7 +5,7 @@
         <section>
           <van-cell
             name
-            required
+            :required="isView"
             is-link
             title="车辆品牌型号："
             :value="formData.carModel"
@@ -19,7 +19,7 @@
           <van-field
             name="vim"
             v-model="formData.vim"
-            required
+            :required="isView"
             :disabled="!isView"
             label="车架号："
             input-align="right"
@@ -33,7 +33,7 @@
         </section>
         <section>
           <van-cell 
-            required 
+            :required="isView" 
             title="车牌号:"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
@@ -51,7 +51,7 @@
           <van-field
             name="carAge"
             v-model="formData.carAge"
-            required
+            :required="isView"
             :disabled="!isView"
             label="车龄(年)："
             input-align="right"
@@ -65,8 +65,8 @@
         <section>
           <van-cell
             title="购买方式："
-            required
-            is-link
+            :required="isView"
+            :is-link="isView"
             :value="formData.buyTypeDesc"
             @click.native="isView?loadList():false"
             label-class="labelClass"
@@ -81,7 +81,7 @@
             label-width="120px"
             v-model="formData.carValue"
             :disabled="!isView"
-            required
+            :required="isView"
             label="车辆价值(万元)："
             input-align="right"
             placeholder="请输入车辆价值"
@@ -310,7 +310,7 @@ export default {
     // OCR识别车架号
     OCRScan() {
       this.$bridge.callHandler('vinOCR', '', (res) => {
-        this.$set(this.formData, 'carNumber', res.VIN || '');
+        this.$set(this.formData, 'vim', res.VIN || '');
       })
     }
   },
