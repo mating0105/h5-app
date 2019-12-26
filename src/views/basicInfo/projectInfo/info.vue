@@ -695,6 +695,7 @@ export default {
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
       if (val) {
+
         this.productTypeList({
           type: 2,
           carType: this.carType,
@@ -742,6 +743,7 @@ export default {
     // 获取产品list
     "projProjectInfo.productCategoryId"(val) {
       if (val) {
+
         this.productTypeList({
           type: 4,
           companyId: this.projProjectInfo.companyId,
@@ -1043,6 +1045,12 @@ export default {
           if (this.termList.length == 0) {
             return;
           }
+          // 初始数据
+          let arr3 = ['dsbrPltfrmNm','loanPlatfomrId','productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
+          arr3.forEach(t => {
+            this.projProjectInfo[t] = '';
+          });
+          // 其他
           this.valueKey = "loanCount";
           this.valueId = "loanCount";
           this.fieldName = "loanTerm";
@@ -1053,6 +1061,12 @@ export default {
           if (this.platform.length == 0) {
             return;
           }
+          // 初始数据
+          let arr2 = ['productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
+          arr2.forEach(t => {
+            this.projProjectInfo[t] = '';
+          });
+          // 其他
           this.valueKey = "orgName";
           this.valueId = "id";
           this.fieldName = "isRoot";
@@ -1063,6 +1077,12 @@ export default {
           if (this.businessModellist.length == 0) {
             return;
           }
+          // 初始数据
+          let arr = ['loanTerm','dsbrPltfrmNm','loanPlatfomrId','productCategoryIdName','productCategoryId','productIdName','productId','thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
+          arr.forEach(t => {
+            this.projProjectInfo[t] = '';
+          });
+          // 其他
           this.valueKey = "businessModeDesc";
           this.valueId = "businessMode";
           this.fieldName = "businessModel";
@@ -1073,6 +1093,12 @@ export default {
           if (this.productTypeRows.length == 0) {
             return;
           }
+          // 初始数据
+          let arr1 = ['thiefRescueName','thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
+          arr1.forEach(t => {
+            this.projProjectInfo[t] = '';
+          });
+          // 其他
           this.valueKey = "productCategory";
           this.valueId = "id";
           this.fieldName = field;
@@ -1083,6 +1109,12 @@ export default {
           if (this.productTypeName.length == 0) {
             return;
           }
+          // 初始数据
+          let arr4 = ['thiefRescue','loanRegion','bankNewRate','guaranteeRate','rebateStandard'];
+          arr4.forEach(t => {
+            this.projProjectInfo[t] = '';
+          });
+          // 其他
           this.valueKey = "productName";
           this.valueId = "productId";
           this.fieldName = field;

@@ -4,7 +4,7 @@ import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 const loginForm = {
-  username: "gz0119",
+  username: "sc0164",
   password: "123"
 }
 
@@ -34,7 +34,7 @@ router.beforeEach(async(to, from, next) => {
     try {
       await store.dispatch("user/getWordBook")
       next()
-    }catch (e) {
+    } catch (e) {
       next()
     }
     // if (whiteList.indexOf(to.path) !== -1) {

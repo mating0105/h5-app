@@ -219,7 +219,8 @@ import {
   Field,
   CellGroup,
   ActionSheet,
-  Picker
+  Picker,
+  Dialog
 } from "vant";
 import {
   setProjectTask,
@@ -561,17 +562,24 @@ export default {
     // 流程终止 
     submitStop() {
       this.dLoading = true;
-      setProcessStop({
-        businessKey: this.params.projectId,
-        businessType: 11
-      }).then(res => {
-        this.$notify({
-          type: "success",
-          message: res.msg
+      Dialog.confirm({
+        title: '确定终止项目报单吗？',
+        message: ''
+      }).then(() => {
+        setProcessStop({
+          businessKey: this.params.projectId,
+          businessType: 11
+        }).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
         });
-        this.dLoading = false;
-        this.$router.push("/lendProcessList");
-      }).catch(()=>{
+      }).catch(() => {
         this.dLoading = false;
       });
     },
@@ -717,7 +725,6 @@ export default {
   },
   mounted() {
     let { info, dealState } = this.$route.query;
-    // this.loading = true;
     if (dealState) {
       // 待办已办进入
       let obj = JSON.parse(info);
@@ -733,8 +740,7 @@ export default {
         dealState: dealState,
         activityId: obj.activityId
       };
-      this.loading = dealState == 1;
-      this.isView = true;
+      this.isView = dealState == 1;
       // 待办已办
       switch (obj.activityId) {
         case "WF_PROJ_APPR_01_T01": // 客户经理待办
@@ -756,7 +762,6 @@ export default {
           break;
       }
     } else {
-      this.loading = false;
       this.params = this.$route.query;
       this.params.dealState = this.params.isView == 0?1:3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;

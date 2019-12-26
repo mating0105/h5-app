@@ -6,7 +6,7 @@
           <van-cell-group :border="false">
             <van-cell
               title="首付款是否为自有资金："
-              required
+              :required="isView"
               :is-link="isView"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
@@ -17,7 +17,7 @@
             />
             <van-cell
               title="是否清楚车价："
-              required
+              :required="isView"
               :is-link="isView"
               :border="false"
               label-class="labelClass"
@@ -28,7 +28,7 @@
             />
             <van-cell
               title="是否有驾驶证："
-              required
+              :required="isView"
               :is-link="isView"
               :border="false"
               label-class="labelClass"
@@ -39,7 +39,7 @@
             />
             <van-cell
               title="调查中是否有陪同："
-              required
+              :required="isView"
               :is-link="isView"
               :border="false"
               label-class="labelClass"
@@ -50,7 +50,7 @@
             />
             <van-cell
               title="是否人车匹配："
-              required
+              :required="isView"
               :is-link="isView"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
@@ -61,7 +61,7 @@
             />
             <van-cell
               title="是否涉及消费返利："
-              required
+              :required="isView"
               :is-link="isView"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
@@ -87,7 +87,7 @@
               </van-row>
               <van-field
                 v-model="ruleForm.houseReport"
-                required
+                :required="isView"
                 label="借款人信息及房产报告："
                 placeholder="自动生成,无需填写"
                 label-width="100px"
@@ -95,7 +95,6 @@
                 rows="1"
                 :border="false"
                 :disabled="!isView"
-                disabled
                 autosize
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.houseReport"
@@ -103,7 +102,7 @@
               />
               <van-field
                 v-model="ruleForm.responseReport"
-                required
+                :required="isView"
                 label="借款人收入负债报告："
                 placeholder="自动生成,无需填写"
                 label-width="100px"
@@ -111,7 +110,6 @@
                 rows="1"
                 :border="false"
                 :disabled="!isView"
-                disabled
                 autosize
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.responseReport"
@@ -119,7 +117,7 @@
               />
               <van-field
                 v-model="ruleForm.gnrHsptyAndIncmRpt"
-                required
+                :required="isView"
                 label="担保人房产及收入报告："
                 placeholder="自动生成,无需填写"
                 label-width="100px"
@@ -135,7 +133,7 @@
             </div>
             <van-field
               v-model="ruleForm.inveInfo"
-              required
+              :required="isView"
               label="调查意见情况："
               placeholder="请输入意见情况"
               type="textarea"
@@ -151,7 +149,7 @@
             />
             <van-field
               v-model="ruleForm.infoDetail"
-              required
+              :required="isView"
               label="差资料明细："
               placeholder="请输入差资料明细"
               type="textarea"
@@ -167,7 +165,7 @@
             />
             <van-cell
               title="实际调查地址："
-              required
+              :required="isView"
               :is-link="isView"
               v-model="ruleForm.actSurvyAdr"
               :border="false"
@@ -185,7 +183,7 @@
             />
             <van-cell
               title="上户地："
-              required
+              :required="isView"
               :is-link="isView"
               v-model="ruleForm.upAccLnd"
               :border="false"
@@ -660,6 +658,7 @@ export default {
       if (num !== 0) {
         return;
       }
+      this.subDisabled = true;
       setSurvey(this.ruleForm)
         .then(res => {
           this.$notify({
@@ -674,7 +673,6 @@ export default {
         });
     },
     custSubmit() {
-      this.subDisabled = true;
       this.submitWay();
     },
 

@@ -180,10 +180,9 @@ export default {
       showBrand: false,
       formData: {
         carModel: "",
-        carId: "",
         customerNum: "", //客户编号
         customerId: "", //客户ID
-        carModelId: "", //车辆型号
+        carId: "", //车辆型号
         carNumber: "", //车牌号
         carAge: "", //车龄(年)
         buyType: "", //购买方式
@@ -194,7 +193,7 @@ export default {
       errorMsg: {
         carAge: '',
         carNumber: '',
-        carModelId:  '',
+        carId:  '',
         buyType:  '',
         carValue: '',
       },
@@ -263,6 +262,7 @@ export default {
           num++;
         }
       }
+      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }
@@ -300,7 +300,7 @@ export default {
       this.formData.carModel = carBrand.model.fullname;
       let code =
         carBrand.brand.id + "/" + carBrand.series.id + "/" + carBrand.model.id;
-      this.formData.carModelId = code;
+      this.formData.carId = code;
     },
     // 返回车牌号
     licensePlateNumChange({ value, type }) {
@@ -319,7 +319,6 @@ export default {
     this.isView = this.params.isView == 0;
     if (this.params.id) {
       this.formData = this.params;
-      this.formData.carModelId = (this.params.carId.split('/')).join('-');
     }
     this.rulesForm("cs/cuPersonalCar");
   }
