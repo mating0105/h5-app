@@ -30,7 +30,7 @@ export function save(params) {
  */
 export function checkAssessmentCar(params) {
   return request({
-    url: 'order/creditInfo/checkAssessmentCar',
+    url: '/order/creditInfo/checkAssessmentCar',
     method: 'get',
     params
   })

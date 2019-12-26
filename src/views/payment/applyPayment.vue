@@ -303,55 +303,36 @@
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeAccount"
-                      required
                       clearable
-                      name="payeeAccount"
-                      error-message-align="right"
                       label="银行账号"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="ruleMessge"
-                      :error-message="errorMsg.payeeAccount"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
                     <van-cell
                       title="开户银行"
-                      required
                       is-link
                       :value="returnText('payeeBank',paymentDetail.projPayInfo.payeeBank)"
                       @click="loadType('开户银行', 'payeeBank')"
-                      label-class="labelClass"
-                      @blur.prevent="ruleMessge"
-                      :label="errorMsg.payeeBank"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeSubBank"
-                      required
                       clearable
-                      name="payeeSubBank"
-                      error-message-align="right"
                       label="开户支行"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="ruleMessge"
-                      :error-message="errorMsg.payeeSubBank"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeFullName"
-                      required
                       clearable
-                      name="payeeFullName"
-                      error-message-align="right"
                       label="账户名"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="ruleMessge"
-                      :error-message="errorMsg.payeeFullName"
                     />
                   </van-cell-group>
                 </div>
@@ -825,45 +806,6 @@ export default {
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
           this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
           this.errorMsg[this.fieldName] = "";
-          if (row.value == 1) {
-            this.errorMsg = {
-              estimateCharges: "",
-              investigateCharges: "",
-              gpsCharges: "",
-              colligateCharges: "",
-              notarialFees: "",
-              allopatryCharges: "",
-              doolBail: "",
-              agreeBail: "",
-              collectCarDealer: "",
-              dcnAmt: "",
-              pyfDt: "",
-              pyfMod: "",
-              payType: "",
-              payTime: ""
-            };
-          } else {
-            this.errorMsg = {
-              estimateCharges: "",
-              investigateCharges: "",
-              gpsCharges: "",
-              colligateCharges: "",
-              notarialFees: "",
-              allopatryCharges: "",
-              doolBail: "",
-              agreeBail: "",
-              collectCarDealer: "",
-              dcnAmt: "",
-              pyfDt: "",
-              pyfMod: "",
-              payType: "",
-              payTime: "",
-              payeeAccount: "",
-              payeeBank: "",
-              payeeSubBank: "",
-              payeeFullName: ""
-            };
-          }
           break;
         case "payeeBank":
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;

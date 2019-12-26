@@ -60,18 +60,21 @@
             is-link
             :value="returnText('credit_object_type',customerData.creditObjectType)"
             @click="loadType('征信对象类型', 'creditObjectType')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.creditObjectType"
           />
         </van-cell-group>
         <van-cell-group :border="false">
           <van-cell title="性别" :value="customerData.sex == 1?'男':(customerData.sex == 2?'女':'')" />
         </van-cell-group>
-        <van-cell-group :border="false">
+        <van-cell-group :border="false" v-show="params.credit">
           <van-cell title="出生日期" :value="customerData.birthday" />
         </van-cell-group>
         <van-cell-group :border="false">
           <van-cell title="年龄" :value="customerData.age" />
         </van-cell-group>
-        <van-cell-group :border="false">
+        <van-cell-group :border="false" v-show="params.credit">
           <van-cell
             title="民族"
             required
@@ -97,7 +100,7 @@
             :error-message="errorMsg.familyAddress"
           />
         </van-cell-group>
-        <van-cell-group :border="false">
+        <van-cell-group :border="false" v-show="params.credit">
           <van-field
             v-model="customerData.signOrg"
             required
@@ -410,8 +413,8 @@ export default {
       }
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
-        if(this.customerData.creditObjectType === 'borrower') {
-          Toast.fail('不能添加借款人');
+        if (this.customerData.creditObjectType === "borrower") {
+          Toast.fail("不能添加借款人");
           return;
         }
         this.$store.dispatch("credit/setCustomerData", {
@@ -540,6 +543,15 @@ export default {
     if (this.params.credit) {
       //从征信里进入
       this.loadData();
+      this.errorMsg = {
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号
+        familyAddress: "", //身份证住址
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "", //手机号
+        creditObjectType:"",//征信对象类型
+      };
     } else {
       //新建客户
     }

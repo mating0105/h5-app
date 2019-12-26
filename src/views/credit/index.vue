@@ -185,7 +185,8 @@
         this.onLoad()
       },
       startFormFn (item) {
-        this.startForm(item, {edit: false})
+        this.$router.push({path: '/bigDataQueryDetail', query: {edit: false, lpCertificateNum: item.lpCertificateNum, id: item.id}})
+        // this.startForm(item, {edit: false})
       },
       // 发起报单
       startForm (item, query = {}) {
