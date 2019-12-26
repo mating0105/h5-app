@@ -328,6 +328,7 @@
             return
           }
           this.loading = true
+          this.dataList.surDtlList = [this.form, ...this.perInfoList]
           const {data} = await saveCreditInfo(this.dataList)
 
           const query = {
