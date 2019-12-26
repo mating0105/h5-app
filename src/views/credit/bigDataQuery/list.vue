@@ -23,7 +23,7 @@
                     <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
                         <template v-slot:header>
                             <section class="xh-plus">
-                                <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
+                                <van-cell :title="item.customerNum" value="" icon="notes-o"></van-cell>
                             </section>
                         </template>
                         <van-row style="min-height: 10rem">
@@ -61,7 +61,7 @@
                                         class="xh-radius"
                                         style="border-radius: 6px;"
                                         @click.stop="startForm(item)"
-                                >查询大数据征信
+                                >{{item.bigDataResult ? '重新' : ''}}查询大数据征信
                                 </van-button>
                             </div>
                         </template>

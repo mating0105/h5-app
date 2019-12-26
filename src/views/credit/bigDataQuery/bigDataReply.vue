@@ -39,14 +39,14 @@
   import Card from '@/components/card';
   import imageList from '@/components/imageList'
   import result from '../viewCompoents/result'
-  import { Field, Button, ActionSheet, Popup, Toast } from 'vant'
+  import { Field, Button, ActionSheet, Popup, Toast, Dialog } from 'vant'
   import Vue from 'vue'
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
   import { reply, bankReply } from '@/api/bigData'
   import _ from 'lodash'
 
-  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
+  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Dialog)
   const bank = {
     joiDebtorSpouse: ['0205'],//共债人配偶
     borrowerSpouse: ['0203'],//借款人配偶
@@ -150,7 +150,7 @@
           const form = data.cuCreditRegister
           form.surDtlList = data.cuCreditRegister.surDtlList.reverse()
           const users = _.cloneDeep(form.surDtlList)
-          if(this.isBank) {
+          if (this.isBank) {
             this.obj = bank
           } else {
             this.obj = bigData
@@ -171,32 +171,62 @@
           console.log(e)
         }
       },
+      checkCar () {
+        let flag = true
+        if (this.form.carInfos.length) {
+          this.form.carInfos.forEach(item => {
+            if (item.carNature === 'old_car' && !item.evaluatingPrice) {
+              flag = false
+            }
+          })
+        }
+        return flag
+      },
       async submit () {
         try {
-          this.loading = true
           if (this.isBank) {
-            const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
-            await bankReply(params)
-            this.loading = false
-            this.$nextTick(() => {
-              Toast.success('提交成功')
-            })
-            this.$nextTick(() => {
-              this.$router.push('/lendProcessList')//todo
-            })
+            if(!this.checkCar()) {
+              Dialog.confirm({
+                title: '提示',
+                message: '暂无二手车评估价，确定提交流程吗？'
+              }).then(() => {
+                this.loading = true
+                this.submitBank()
+              }).catch(() => {
+                //
+              });
+            } else {
+              this.submitBank()
+            }
           } else {
+            this.loading = true
             await reply(this.form.surDtlList)
             this.loading = false
             this.$nextTick(() => {
               Toast.success('提交成功')
             })
             this.$nextTick(() => {
-              this.$router.push('/bigDataQueryList')//todo
+              this.$router.push('/bigDataQueryList')
             })
           }
 
         } catch (e) {
           this.loading = false
+          console.log(e)
+        }
+      },
+      async submitBank() {
+        try {
+          const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
+          await bankReply(params)
+          this.loading = false
+          this.$nextTick(() => {
+            Toast.success('提交成功')
+          })
+          this.$nextTick(() => {
+            this.$router.push('/lendProcessList')
+          })
+        }catch (e) {
           console.log(e)
         }
       }
