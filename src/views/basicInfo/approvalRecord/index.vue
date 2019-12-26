@@ -63,7 +63,7 @@ export default {
       approvalRecord(data).then(res => {
         this.recordList = res.data;
         this.recordList.forEach(e => {
-          e.createDate = format(new Date(e.createDate), "yyyy-MM-dd");
+          e.createDate = format(new Date(e.createDate), "yyyy-MM-dd hh:mm:ss");
         });
       });
     },
