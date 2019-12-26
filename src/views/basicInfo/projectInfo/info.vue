@@ -18,6 +18,18 @@
               </div>
             </section>
             <section>
+              <div class="van-cell">
+                <div class="van-cell__title van-field__label">客户姓名:</div>
+                <div class="van-cell__value">{{ projProjectInfo.customerName }}</div>
+              </div>
+            </section>
+            <section>
+              <div class="van-cell">
+                <div class="van-cell__title van-field__label">联系电话:</div>
+                <div class="van-cell__value">{{ projProjectInfo.contactPhone }}</div>
+              </div>
+            </section>
+            <!-- <section>
               <van-field
                 v-model="projProjectInfo.customerName"
                 clearable
@@ -38,14 +50,14 @@
                 clearable
                 :disabled="!isView"
                 label-width="100px"
-                label="联系电话:*"
+                label=":*"
                 input-align="right"
                 placeholder="请输入"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.contactPhone"
                 error-message-align="right"
               />
-            </section>
+            </section> -->
             <section>
               <van-cell
                 title="单位性质:*"
