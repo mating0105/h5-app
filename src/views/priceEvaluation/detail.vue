@@ -43,7 +43,7 @@
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button class="xh-btn" size="large"
+            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice"
                         @click="save"
             >保存
             </van-button>
