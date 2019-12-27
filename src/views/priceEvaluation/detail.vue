@@ -43,7 +43,7 @@
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice"
+            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice || Boolean(isError)"
                         @click="save"
             >保存
             </van-button>
@@ -188,7 +188,7 @@
             evaluatingPrice: ''
           }
           if (this.carData.carNature === 'old_car') {
-            params.evaluatingPrice = this.carData.evaluatingPrice
+            params.evaluatingPrice = this.carData.evaluatingPrice || 0
           } else {
             params.salePrice = this.carData.salePrice
           }
