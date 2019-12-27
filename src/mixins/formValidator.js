@@ -20,6 +20,7 @@ export default {
         } else {
           if (value === "" || value === undefined || value === null) {
             error = "";
+            return error;
           }
         }
         if (infoObj.regular.length > 0) {
