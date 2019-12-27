@@ -20,7 +20,7 @@
               :required="isView"
               label="联系人名称："
               input-align="right"
-              placeholder="请输入紧急联系人名称"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.emergencyContactName"
               error-message-align="right"
@@ -35,7 +35,7 @@
               :required="isView"
               label="联系人电话："
               input-align="right"
-              placeholder="请输入联系人电话"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.contactPhone"
               error-message-align="right"
@@ -65,7 +65,7 @@
               :disabled="!isView"
               label="联系人名称："
               input-align="right"
-              placeholder="请输入紧急联系人名称"
+              :placeholder="isView?'请填写':''"
             />
             <van-field
               :border="false"
@@ -76,7 +76,7 @@
               :disabled="!isView"
               label="联系人电话："
               input-align="right"
-              placeholder="请输入联系人电话"
+              :placeholder="isView?'请填写':''"
             />
             <van-cell
               :border="false"
@@ -99,7 +99,7 @@
               :disabled="!isView"
               label="联系人名称："
               input-align="right"
-              placeholder="请输入紧急联系人名称"
+              :placeholder="isView?'请填写':''"
             />
             <van-field
               :border="false"
@@ -110,7 +110,7 @@
               :disabled="!isView"
               label="联系人电话："
               input-align="right"
-              placeholder="请输入联系人电话"
+              :placeholder="isView?'请填写':''"
             />
             <van-cell
               :border="false"

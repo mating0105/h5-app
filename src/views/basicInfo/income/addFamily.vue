@@ -62,7 +62,7 @@
               label="单位名称："
               clearable
               input-align="right"
-              placeholder="请输入单位名称"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.companyName"
               error-message-align="right"
@@ -76,7 +76,7 @@
               label="单位电话："
               :required="isView"
               input-align="right"
-              placeholder="请输入单位电话"
+              :placeholder="isView?'请填写':''"
               type="tel"
               clearable
               @blur.prevent="ruleMessge"
@@ -103,7 +103,7 @@
               :disabled="!isView"
               label="详细地址："
               input-align="right"
-              placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
             />
           </section>
           <section>
@@ -116,7 +116,7 @@
               clearable
               label="从业年限(年)："
               input-align="right"
-              placeholder="请输入从业年限"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.workingYears"
               error-message-align="right"
@@ -134,7 +134,7 @@
                 label="员工人数(个)："
                 input-align="right"
                 clearable
-                placeholder="请输入员工人数"
+                :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
@@ -146,7 +146,7 @@
                 label="年营业额(万元)："
                 input-align="right"
                 clearable
-                placeholder="请输入年营业额"
+                :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
@@ -166,13 +166,13 @@
                 label="利润比(%)："
                 input-align="right"
                 clearable
-                placeholder="请输入利润比"
+                :placeholder="isView?'请填写':''"
               />
             </section>
           </div>
           <div v-if="formData.occupationalStatus == 3 || formData.occupationalStatus == 4">
             <section>
-            <van-cell
+              <van-cell
                 title="股份构成："
                 :is-link="isView"
                 :value="formData.sharesConstituteDesc"
@@ -188,7 +188,7 @@
                 label="注册资金(万元)："
                 input-align="right"
                 clearable
-                placeholder="请输入利润比"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.registerCapital"
                 error-message-align="right"
@@ -202,7 +202,7 @@
                 label="占股比例(%)："
                 input-align="right"
                 clearable
-                placeholder="请输入利润比"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.totalShares"
                 error-message-align="right"
@@ -222,7 +222,7 @@
                 input-align="right"
                 clearable
                 :required="isView"
-                placeholder="请输入月固定收入"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.personalIncome"
                 error-message-align="right"
@@ -264,7 +264,7 @@
             clearable
             type="textarea"
             :maxlength="200"
-            placeholder="请输入备注"
+            :placeholder="isView?'请填写备注':''"
             show-word-limit
           />
         </section>
@@ -399,7 +399,7 @@ export default {
           incomePeople: "",
           occupationalStatus: ""
         };
-      }else if (val == 1 || val == 2) {
+      } else if (val == 1 || val == 2) {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
@@ -409,12 +409,12 @@ export default {
           workingYears: "",
           incomeEvidence: "",
           provCityZon: "",
-          companyTel: "",
+          companyTel: ""
           // employeesNumber:"",
           // turnover:"",
           // profit:""
         };
-      } else if(val == 3 || val == 4){
+      } else if (val == 3 || val == 4) {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
@@ -428,11 +428,10 @@ export default {
           // employeesNumber:"",
           // turnover:"",
           // profit:"",
-          registerCapital:"",
-          totalShares:""
+          registerCapital: "",
+          totalShares: ""
         };
-        
-      }else{  
+      } else {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
@@ -528,11 +527,11 @@ export default {
           this.selectShow = true;
           this.columns = this.wordbook.income_prove;
           break;
-          case "场地性质":
+        case "场地性质":
           this.selectShow = true;
           this.columns = this.wordbook.site_Properties;
           break;
-          case "股份构成":
+        case "股份构成":
           this.selectShow = true;
           this.columns = this.wordbook.Shares;
           break;
@@ -551,7 +550,7 @@ export default {
         case "单位性质":
           this.formData.unitChar = rows.value;
           this.formData.unitCharDesc = rows.label;
-          this.errorMsg.unitChar = '';
+          this.errorMsg.unitChar = "";
           break;
         case "行业领域":
           this.formData.idyDmn = rows.value;
@@ -564,13 +563,13 @@ export default {
         case "收入佐证":
           this.formData.incomeEvidence = rows.value;
           this.formData.incomeEvidenceDesc = rows.label;
-          this.errorMsg.incomeEvidence = '';
+          this.errorMsg.incomeEvidence = "";
           break;
         case "场地性质":
           this.formData.fieldNature = rows.value;
           this.formData.fieldNatureDesc = rows.label;
           break;
-          case "股份构成":
+        case "股份构成":
           this.formData.sharesConstitute = rows.value;
           this.formData.sharesConstituteDesc = rows.label;
           break;
@@ -586,7 +585,7 @@ export default {
       this.formData.provCityZon = name;
       this.formData.provCityZonCode = code;
       this.addressShow = false;
-      this.errorMsg.provCityZon = '';
+      this.errorMsg.provCityZon = "";
     },
     // 保存
     custSubmit() {
@@ -649,7 +648,7 @@ export default {
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
         if (this.errorMsg[item]) {
-          console.log(this.errorMsg[item],item)
+          console.log(this.errorMsg[item], item);
           num++;
         }
       }

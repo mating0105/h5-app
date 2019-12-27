@@ -87,7 +87,7 @@
                 label-width="100px"
                 :label="'配偶姓名:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsNm"
@@ -102,7 +102,7 @@
                 label-width="100px"
                 :label="'联系电话:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCtcTel"
@@ -116,7 +116,7 @@
                 label-width="100px"
                 :label="'证件号码:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCrdtNo"
@@ -213,7 +213,7 @@
               :disabled="!isView"
               label="拆单原因:"
               input-align="right"
-              placeholder="请输入拆单原因"
+              :placeholder="isView?'请填写':''"
             />
           </section>
           <section>
@@ -238,7 +238,7 @@
               :disabled="!isView"
               label="具体地址:"
               input-align="right"
-              placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.addressDetail"
               error-message-align="right"
@@ -275,13 +275,20 @@
         >
           <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
           <section>
-            <van-cell title="车辆类别:" :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)" />
+            <van-cell
+              title="车辆类别:"
+              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
+            />
           </section>
           <section>
             <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
           </section>
           <section>
-            <van-cell title="车辆规格:" :border="false" :value="returnText('vehicle_specifications',i.carSpecifications)" />
+            <van-cell
+              title="车辆规格:"
+              :border="false"
+              :value="returnText('vehicle_specifications',i.carSpecifications)"
+            />
           </section>
           <section>
             <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
@@ -428,7 +435,7 @@
               :disabled="!isView"
               label="银行贷款金额(元):"
               input-align="right"
-              placeholder="请输入"
+              :placeholder="isView?'请填写':''"
               :error-message="errorMsg.loanAmt"
               @blur.prevent="ruleMessge"
               error-message-align="right"
@@ -501,7 +508,7 @@
               label="加融金额(元):"
               input-align="right"
               :required="isView?projProjectInfo.thiefRescue == 0:false"
-              placeholder="(含GPS加融费用)"
+              :placeholder="isView?'请填写(含GPS加融费用)':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
               error-message-align="right"
@@ -581,7 +588,7 @@
               :disabled="!isView"
               label="附加费(元):"
               input-align="right"
-              placeholder="请填写附加费"
+              :placeholder="isView?'请填写':''"
             />
           </section>
         </van-col>
@@ -1813,7 +1820,7 @@ export default {
     }
   },
   mounted() {
-    if(this.$route.query.info) {
+    if (this.$route.query.info) {
       this.params = JSON.parse(this.$route.query.info);
     } else {
       this.params = this.$route.query;

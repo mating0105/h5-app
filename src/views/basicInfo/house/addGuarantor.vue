@@ -49,7 +49,7 @@
                 :disabled="!isView"
                 label="产权价值(万元)："
                 input-align="right"
-                placeholder="请输入产权价值"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyValue"
                 error-message-align="right"
@@ -64,7 +64,7 @@
                 :disabled="!isView"
                 label="产权所有人："
                 input-align="right"
-                placeholder="请输入产权所有人"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.ownerProperty"
                 error-message-align="right"
@@ -91,7 +91,7 @@
                 :disabled="!isView"
                 label="详细地址："
                 input-align="right"
-                placeholder="请输入详细地址"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.specificAddress"
                 error-message-align="right"
@@ -105,9 +105,9 @@
                 clearable
                 :required="isView"
                 :disabled="!isView"
-                label="房产面积(m２)："
+                label="房产面积(m²)："
                 input-align="right"
-                placeholder="请输入房产面积"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.houseArea"
                 error-message-align="right"
@@ -123,7 +123,7 @@
                 :disabled="!isView"
                 label="产权共有人数(个)："
                 input-align="right"
-                placeholder="请输入产权共有人数"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyHolderNum"
                 error-message-align="right"
@@ -139,7 +139,7 @@
                 :disabled="!isView"
                 label="本人产权占有比(%)："
                 input-align="right"
-                placeholder="请输入本人产权占有比"
+                :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyOwneratio"
                 error-message-align="right"
@@ -341,17 +341,17 @@ export default {
         case "担保人":
           this.form.cuGuaranteeName = rows.label;
           this.form.guaranteeId = rows.value;
-          this.errorMsg.guaranteeId = '';
+          this.errorMsg.guaranteeId = "";
           break;
         case "房产性质":
           this.form.houseTypeDesc = rows.label;
           this.form.houseType = rows.value;
-          this.errorMsg.houseType = '';
+          this.errorMsg.houseType = "";
           break;
         case "房产区域":
           this.form.houseZonDesc = rows.label;
           this.form.houseZon = rows.value;
-          this.errorMsg.houseZon = '';
+          this.errorMsg.houseZon = "";
           break;
       }
       this.selectShow = false;
@@ -360,7 +360,7 @@ export default {
     // 省市区选择
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
-      this.errorMsg.provCityZon = '';
+      this.errorMsg.provCityZon = "";
       this.form.provCityZonCode = code;
       this.addressShow = false;
     },
@@ -373,7 +373,7 @@ export default {
           num++;
         }
       }
-      
+
       if (num !== 0) {
         return;
       }
