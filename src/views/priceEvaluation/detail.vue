@@ -22,7 +22,7 @@
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
             <van-field v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
                        @blur="checkAssessmentCar"
-                       :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
+                       :error-message="isError ? '' : '贷款金额不能高于评估价7成！'"
                        placeholder="请输入"/>
         </Card>
 
@@ -82,7 +82,7 @@
         },
         dataList: [],
         edit: false,
-        isError: 0
+        isError: 1
       }
     },
     computed: {
