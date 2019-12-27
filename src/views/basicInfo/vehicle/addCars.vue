@@ -19,13 +19,10 @@
           <van-field
             name="vim"
             v-model="formData.vim"
-            :required="isView"
             :disabled="!isView"
             label="车架号："
             input-align="right"
             placeholder="请输入或扫描"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.vim"
             :right-icon="isView?'scan':''"
             @click-right-icon="OCRScan"
             class="xh-right-icon"
@@ -36,6 +33,7 @@
             :required="isView" 
             title="车牌号:"
             label-class="labelClass"
+            :value-class="formData.carNumber?'':'xh-value-none'"
             @blur.prevent="ruleMessge"
             :label="errorMsg.carNumber"
           >
@@ -53,14 +51,10 @@
           <van-field
             name="carAge"
             v-model="formData.carAge"
-            :required="isView"
             :disabled="!isView"
             label="车龄(年)："
             input-align="right"
             placeholder="请输入车龄"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.carAge"
-            error-message-align="right"
           />
         </section>
 
@@ -80,16 +74,13 @@
         <section>
           <van-field
             name="carValue"
+            type="number"
             label-width="120px"
             v-model="formData.carValue"
             :disabled="!isView"
-            :required="isView"
             label="车辆价值(万元)："
             input-align="right"
             placeholder="请输入车辆价值"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.carValue"
-            error-message-align="right"
           />
         </section>
 
@@ -198,7 +189,8 @@ export default {
         carNumber: '',
         carId:  '',
         buyType:  '',
-        carValue: '',
+        // carValue: '',
+        // vim: ''
       },
 
       params: {},
@@ -343,5 +335,8 @@ export default {
   .xh-scan-text:last-child {
     border: 1px dashed #807c7c;
   }
+}
+.xh-value-none {
+  display: none;
 }
 </style>
