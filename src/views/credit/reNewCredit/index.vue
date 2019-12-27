@@ -108,6 +108,7 @@
 
         <van-popup v-model="showPicker" position="bottom" get-container="#app">
             <van-picker
+                    class="xh-credit-picker"
                     show-toolbar
                     :columns="columns"
                     @cancel="showPicker = false"
@@ -601,7 +602,7 @@
   }
 </script>
 
-<style>
+<style lang="scss">
 
     .label_plus .van-field__label {
         width: 9rem;
@@ -609,5 +610,18 @@
 
     .labelClass {
         left: 1.33333rem;
+    }
+
+    .xh-credit-picker {
+
+        .column1 {
+            flex: none;
+            min-width: 25%;
+        }
+
+        .column2 {
+            text-align: left;
+        }
+
     }
 </style>

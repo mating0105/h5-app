@@ -6,7 +6,7 @@
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
-                    action-text="清空"
+                    @cancel="onCancel"
             />
         </template>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -156,6 +156,11 @@
         this.params.pageIndex = 1
         this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
+      },
+      // 取消搜索
+      onCancel() {
+        this.params.searchKey = '';
+        this.onSearch();
       },
       startFormFn (item) {
         this.startForm(item, {edit: false})

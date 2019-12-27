@@ -20,7 +20,7 @@
             <van-cell title="行驶里程（万公里）:" :border="false" :value="carData.roadHaul"/>
             <van-cell v-if="showMore" title="发动机号:" :border="false" :value="carData.engineNum"/>
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
-            <van-field v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
+            <van-field class="label_plus" v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
                        @blur="checkAssessmentCar"
                        :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
                        placeholder="请输入"/>
@@ -210,7 +210,9 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+    .label_plus .van-field__label {
+        width: 9rem;
+    }
 
 </style>
