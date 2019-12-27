@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-26 09:52:11
+ * @LastEditTime : 2019-12-27 17:04:07
  -->
 
 <template>
@@ -40,7 +40,7 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.creditObjectType | codeInToName(wordbook.credit_object_type)"
+            :value="details.creditObjectType"
             class="info"
             title="征信对象类型:"
           />
@@ -99,7 +99,7 @@
           </van-col>
           <van-col span="24">
             <van-cell
-              :value="item.automarke"
+              :value="item.carBrandNm"
               class="info"
               title="车辆品牌:"
             />
