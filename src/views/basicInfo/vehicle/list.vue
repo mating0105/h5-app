@@ -17,18 +17,20 @@
       <van-row class="xh-row">
         <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(item,index) in carsList" :key="index">
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <van-col span="24">
-              <van-col span="12">
-                <span class="xh-main xh-title">车牌号：</span>
-                <span class="xh-black">{{item.carNumber}}</span>
+            <van-col span="24" style="padding: 5px 0;">
+              <van-col span="24">
+                <van-col span="12">
+                  <span class="xh-main xh-title">车牌号：</span>
+                  <span class="xh-black">{{item.carNumber}}</span>
+                </van-col>
+                <van-col span="12" class="xh-text-right">
+                  <span class="xh-main">{{item.buyType == '1' ? '按揭' : '全款' }}</span>
+                </van-col>
               </van-col>
-              <van-col span="12" class="xh-text-right">
-                <span class="xh-main">{{item.buyType == '1' ? '按揭' : '全款' }}</span>
+              <van-col span="24" class="xh-top-10">
+                <van-col span="6" class="xh-main xh-title">车辆型号：</van-col>
+                <van-col span="18" class="xh-text-right">{{item.carModel}}</van-col>
               </van-col>
-            </van-col>
-            <van-col span="24" class="xh-top-10">
-              <van-col span="6" class="xh-main xh-title">车辆型号：</van-col>
-              <van-col span="18" class="xh-text-right">{{item.carModel}}</van-col>
             </van-col>
             <span slot="right">
               <van-button
@@ -45,6 +47,7 @@
           </van-swipe-cell>
         </van-col>
       </van-row>
+      <nothing @nothingChange="loadData" v-if="carsList.length === 0"></nothing>
     </Card>
   </ViewPage>
 </template>
@@ -54,6 +57,7 @@ import Vue from "vue";
 // 自定义组件
 import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
+import Nothing from "@/components/Nothing/index";
 import { getVehicleList, deleteVehicleList } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -80,7 +84,8 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage
+    ViewPage,
+    Nothing
   },
   computed: {
     // 所有字典

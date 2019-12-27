@@ -53,6 +53,7 @@
           </van-swipe-cell>
         </div>
       </div>
+      <nothing @nothingChange="loadData" v-if="houseList.length === 0"></nothing>
     </Card>
   </ViewPage>
 </template>
@@ -61,6 +62,7 @@
 import Vue from "vue";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
+import Nothing from "@/components/Nothing/index";
 import { getGuaranteeList, deleteGuaranteeList } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -100,7 +102,8 @@ export default {
   },
   components: {
     ViewPage,
-    Card
+    Card,
+    Nothing
   },
   methods: {
     // 字典转换
