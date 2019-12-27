@@ -71,7 +71,7 @@
                                         type="danger"
                                         class="xh-radius"
                                         style="border-radius: 6px;"
-                                        @click.stop="startForm(item, {again: true})"
+                                        @click.stop="startFormAgain(item)"
                                 >重新发起征信
                                 </van-button>
                             </div>
@@ -96,7 +96,7 @@
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/credit";
+  import { getList, checkedReregisterMob } from "@/api/credit";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -181,11 +181,11 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
-        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g, '');
         this.onLoad()
       },
       // 取消搜索
-      onCancel() {
+      onCancel () {
         this.params.searchKey = '';
         this.params.status = '';
         this.onSearch();
@@ -198,6 +198,15 @@
       startForm (item, query = {}) {
         removeValue("credit");
         this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
+      },
+      // 重新发起
+      async startFormAgain (item) {
+        try {
+          await checkedReregisterMob({lpCertificateNum: item.lpCertificateNum})
+          this.startForm(item, {again: true})
+        } catch (e) {
+          console.log(e)
+        }
       },
       // 新建客户
       addClint () {
@@ -213,7 +222,7 @@
       onRefresh () {
         this.list = []
         this.params.pageIndex = 1
-        if(this.finished) {
+        if (this.finished) {
           this.finished = false
         } else {
           this.onLoad()

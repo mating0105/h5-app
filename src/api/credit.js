@@ -95,3 +95,15 @@ export function stopTask(params) {
     params
   })
 }
+
+/**
+ * 重新发起征信检测
+ * @param params
+ */
+export function checkedReregisterMob(params) {
+  return request({
+    url: '/order/creditInfo/checkedReregisterMob',
+    method: 'post',
+    data: params
+  })
+}
