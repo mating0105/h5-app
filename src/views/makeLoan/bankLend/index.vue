@@ -42,10 +42,10 @@
                             :border="false" 
                             label-width='150' 
                             input-align="right" 
-                            required 
+                            :required="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'"
                             v-model="bankLoanInfo.repaymentBankCardNo" 
                             placeholder="请输入" 
-                            name='repaymentBankCardNo' 
+                            :name="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'?'repaymentBankCardNo':''"
                             @blur.prevent="ruleMessge" 
                             :error-message="errorMsg.repaymentBankCardNo"
                             right-icon="scan"
@@ -181,6 +181,20 @@ export default {
   },
   computed:{
   },
+  watch:{
+      approvalConclusionDesc(newValue){
+          var arr=['repaymentBankCardNo'];
+          if(newValue=='通过'||newValue=='已放款'){
+              arr.forEach((item,index)=>{
+                this.$set(this.errorMsg,item,'');
+              }) 
+          }else{
+              arr.forEach((item,index)=>{
+                Vue.delete(this.errorMsg,item);
+              })
+          }
+      }
+  },
   data() {
     return {
         activeName: "1",
@@ -196,7 +210,13 @@ export default {
         salesmanChecked: false,
         cashierChecked:false,//财务人员勾选
         form:{},
-        bankLoanInfo:{},//放款信息
+        bankLoanInfo:{
+            repaymentBankCardNo:'',
+            accountBank:'',
+            advanceInstitutionDate:'',
+            factLoanAmt:'',
+            factLoanDate:''
+        },//放款信息
         commentsDesc:'',//意见描述
         FinanceCashier:'',
         FinanceCashierDesc:'请选择',//财务人员
@@ -211,7 +231,6 @@ export default {
         submitloading:false,
         businessKey:0,
         dealState:false,//false:'待办'  true:'已办'
-        projectId:0,
         dataList: [],
         iconClass:'ellipsis',
         rightBoxList:[
@@ -243,7 +262,7 @@ export default {
         errorMsg: {
             factLoanAmt:'',//实际放款金额
             advanceInstitutionDate:'',//录机时间
-            repaymentBankCardNo:'',//主借人还款卡号
+            // repaymentBankCardNo:'',//主借人还款卡号
         },
         formData:{},
         errMsg:'',
@@ -377,8 +396,8 @@ export default {
             }
             const data=await loanInfoDetail(para);
             if(data.code==200){
-                this.projectId=data.data.borrowerInfo.projectId;
-                this.getProjectInfo(this.projectId);
+                this.bankLoanInfo=data.data.bankLoanInfo;
+                this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){
             console.log(err)

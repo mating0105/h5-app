@@ -13,7 +13,8 @@
             <van-field class="label_plus"
                        name="intentionPrice"
                        @blur.prevent="ruleMessge"
-                       :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable
+                       :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required
+                       clearable @blur="checkPrice"
                        input-align="right" label="意向贷款金额(元)："
                        placeholder="请输入"/>
             <van-field v-model="dataList.remarks" :border="false" :disabled="!edit" type="textarea" placeholder="输入说明" rows="1"
@@ -211,7 +212,8 @@
         this.dataList.investigateBank = tempBank.id
         this.dataList.investigateBankName = value[0] + '-' + value[1];
         this.dataList.bankCode = tempBank.bankCode;
-        this.errorMsg.investigateBankName = ''
+        this.errorMsg.investigateBankName = '';
+        this.checkPrice()
       },
       onChange (picker, values) {
         picker.setColumnValues(1, this.bankList[values[0]]);
@@ -282,6 +284,7 @@
 
           this.initCar()
           this.initCustomerData()
+          this.checkPrice()
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -324,6 +327,7 @@
        **/
       async nextStep () {
         try {
+          this.checkPrice()
           if (!this.verifyForm()) {
             return
           }
@@ -532,6 +536,38 @@
         }).catch(() => {
           // on cancel
         });
+      },
+      /**
+       * 贷款金额与销售价
+       */
+      checkPrice () {
+        const investigateBankName = this.dataList.investigateBankName;
+        const intentionPrice = this.dataList.intentionPrice;
+        let price = 0
+        const carInfos = this.dataList.carInfos
+        this.errorMsg.intentionPrice = ''
+
+        if (!carInfos.length)
+          return
+
+        carInfos.forEach(item => {
+          if (item.carNature === 'new_car') {
+            price += item.salePrice
+          }
+        })
+
+        if(!price)
+          return;
+
+        if (investigateBankName.includes('中国银行')) {
+          if (intentionPrice >= (price*0.7)) {
+            this.errorMsg.intentionPrice = '贷款金额不能高于销售价7成！'
+          }
+        } else if (investigateBankName.includes('农业银行')) {
+          if (intentionPrice >= (price*0.88)) {
+            this.errorMsg.intentionPrice = '贷款金额不能超过销售价的8.8成'
+          }
+        }
       }
     },
     mounted () {
