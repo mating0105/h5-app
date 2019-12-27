@@ -99,7 +99,7 @@
                   title="单位地址："
                   :is-link="isView"
                   :value="form.provCityZon"
-                  @click.native="addressShow = true"
+                  @click.native="isView?addressShow = true:''"
                   label-class="labelClass"
                   @blur.prevent="ruleMessge"
                   :label="errorMsg.provCityZon"
@@ -176,6 +176,10 @@
                 <van-field
                   v-model="form.remark"
                   clearable
+                  rows="1"
+                  autosize
+                  :disabled="!isView"
+                  type="textarea"
                   label="备注"
                   input-align="right"
                   placeholder="请输入备注"
@@ -206,6 +210,7 @@
           class="xh-bg-main"
           :loading="dLoading"
           :disabled="dLoading"
+          v-if="isView"
           @click.native="custSubmit"
         >保 存</van-button>
       </div>

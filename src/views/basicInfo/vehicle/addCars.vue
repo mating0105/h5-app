@@ -6,7 +6,7 @@
           <van-cell
             name
             :required="isView"
-            is-link
+            :is-link="isView"
             title="车辆品牌型号："
             :value="formData.carModel"
             @click="isView?getBrand():false"
@@ -43,7 +43,9 @@
               v-model="formData.carNumber"
               @licensePlateNumChange="licensePlateNumChange"
               type="carNumber"
+              v-if="isView"
             ></licensePlateNum>
+            <div v-else>{{ formData.carNumber }}</div>
           </van-cell>
         </section>
 
@@ -116,6 +118,7 @@
           :loading="dLoading"
           :disabled="dLoading"
           @click.native="custSubmit"
+          v-if="isView"
         >保 存</van-button>
       </div>
     </div>

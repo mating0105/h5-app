@@ -15,7 +15,7 @@
           :key="index"
         >
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <div class="xh-form-body">
+            <div class="xh-form-body" @click="seeDetails(i)">
               <section>
                 <van-cell title="担保人姓名：" :value="i.cuGuaranteeName" />
               </section>
@@ -46,7 +46,6 @@
             </span>
           </van-swipe-cell>
         </van-col>
-        <nothing @nothingChange="loadData" v-if="guarantorList.length === 0"></nothing>
       </van-row>
     </Card>
   </ViewPage>
@@ -56,7 +55,6 @@
 import Vue from "vue";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
-import Nothing from "@/components/Nothing/index";
 import { getGuaranteeList, deleteGuaranteeIncome } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -83,8 +81,7 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage,
-    Nothing
+    ViewPage
   },
   data() {
     return {
@@ -136,6 +133,10 @@ export default {
     // 修改
     editList(rows) {
       this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {

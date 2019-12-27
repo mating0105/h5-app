@@ -275,19 +275,13 @@
         >
           <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
           <section>
-            <van-cell
-              title="车辆类别:"
-              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
-            />
+            <van-cell title="车辆类别:" :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)" />
           </section>
           <section>
             <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
           </section>
           <section>
-            <van-cell
-              title="车辆规格:"
-              :value="returnText('vehicle_specifications',i.carSpecifications)"
-            />
+            <van-cell title="车辆规格:" :border="false" :value="returnText('vehicle_specifications',i.carSpecifications)" />
           </section>
           <section>
             <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
