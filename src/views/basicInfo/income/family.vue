@@ -3,7 +3,7 @@
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="家庭收入(*请侧滑进行编辑或删除)">
+          <van-cell title="家庭收入">
             <van-icon
               slot="right-icon"
               name="plus"
@@ -15,21 +15,21 @@
         </section>
       </template>
       <van-row class="xh-row">
-        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index" @click.native="pushUrl(i)">
+        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index">
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <van-col span="24">
+            <van-col span="24" @click.native="seeDetails(i)">
               <van-col span="24">
                 <van-col span="12">
                   <span class="xh-main xh-title">收入人：</span>
-                  <span class="xh-black">{{ i.incomePeopleDesc}}</span>
                 </van-col>
                 <van-col span="12" class="xh-text-right">
-                  <span class="xh-main">{{ i.occupationalStatusDesc }}</span>
+                  <span class="xh-black">{{ i.incomePeopleDesc}}</span>
+                  <van-tag color="#ee0a24">{{ i.occupationalStatusDesc }}</van-tag>
                 </van-col>
               </van-col>
               <van-col span="24" class="xh-top-10">
-                <span class="xh-main xh-title">单位名称：</span>
-                <span class="xh-black">{{ i.companyName }}</span>
+                <van-col span="6" class="xh-main xh-title">单位名称：</van-col>
+                <van-col span="18" class="xh-text-right">{{ i.companyName }}</van-col>
               </van-col>
             </van-col>
             <span slot="right">
@@ -47,7 +47,6 @@
           </van-swipe-cell>
         </van-col>
       </van-row>
-      <nothing @nothingChange="loadData" v-if="homelist.length === 0"></nothing>
     </Card>
   </ViewPage>
 </template>
@@ -57,7 +56,6 @@ import Vue from "vue";
 // 自定义组件
 import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
-import Nothing from "@/components/Nothing/index";
 import { getIncomeList, deleteIncomeList } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -66,7 +64,8 @@ import {
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 } from "vant";
 
 const Components = [
@@ -75,7 +74,8 @@ const Components = [
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 ];
 
 Components.forEach(item => {
@@ -84,8 +84,7 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage,
-    Nothing
+    ViewPage
   },
   computed: {
     // 所有字典
@@ -135,6 +134,10 @@ export default {
     // 修改
     editList(rows) {
       this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
