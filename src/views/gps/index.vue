@@ -1,5 +1,10 @@
 <template>
-  <ViewPage :goPage="rightFn" iconClass="ellipsis" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
+  <ViewPage
+    :goPage="rightFn"
+    iconClass="ellipsis"
+    :rightMenuList="cuCreditStatus"
+    :backFn="closeNativeWebView"
+  >
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
@@ -47,10 +52,9 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
 const Components = [Row, Col, Icon, Cell, Button, List, Search];
-
 
 Components.forEach(item => {
   Vue.use(item);
@@ -71,17 +75,17 @@ export default {
         pageSize: 10
       },
       GPS_URL: "http://dev.wwvas.com:10001/#/",
-      accout:''
+      accout: "18349309486"
     };
   },
   computed: {
     ...mapState({
       name: state => state.user.name,
-      wordbook: state => state.user.wordbook,
+      wordbook: state => state.user.wordbook
     }),
-    cuCreditStatus () {
-        return [{label: '全部', value: ''}, ...this.wordbook.GPS_IS_DONE] || []
-      }
+    cuCreditStatus() {
+      return [{ label: "全部", value: "" }, ...this.wordbook.GPS_IS_DONE] || [];
+    }
   },
   methods: {
     onSearch() {
@@ -185,8 +189,9 @@ export default {
       });
     },
     gpsUrl(name, item) {
+      console.log(item, 455555);
       let url = "";
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=18349309486`;
       switch (name) {
         case "申请安装":
           let param = `&loanAmount=${item.loanAmount}&prodqty=${item.prodqty}&insurance=${item.insurance}&ownername=${item.customerName}" +
@@ -216,21 +221,20 @@ export default {
           break;
       }
       console.log(url);
+      this.$store.dispatch("user/gspUrl", url);
       this.$router.push({
-        name: "Gpsurl",
-        query: {
-          url: url
-        }
+        name: "Gpsurl"
       });
     },
     rightFn(item) {
+      this.list = [];
+      this.params.pageIndex = 1;
       this.params.status = item.value;
       this.onLoad();
     }
   },
   mounted() {
-    alert(Cookies.get('loginName'));
-    this.accout = Cookies.get('loginName');
+    this.accout = Cookies.get("loginName");
     this.onLoad();
   }
 };

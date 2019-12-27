@@ -8,6 +8,7 @@ const state = {
   avatar: '',
   accout:'',
   wordbook: null, // 字典集合
+  gpsUrl:''
 }
 
 const mutations = {
@@ -25,7 +26,10 @@ const mutations = {
   },
   SET_WORDBOOK: (state, wordbook) => {
     state.wordbook = wordbook
-  }
+  },
+  GET_GPS_URL:(state, gpsUrl) => {
+    state.gpsUrl = gpsUrl
+  },
 }
 
 const actions = {
@@ -145,7 +149,10 @@ const actions = {
         reject(error)
       })
     })
-  }
+  },
+  gspUrl(context, data) {
+    context.commit("GET_GPS_URL", data);
+  },
 }
 
 export default {
