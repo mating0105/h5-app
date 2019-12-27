@@ -188,9 +188,12 @@
             evaluatingPrice: ''
           }
           if (this.carData.carNature === 'old_car') {
-            params.evaluatingPrice = this.carData.evaluatingPrice || 0
+            params.evaluatingPrice = this.carData.evaluatingPrice
           } else {
             params.salePrice = this.carData.salePrice
+          }
+          if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
+            return
           }
           const {data} = await checkAssessmentCar(params)
           this.isError = data
