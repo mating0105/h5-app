@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="allLoading" iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
+  <ViewPage iconClass="filter-o" :rightMenuList="rightlist" :goPage="goPage">
     <template v-slot:head>
       <van-search
         v-model="searchKey"
@@ -67,8 +67,7 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      rightlist: [],
-      allLoading: false
+      rightlist: []
     };
   },
   computed: {
@@ -201,13 +200,11 @@ export default {
     },
     // 创建一个新报单
     newProject(id) {
-      this.allLoading = true;
       createNewProj({
         id: id
       }).then(res => {
         let { data } = res;
         let projectInfo = data.projectInfo;
-        this.allLoading = false;
         this.$router.push({ path: '/xhProject', query: {
           customerName: projectInfo.customerName, //客户姓名
           contactPhone: projectInfo.contactPhone, //客户身份证
@@ -219,7 +216,6 @@ export default {
           isView: 0
         }});
       }).catch(()=>{
-        this.allLoading = false;
       });
     }
   },
