@@ -32,7 +32,7 @@
                                     客户名称：{{item.customerName}}
                                 </van-col>
                                 <van-col span="14" class="xh-top-10" style="text-align:right;">
-                                    {{dayjs(item.createDate).format('YYYY-MM-DD hh:mm:ss')}}
+                                    {{dayjs(item.createDate).format('YYYY-MM-DD HH:mm:ss')}}
                                 </van-col>
                             </van-row>
                         </Card>
