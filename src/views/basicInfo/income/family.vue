@@ -47,6 +47,7 @@
           </van-swipe-cell>
         </van-col>
       </van-row>
+      <nothing @nothingChange="loadData" v-if="homelist.length === 0"></nothing>
     </Card>
   </ViewPage>
 </template>
@@ -56,6 +57,7 @@ import Vue from "vue";
 // 自定义组件
 import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
+import Nothing from "@/components/Nothing/index";
 import { getIncomeList, deleteIncomeList } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -82,7 +84,8 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage
+    ViewPage,
+    Nothing
   },
   computed: {
     // 所有字典

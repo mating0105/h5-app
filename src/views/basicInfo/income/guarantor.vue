@@ -46,6 +46,7 @@
             </span>
           </van-swipe-cell>
         </van-col>
+        <nothing @nothingChange="loadData" v-if="guarantorList.length === 0"></nothing>
       </van-row>
     </Card>
   </ViewPage>
@@ -55,6 +56,7 @@
 import Vue from "vue";
 import Card from "@/components/card/index";
 import ViewPage from '@/layout/components/ViewPage';
+import Nothing from "@/components/Nothing/index";
 import { getGuaranteeList, deleteGuaranteeIncome } from "@/api/client";
 import { mapState } from "vuex";
 import {
@@ -81,7 +83,8 @@ Components.forEach(item => {
 export default {
   components: {
     Card,
-    ViewPage
+    ViewPage,
+    Nothing
   },
   data() {
     return {
@@ -139,18 +142,11 @@ export default {
       deleteGuaranteeIncome({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },
