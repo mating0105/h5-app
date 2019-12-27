@@ -130,6 +130,7 @@
                 :value="projProjectInfo.spsUnitCharName"
                 @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
                 label-class="labelClass"
+                :value-class="projProjectInfo.spsUnitCharName?'':'xh-value-none'"
                 @blur.prevent="ruleMessge"
                 :label="errorMsg.spsUnitChar"
               />
@@ -141,6 +142,7 @@
                 :value="projProjectInfo.spsCltrDgrName"
                 @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
                 label-class="labelClass"
+                :value-class="projProjectInfo.spsUnitCharName?'':'xh-value-none'"
                 @blur.prevent="ruleMessge"
                 :label="errorMsg.spsCltrDgr"
               />
@@ -162,6 +164,7 @@
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
               @click="!isView?'':loadType('业务来源','bsnSrc')"
               label-class="labelClass"
+              :value-class="projProjectInfo.isAccessCarName?'':'xh-value-none'"
               @blur.prevent="ruleMessge"
               :label="errorMsg.bsnSrc"
             />
@@ -222,6 +225,7 @@
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
               label-class="labelClass"
+              :value-class="projProjectInfo.wbtProvCityZonName?'':'xh-value-none'"
               @blur.prevent="ruleMessge"
               :label="errorMsg.wbtProvCityZonCode"
             />
@@ -379,6 +383,7 @@
               :value="projProjectInfo.loanTerm"
               @click="!isView?'':loadType('贷款期限','loanTerm')"
               label-class="labelClass"
+              :value-class="projProjectInfo.loanTerm?'':'xh-value-none'"
               @blur.prevent="ruleMessge"
               :label="errorMsg.loanTerm"
             />
@@ -465,6 +470,7 @@
               :value="projProjectInfo.rbrinsPltfrmNmName"
               @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
               label-class="labelClass"
+              :value-class="projProjectInfo.rbrinsPltfrmNmName?'':'xh-value-none'"
               @blur.prevent="ruleMessge"
               :label="errorMsg.rbrinsPltfrmNmId"
             />
@@ -1857,6 +1863,9 @@ export default {
   .van-field__control:disabled {
     -webkit-text-fill-color: #fff;
   }
+}
+.xh-value-none {
+  display: none;
 }
 </style>
 

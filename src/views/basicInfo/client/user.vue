@@ -588,6 +588,16 @@ export default {
       this.addressShow = false;
     },
     subMit() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item]= this.returnMsg(item, this.formData[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       this.subLoading = true;
       setClientSave(this.subData)
         .then(res => {
@@ -604,17 +614,6 @@ export default {
 
     // submit
     custSubmit() {
-      let num = 0;
-      for (let item in this.errorMsg) {
-        this.errorMsg[item]= this.returnMsg(item, this.formData[item]);
-        if (this.errorMsg[item]) {
-          num++;
-        }
-      }
-      console.log(this.errorMsg);
-      if (num !== 0) {
-        return;
-      }
      
       this.subData = {
         ...this.formData,

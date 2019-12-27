@@ -117,7 +117,7 @@ export default {
       return name;
     },
     pathHouse() {
-      this.$router.push({ path: '/addHouseUser', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addHouseUser', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -137,7 +137,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseUser', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addHouseUser', query: {...rows, projectId: this.params.projectId, isView: 0 } });
     },
     // 删除
     delList(rows) {

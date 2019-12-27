@@ -109,7 +109,7 @@ export default {
       return name;
     },
     pullUrl() {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -132,7 +132,7 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 0 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
     },
     // 删除
     delList(rows) {
