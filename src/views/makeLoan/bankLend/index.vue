@@ -40,7 +40,7 @@
                         <van-field 
                             label="主借人还款卡号：" 
                             :border="false" 
-                            label-width='150' 
+                            label-width='120' 
                             input-align="right" 
                             :required="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'"
                             v-model="bankLoanInfo.repaymentBankCardNo" 
@@ -183,15 +183,10 @@ export default {
   },
   watch:{
       approvalConclusionDesc(newValue){
-          var arr=['repaymentBankCardNo'];
           if(newValue=='通过'||newValue=='已放款'){
-              arr.forEach((item,index)=>{
-                this.$set(this.errorMsg,item,'');
-              }) 
+            this.$set(this.errorMsg,'repaymentBankCardNo','');
           }else{
-              arr.forEach((item,index)=>{
-                Vue.delete(this.errorMsg,item);
-              })
+            Vue.delete(this.errorMsg,'repaymentBankCardNo');
           }
       }
   },
@@ -397,6 +392,7 @@ export default {
             const data=await loanInfoDetail(para);
             if(data.code==200){
                 this.bankLoanInfo=data.data.bankLoanInfo;
+                this.bankLoanInfo.advanceInstitutionDate=dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD');
                 this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){
