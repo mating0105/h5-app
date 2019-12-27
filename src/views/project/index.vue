@@ -694,18 +694,18 @@ export default {
             case '/incomeFamily':
               t.show = data.customerInco;
               break;
-            case '/vehicleList':
-              t.show = data.customerCar;
-              break;
-            case '/guarantor':
-              t.show = data.cuGuarantee;
-              break;
-            case '/houseGuarantor':
-              t.show = data.cuguaranteeHouse;
-              break;
-            case '/incomeGuarantor':
-              t.show = data.cuguaranteeInco;
-              break; 
+            // case '/vehicleList':
+            //   t.show = data.customerCar;
+            //   break;
+            // case '/guarantor':
+            //   t.show = data.cuGuarantee;
+            //   break;
+            // case '/houseGuarantor':
+            //   t.show = data.cuguaranteeHouse;
+            //   break;
+            // case '/incomeGuarantor':
+            //   t.show = data.cuguaranteeInco;
+            //   break; 
             case '/survey':
               t.show = data.conclusion;
               break;
@@ -771,7 +771,9 @@ export default {
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
     }
-    this.getIsSaveObj();
+    if(this.isView) {
+      this.getIsSaveObj();
+    }
     this.endActive();
     let datas = JSON.parse(sessionStorage.getItem('pro'));
     if(datas) {
