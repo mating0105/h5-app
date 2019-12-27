@@ -459,7 +459,11 @@ export default {
           }
           break;
         case "WF_PROJ_APPR_01_T52":
-          this.setWindControl();
+          if (this.completion == "01") {
+            this.setWindControl();
+          } else {
+            this.postProcess();
+          }
           break;
         default:
           this.createTask();
