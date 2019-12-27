@@ -102,6 +102,7 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
+import Cookies from 'js-cookie'
 import { getPaymentDetail, getDic, submitGo } from "@/api/payment";
 import { mapState } from "vuex";
 const Components = [
@@ -183,13 +184,13 @@ export default {
       conclusion: "", //审批结论
       message: "", //意见描述
       conclusionCode: "",
-      loading: false
+      loading: false,
+      accout:'',
     };
   },
   computed: {
     ...mapState({
-      accout: state => state.user.accout,
-      token: state => state.user.token,
+      token: state => state.user.token
     })
   },
   methods: {
@@ -207,8 +208,8 @@ export default {
         this.$router.push({
           path: row.url,
           query: {
-        url:`http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&token=${this.token}`
-        }
+            url: `http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`
+          }
         });
       } else {
         this.$router.push({
@@ -228,9 +229,9 @@ export default {
       })
         .then(res => {
           this.data = res.data;
-          console.log(this.data.projProjectInfo.riskMeasure.gpsNum)
-          if(this.data.projProjectInfo.riskMeasure.gpsNum == "0"){
-            this.meunRow.splice(4,1);
+          console.log(this.data.projProjectInfo.riskMeasure.gpsNum);
+          if (this.data.projProjectInfo.riskMeasure.gpsNum == "0") {
+            this.meunRow.splice(4, 1);
           }
           this.loading = false;
         })
@@ -299,6 +300,7 @@ export default {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
+    this.accout = Cookies.get('loginName');
     this.loadData(); //加载详情数据
   }
 };
