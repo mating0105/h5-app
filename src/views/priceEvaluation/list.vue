@@ -35,7 +35,7 @@
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
-                                        v-if="item.yn != 1"
+                                        v-if="item.yn != 1 || !item.evaluatingPrice"
                                         plain
                                         size="small"
                                         type="danger"
