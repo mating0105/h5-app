@@ -32,7 +32,7 @@
                 style="border-radius: 6px;"
                 v-show="btn"
                 @click="gpsUrl(btn,item)"
-              >{{btn+'---'+accout}}</van-button>
+              >{{btn}}</van-button>
             </div>
           </template>
         </Card>
@@ -48,8 +48,8 @@ import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
 import Cookies from 'js-cookie'
-import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Search];
+import { Row, Col, Icon, Cell, Button, List, Search, Toast } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast];
 
 
 Components.forEach(item => {
@@ -186,6 +186,8 @@ export default {
     },
     gpsUrl(name, item) {
       let url = "";
+      Toast(this.accout)
+      return
       let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}`;
       switch (name) {
         case "申请安装":
@@ -229,7 +231,6 @@ export default {
     }
   },
   mounted() {
-    alert(Cookies.get('loginName'));
     this.accout = Cookies.get('loginName');
     this.onLoad();
   }
