@@ -606,4 +606,7 @@
         width: 9rem;
     }
 
+    .labelClass {
+        left: 1.33333rem;
+    }
 </style>

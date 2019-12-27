@@ -392,4 +392,8 @@
     .zh-main {
         color: rgb(196, 37, 42);
     }
+
+    .labelClass {
+        left: calc(100% + 1.33333rem);
+    }
 </style>

@@ -32,7 +32,7 @@
                                     客户名称：{{item.customerName}}
                                 </van-col>
                                 <van-col span="14" class="xh-top-10" style="text-align:right;">
-                                    {{item.createDate}}
+                                    {{dayjs(item.createDate).format('YYYY-MM-DD hh:mm:ss')}}
                                 </van-col>
                             </van-row>
                         </Card>
@@ -49,6 +49,7 @@ import Card from "@/components/card/index";
 import { findList } from '@/api/makeLoan.js'
 import { getDic } from "@/api/createCustomer";
 import ViewPage from '@/layout/components/ViewPage';
+import dayjs from 'dayjs'
 // 其他组件
 import { Row, Col, Icon, Cell, List,Tab, Tabs,Search,PullRefresh,Toast} from "vant";
 const Components = [Row, Col, Icon, Cell,List,Tab, Tabs,Search,PullRefresh,Toast];
@@ -75,6 +76,7 @@ export default {
             return obj
         };
         return {
+            dayjs:dayjs,
             listData:[],
             tabList:[
                 {name:'待办',value:'1'},
