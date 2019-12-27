@@ -300,7 +300,7 @@
         />
       </van-action-sheet>
       <!-- 图片选择方式 -->
-      <van-action-sheet v-model="show3" :actions="actions" @select="onSelect" />
+      <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -608,16 +608,14 @@ export default {
     subMit() {
       this.subLoading = true;
       setGuaranteeInfo(this.subData).then(res => {
-        try {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.subLoading = false;
-          this.$router.go(-1);
-        } catch {
-          this.subLoading = false;
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.subLoading = false;
+        this.$router.go(-1);
+      }).catch(()=>{
+        this.subLoading = false;
       });
     },
 

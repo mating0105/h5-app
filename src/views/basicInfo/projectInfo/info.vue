@@ -84,6 +84,7 @@
               <van-field
                 v-model="projProjectInfo.spsNm"
                 clearable
+                name="spsNm"
                 label-width="100px"
                 :label="'配偶姓名:'+(isView?'*':'')"
                 input-align="right"
@@ -99,6 +100,7 @@
                 v-model="projProjectInfo.spsCtcTel"
                 type="number"
                 clearable
+                name="spsCtcTel"
                 label-width="100px"
                 :label="'联系电话:'+(isView?'*':'')"
                 input-align="right"
@@ -113,6 +115,7 @@
               <van-field
                 v-model="projProjectInfo.spsCrdtNo"
                 clearable
+                name="spsCrdtNo"
                 label-width="100px"
                 :label="'证件号码:'+(isView?'*':'')"
                 input-align="right"
@@ -235,6 +238,7 @@
               v-model="projProjectInfo.addressDetail"
               :required="isView"
               clearable
+              name="addressDetail"
               :disabled="!isView"
               label="具体地址:"
               input-align="right"
@@ -371,6 +375,7 @@
               :is-link="isView"
               :value="projProjectInfo.businessModelName"
               @click="!isView?'':loadType('业务模式','businessModel')"
+              :value-class="projProjectInfo.businessModelName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.businessModel"
@@ -397,6 +402,7 @@
               :is-link="isView"
               :value="projProjectInfo.dsbrPltfrmNm"
               @click="!isView?'':loadType('放款平台','platform')"
+              :value-class="projProjectInfo.dsbrPltfrmNm?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.loanPlatfomrId"
@@ -409,6 +415,7 @@
               :is-link="isView"
               :value="projProjectInfo.productCategoryIdName"
               @click="!isView?'':loadType('产品类别','productCategoryId')"
+              :value-class="projProjectInfo.productCategoryIdName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.productCategoryId"
@@ -421,6 +428,7 @@
               :is-link="isView"
               :value="projProjectInfo.productIdName"
               @click="!isView?'':loadType('产品名称','productId')"
+              :value-class="projProjectInfo.productIdName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.productId"
@@ -430,6 +438,7 @@
             <van-field
               v-model="projProjectInfo.loanAmt"
               type="number"
+              name="loanAmt"
               :required="isView"
               clearable
               :disabled="!isView"
@@ -458,6 +467,7 @@
               :is-link="isView"
               :value="projProjectInfo.thiefRescueName"
               @click="!isView?'':loadType('盗抢险','thiefRescue')"
+              :value-class="projProjectInfo.thiefRescueName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.thiefRescue"
@@ -504,6 +514,7 @@
               v-model="projProjectInfo.rentingAmtGps"
               type="number"
               clearable
+              name="rentingAmtGps"
               :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
@@ -1039,6 +1050,7 @@ export default {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
       this.projProjectInfo.wbtProvCityZonCode = name;
+      this.errorMsg.wbtProvCityZonCode = '';
       this.show2 = false;
     },
     // 其他接口数据
@@ -1146,12 +1158,14 @@ export default {
       if (this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName + "Name"] = row.label;
+        this.errorMsg[this.fieldName] = '';
         if (this.selectName == "业务来源") {
           this.getCustomer();
         }
       } else {
         this.projProjectInfo[this.fieldName] = row[this.valueId];
         this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
+        this.errorMsg[this.fieldName] = '';
         switch (this.selectName) {
           case "业务来源":
             if (this.fieldName == "bsnSrc") {
