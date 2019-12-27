@@ -1174,7 +1174,6 @@ export default {
               "thiefRescueName",
               "thiefRescue",
               "loanRegion",
-              "bankNewRate",
               "guaranteeRate",
               "rebateStandard"
             ];
@@ -1221,7 +1220,6 @@ export default {
               "thiefRescueName",
               "thiefRescue",
               "loanRegion",
-              "bankNewRate",
               "guaranteeRate",
               "rebateStandard"
             ];
@@ -1256,7 +1254,6 @@ export default {
               "thiefRescueName",
               "thiefRescue",
               "loanRegion",
-              "bankNewRate",
               "guaranteeRate",
               "rebateStandard"
             ];
@@ -1275,7 +1272,6 @@ export default {
             let arr4 = [
               "thiefRescue",
               "loanRegion",
-              "bankNewRate",
               "guaranteeRate",
               "rebateStandard"
             ];
