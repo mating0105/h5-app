@@ -2,7 +2,7 @@
   <ViewPage :loading="loading" class="xh-creat">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
-        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
+        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('src')">
           <div v-if="!src">
             <van-icon name="plus" style="margin-top:30px;" />
             <p>身份证正面</p>
@@ -11,7 +11,7 @@
             <img :src="src" alt style="width:100%;" />
           </div>
         </van-col>
-        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
+        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('srcBack')">
           <div v-if="!srcBack">
             <van-icon name="plus" style="margin-top:30px;" />
             <p>身份证反面</p>
@@ -168,6 +168,8 @@
         v-model="currentDate"
         @confirm="confirmTime"
         @cancel="cancelTime"
+        :min-date="minDate"
+        :max-date="maxDate"
       />
     </van-action-sheet>
     <!-- 民族选择 -->
@@ -209,7 +211,9 @@ import {
   DatetimePicker,
   ActionSheet,
   Picker,
-  Toast
+  Toast,
+  ImagePreview,
+  Dialog
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
@@ -231,7 +235,9 @@ const Components = [
   DatetimePicker,
   ActionSheet,
   Picker,
-  Toast
+  Toast,
+  ImagePreview,
+  Dialog
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -269,8 +275,8 @@ export default {
       ],
       title1: "",
       currentDate: new Date(),
-      //   minDate: new Date(1949, 01, 01),
-      //   maxDate: new Date(2099, 12, 31)
+      minDate: new Date(1949, 1, 1),
+      maxDate: new Date(2099, 12, 31),
       timeType: "", //区分打开时间弹框标识
       familyList: [], //民族数组
       loading: false,
@@ -279,7 +285,7 @@ export default {
       valueKey: "label",
       selectName: "",
       valueId: "id", // 下拉选择取的哪个value值
-      src: "", //正面图片
+      src:"", //正面图片
       srcBack: "", //背面图片
       errorMsg: {
         customerName: "", //客户姓名
@@ -290,7 +296,8 @@ export default {
         startDate: "", //起始日
         endDate: "", //截止日
         contactPhone: "" //手机号
-      }
+      },
+      sign: "" //标识点击正反面照片查看
     };
   },
   computed: {
@@ -328,11 +335,23 @@ export default {
             : new Date();
           break;
         case "jrnlDateEnd":
-          this.show1 = true;
-          this.title1 = "请选择截止日";
-          this.currentDate = this.customerData.endDate
-            ? new Date(this.customerData.endDate)
-            : new Date();
+          Dialog.confirm({
+            title: "",
+            message: "身份证是否长期有效？",
+            confirmButtonText:'是',
+            cancelButtonText:'否'
+          })
+            .then(() => {
+              this.customerData.endDate = "9999-99-99";
+              this.errorMsg.endDate = "";
+            })
+            .catch(() => {
+              this.show1 = true;
+              this.title1 = "请选择截止日";
+              this.currentDate = this.customerData.endDate
+                ? new Date(this.customerData.endDate)
+                : new Date();
+            });
           break;
       }
     },
@@ -342,11 +361,11 @@ export default {
       switch (this.timeType) {
         case "jrnlDateStart":
           this.customerData.startDate = time;
-          this.errorMsg.startDate = '';
+          this.errorMsg.startDate = "";
           break;
         case "jrnlDateEnd":
           this.customerData.endDate = time;
-          this.errorMsg.endDate = '';
+          this.errorMsg.endDate = "";
           break;
       }
       this.show1 = false;
@@ -475,7 +494,20 @@ export default {
         });
     },
     //点击上传身份证图片
-    loadImg() {
+    loadImg(name) {
+      this.sign = name;
+      if (this[name]) {
+        this.actions = [
+          { name: "相机扫描识别", value: "scan" },
+          { name: "相册导入识别", value: "album" },
+          { name: "查看", value: "see" }
+        ];
+      } else {
+        this.actions = [
+          { name: "相机扫描识别", value: "scan" },
+          { name: "相册导入识别", value: "album" }
+        ];
+      }
       this.show3 = true;
     },
     newData(val) {
@@ -485,39 +517,47 @@ export default {
     },
     //选择获取图片方式
     onSelect(e) {
-      this.$bridge.callHandler("idCardOCR", e.value, data => {
-        if (data.ID_TYPE == "正面") {
-          this.$set(this.customerData, "customerName", data.ID_NAME);
-          this.$set(this.customerData, "certificateNum", data.ID_NUM);
-          this.$set(this.customerData, "familyAddress", data.ID_ADDRESS);
-          this.$set(this.customerData, "nation", data.ID_FOLK);
-          if (data.ID_SEX == "女") {
-            this.$set(this.customerData, "sex", "2");
-          } else if (data.ID_SEX == "男") {
-            this.$set(this.customerData, "sex", "1");
-          }
-          this.src = "data:image/jpg;base64," + data.FRONT_IMG;
-        } else if (data.ID_TYPE == "背面") {
-          this.$set(this.customerData, "signOrg", data.ID_ISSUE);
-          if (data.ID_VALID.indexOf("-") != -1) {
-            this.$set(
-              this.customerData,
-              "startDate",
-              this.newData(data.ID_VALID.split("-")[0])
-            );
-            if (data.ID_VALID.split("-")[1] == "长期") {
-              this.$set(this.customerData, "endDate", "9999-12-30");
-            } else {
+      if (e.value == "see") {
+        if (this.sign == "src") {
+          ImagePreview([this.src]);
+        } else {
+          ImagePreview([this.srcBack]);
+        }
+      } else {
+        this.$bridge.callHandler("idCardOCR", e.value, data => {
+          if (data.ID_TYPE == "正面") {
+            this.$set(this.customerData, "customerName", data.ID_NAME);
+            this.$set(this.customerData, "certificateNum", data.ID_NUM);
+            this.$set(this.customerData, "familyAddress", data.ID_ADDRESS);
+            this.$set(this.customerData, "nation", data.ID_FOLK);
+            if (data.ID_SEX == "女") {
+              this.$set(this.customerData, "sex", "2");
+            } else if (data.ID_SEX == "男") {
+              this.$set(this.customerData, "sex", "1");
+            }
+            this.src = "data:image/jpg;base64," + data.FRONT_IMG;
+          } else if (data.ID_TYPE == "背面") {
+            this.$set(this.customerData, "signOrg", data.ID_ISSUE);
+            if (data.ID_VALID.indexOf("-") != -1) {
               this.$set(
                 this.customerData,
-                "endDate",
-                this.newData(data.ID_VALID.split("-")[1])
+                "startDate",
+                this.newData(data.ID_VALID.split("-")[0])
               );
+              if (data.ID_VALID.split("-")[1] == "长期") {
+                this.$set(this.customerData, "endDate", "9999-12-30");
+              } else {
+                this.$set(
+                  this.customerData,
+                  "endDate",
+                  this.newData(data.ID_VALID.split("-")[1])
+                );
+              }
             }
+            this.srcBack = "data:image/jpg;base64," + data.BACK_IMG;
           }
-          this.srcBack = "data:image/jpg;base64," + data.BACK_IMG;
-        }
-      }); //原生直接调用
+        }); //原生直接调用
+      }
       this.show3 = false;
     },
     // 字典转换
@@ -554,7 +594,7 @@ export default {
         startDate: "", //起始日
         endDate: "", //截止日
         contactPhone: "", //手机号
-        creditObjectType:"",//征信对象类型
+        creditObjectType: "" //征信对象类型
       };
     } else {
       //新建客户
@@ -575,6 +615,7 @@ export default {
   border: 1px dashed #999;
   height: 100px;
   text-align: center;
+  overflow: hidden;
 }
 .xh-customer-family {
   padding: 10px 20px;
@@ -593,7 +634,7 @@ export default {
   color: #c4252a;
   padding: 0 20px;
 }
-.xh-creat .labelClass{
+.xh-creat .labelClass {
   left: calc(100% + 1.33333rem);
 }
 </style>
