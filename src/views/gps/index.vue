@@ -229,6 +229,7 @@ export default {
     }
   },
   mounted() {
+    alert(Cookies.get('loginName'));
     this.accout = Cookies.get('loginName');
     this.onLoad();
   }
