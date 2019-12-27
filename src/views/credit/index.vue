@@ -6,7 +6,7 @@
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
-                    action-text="清空"
+                    @cancel="onCancel"
             />
         </template>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="margin-bottom: 4rem">
@@ -183,6 +183,12 @@
         this.params.pageIndex = 1
         this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
+      },
+      // 取消搜索
+      onCancel() {
+        this.params.searchKey = '';
+        this.params.status = '';
+        this.onSearch();
       },
       startFormFn (item) {
         this.$router.push({path: '/bigDataQueryDetail', query: {edit: false, lpCertificateNum: item.lpCertificateNum, id: item.id}})
