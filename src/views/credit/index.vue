@@ -20,7 +20,7 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
                                 <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -52,7 +52,7 @@
                             </span>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer>
+                        <template v-slot:footer v-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
                                         v-if="item.status === '01' || item.status === '-1'"
