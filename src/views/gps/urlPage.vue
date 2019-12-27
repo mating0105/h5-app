@@ -14,6 +14,8 @@
 <script>
 import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
+import {Toast} from 'vant'
+Vue.use(Toast)
 
 export default {
   components: {
@@ -27,6 +29,7 @@ export default {
   },
   mounted() {
     this.url = this.$route.query;
+    Toast(this.url)
     this.heightPage = document.body.clientHeight - 45;
   }
 };
