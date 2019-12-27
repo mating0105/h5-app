@@ -910,7 +910,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
   },
   mounted() {
     this.params = {

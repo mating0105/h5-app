@@ -57,7 +57,7 @@ export default {
   methods: {
     loadRecord() {
       let data = {
-        businessKey: this.params.info.businessKey ? this.params.info.businessKey : (this.params.info.id? this.params.info.id:this.params.info.payInfoId),
+        businessKey: this.params.info.businesskey ? this.params.info.businesskey: (this.params.info.businessKey ? this.params.info.businessKey : (this.params.info.id? this.params.info.id:this.params.info.payInfoId)),
         businessType: this.params.info.businessType
       };
       approvalRecord(data).then(res => {
@@ -86,6 +86,7 @@ export default {
       console.log(this.params)
     } else {
       this.params.info = this.requestParams
+      console.log(this.params)
     }
     this.loadRecord(); //加载审批记录
   }

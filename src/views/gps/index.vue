@@ -20,8 +20,8 @@
           </template>
           <van-row>
             <van-col span="24">客户名称：{{item.customerName}}</van-col>
-            <van-col span="24" class="xh-top-10">身份证：{{item.certiNum}}</van-col>
-            <van-col span="24" class="xh-top-10">手机号码：{{item.telephone}}</van-col>
+            <van-col span="24" class="xh-top-10">身份证：{{item.idcard}}</van-col>
+            <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>
           </van-row>
           <template v-slot:footer>
             <div style="text-align:right;" v-for="btn in item.pgslist">
@@ -47,8 +47,10 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
+import Cookies from 'js-cookie'
 import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
 const Components = [Row, Col, Icon, Cell, Button, List, Search];
+
 
 Components.forEach(item => {
   Vue.use(item);
@@ -68,13 +70,13 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      GPS_URL: "http://dev.wwvas.com:10001/#/"
+      GPS_URL: "http://dev.wwvas.com:10001/#/",
+      accout:''
     };
   },
   computed: {
     ...mapState({
       name: state => state.user.name,
-      accout: state => state.user.accout,
       wordbook: state => state.user.wordbook,
     }),
     cuCreditStatus () {
@@ -183,7 +185,6 @@ export default {
       });
     },
     gpsUrl(name, item) {
-      console.log(this.accout);
       let url = "";
       let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}`;
       switch (name) {
@@ -228,6 +229,7 @@ export default {
     }
   },
   mounted() {
+    this.accout = Cookies.get('loginName');
     this.onLoad();
   }
 };
