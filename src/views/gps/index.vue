@@ -186,8 +186,6 @@ export default {
     },
     gpsUrl(name, item) {
       let url = "";
-    //   Toast(this.accout)
-    //   return
       let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=18349309486`;
       switch (name) {
         case "申请安装":

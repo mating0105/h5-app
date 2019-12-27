@@ -29,7 +29,6 @@ export default {
   },
   mounted() {
     this.url = this.$route.query;
-    Toast(this.url)
     this.heightPage = document.body.clientHeight - 45;
   }
 };
