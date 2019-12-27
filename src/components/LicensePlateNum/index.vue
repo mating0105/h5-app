@@ -16,7 +16,9 @@
       @scanChange="scanChange"
       isScan
       :isNew="false"
+      v-if="isEdit"
     ></showList>
+    <div v-else>{{value}}</div>
     <div class="plate_number">
       <van-popup
         :overlay="true"
@@ -92,7 +94,11 @@ export default {
     },
     type: {
       type: String
-    }
+    },
+    isEdit:{
+       type: Boolean,
+       default:true
+    },
   },
   data() {
     return {

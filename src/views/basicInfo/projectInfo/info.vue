@@ -84,10 +84,11 @@
               <van-field
                 v-model="projProjectInfo.spsNm"
                 clearable
+                name="spsNm"
                 label-width="100px"
                 :label="'配偶姓名:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsNm"
@@ -99,10 +100,11 @@
                 v-model="projProjectInfo.spsCtcTel"
                 type="number"
                 clearable
+                name="spsCtcTel"
                 label-width="100px"
                 :label="'联系电话:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCtcTel"
@@ -113,10 +115,11 @@
               <van-field
                 v-model="projProjectInfo.spsCrdtNo"
                 clearable
+                name="spsCrdtNo"
                 label-width="100px"
                 :label="'证件号码:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
+                :placeholder="isView?'请填写':''"
                 :disabled="!isView"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCrdtNo"
@@ -213,7 +216,7 @@
               :disabled="!isView"
               label="拆单原因:"
               input-align="right"
-              placeholder="请输入拆单原因"
+              :placeholder="isView?'请填写':''"
             />
           </section>
           <section>
@@ -235,10 +238,11 @@
               v-model="projProjectInfo.addressDetail"
               :required="isView"
               clearable
+              name="addressDetail"
               :disabled="!isView"
               label="具体地址:"
               input-align="right"
-              placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.addressDetail"
               error-message-align="right"
@@ -275,13 +279,20 @@
         >
           <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
           <section>
-            <van-cell title="车辆类别:" :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)" />
+            <van-cell
+              title="车辆类别:"
+              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
+            />
           </section>
           <section>
             <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
           </section>
           <section>
-            <van-cell title="车辆规格:" :border="false" :value="returnText('vehicle_specifications',i.carSpecifications)" />
+            <van-cell
+              title="车辆规格:"
+              :border="false"
+              :value="returnText('vehicle_specifications',i.carSpecifications)"
+            />
           </section>
           <section>
             <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
@@ -364,6 +375,7 @@
               :is-link="isView"
               :value="projProjectInfo.businessModelName"
               @click="!isView?'':loadType('业务模式','businessModel')"
+              :value-class="projProjectInfo.businessModelName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.businessModel"
@@ -390,6 +402,7 @@
               :is-link="isView"
               :value="projProjectInfo.dsbrPltfrmNm"
               @click="!isView?'':loadType('放款平台','platform')"
+              :value-class="projProjectInfo.dsbrPltfrmNm?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.loanPlatfomrId"
@@ -402,6 +415,7 @@
               :is-link="isView"
               :value="projProjectInfo.productCategoryIdName"
               @click="!isView?'':loadType('产品类别','productCategoryId')"
+              :value-class="projProjectInfo.productCategoryIdName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.productCategoryId"
@@ -414,6 +428,7 @@
               :is-link="isView"
               :value="projProjectInfo.productIdName"
               @click="!isView?'':loadType('产品名称','productId')"
+              :value-class="projProjectInfo.productIdName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.productId"
@@ -423,12 +438,13 @@
             <van-field
               v-model="projProjectInfo.loanAmt"
               type="number"
+              name="loanAmt"
               :required="isView"
               clearable
               :disabled="!isView"
               label="银行贷款金额(元):"
               input-align="right"
-              placeholder="请输入"
+              :placeholder="isView?'请填写':''"
               :error-message="errorMsg.loanAmt"
               @blur.prevent="ruleMessge"
               error-message-align="right"
@@ -451,6 +467,7 @@
               :is-link="isView"
               :value="projProjectInfo.thiefRescueName"
               @click="!isView?'':loadType('盗抢险','thiefRescue')"
+              :value-class="projProjectInfo.thiefRescueName?'':'xh-value-none'"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.thiefRescue"
@@ -497,11 +514,12 @@
               v-model="projProjectInfo.rentingAmtGps"
               type="number"
               clearable
+              name="rentingAmtGps"
               :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
               :required="isView?projProjectInfo.thiefRescue == 0:false"
-              placeholder="(含GPS加融费用)"
+              :placeholder="isView?'请填写(含GPS加融费用)':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
               error-message-align="right"
@@ -581,7 +599,7 @@
               :disabled="!isView"
               label="附加费(元):"
               input-align="right"
-              placeholder="请填写附加费"
+              :placeholder="isView?'请填写':''"
             />
           </section>
         </van-col>
@@ -613,7 +631,7 @@
       </div>
     </van-action-sheet>
     <!-- 图片选择方式 -->
-    <van-action-sheet v-model="show4" :actions="actions" @select="onSelect" />
+    <van-action-sheet :close-on-click-overlay="false" v-model="show4" :actions="actions" @select="onSelect" />
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="show2" @getProvince="confirmSelect"></Provinces>
   </div>
@@ -1032,6 +1050,7 @@ export default {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
       this.projProjectInfo.wbtProvCityZonCode = name;
+      this.errorMsg.wbtProvCityZonCode = '';
       this.show2 = false;
     },
     // 其他接口数据
@@ -1139,12 +1158,14 @@ export default {
       if (this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName + "Name"] = row.label;
+        this.errorMsg[this.fieldName] = '';
         if (this.selectName == "业务来源") {
           this.getCustomer();
         }
       } else {
         this.projProjectInfo[this.fieldName] = row[this.valueId];
         this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
+        this.errorMsg[this.fieldName] = '';
         switch (this.selectName) {
           case "业务来源":
             if (this.fieldName == "bsnSrc") {
@@ -1813,7 +1834,7 @@ export default {
     }
   },
   mounted() {
-    if(this.$route.query.info) {
+    if (this.$route.query.info) {
       this.params = JSON.parse(this.$route.query.info);
     } else {
       this.params = this.$route.query;

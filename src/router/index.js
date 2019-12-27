@@ -178,13 +178,13 @@ export const constantRoutes = [
     path: '/houseGuarantor',
     name: 'HouseGuarantor',
     component: () => import('@/views/basicInfo/house/guarantor'),
-    meta: {title: '房产担保人', icon: 'dashboard'}
+    meta: {title: '担保人房产', icon: 'dashboard'}
   },
   { 
     path: '/addHouseGuarantor',
     name: 'AddHouseGuarantor',
     component: () => import('@/views/basicInfo/house/addGuarantor'),
-    meta: {title: '房产担保人', icon: 'dashboard'}
+    meta: {title: '担保人房产', icon: 'dashboard'}
   },
   { 
     path: '/incomeFamily',

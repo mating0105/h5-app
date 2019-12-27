@@ -14,10 +14,7 @@
         <template v-slot:header>
           <section>{{ item.declare }}</section>
         </template>
-        <imageList
-          :dataList="[item]"
-          :view="params.dealState === '3'"
-        ></imageList>
+        <imageList :dataList="[item]" :view="!item.deletable"></imageList>
       </card>
     </div>
     <nothing @nothingChange="nothingChange" v-else></nothing>
@@ -127,25 +124,23 @@ export default {
       // 公用的参数
       const commonParams = {
         isRequire: false,
-        deletable: dealState === "1", //是否可以操作-上传和删除
+        deletable: false, //是否可以操作-上传和删除
         customerNum,
         customerId,
         kind: "1"
       };
       // 当可以上传或者修改的时候做处理为了防止请求回来的数据为空,而导致无法上传
-      if (dealState === "1") {
-        this.types.forEach(item => {
-          let { type, must, label, dealState: isEdit } = item;
-          map.set(type, {
-            ...commonParams,
-            deletable: isEdit === "1", //是否可以操作-上传和删除
-            documentType: type, // 文档类型
-            isRequire: must, //*是否必须
-            declare: label, //图片描述
-            fileList: []
-          });
+      this.types.forEach(item => {
+        let { type, must, label, dealState: isEdit } = item;
+        map.set(type, {
+          ...commonParams,
+          deletable: isEdit === "1", //是否可以操作-上传和删除
+          documentType: type, // 文档类型
+          isRequire: must, //*是否必须
+          declare: label, //图片描述
+          fileList: []
         });
-      }
+      });
       arr.forEach(item => {
         const { documentType } = item;
         if (!map.has(documentType)) {

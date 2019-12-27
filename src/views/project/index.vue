@@ -371,7 +371,7 @@ export default {
           key: 11,
           icon: "icon-filed.png",
           url: "/proDocument",
-          show: 1
+          show: 0
         }
       ],
       params: {},
@@ -459,7 +459,11 @@ export default {
           }
           break;
         case "WF_PROJ_APPR_01_T52":
-          this.setWindControl();
+          if (this.completion == "01") {
+            this.setWindControl();
+          } else {
+            this.postProcess();
+          }
           break;
         default:
           this.createTask();
@@ -638,7 +642,7 @@ export default {
     // 保存风控
     setWindControl () {
       for(var i in this.windControl) {
-        if(this.windControl[i] == '') {
+        if(this.windControl[i] == '' || this.windControl[i] == undefined || this.windControl[i] == null) {
           this.$toast('带 * 必须填写完整, 且填写无误');
           this.dLoading = false;
           return
@@ -690,18 +694,18 @@ export default {
             case '/incomeFamily':
               t.show = data.customerInco;
               break;
-            case '/vehicleList':
-              t.show = data.customerCar;
-              break;
-            case '/guarantor':
-              t.show = data.cuGuarantee;
-              break;
-            case '/houseGuarantor':
-              t.show = data.cuguaranteeHouse;
-              break;
-            case '/incomeGuarantor':
-              t.show = data.cuguaranteeInco;
-              break; 
+            // case '/vehicleList':
+            //   t.show = data.customerCar;
+            //   break;
+            // case '/guarantor':
+            //   t.show = data.cuGuarantee;
+            //   break;
+            // case '/houseGuarantor':
+            //   t.show = data.cuguaranteeHouse;
+            //   break;
+            // case '/incomeGuarantor':
+            //   t.show = data.cuguaranteeInco;
+            //   break; 
             case '/survey':
               t.show = data.conclusion;
               break;
@@ -767,7 +771,9 @@ export default {
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
     }
-    this.getIsSaveObj();
+    if(this.isView) {
+      this.getIsSaveObj();
+    }
     this.endActive();
     let datas = JSON.parse(sessionStorage.getItem('pro'));
     if(datas) {

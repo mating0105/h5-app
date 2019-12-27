@@ -15,7 +15,7 @@
                 label="担保人姓名："
                 input-align="right"
                 label-width="100px"
-                placeholder="请输入担保人姓名"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.customerName"
                 error-message-align="right"
@@ -33,7 +33,7 @@
                 :disabled="!isView"
                 label="证件号码："
                 input-align="right"
-                placeholder="请输入证件号码"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.certificateNum"
                 error-message-align="right"
@@ -72,7 +72,7 @@
                 :disabled="!isView"
                 label="联系电话："
                 input-align="right"
-                placeholder="请输入联系电话"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.contactPhone"
                 error-message-align="right"
@@ -109,7 +109,7 @@
                 :disabled="!isView"
                 label="曾就读小学："
                 input-align="right"
-                placeholder="请输入曾就读小学"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
@@ -148,7 +148,7 @@
                 label="居住地详细地址："
                 label-width="130px"
                 input-align="right"
-                placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
@@ -184,7 +184,7 @@
                 label="本地居住年限(年)："
                 label-width="120px"
                 input-align="right"
-                placeholder="请输入居住年限"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
@@ -211,7 +211,7 @@
               :disabled="!isView"
               label="配偶姓名："
               input-align="right"
-              placeholder="请输入配偶姓名"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsNm"
               error-message-align="right"
@@ -229,7 +229,7 @@
               :disabled="!isView"
               label="配偶证件号码："
               input-align="right"
-              placeholder="请输入配偶证件号码"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCrdtNo"
               error-message-align="right"
@@ -244,7 +244,7 @@
               :disabled="!isView"
               label="配偶联系电话："
               input-align="right"
-              placeholder="请输入配偶联系电话"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCtcTel"
               error-message-align="right"
@@ -300,7 +300,7 @@
         />
       </van-action-sheet>
       <!-- 图片选择方式 -->
-      <van-action-sheet v-model="show3" :actions="actions" @select="onSelect" />
+      <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -608,16 +608,14 @@ export default {
     subMit() {
       this.subLoading = true;
       setGuaranteeInfo(this.subData).then(res => {
-        try {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.subLoading = false;
-          this.$router.go(-1);
-        } catch {
-          this.subLoading = false;
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.subLoading = false;
+        this.$router.go(-1);
+      }).catch(()=>{
+        this.subLoading = false;
       });
     },
 

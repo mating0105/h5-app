@@ -152,17 +152,54 @@
                                       :value-class="dealState?'':'rightClass'" :border="false" required :is-link='!dealState'
                                       :value="form.loanInfo.loanTermDesc"
                                       @click="showPopupType('period_number')"/>
-                            <van-field name='loanProportion' :disabled="dealState" label="贷款成数：" label-width='150' :placeholder="dealState?'':'请输入'"
-                                       input-align="right" :border="false" required v-model="form.loanInfo.loanProportion" @blur.prevent="ruleMessge"
-                                       :error-message="errorMsg.loanProportion"/>
-                            <van-field name='loanRate' :disabled="dealState" label="客户利率：" label-width='150' :placeholder="dealState?'':'请输入'"
-                                       input-align="right" :border="false" required v-model="form.loanInfo.loanRate" @blur.prevent="ruleMessge"
-                                       :error-message="errorMsg.loanRate"/>
+                            <van-field 
+                            name='loanProportion' 
+                            :disabled="dealState" 
+                            label="贷款成数：" 
+                            label-width='150' 
+                            :placeholder="dealState?'':'请输入'"
+                            input-align="right" 
+                            :border="false" 
+                            required 
+                            v-model="form.loanInfo.loanProportion" 
+                            @blur.prevent="ruleMessge"
+                            :error-message="errorMsg.loanProportion" />
+                            <van-field 
+                                name='loanRate' 
+                                :disabled="dealState" 
+                                label="客户利率：" 
+                                label-width='150' 
+                                :placeholder="dealState?'':'请输入'"
+                                input-align="right" 
+                                :border="false" 
+                                required 
+                                v-model="form.loanInfo.loanRate" 
+                                @blur.prevent="ruleMessge"
+                                :error-message="errorMsg.loanRate"
+                                >
+                                    <van-cell
+                                        slot="right-icon"
+                                        style="line-height: inherit;padding: 0;">
+                                        %
+                                    </van-cell>
+                            </van-field>
                             <van-field :disabled="dealState" label="浮息利率：" label-width='150' :placeholder="dealState?'':'请输入'" input-align="right"
-                                       :border="false" v-model="form.loanInfo.floatRate"/>
+                                       :border="false" v-model="form.loanInfo.floatRate">
+                                        <van-cell
+                                            slot="right-icon"
+                                            style="line-height: inherit;padding: 0;">
+                                            %
+                                        </van-cell>
+                                    </van-field>
                             <van-field name='companyChargeRate' :disabled="dealState" label="公司收费利率：" label-width='150' :placeholder="dealState?'':'请输入'"
                                        input-align="right" :border="false" required v-model="form.loanInfo.companyChargeRate" @blur.prevent="ruleMessge"
-                                       :error-message="errorMsg.companyChargeRate"/>
+                                       :error-message="errorMsg.companyChargeRate">
+                                        <van-cell
+                                            slot="right-icon"
+                                            style="line-height: inherit;padding: 0;">
+                                            %
+                                        </van-cell>
+                            </van-field>
                             <van-field name='premiumPrice' :disabled="dealState" label="保费金额（元）：" :placeholder="dealState?'':'请输入'" label-width='150'
                                        input-align="right" :border="false" v-model="form.loanInfo.premiumPrice" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.premiumPrice"/>
@@ -648,7 +685,7 @@
               item.carSpecificationsDesc = item.carSpecifications?this.returnText('vehicle_specifications', Number(item.carSpecifications)):null;
               item.carSourceDesc = this.returnText('CAR_SOURCE', item.carSource);
               item.carTypeDesc = (item.carType&&item.carType2)?this.returnText('car_type', item.carType) + '-' + this.returnText('car_type2', item.carType2):null;
-              item.brandModel = item.carBrand ? item.carBrand : '' + ' ' + item.carSeries ? item.carSeries : '' + ' ' + item.carModel ? item.carModel : '';
+              item.brandModel = item.carBrand?(item.carBrand+ ' ' +  item.carSeries + ' ' + item.carModel):'';
             })
             this.getProjectInfo(data.data.borrowerInfo.projectId);
             // this.listLoading=false;
