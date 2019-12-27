@@ -17,30 +17,32 @@
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button" v-for="(list,index) in houseList" :key="index">
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <section>
-              <van-cell title="是否有房产:" :value="list.isHasHouse == '1'?'有房产':'没有房产'" />
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <van-cell title="房产所有人:"  :value="list.ownerProperty"/>
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <div class="van-cell">
-                <div class="van-cell__title">房产面积(m<sup>2</sup>)：</div>
-                <div class="van-cell__value">{{ list.houseArea }}</div>
-              </div>
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <van-cell title="房产所在地:"  :value="list.provCityZon"/>
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <van-cell title="详细地址:"  :value="list.specificAddress"/>
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <van-cell title="房产性质:"  :value="list.houseTypeDesc"/>
-            </section>
-            <section v-if="list.isHasHouse == '1'">
-              <van-cell title="房产区域:"  :value="list.houseZonDesc"/>
-            </section>
+            <div @click="seeDetails(list)">
+              <section>
+                <van-cell title="是否有房产:" :value="list.isHasHouse == '1'?'有房产':'没有房产'" />
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <van-cell title="房产所有人:"  :value="list.ownerProperty"/>
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <div class="van-cell">
+                  <div class="van-cell__title">房产面积(m<sup>2</sup>)：</div>
+                  <div class="van-cell__value">{{ list.houseArea }}</div>
+                </div>
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <van-cell title="房产所在地:"  :value="list.provCityZon"/>
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <van-cell title="详细地址:"  :value="list.specificAddress"/>
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <van-cell title="房产性质:"  :value="list.houseTypeDesc"/>
+              </section>
+              <section v-if="list.isHasHouse == '1'">
+                <van-cell title="房产区域:"  :value="list.houseZonDesc"/>
+              </section>
+            </div>
             <span slot="right">
               <van-button
                 type="warning"
@@ -117,7 +119,7 @@ export default {
       return name;
     },
     pathHouse() {
-      this.$router.push({ path: '/addHouseUser', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addHouseUser', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -137,7 +139,11 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseUser', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addHouseUser', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addHouseUser', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {

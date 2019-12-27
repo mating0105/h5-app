@@ -15,7 +15,7 @@
           :key="index"
         >
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <div class="xh-form-body">
+            <div class="xh-form-body" @click="seeDetails(i)">
               <section>
                 <van-cell title="担保人姓名：" :value="i.cuGuaranteeName" />
               </section>
@@ -109,7 +109,7 @@ export default {
       return name;
     },
     pullUrl() {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -132,25 +132,22 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 0 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
       deleteGuaranteeIncome({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },

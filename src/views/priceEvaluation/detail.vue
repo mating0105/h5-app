@@ -43,7 +43,7 @@
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice"
+            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice || Boolean(isError)"
                         @click="save"
             >保存
             </van-button>
@@ -191,6 +191,9 @@
             params.evaluatingPrice = this.carData.evaluatingPrice
           } else {
             params.salePrice = this.carData.salePrice
+          }
+          if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
+            return
           }
           const {data} = await checkAssessmentCar(params)
           this.isError = data

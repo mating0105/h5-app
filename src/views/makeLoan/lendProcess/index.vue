@@ -199,7 +199,7 @@
                                     :disabled="dealState"
                                     label="收款人账号："
                                     :placeholder="dealState?'':'请输入'"
-                                    label-width='150'
+                                    label-width='110'
                                     input-align="right"
                                     :border="false"
                                     required
@@ -749,7 +749,6 @@
             }
           }
         }
-        console.log(num,'num')
         if (num !== 0) {
           return;
         }

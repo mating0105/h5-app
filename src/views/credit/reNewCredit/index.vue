@@ -100,6 +100,7 @@
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
+                        :disabled="Boolean(errorMsg.intentionPrice)"
                         class="xh-btn"
             >下一步
             </van-button>
@@ -541,8 +542,8 @@
        * 贷款金额与销售价
        */
       checkPrice () {
-        const investigateBankName = this.dataList.investigateBankName;
-        const intentionPrice = this.dataList.intentionPrice;
+        const investigateBankName = this.dataList.investigateBankName || '';
+        const intentionPrice = this.dataList.intentionPrice || 0;
         let price = 0
         const carInfos = this.dataList.carInfos
         this.errorMsg.intentionPrice = ''
@@ -606,4 +607,7 @@
         width: 9rem;
     }
 
+    .labelClass {
+        left: 1.33333rem;
+    }
 </style>

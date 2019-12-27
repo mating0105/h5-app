@@ -17,27 +17,29 @@
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button" v-for="(i,index) in houseList" :key="index">
           <van-swipe-cell :right-width="130" :disabled="!isView">
-            <section>
-              <van-cell title="担保人姓名：" :value="i.customerName" />
-            </section>
-            <section>
-              <van-cell title="证件号码：" :value="i.certificateNum" />
-            </section>
-            <section>
-              <van-cell title="是否共债人：" :value="i.isBondsDesc" />
-            </section>
-            <section>
-              <van-cell title="与客户关系：" :value="i.relationCusDesc" />
-            </section>
-            <section>
-              <van-cell title="担保人联系电话：" :value="i.contactPhone" />
-            </section>
-            <section>
-              <van-cell title="婚姻状况：" :value="i.marriageDesc" />
-            </section>
-            <section>
-              <van-cell title="户籍地址：" :value="i.pProvCityZon" />
-            </section>
+            <div @click="seeDetails(i)">
+              <section>
+                <van-cell title="担保人姓名：" :value="i.customerName" />
+              </section>
+              <section>
+                <van-cell title="证件号码：" :value="i.certificateNum" />
+              </section>
+              <section>
+                <van-cell title="是否共债人：" :value="i.isBondsDesc" />
+              </section>
+              <section>
+                <van-cell title="与客户关系：" :value="i.relationCusDesc" />
+              </section>
+              <section>
+                <van-cell title="担保人联系电话：" :value="i.contactPhone" />
+              </section>
+              <section>
+                <van-cell title="婚姻状况：" :value="i.marriageDesc" />
+              </section>
+              <section>
+                <van-cell title="户籍地址：" :value="i.pProvCityZon" />
+              </section>
+            </div>
             <span slot="right">
               <van-button
                 type="warning"
@@ -140,6 +142,10 @@ export default {
     // 修改
     editList(rows) {
       this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addGuarantor', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
