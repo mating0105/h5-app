@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="loading">
+  <ViewPage :loading="loading" class="xh-creat">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
@@ -68,13 +68,13 @@
         <van-cell-group :border="false">
           <van-cell title="性别" :value="customerData.sex == 1?'男':(customerData.sex == 2?'女':'')" />
         </van-cell-group>
-        <van-cell-group :border="false" v-show="params.credit">
+        <van-cell-group :border="false">
           <van-cell title="出生日期" :value="customerData.birthday" />
         </van-cell-group>
         <van-cell-group :border="false">
           <van-cell title="年龄" :value="customerData.age" />
         </van-cell-group>
-        <van-cell-group :border="false" v-show="params.credit">
+        <van-cell-group :border="false" v-show="!params.credit">
           <van-cell
             title="民族"
             required
@@ -100,7 +100,7 @@
             :error-message="errorMsg.familyAddress"
           />
         </van-cell-group>
-        <van-cell-group :border="false" v-show="params.credit">
+        <van-cell-group :border="false" v-show="!params.credit">
           <van-field
             v-model="customerData.signOrg"
             required
@@ -342,9 +342,11 @@ export default {
       switch (this.timeType) {
         case "jrnlDateStart":
           this.customerData.startDate = time;
+          this.errorMsg.startDate = '';
           break;
         case "jrnlDateEnd":
           this.customerData.endDate = time;
+          this.errorMsg.endDate = '';
           break;
       }
       this.show1 = false;
@@ -360,6 +362,7 @@ export default {
     getFamily(id, label) {
       this.customerData.nation = label;
       this.show2 = false;
+      this.errorMsg.nation = "";
     },
     //通过身份证查性别和出生年月、年龄
     // getIdcard(e) {
@@ -396,6 +399,7 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
+      console.log(this.fieldName);
       this.errorMsg[this.fieldName] = "";
     },
     cancel() {},
@@ -588,5 +592,8 @@ export default {
 .xh-notice {
   color: #c4252a;
   padding: 0 20px;
+}
+.xh-creat .labelClass{
+  left: calc(100% + 1.33333rem);
 }
 </style>

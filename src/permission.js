@@ -4,8 +4,8 @@ import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 const loginForm = {
-  username: "sc0164",
-  password: "123"
+  username: "18349309486",
+  password: "123456"
 }
 
 
