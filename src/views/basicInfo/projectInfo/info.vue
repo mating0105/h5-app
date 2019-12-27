@@ -1813,7 +1813,11 @@ export default {
     }
   },
   mounted() {
-    this.params = this.$route.query;
+    if(this.$route.query.info) {
+      this.params = JSON.parse(this.$route.query.info);
+    } else {
+      this.params = this.$route.query;
+    }
     this.isView = this.params.isView == 0;
     let datas = JSON.parse(sessionStorage.getItem("pro"));
     if (!datas) {
