@@ -14,6 +14,8 @@
 <script>
 import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
+import {Toast} from 'vant'
+Vue.use(Toast)
 
 export default {
   components: {

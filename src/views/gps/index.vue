@@ -52,9 +52,15 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
+<<<<<<< HEAD
 import Cookies from "js-cookie";
 import { Row, Col, Icon, Cell, Button, List, Search } from "vant";
 const Components = [Row, Col, Icon, Cell, Button, List, Search];
+=======
+import Cookies from 'js-cookie'
+import { Row, Col, Icon, Cell, Button, List, Search, Toast } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast];
+>>>>>>> dda7327df079497952295405cade7e35c48d69f9
 
 Components.forEach(item => {
   Vue.use(item);

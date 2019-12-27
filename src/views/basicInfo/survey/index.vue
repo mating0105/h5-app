@@ -291,7 +291,7 @@
       />
     </van-action-sheet>
     <!-- 图片选择方式 -->
-    <van-action-sheet v-model="show3" :actions="actions" @select="onSelect" />
+    <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
 
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
