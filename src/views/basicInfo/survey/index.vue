@@ -89,7 +89,7 @@
                 v-model="ruleForm.houseReport"
                 :required="isView"
                 label="借款人信息及房产报告："
-                placeholder="自动生成,无需填写"
+                :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
                 type="textarea"
               input-align="right"
@@ -105,7 +105,7 @@
                 v-model="ruleForm.responseReport"
                 :required="isView"
                 label="借款人收入负债报告："
-                placeholder="自动生成,无需填写"
+                :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
                 type="textarea"
               input-align="right"
@@ -121,7 +121,7 @@
                 v-model="ruleForm.gnrHsptyAndIncmRpt"
                 :required="isView"
                 label="担保人房产及收入报告："
-                placeholder="自动生成,无需填写"
+                :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
               input-align="right"
                 type="textarea"
@@ -138,7 +138,7 @@
               v-model="ruleForm.inveInfo"
               :required="isView"
               label="调查意见情况："
-              placeholder="请输入意见情况"
+                :placeholder="isView?'请填写':''"
               type="textarea"
               rows="1"
               autosize
@@ -154,7 +154,7 @@
               v-model="ruleForm.infoDetail"
               :required="isView"
               label="差资料明细："
-              placeholder="请输入差资料明细"
+                :placeholder="isView?'请填写':''"
               type="textarea"
               rows="1"
               :border="false"
@@ -261,7 +261,7 @@
               label="银行卡号："
               :disabled="!isView"
               :right-icon="!isView?'':'photograph'"
-              placeholder="请输入卡号"
+                :placeholder="isView?'请填写':''"
               class="xh-right-icon"
               @click-right-icon="OCRScan"
             />
@@ -669,7 +669,7 @@ export default {
             message: res.msg
           });
           this.subDisabled = false;
-          this.loadData();
+          this.$router.go(-1);
         })
         .catch(() => {
           this.subDisabled = false;

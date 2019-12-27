@@ -371,7 +371,7 @@ export default {
           key: 11,
           icon: "icon-filed.png",
           url: "/proDocument",
-          show: 1
+          show: 0
         }
       ],
       params: {},
@@ -638,7 +638,7 @@ export default {
     // 保存风控
     setWindControl () {
       for(var i in this.windControl) {
-        if(this.windControl[i] == '') {
+        if(this.windControl[i] == '' || this.windControl[i] == undefined || this.windControl[i] == null) {
           this.$toast('带 * 必须填写完整, 且填写无误');
           this.dLoading = false;
           return

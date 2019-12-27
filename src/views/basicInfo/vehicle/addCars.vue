@@ -22,28 +22,21 @@
             :disabled="!isView"
             label="车架号："
             input-align="right"
-            placeholder="请输入或扫描"
+            :placeholder="isView?'请填写或扫描':''"
             :right-icon="isView?'scan':''"
             @click-right-icon="OCRScan"
             class="xh-right-icon"
           />
         </section>
         <section>
-          <van-cell 
-            :required="isView" 
-            title="车牌号:"
-            label-class="labelClass"
-            :value-class="formData.carNumber?'':'xh-value-none'"
-            @blur.prevent="ruleMessge"
-            :label="errorMsg.carNumber"
-          >
+          <van-cell :required="isView" title="车牌号:" :border="false" @blur.prevent="ruleMessge">
             <licensePlateNum
               v-model="formData.carNumber"
               @licensePlateNumChange="licensePlateNumChange"
               type="carNumber"
-              v-if="isView"
+              :isEdit="isView"
             ></licensePlateNum>
-            <div v-else>{{ formData.carNumber }}</div>
+            <div class="van-cell__label" style="color: #ee0a24;">{{ errorMsg.carNumber }}</div>
           </van-cell>
         </section>
 
@@ -54,7 +47,7 @@
             :disabled="!isView"
             label="车龄(年)："
             input-align="right"
-            placeholder="请输入车龄"
+            :placeholder="isView?'请填写':''"
           />
         </section>
 
@@ -80,7 +73,7 @@
             :disabled="!isView"
             label="车辆价值(万元)："
             input-align="right"
-            placeholder="请输入车辆价值"
+            :placeholder="isView?'请填写':''"
           />
         </section>
 
@@ -185,10 +178,10 @@ export default {
       },
       columns: [], //待选择列表
       errorMsg: {
-        carAge: '',
-        carNumber: '',
-        carId:  '',
-        buyType:  '',
+        carAge: "",
+        carNumber: "",
+        carId: "",
+        buyType: ""
         // carValue: '',
         // vim: ''
       },
@@ -199,7 +192,7 @@ export default {
       pickerTitle: "", //下拉列表title
       addressShow: false, // 城市下拉选择器显示
 
-      dLoading: false, //提交loading
+      dLoading: false //提交loading
     };
   },
   methods: {
@@ -263,27 +256,31 @@ export default {
       }
       this.dLoading = true;
       if (this.params.id) {
-        editCarsInfo(this.formData).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
+        editCarsInfo(this.formData)
+          .then(res => {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
+            this.dLoading = false;
+          })
+          .catch(() => {
+            this.dLoading = false;
           });
-          this.$router.go(-1);
-          this.dLoading = false;
-        }).catch(()=> {
-          this.dLoading = false;
-        });
       } else {
-        setCarsfo(this.formData).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
+        setCarsfo(this.formData)
+          .then(res => {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.$router.go(-1);
+            this.dLoading = false;
+          })
+          .catch(() => {
+            this.dLoading = false;
           });
-          this.$router.go(-1);
-          this.dLoading = false;
-        }).catch(()=> {
-          this.dLoading = false;
-        });
       }
     },
     // 车辆品牌型号
@@ -304,9 +301,9 @@ export default {
     },
     // OCR识别车架号
     OCRScan() {
-      this.$bridge.callHandler('vinOCR', '', (res) => {
-        this.$set(this.formData, 'vim', res.VIN || '');
-      })
+      this.$bridge.callHandler("vinOCR", "", res => {
+        this.$set(this.formData, "vim", res.VIN || "");
+      });
     }
   },
   mounted() {
