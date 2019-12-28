@@ -1,6 +1,7 @@
 
 <template>
   <ViewPage>
+    <div style="padding:0 10px;word-wrap: break-word;">{{url}}</div>
     <iframe
       id="iframepage"
       :src="url"
