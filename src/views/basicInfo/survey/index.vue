@@ -254,13 +254,13 @@
               :label="errorMsg.jrnlDateEnd"
             />
             <van-field
-              v-model="ruleForm.cardNumber"
+              v-model="ruleForm.jrnlCardno"
               clearable
               :border="false"
               type="number"
               :required="bankWaterFlag"
               input-align="right"
-              label="银行卡号："
+              label="流水卡号："
               :disabled="!isView"
               :right-icon="!isView?'':'photograph'"
               :placeholder="isView?'请填写':''"
@@ -498,7 +498,7 @@ export default {
     onSelect(rows) {
       this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
         if(this.bankNum == 1) {
-          this.$set(this.ruleForm, "cardNumber", data.BANK_NUM);
+          this.$set(this.ruleForm, "jrnlCardno", data.BANK_NUM);
         } else {
           this.$set(this.ruleForm, "paymentCarNum", data.BANK_NUM);
         }

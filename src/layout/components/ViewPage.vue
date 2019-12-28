@@ -4,7 +4,8 @@
             <NavBar v-if='!headerShow' :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass' :rightMenuList="rightMenuList" :goPage='goPage'></NavBar>
             <slot name="head"></slot>
         </div>
-        <div class="wrapper" ref="wrapper" :class="wrapperClass">
+        <!-- <div class="wrapper" ref="wrapper" :class="wrapperClass"> -->
+        <div class="wrapper" ref="wrapper" :class="[wrapperClass,{'margin-top-1': scroll}]">
             <div :class="{'content': margin}">
                 <slot></slot>
             </div>
@@ -97,6 +98,10 @@ import { log } from 'util';
 
         > .content {
             margin: 1rem;
+        }
+
+        &.margin-top-1 {
+            margin-top: 1rem;
         }
     }
     .wrapperClass{

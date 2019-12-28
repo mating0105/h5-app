@@ -4,45 +4,49 @@
     iconClass="ellipsis"
     :rightMenuList="cuCreditStatus"
     :backFn="closeNativeWebView"
+    :scroll="true"
   >
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      :error.sync="error"
-      error-text="请求失败，点击重新加载"
-      @load="onLoad"
-    >
-      <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
-        <Card class="xh-top-10" :bodyPadding="true">
-          <template v-slot:header>
-            <section class="xh-plus">
-              <van-cell :title="item.projectNo" :value="item.gpsname" icon="notes-o"></van-cell>
-            </section>
-          </template>
-          <van-row>
-            <van-col span="24">客户名称：{{item.customerName}}</van-col>
-            <van-col span="24" class="xh-top-10">身份证：{{item.idcard}}</van-col>
-            <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>
-          </van-row>
-          <template v-slot:footer>
-            <div style="text-align:right;" v-for="btn in item.pgslist">
-              <van-button
-                plain
-                type="danger"
-                class="xh-radius"
-                style="border-radius: 6px;"
-                v-show="btn"
-                @click="gpsUrl(btn,item)"
-              >{{btn}}</van-button>
-            </div>
-          </template>
-        </Card>
-      </div>
-    </van-list>
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-list
+        style="min-height: 80vh"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
+          <Card class="xh-top-10" :bodyPadding="true">
+            <template v-slot:header>
+              <section class="xh-plus">
+                <van-cell :title="item.projectNo" :value="item.gpsname" icon="notes-o"></van-cell>
+              </section>
+            </template>
+            <van-row>
+              <van-col span="24">客户名称：{{item.customerName}}</van-col>
+              <van-col span="24" class="xh-top-10">身份证：{{item.idcard}}</van-col>
+              <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>
+            </van-row>
+            <template v-slot:footer>
+              <div style="text-align:right;" v-for="btn in item.pgslist">
+                <van-button
+                  plain
+                  type="danger"
+                  class="xh-radius"
+                  style="border-radius: 6px;"
+                  v-show="btn"
+                  @click="gpsUrl(btn,item)"
+                >{{btn}}</van-button>
+              </div>
+            </template>
+          </Card>
+        </div>
+      </van-list>
+    </van-pull-refresh>
   </ViewPage>
 </template>
 
@@ -52,9 +56,9 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
-import Cookies from 'js-cookie'
-import { Row, Col, Icon, Cell, Button, List, Search, Toast } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast];
+import Cookies from "js-cookie";
+import { Row, Col, Icon, Cell, Button, List, Search, Toast,PullRefresh } from "vant";
+const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast,PullRefresh];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -75,7 +79,8 @@ export default {
         pageSize: 10
       },
       GPS_URL: "http://dev.wwvas.com:10001/#/",
-      accout: "18349309486"
+      accout: "",
+      isLoading: false
     };
   },
   computed: {
@@ -84,7 +89,9 @@ export default {
       wordbook: state => state.user.wordbook
     }),
     cuCreditStatus() {
-      return [{ label: "全部", value: "" }, ...this.wordbook.WW_GPS_IS_DONE] || [];
+      return (
+        [{ label: "全部", value: "" }, ...this.wordbook.WW_GPS_IS_DONE] || []
+      );
     }
   },
   methods: {
@@ -95,7 +102,7 @@ export default {
       this.onLoad();
     },
     onLoad() {
-      this.loading = true;
+      this.loading = !this.isLoading;
       gpsList(this.params).then(res => {
         if (res.code == 200) {
           setTimeout(() => {
@@ -174,6 +181,7 @@ export default {
             });
             // 加载状态结束
             this.loading = false;
+            this.isLoading = false;
             this.params.pageIndex++;
             // 数据全部加载完成
             if (this.list.length == res.data.totalCount) {
@@ -192,12 +200,12 @@ export default {
       console.log(item, 455555);
       let url = "";
       let insurance;
-      if(item.thiefRescue != null && item.thiefRescue != '2'){
-        insurance = '1';
-      }else{
-        insurance = '0';
+      if (item.thiefRescue != null && item.thiefRescue != "2") {
+        insurance = "1";
+      } else {
+        insurance = "0";
       }
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=13632659231&capital=${item.capital}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}`;
       switch (name) {
         case "申请安装":
           let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
@@ -235,6 +243,19 @@ export default {
       this.params.pageIndex = 1;
       this.params.status = item.value;
       this.onLoad();
+    },
+    //下拉刷新
+    onRefresh() {
+      this.list = [];
+      this.params.pageIndex = 1;
+      if (this.finished) {
+        this.finished = false;
+      } else {
+        this.onLoad();
+      }
+      setTimeout(() => {
+        Toast.success("刷新成功");
+      }, 500);
     }
   },
   mounted() {
