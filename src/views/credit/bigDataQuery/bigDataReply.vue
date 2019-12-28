@@ -199,11 +199,10 @@
       },
       async submit () {
         try {
-          if(this.checkResult()) {
+          if(!this.checkResult()) {
             Toast.fail('未选择征信结果!')
             return
           }
-          return
           if (this.isBank) {
             if (!this.checkCar()) {
               Dialog.confirm({
