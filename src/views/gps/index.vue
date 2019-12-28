@@ -37,7 +37,7 @@
                 style="border-radius: 6px;"
                 v-show="btn"
                 @click="gpsUrl(btn,item)"
-              >{{btn}}</van-button>
+              >{{btn + accout}}</van-button>
             </div>
           </template>
         </Card>
@@ -75,7 +75,7 @@ export default {
         pageSize: 10
       },
       GPS_URL: "http://dev.wwvas.com:10001/#/",
-      accout: "18349309486"
+      accout: ""
     };
   },
   computed: {
