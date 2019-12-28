@@ -228,7 +228,6 @@
               this.$router.push('/bigDataQueryList')
             })
           }
-
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -246,6 +245,7 @@
             this.$router.push('/lendProcessList')
           })
         } catch (e) {
+          this.loading = false
           console.log(e)
         }
       }
