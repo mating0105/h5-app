@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :loading="loading" :headerShow='true' :wrapperClass="'wrapperClass'">
+    <ViewPage :loading="listloading" :headerShow='true' :wrapperClass="'wrapperClass'">
         <template v-slot:head>
             <van-tabs v-model="active" @change='changeState' swipeable>
                 <div v-for="item in tabList" :key="item.value">
