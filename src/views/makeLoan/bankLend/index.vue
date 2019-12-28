@@ -40,13 +40,13 @@
                         <van-field 
                             label="主借人还款卡号：" 
                             :border="false" 
-                            label-width='120' 
+                            label-width='130' 
                             input-align="right" 
                             :required="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'"
                             v-model="bankLoanInfo.repaymentBankCardNo" 
                             placeholder="请输入" 
                             name="repaymentBankCardNo"
-                            @blur.prevent="ruleMessge" 
+                            @blur.prevent="ruleMessge($event,null,ruleMsg)" 
                             :error-message="errorMsg.repaymentBankCardNo"
                             right-icon="scan"
                             @click-right-icon="IdcardLoading"/>
@@ -181,18 +181,6 @@ export default {
   },
   computed:{
   },
-  watch:{
-      approvalConclusionDesc(newValue,oldValue){
-          if(newValue=='通过'||newValue=='已放款'){
-              this.$set(this.errorMsg,'repaymentBankCardNo','');
-          }else{
-              if(this.errorMsg.hasOwnProperty("repaymentBankCardNo")){
-                  Vue.delete(this.errorMsg,'repaymentBankCardNo')
-              }
-          }
-      }
-
-  },
   data() {
     return {
         activeName: "1",
@@ -260,7 +248,7 @@ export default {
         errorMsg: {
             factLoanAmt:'',//实际放款金额
             advanceInstitutionDate:'',//录机时间
-            // repaymentBankCardNo:'',//主借人还款卡号
+            repaymentBankCardNo:'',//主借人还款卡号
         },
         formData:{},
         errMsg:'',
@@ -274,6 +262,16 @@ export default {
     };
   },
   methods: {
+    ruleMsg() {
+        if(this.approvalConclusionDesc=='通过'||this.approvalConclusionDesc=='已放款'){
+            this.errorMsg.repaymentBankCardNo = this.returnMsg(
+                "repaymentBankCardNo",
+                this.bankLoanInfo.repaymentBankCardNo
+            );
+        }else{
+            this.errorMsg.repaymentBankCardNo='';
+        }
+    },
     //----------导航----------------
     goPage(item){
         let queryData={
@@ -317,6 +315,9 @@ export default {
             case 'approvalConclusion':
                 this.approvalConclusion=value.value;
                 this.approvalConclusionDesc=value.label;
+                if(this.approvalConclusion=='02'||this.approvalConclusion=='04'){
+                    this.errorMsg.repaymentBankCardNo='';
+                }
                 if(this.approvalConclusion!=='10'){
                     this.bankLoanInfo.factLoanAmt='';
                     this.bankLoanInfo.factLoanDate='';

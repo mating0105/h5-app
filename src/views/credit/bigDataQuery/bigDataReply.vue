@@ -98,6 +98,9 @@
           })
         }
         return obj
+      },
+      type () {
+        return this.isBank ? 'creditResult' : 'bigDataResult'
       }
     },
     methods: {
@@ -182,10 +185,26 @@
         }
         return flag
       },
+      checkResult () {
+        let flag = true
+        if (!this.surDtlList) {
+          return
+        }
+        this.surDtlList.forEach(item => {
+          if (!item[this.type]) {
+            flag = false
+          }
+        })
+        return flag
+      },
       async submit () {
         try {
+          if(!this.checkResult()) {
+            Toast.fail('未选择征信结果!')
+            return
+          }
           if (this.isBank) {
-            if(!this.checkCar()) {
+            if (!this.checkCar()) {
               Dialog.confirm({
                 title: '提示',
                 message: '暂无二手车评估价，确定提交流程吗？'
@@ -209,13 +228,12 @@
               this.$router.push('/bigDataQueryList')
             })
           }
-
         } catch (e) {
           this.loading = false
           console.log(e)
         }
       },
-      async submitBank() {
+      async submitBank () {
         try {
           const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
           await bankReply(params)
@@ -226,7 +244,8 @@
           this.$nextTick(() => {
             this.$router.push('/lendProcessList')
           })
-        }catch (e) {
+        } catch (e) {
+          this.loading = false
           console.log(e)
         }
       }

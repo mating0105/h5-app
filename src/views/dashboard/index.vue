@@ -1,17 +1,25 @@
 <template>
     <ViewPage>
         <van-button type="default" @click="clickFn">默认按钮</van-button>
-        <van-button type="primary">主要按钮</van-button>
-        <van-button type="info">信息按钮</van-button>
-        <van-button type="warning">警告按钮</van-button>
-        <van-button type="danger">危险按钮</van-button>
-        <p>token: {{token}}</p>
-        <p>name：{{userName}}</p>
-        <p>loginName：{{loginName}}</p>
-        <p>cookieKeys:{{cookieKeys}}</p>
-        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
-        <p style="color: #21C272">{{test}}</p>
-        <input type="file">
+<!--        <van-button type="primary">主要按钮</van-button>-->
+<!--        <van-button type="info">信息按钮</van-button>-->
+<!--        <van-button type="warning">警告按钮</van-button>-->
+<!--        <van-button type="danger">危险按钮</van-button>-->
+<!--        <p>token: {{token}}</p>-->
+<!--        <p>name：{{userName}}</p>-->
+<!--        <p>loginName：{{loginName}}</p>-->
+<!--        <p>cookieKeys:{{cookieKeys}}</p>-->
+<!--        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>-->
+<!--        <p style="color: #21C272">{{test}}</p>-->
+<!--        <input type="file">-->
+        <iframe
+                id="iframepage"
+                src="http://dev.wwvas.com:10001/#/installOrderList?loanAmount=100000.00&prodqty=undefined&insurance=undefined&ownername=林顺辉&idcard=511021197206082828&mobile=13158585858&contactname=向召&contactmobile=null&vehiclecategory=2&vehicletype=乘用车&model=1&price=200000.00&showTitle=false&externalid=XM201912271820&externalcustnum=undefined&externalvehicleid=201912271923&username=18349309486"
+                frameborder="0"
+                scrolling="auto"
+                width="100%"
+                :height="heightPage"
+        ></iframe>
         <van-uploader style='margin-top: 1rem;' v-model="fileList" multiple/>
     </ViewPage>
 
