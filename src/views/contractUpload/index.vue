@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :rightMenuList="rightMenuList" :goPage="goPage" :iconClass="'ellipsis'">
+  <ViewPage :rightMenuList="rightMenuList" :goPage="goPage" :iconClass="'ellipsis'" :backFn="closeNativeWebView">
     <template v-slot:head>
       <van-search
         v-model="params.searchKey"
