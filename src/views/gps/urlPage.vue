@@ -3,7 +3,7 @@
   <ViewPage>
     <iframe
       id="iframepage"
-      :src="url.url"
+      :src="url"
       frameborder="0"
       scrolling="auto"
       width="100%"
@@ -28,7 +28,9 @@ export default {
     };
   },
   mounted() {
-    this.url = this.$route.query;
+    this.url = this.$store.state.user.gpsUrl;
+    // Toast(this.url);
+    // console.log(this.$store.state.user.gpsUrl,22222)
     this.heightPage = document.body.clientHeight - 45;
   }
 };

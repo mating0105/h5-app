@@ -128,7 +128,7 @@ export default {
     // 获取 userInfo
     getListDetails(){
       this.showTostLoading();
-      api.getListDetails({id:"2019121486"}).then(res=>{
+      api.getListDetails({id:this.$route.query.id}).then(res=>{
         res.code === 200 ? Toast.clear() : ''
         let {customerName, certificateNum, contactPhone, spsNm, spsCrdtNo, spsCtcTel} = {...res.data.projectInfo.customer};
 

@@ -121,16 +121,16 @@
               <van-cell title="银行账号" :value="payDetail.projPayInfo.payeeAccount" />
             </van-cell-group>
             <van-cell-group :border="false">
-              <van-cell title="开户银行" :value="payDetail.projPayInfo.payeeBank" />
-            </van-cell-group>
-            <van-cell-group :border="false">
               <van-cell
                 title="开户银行"
-                :value="returnText('BANK_TYPE_JYR',payDetail.projPayInfo.payeeSubBank)"
+                :value="returnText('BANK_TYPE_JYR',payDetail.projPayInfo.payeeBank)"
               />
             </van-cell-group>
             <van-cell-group :border="false">
-              <van-cell title="账户名" :value="payDetail.projPayInfo.payeeFull" />
+              <van-cell title="开户支行" :value="payDetail.projPayInfo.payeeSubBank" />
+            </van-cell-group>
+            <van-cell-group :border="false">
+              <van-cell title="账户名" :value="payDetail.projPayInfo.payeeFullName" />
             </van-cell-group>
           </div>
         </van-row>
