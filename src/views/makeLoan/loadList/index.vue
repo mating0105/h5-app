@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :loading="loading" :headerShow='true'>
+    <ViewPage :loading="loading" :headerShow='true' :wrapperClass="'wrapperClass'">
         <template v-slot:head>
             <van-tabs v-model="active" @change='changeState' swipeable>
                 <div v-for="item in tabList" :key="item.value">
@@ -7,8 +7,8 @@
                 </div>
             </van-tabs>
         </template> 
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-            <div class="wrapper" ref="wrapper" style="margin:10px;">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height:100%;">
+            <div class="wrapper" ref="wrapper" style="margin:10px;height:100%;">
                 <van-search placeholder="搜索" v-model="pageData.searchKey" input-align='left' clearable @blur.click="onSearch"/>
                 <van-list 
                 v-model="loading" 
@@ -260,5 +260,8 @@ export default {
   .van-button {
     border-radius: 0;
   }
+}
+.van-pull-refresh__track{
+    height:100%;
 }
 </style>
