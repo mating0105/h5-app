@@ -191,10 +191,16 @@ export default {
     gpsUrl(name, item) {
       console.log(item, 455555);
       let url = "";
+      let insurance;
+      if(item.thiefRescue != null && item.thiefRescue != '2'){
+        insurance = '1';
+      }else{
+        insurance = '0';
+      }
       let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}`;
       switch (name) {
         case "申请安装":
-          let param = `loanAmount=${item.loanAmount}&prodqty=${item.prodqty}&insurance=${item.insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
+          let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
           url = this.GPS_URL + "installOrderList?" + param + commonData;
           break;
         case "订单修改":
