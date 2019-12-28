@@ -67,7 +67,7 @@
               />
             </van-row>
 
-            <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52'">
+            <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'">
               <Card style="margin: 10px 0;">
                 <template slot="header">风控措施</template>
                 <van-row>
@@ -126,7 +126,7 @@
             <!-- 审批官选择做单文员 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="params.activityId == 'WF_PROJ_APPR_01_T52'"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'"
             >
               <van-cell
                 :border="false"
@@ -137,6 +137,7 @@
                 @click="acceptCode"
               />
             </van-row>
+            
             <!-- 意见 -->
             <Card style="margin: 10px 0;">
               <template v-slot:header>意见描述</template>

@@ -256,14 +256,43 @@
             <van-field
               v-model="ruleForm.cardNumber"
               clearable
+              :border="false"
+              type="number"
               :required="bankWaterFlag"
               input-align="right"
               label="银行卡号："
               :disabled="!isView"
               :right-icon="!isView?'':'photograph'"
-                :placeholder="isView?'请填写':''"
+              :placeholder="isView?'请填写':''"
               class="xh-right-icon"
-              @click-right-icon="OCRScan"
+              @click-right-icon="OCRScan(1)"
+            />
+
+            <van-field
+              v-model="ruleForm.paymentBank"
+              clearable
+              :border="false"
+              :required="bankWaterFlag"
+              input-align="right"
+              label-width="110px"
+              label="还款卡银行："
+              :disabled="!isView"
+              :placeholder="isView?'请填写':''"
+            />
+            <van-field
+              v-model="ruleForm.paymentCarNum"
+              clearable
+              type="number"
+              :border="false"
+              label-width="110px"
+              :required="bankWaterFlag"
+              input-align="right"
+              label="还款卡卡号："
+              :disabled="!isView"
+              :right-icon="!isView?'':'photograph'"
+              :placeholder="isView?'请填写':''"
+              class="xh-right-icon"
+              @click-right-icon="OCRScan(2)"
             />
           </van-cell-group>
         </van-col>
@@ -447,11 +476,14 @@ export default {
         providerName: "",
         providerPhone: "",
         responseReport: "",
-        upAccLnd: ""
+        upAccLnd: "",
+        paymentBank: "",
+        paymentCarNum: ""
       },
       addressShow: false,
       providerList: [], // 提供人
       show3: false,
+      bankNum: 1,
       actions: [
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
@@ -459,12 +491,17 @@ export default {
     };
   },
   methods: {
-    OCRScan() {
+    OCRScan(num) {
       this.show3 = true;
+      this.bankNum = num;
     },
     onSelect(rows) {
       this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
-        this.$set(this.ruleForm, "cardNumber", data.BANK_NUM);
+        if(this.bankNum == 1) {
+          this.$set(this.ruleForm, "cardNumber", data.BANK_NUM);
+        } else {
+          this.$set(this.ruleForm, "paymentCarNum", data.BANK_NUM);
+        }
         this.show3 = false;
       });
     },
