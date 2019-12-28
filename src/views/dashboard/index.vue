@@ -5,10 +5,10 @@
 <!--        <van-button type="info">信息按钮</van-button>-->
 <!--        <van-button type="warning">警告按钮</van-button>-->
 <!--        <van-button type="danger">危险按钮</van-button>-->
-<!--        <p>token: {{token}}</p>-->
-<!--        <p>name：{{userName}}</p>-->
-<!--        <p>loginName：{{loginName}}</p>-->
-<!--        <p>cookieKeys:{{cookieKeys}}</p>-->
+        <p>token: {{token}}</p>
+        <p>name：{{userName}}</p>
+        <p>loginName：{{loginName}}</p>
+        <p>cookieKeys:{{cookieKeys}}</p>
 <!--        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>-->
 <!--        <p style="color: #21C272">{{test}}</p>-->
 <!--        <input type="file">-->

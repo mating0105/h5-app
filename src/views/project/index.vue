@@ -132,12 +132,12 @@
                 :border="false"
                 title="选择做单文员"
                 title-class="xh-blue"
-                is-link
+                :is-link="isName"
                 :value="windControl.acceptPersonlDesc"
-                @click="acceptCode"
+                @click="isName?acceptCode():false"
               />
             </van-row>
-            
+
             <!-- 意见 -->
             <Card style="margin: 10px 0;">
               <template v-slot:header>意见描述</template>
@@ -406,7 +406,8 @@ export default {
         isInternetCredit: '',
         carInfos: [],
         surDtlList: []
-      }
+      },
+      isName: true, // 那个需求
     };
   },
   methods: {
@@ -421,7 +422,6 @@ export default {
       return name;
     },
     confirm(row) {
-      console.log(row);
       switch (this.typeTitle) {
         case "下一节点处理人":
           this.postFrom.processedBy = row.id;
@@ -637,7 +637,14 @@ export default {
             });
           });
         }
-        this.personlList = arr;
+        if(arr.length == 1) {
+          let obj = arr[0];
+          this.windControl.acceptPersonlDesc = obj.label;
+          this.windControl.acceptPersonl = obj.value;
+          this.isName = false;
+        } else {
+          this.personlList = arr;
+        }
       })
     },
     // 保存风控
