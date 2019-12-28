@@ -37,7 +37,7 @@
                 style="border-radius: 6px;"
                 v-show="btn"
                 @click="gpsUrl(btn,item)"
-              >{{btn + accout}}</van-button>
+              >{{btn}}</van-button>
             </div>
           </template>
         </Card>
