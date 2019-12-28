@@ -30,6 +30,7 @@ export default {
   },
   mounted() {
     this.url = this.$store.state.user.gpsUrl;
+    Toast(this.url);
     console.log(this.$store.state.user.gpsUrl,22222)
     this.heightPage = document.body.clientHeight - 45;
   }
