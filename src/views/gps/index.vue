@@ -84,7 +84,7 @@ export default {
       wordbook: state => state.user.wordbook
     }),
     cuCreditStatus() {
-      return [{ label: "全部", value: "" }, ...this.wordbook.GPS_IS_DONE] || [];
+      return [{ label: "全部", value: "" }, ...this.wordbook.WW_GPS_IS_DONE] || [];
     }
   },
   methods: {

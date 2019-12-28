@@ -138,7 +138,7 @@ const actions = {
       "credit_result", // 征信状态
       "GradeManual", //手动评级
       "risk_condition", //风控条件
-      "GPS_IS_DONE",//gps状态
+      "WW_GPS_IS_DONE",//gps状态
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {
