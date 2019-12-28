@@ -4,6 +4,7 @@
     iconClass="filter-o"
     :rightMenuList="cuCreditStatus"
     :backFn="closeNativeWebView"
+    :scroll="true"
   >
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
