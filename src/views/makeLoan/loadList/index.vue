@@ -150,6 +150,7 @@ export default {
     methods: {
         onLoad () {
             this.loading = true;
+            this.listLoading=true;
             findList(this.pageData).then(res => {
                 const {code, data, msg} = res;
                 setTimeout(() => {
@@ -158,13 +159,15 @@ export default {
                     });
                     // 加载状态结束
                     this.loading = false;
+                    this.listLoading=false;
                     this.pageData.pageIndex++;
                     // 数据全部加载完成
                     this.finished = this.listData.length === data.totalCount;
                 }, 500);
             }).catch(() => {
                 this.error = true
-                this.loading = false
+                this.loading = false;
+                this.listLoading=false;
             });
         },
         onSearch(){
