@@ -40,7 +40,7 @@
                         <van-field 
                             label="主借人还款卡号：" 
                             :border="false" 
-                            label-width='120' 
+                            label-width='130' 
                             input-align="right" 
                             :required="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'"
                             v-model="bankLoanInfo.repaymentBankCardNo" 
