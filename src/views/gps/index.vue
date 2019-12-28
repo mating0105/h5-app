@@ -197,7 +197,7 @@ export default {
       }else{
         insurance = '0';
       }
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=13632659231&capital=${item.capital}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}`;
       switch (name) {
         case "申请安装":
           let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
