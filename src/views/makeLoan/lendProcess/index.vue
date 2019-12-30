@@ -45,14 +45,14 @@
                             借款人信息
                         </template>
                         <div>
-                            <van-field name='mainBorrowerName' :disabled="dealState" label="主借人姓名：" :placeholder="dealState?'':'请输入'" :border="false"
+                            <van-field name='mainBorrowerName' disabled label="主借人姓名：" placeholder="" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerName"/>
                             <van-field
                                     name='mainBorrowerId'
-                                    :disabled="dealState"
+                                    disabled
                                     label="主借人身份证："
-                                    :placeholder="dealState?'':'请输入'"
+                                    placeholder=""
                                     :border="false"
                                     label-width='150'
                                     input-align="right"
@@ -61,9 +61,8 @@
                                     @blur.click="getIdcard"
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
-                                    :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="IdcardLoading('idCardOCR')"/>
-                            <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
+                                    />
+                            <van-field name='mainBorrowerPhone' disabled label="主借人电话：" placeholder="" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerPhone"/>
                             <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState'
