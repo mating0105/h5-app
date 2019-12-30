@@ -1,4 +1,5 @@
 <template>
+  <!-- 此页面由于产品设计不合理, 预计作废, 暂且保留 -->
   <ViewPage>
     <van-tabs v-model="activeName">
       <van-tab title="项目信息" name="projectInfo">

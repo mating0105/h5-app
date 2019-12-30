@@ -1,58 +1,59 @@
 <template>
-  <div class="projectInfo">
-
-    <Card>
-      <template v-slot:header>
-        签约人信息
-      </template>
-      <div class="userInfoBox">
-        <div class="userInfo" v-for="(item, index) in userInfo" :key="index">
-          <div>
-            <img src="../../assets/new_images/user_black.png">
-            <span class="userName">{{item.name}}</span>
-            <span class="tag">{{item.tag}}</span>
-          </div>
-          <div>
-            <img src="../../assets/new_images/idCar_black.png">
-            <span>{{item.idCard}}</span>
-          </div>
-          <div>
-            <img src="../../assets/new_images/phone_black.png">
-            <span>{{item.phone}}</span>
+  <ViewPage :loading="loading">
+    <div class="projectInfo">
+      <Card>
+        <template v-slot:header>
+          签约人信息
+        </template>
+        <div class="userInfoBox">
+          <div class="userInfo" v-for="(item, index) in userInfo" :key="index">
+            <div>
+              <img src="../../assets/new_images/user_black.png">
+              <span class="userName">{{item.name}}</span>
+              <span class="tag">{{item.tag}}</span>
+            </div>
+            <div>
+              <img src="../../assets/new_images/idCar_black.png">
+              <span>{{item.idCard}}</span>
+            </div>
+            <div>
+              <img src="../../assets/new_images/phone_black.png">
+              <span>{{item.phone}}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </Card>
+      </Card>
 
-    <Card>
-      <template v-slot:header> 合同照片 </template>
-      <div class="xh-image-box master">
-        <div class="xh-box-item">
-          <svg-icon icon-class="user" />
-          <span>{{ userInfo[0].name }}</span>
-          <span class="xh-user-tag">主借人</span>
+      <Card>
+        <template v-slot:header> 合同照片 </template>
+        <div class="xh-image-box master">
+          <div class="xh-box-item">
+            <svg-icon icon-class="user" />
+            <span>{{ userInfo[0].name }}</span>
+            <span class="xh-user-tag">主借人</span>
+          </div>
         </div>
-      </div>
-      <div class="xh-image-box">
-        <div class="xh-box-item">
-          <svg-icon icon-class="user" />
-          <span>{{ userInfo[1].name }}</span>
-          <span class="xh-user-tag">主借人配偶</span>
+        <div class="xh-image-box">
+          <div class="xh-box-item">
+            <svg-icon icon-class="user" />
+            <span>{{ userInfo[1].name }}</span>
+            <span class="xh-user-tag">主借人配偶</span>
+          </div>
         </div>
+        <imageList :dataList="dataList"></imageList>
+      </Card>
+
+      <Card style="margin-top: 10px;">
+        <template v-slot:header> 意见描述 </template>
+        <van-field v-model="remark" :border="false" type="textarea" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
+      </Card>
+
+      <!-- 提交按钮 -->
+      <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+        <van-button size="large" style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;" @click="submitRemark"> 提交 </van-button>
       </div>
-      <imageList :dataList="dataList"></imageList>
-    </Card>
-
-    <Card style="margin-top: 10px;">
-      <template v-slot:header> 意见描述 </template>
-      <van-field v-model="remark" :border="false" type="textarea" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
-    </Card>
-
-    <!-- 提交按钮 -->
-    <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
-      <van-button size="large" style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;" @click="submitRemark"> 提交 </van-button>
     </div>
-  </div>
+  </ViewPage>
 </template>
 
 <script>
@@ -95,18 +96,15 @@ export default {
       dataList:[]
     };
   },
+  mounted(){
+    console.log('routeData:',this.routeData)
+  },
   computed: {
-    customerId(){
-      return this.$route.query.customerId;
-    },
-    customerNum(){
-      return this.$route.query.customerNum;
-    },
     wordbook() {
       return this.$store.state.user.wordbook;
     },
-    projectId(){
-      return this.$route.query.projectId;
+    routeData(){
+      return this.$route.query;
     },
     documentType() {
       let obj = {};
@@ -119,17 +117,18 @@ export default {
     }
   },
   activated(){
-    this.remark = this.$route.query.remark;
+    this.remark = this.$route.query.remark || '';
     this.resetUserInfo();
     this.initImage();
     this.getListDetails();
   },
+
   methods: {
     // 获取 userInfo
     getListDetails(){
-      this.showTostLoading();
-      api.getListDetails({id:this.$route.query.id}).then(res=>{
-        res.code === 200 ? Toast.clear() : ''
+      this.loading = true;
+      api.getListDetails({id:this.routeData.projectId}).then(res=>{
+        res.code === 200 ? this.loading = false : ''
         let {customerName, certificateNum, contactPhone, spsNm, spsCrdtNo, spsCtcTel} = {...res.data.projectInfo.customer};
 
         this.userInfo[0].name = customerName;
@@ -160,8 +159,8 @@ export default {
         isRequire: true, //*是否必须
         deletable: true, //是否可以操作-上传和删除
         documentType: documentType,
-        customerNum: this.customerNum,
-        customerId: this.customerId,
+        customerNum: this.routeData.customerNum,
+        customerId: this.routeData.customerId,
         kind: "1",
         fileList: data
       });
@@ -178,24 +177,13 @@ export default {
 
     // 提交备注
     submitRemark(){
-      api.submitRemark({projectId:this.projectId, remark:this.remark}).then(res => {
+      api.submitRemark({projectId:this.routeData.projectId, remark:this.remark}).then(res => {
         if(res.msg === 'OK'){
           Notify({ type: 'success', message: '操作成功' });
         }else{
           Notify({ type: 'danger', message: '操作失败, 请重试!' });
         }
       })
-    },
-
-    // 显示 Loading
-    showTostLoading(){
-      Toast.loading({
-        message: '加载中...',
-        forbidClick: true,
-        duration: 0,
-        loadingType: 'spinner',
-        overlay: true
-      });
     },
     // 重置用户信息
     resetUserInfo(){

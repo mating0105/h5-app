@@ -133,6 +133,9 @@
               <van-cell title="账户名" :value="payDetail.projPayInfo.payeeFullName" />
             </van-cell-group>
           </div>
+          <!-- <div>
+            {{payDetail.projPayInfo}}
+          </div> -->
         </van-row>
       </card>
     </div>
