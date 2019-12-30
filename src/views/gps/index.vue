@@ -279,8 +279,8 @@ export default {
     }
   },
   mounted() {
-    // this.accout = Cookies.get("loginName");
-    this.accout = '18349309486';
+    this.accout = Cookies.get("loginName");
+    // this.accout = '18349309486';
     this.onLoad();
   }
 };
