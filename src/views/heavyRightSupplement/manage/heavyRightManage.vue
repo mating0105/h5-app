@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 20:43:52
+ * @LastEditTime : 2019-12-30 14:35:09
  -->
 
 <template>
@@ -27,7 +27,7 @@
         replace
         title="相关文档"
       ></van-tab>
-      <van-tab
+      <!-- <van-tab
         :to="{ name: 'HeavyApproval', query:{
           info:JSON.stringify({
             customerNum,
@@ -38,7 +38,7 @@
         name="record"
         replace
         title="审批记录"
-      ></van-tab>
+      ></van-tab> -->
     </van-tabs>
     <div class="heavy-right-manage-wrap">
       <router-view></router-view>

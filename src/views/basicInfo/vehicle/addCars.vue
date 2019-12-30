@@ -4,8 +4,7 @@
       <van-row class="xh-card-box xh-radius">
         <section>
           <van-cell
-            name
-            :required="isView"
+            name="carModel"
             :is-link="isView"
             title="车辆品牌型号："
             :value="formData.carModel"
@@ -29,7 +28,7 @@
           />
         </section>
         <section>
-          <van-cell :required="isView" title="车牌号:" :border="false" @blur.prevent="ruleMessge">
+          <van-cell name="carNumber" :required="isView" title="车牌号:" :border="false" @blur.prevent="ruleMessge">
             <licensePlateNum
               v-model="formData.carNumber"
               @licensePlateNumChange="licensePlateNumChange"
@@ -45,14 +44,17 @@
             name="carAge"
             v-model="formData.carAge"
             :disabled="!isView"
-            label="车龄(年)："
+            label="车龄："
             input-align="right"
             :placeholder="isView?'请填写':''"
-          />
+          >
+            <div slot="button" v-if="formData.carAge">年</div>
+          </van-field>
         </section>
 
         <section>
           <van-cell
+            name="buyType"
             title="购买方式："
             :required="isView"
             :is-link="isView"
@@ -71,10 +73,15 @@
             label-width="120px"
             v-model="formData.carValue"
             :disabled="!isView"
-            label="车辆价值(万元)："
+            label="车辆价值："
             input-align="right"
             :placeholder="isView?'请填写':''"
-          />
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.carValue"
+            error-message-align="right"
+          >
+            <div slot="button" v-if="formData.carValue">万元</div>
+          </van-field>
         </section>
 
         <!-- 下拉选择器 -->
@@ -181,8 +188,8 @@ export default {
         carAge: "",
         carNumber: "",
         carId: "",
-        buyType: ""
-        // carValue: '',
+        buyType: "",
+        carValue: '',
         // vim: ''
       },
 
@@ -228,6 +235,7 @@ export default {
     onConfirm(rows) {
       this.formData.buyType = rows.value;
       this.formData.buyTypeDesc = rows.label;
+      this.errorMsg.buyType = '';
       this.selectShow = false;
     },
     onCancel() {
@@ -293,10 +301,10 @@ export default {
       let code =
         carBrand.brand.id + "/" + carBrand.series.id + "/" + carBrand.model.id;
       this.formData.carId = code;
+      this.errorMsg.carModel = '';
     },
     // 返回车牌号
     licensePlateNumChange({ value, type }) {
-      console.log(value, type);
       this.errorMsg[type] = this.returnMsg(type, this.formData[type]);
     },
     // OCR识别车架号

@@ -234,19 +234,24 @@
             />
           </section>
           <section>
-            <van-field
-              v-model="projProjectInfo.addressDetail"
-              :required="isView"
-              clearable
-              name="addressDetail"
-              :disabled="!isView"
-              label="具体地址:"
-              input-align="right"
-              :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.addressDetail"
-              error-message-align="right"
-            />
+            <!-- <div class="xh-address"> -->
+              <van-field
+                v-model="projProjectInfo.addressDetail"
+                :required="isView"
+                clearable
+                name="addressDetail"
+                :disabled="!isView"
+                label="具体地址:"
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.addressDetail"
+                error-message-align="right"
+              />
+              <!-- <div class="xh-address-result">
+                <div class="xh-address-row" v-for="u in 10">{{ u }}</div>
+              </div>
+            </div> -->
           </section>
         </van-col>
       </van-row>
@@ -310,7 +315,9 @@
             <van-cell title="车架号:" :value="i.chassisNumber" />
           </section>
           <section>
-            <van-cell title="销售价(元):" :value="i.salePrice" />
+            <van-cell title="销售价:" :value="i.salePrice" >
+              <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice"> 元</div>
+            </van-cell>
           </section>
           <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
           <div v-if="i.carNature == 'old_car'">
@@ -324,7 +331,9 @@
               <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
             </section>
             <section>
-              <van-cell title="行驶里程（万公里）:" :value="i.roadHaul" />
+              <van-cell title="行驶里程:" :value="i.roadHaul" >
+                <div slot="right-icon" style="line-height: inherit;" v-if="i.roadHaul"> 公里</div>
+              </van-cell>
             </section>
             <section>
               <van-cell title="上牌日期:" :value="i.plateDate" />
@@ -333,10 +342,14 @@
           <!-- 二手车是否已评估 isAses 评估后显示-->
           <div v-if="i.isAses == '1'">
             <section>
-              <van-cell title="评估价(元):" :value="i.estimateOriginalPrice" />
+              <van-cell title="评估价:" :value="i.estimateOriginalPrice" >
+                <div slot="right-icon" style="line-height: inherit;" > 元</div>
+              </van-cell>
             </section>
             <section>
-              <van-cell title="最高送审金额(元):" :value="i.hgstAmt" />
+              <van-cell title="最高送审金额:" :value="i.hgstAmt" >
+                <div slot="right-icon" style="line-height: inherit;" v-if="i.hgstAmt"> 元</div>
+              </van-cell>
             </section>
             <section>
               <van-cell title="评估公司:" :value="i.asesInstNm" />
@@ -441,14 +454,17 @@
               name="loanAmt"
               :required="isView"
               clearable
+              label-width="100px"
               :disabled="!isView"
-              label="银行贷款金额(元):"
+              label="银行贷款金额:"
               input-align="right"
               :placeholder="isView?'请填写':''"
               :error-message="errorMsg.loanAmt"
               @blur.prevent="ruleMessge"
               error-message-align="right"
-            />
+            >
+              <div slot="button">元</div>
+            </van-field>
           </section>
           <!-- 中建投 -->
           <!-- <div v-if="projProjectInfo.businessModel==4">
@@ -491,13 +507,19 @@
           </section>
           <!-- </div> -->
           <section>
-            <van-cell title="银行费率(%):" :value="projProjectInfo.bankNewRate" />
+            <van-cell title="银行费率:" :value="projProjectInfo.bankNewRate" >
+              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.bankNewRate"> %</div>
+            </van-cell>
           </section>
           <section>
-            <van-cell title="担保费率(%):" :value="projProjectInfo.guaranteeRate" />
+            <van-cell title="担保费率:" :value="projProjectInfo.guaranteeRate" >
+              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.guaranteeRate"> %</div>
+            </van-cell>
           </section>
           <section>
-            <van-cell title="返利费率(%):" :value="projProjectInfo.rebateStandard" />
+            <van-cell title="返利费率:" :value="projProjectInfo.rebateStandard" >
+              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.rebateStandard"> %</div>
+            </van-cell>
           </section>
 
           <!-- <section v-if="projProjectInfo.isQuickadjust=='1'">
@@ -516,14 +538,15 @@
               clearable
               name="rentingAmtGps"
               :disabled="!isView"
-              label="加融金额(元):"
+              label="加融金额:"
               input-align="right"
               :required="isView?projProjectInfo.thiefRescue == 0:false"
               :placeholder="isView?'请填写(含GPS加融费用)':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
-              error-message-align="right"
-            />
+              error-message-align="right">
+                <div slot="button" v-if="projProjectInfo.rentingAmtGps">元</div>
+            </van-field>
           </section>
 
           <!-- <div
@@ -597,10 +620,12 @@
               type="number"
               clearable
               :disabled="!isView"
-              label="附加费(元):"
+              label="附加费:"
               input-align="right"
               :placeholder="isView?'请填写':''"
-            />
+            >
+              <div slot="button" v-if="projProjectInfo.surcharge">元</div>
+            </van-field>
           </section>
         </van-col>
       </van-row>
@@ -631,7 +656,8 @@
       </div>
     </van-action-sheet>
     <!-- 图片选择方式 -->
-    <van-action-sheet :close-on-click-overlay="false" v-model="show4" :actions="actions" @select="onSelect" />
+    <van-action-sheet :close-on-click-overlay="false" cancel-text="取消"
+  @cancel="show4 = false" v-model="show4" :actions="actions" @select="onSelect" />
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="show2" @getProvince="confirmSelect"></Provinces>
   </div>
@@ -1890,6 +1916,24 @@ export default {
 }
 .xh-value-none {
   display: none;
+}
+.xh-address {
+  position: relative;
+  .xh-address-result {
+    position: absolute;
+    top: 40.38px;
+    left: 0;
+    background-color: #f2f2f2;
+    width: 100%;
+    height: 150px;
+    z-index: 10;
+    border-radius: 0 0 6px 6px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .xh-address-row {
+      padding: 10px;
+    }
+  }
 }
 </style>
 

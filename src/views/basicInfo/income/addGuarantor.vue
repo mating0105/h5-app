@@ -142,13 +142,16 @@
                   type="number"
                   clearable
                   :disabled="!isView"
-                  label="月固定收入(元)："
+                  label="月固定收入："
                   input-align="right"
+                  label-width="110px"
                   :placeholder="isView?'请填写':''"
                   @blur.prevent="ruleMessge"
                   :error-message="errorMsg.personalIncome"
                   error-message-align="right"
-                />
+                >
+                  <div slot="button" v-if="form.personalIncome">元</div>
+                </van-field>
               </section>
               <section>
                 <van-cell
@@ -389,30 +392,37 @@ export default {
         case "担保人":
           this.form.cuGuaranteeName = rows.label;
           this.form.guaranteeId = rows.value;
+          this.errorMsg.guaranteeId = '';
           break;
         case "收入人":
           this.form.incomePeopleDesc = rows.label;
           this.form.incomePeople = rows.value;
+          this.errorMsg.incomePeople = '';
           break;
         case "职业状况":
           this.form.occupationalStatusDesc = rows.label;
           this.form.occupationalStatus = rows.value;
+          this.errorMsg.occupationalStatus = '';
           break;
         case "单位性质":
           this.form.unitCharDesc = rows.label;
           this.form.unitChar = rows.value;
+          this.errorMsg.unitChar = '';
           break;
         case "行业领域":
           this.form.idyDmnDesc = rows.label;
           this.form.idyDmn = rows.value;
+          this.errorMsg.idyDmn = '';
           break;
         case "月固定收入状况":
           this.form.personalIncomeStatusDesc = rows.label;
           this.form.personalIncomeStatus = rows.value;
+          this.errorMsg.personalIncomeStatus = '';
           break;
         case "收入佐证":
           this.form.incomeEvidenceDesc = rows.label;
           this.form.incomeEvidence = rows.value;
+          this.errorMsg.incomeEvidence = '';
           break;
       }
       this.selectShow = false;
