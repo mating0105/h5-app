@@ -53,8 +53,9 @@
             :error-message="errorMsg.certificateNum"
           />
         </van-cell-group>
-        <van-cell-group :border="false" v-show="params.credit">
+        <van-cell-group :border="false"  v-show="params.credit">
           <van-cell
+          class="cell-except"
             title="征信对象类型"
             required
             is-link
@@ -295,7 +296,7 @@ export default {
         signOrg: "", //身份证签发机关
         startDate: "", //起始日
         endDate: "", //截止日
-        contactPhone: "" //手机号
+        contactPhone: "" ,//手机号
       },
       sign: "" //标识点击正反面照片查看
     };
@@ -636,5 +637,8 @@ export default {
 }
 .xh-creat .labelClass {
   left: calc(100% + 1.33333rem);
+}
+.cell-except .labelClass{
+  left:0;
 }
 </style>
