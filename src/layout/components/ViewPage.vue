@@ -104,7 +104,8 @@ import { log } from 'util';
         }
     }
     .wrapperClass{
-        min-height: calc(100% - 50px);
+        height: calc(100% - 50px);
+        overflow: auto;
         >div{
             min-height: 100%;
             height: 100%;
