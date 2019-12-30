@@ -131,7 +131,7 @@
             title="请选择截止日"
             required
             is-link
-            v-model="customerData.endDate"
+            v-model="customerData.endDate == '9999-99-99' ? '长期有效': customerData.endDate"
             @click="showTime('jrnlDateEnd')"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
