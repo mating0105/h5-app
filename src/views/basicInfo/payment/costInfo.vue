@@ -121,16 +121,16 @@
               <van-cell title="银行账号" :value="payDetail.projPayInfo.payeeAccount" />
             </van-cell-group>
             <van-cell-group :border="false">
-              <van-cell title="开户银行" :value="payDetail.projPayInfo.payeeBank" />
-            </van-cell-group>
-            <van-cell-group :border="false">
               <van-cell
                 title="开户银行"
-                :value="returnText('BANK_TYPE_JYR',payDetail.projPayInfo.payeeSubBank)"
+                :value="returnText('BANK_TYPE_JYR',payDetail.projPayInfo.payeeBank)"
               />
             </van-cell-group>
             <van-cell-group :border="false">
-              <van-cell title="账户名" :value="payDetail.projPayInfo.payeeFull" />
+              <van-cell title="开户支行" :value="payDetail.projPayInfo.payeeSubBank" />
+            </van-cell-group>
+            <van-cell-group :border="false">
+              <van-cell title="账户名" :value="payDetail.projPayInfo.payeeFullName" />
             </van-cell-group>
           </div>
         </van-row>
@@ -157,7 +157,11 @@ export default {
   },
   data() {
     return {
-      payDetail: {},
+      payDetail: {
+        projProjectInfo:{},
+        projBudgetList:{},
+        projPayInfo:{}
+      },
       params: {}
     };
   },
@@ -192,7 +196,10 @@ export default {
     }
   },
   mounted() {
-    this.params = this.$route.query;
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadData();
     this.getDict();
   }

@@ -1,28 +1,26 @@
 <template>
     <ViewPage>
         <van-button type="default" @click="clickFn">默认按钮</van-button>
-        <van-button type="primary">主要按钮</van-button>
-        <van-button type="info">信息按钮</van-button>
-        <van-button type="warning">警告按钮</van-button>
-        <van-button type="danger">危险按钮</van-button>
-        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>
-        <p style="color: #21C272">{{test}}</p>
-<!--        <van-checkbox v-model="check">复选框</van-checkbox>-->
-<!--        <van-cell-group>-->
-<!--            <van-field v-model="value" placeholder="请输入用户名"/>-->
-<!--        </van-cell-group>-->
-        <!--        <van-list-->
-        <!--                v-model="loading"-->
-        <!--                :finished="finished"-->
-        <!--                finished-text="没有更多了"-->
-        <!--                @load="getList"-->
-        <!--        >-->
-        <!--            <van-cell-->
-        <!--                    v-for="item in dataList"-->
-        <!--                    :key="item.id"-->
-        <!--                    :title="item.display_time"-->
-        <!--            />-->
-        <!--        </van-list>-->
+<!--        <van-button type="primary">主要按钮</van-button>-->
+<!--        <van-button type="info">信息按钮</van-button>-->
+<!--        <van-button type="warning">警告按钮</van-button>-->
+<!--        <van-button type="danger">危险按钮</van-button>-->
+        <p>token: {{token}}</p>
+        <p>name：{{userName}}</p>
+        <p>loginName：{{loginName}}</p>
+        <p>cookieKeys:{{cookieKeys}}</p>
+<!--        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>-->
+<!--        <p style="color: #21C272">{{test}}</p>-->
+<!--        <input type="file">-->
+        <iframe
+                id="iframepage"
+                src="http://dev.wwvas.com:10001/#/installOrderList?loanAmount=100000.00&prodqty=undefined&insurance=undefined&ownername=林顺辉&idcard=511021197206082828&mobile=13158585858&contactname=向召&contactmobile=null&vehiclecategory=2&vehicletype=乘用车&model=1&price=200000.00&showTitle=false&externalid=XM201912271820&externalcustnum=undefined&externalvehicleid=201912271923&username=18349309486"
+                frameborder="0"
+                scrolling="auto"
+                width="100%"
+                :height="heightPage"
+        ></iframe>
+        <van-uploader style='margin-top: 1rem;' v-model="fileList" multiple/>
     </ViewPage>
 
 </template>
@@ -31,10 +29,12 @@
   import { mapGetters } from 'vuex'
   import ViewPage from '@/layout/components/ViewPage';
   import Vue from 'vue'
-  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast } from 'vant';
+  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader } from 'vant';
   import { getList } from '@/api/table'
+  import { getToken } from '@/utils/auth'
+  import Cookies from 'js-cookie'
 
-  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast]
+  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader]
 
   Components.forEach(item => {
     Vue.use(item)
@@ -60,7 +60,14 @@
         loading: false,
         finished: false,
         msg: 'test data',
-        test: ''
+        test: '',
+        token: getToken(),
+        userName:'',
+        loginName:'',
+        cookieKeys:{},
+        fileList: [
+          {url: 'https://img.yzcdn.cn/vant/leaf.jpg'},
+        ]
       }
     },
     methods: {
@@ -109,6 +116,9 @@
     mounted () {
       this.getAPPDate('callJsCode')
       // this.getList()
+      this.userName=Cookies.get('name');
+      this.loginName=Cookies.get('loginName');
+      this.cookieKeys=Cookies.get();
     }
   }
 </script>

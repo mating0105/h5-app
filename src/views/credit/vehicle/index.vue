@@ -1,29 +1,38 @@
 <template>
     <ViewPage :loading="loading">
         <Card>
-            <van-cell :required="isdetail == 0?true:false" :border="false" :is-link="isdetail == 0?true:false" title="车辆类别："
+            <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
+                      :is-link="isdetail == 0?true:false" title="车辆类别："
                       :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
                       @click="loadList(9, '车辆类别', carFrom.carType)"/>
-            <van-cell title="车辆性质：" :border="false" required>
-                <radio v-model="carFrom.carNature">
+            <van-cell label-class='labelClass' :label="errorMsg.carNature" title="车辆性质：" :border="false" required>
+                <radio v-model="carFrom.carNature" @change="changeNature">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('car_nature')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
-            <van-cell title="车辆来源：" :border="false" required>
+            <van-cell label-class='labelClass' :label="errorMsg.carSource" title="车辆来源：" :border="false" required>
                 <radio v-model="carFrom.carSource">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('CAR_SOURCE')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
-            <van-cell :required="isdetail == 0?true:false" :border="false" :is-link="isdetail == 0?true:false" title="车辆规格："
+            <van-cell label-class='labelClass' :label="errorMsg.carSpecifications" :required="isdetail == 0?true:false"
+                      :border="false" :is-link="isdetail == 0?true:false" title="车辆规格："
                       :value="returnText(carFrom.carSpecifications, 'vehicle_specifications')" @click="loadList(12, '车辆规格', carFrom.carSpecifications)"/>
             <van-field v-if="carFrom.carNature === 'old_car'" :border="false" v-model="carFrom.chassisNumber" required clearable input-align="right"
                        label="车架号："
                        right-icon="scan"
+                       name="chassisNumber"
+                       @blur.prevent="ruleMessge"
+                       :error-message="errorMsg.chassisNumber"
                        placeholder="请输入" @click-right-icon="discern"/>
-            <van-cell title="车辆品牌型号：" @click="selectBrand" :border="false" required is-link
+            <van-cell label-class='labelClass' :label="errorMsg.brndNm" title="车辆品牌型号：" @click="selectBrand" :border="false" required
+                      is-link
                       :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
             <van-field v-if="carFrom.carNature === 'new_car'" :border="false" v-model="carFrom.salePrice" required clearable input-align="right"
                        label="销售价(元)："
+                       name="salePrice"
+                       @blur.prevent="ruleMessge"
+                       :error-message="errorMsg.salePrice"
                        placeholder="请输入"/>
             <template v-else-if="carFrom.carNature === 'old_car'">
                 <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
@@ -88,6 +97,7 @@
   import MapSheet from "@/components/provinces/index";
   import dayjs from 'dayjs'
   import _ from 'lodash'
+  import formValidator from '@/mixins/formValidator'
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker]
   Components.forEach(item => {
@@ -95,6 +105,7 @@
   })
   export default {
     name: "vehicle",
+    mixins: [formValidator],
     components: {
       ViewPage,
       Card,
@@ -146,55 +157,15 @@
         isNum: '',
         isVal: '',
         currentDate: new Date(),
-        rules: {
-          carType: [
-            {
-              required: true,
-              msg: '车辆类别未选'
-            }
-          ],
-          carType2: [
-            {
-              required: true,
-              msg: '车辆类别子项未选'
-            }
-          ],
-          carNature: [
-            {
-              required: true,
-              msg: '车辆性质未选'
-            }
-          ],
-          chassisNumber: [
-            {
-              required: true,
-              msg: '车辆车架号未填'
-            }
-          ],
-          carSource: [
-            {
-              required: true,
-              msg: '车辆来源未选'
-            }
-          ],
-          carSpecifications: [
-            {
-              required: true,
-              msg: '车辆规格未选'
-            }
-          ],
-          brndNm: [
-            {
-              required: true,
-              msg: '车辆品牌未选'
-            }
-          ],
-          salePrice: [
-            {
-              required: true,
-              msg: '车辆价格未填'
-            }
-          ]
+        errorMsg: {
+          carType: '',//车辆类别
+          carType2: '',//车辆类别子项
+          carNature: '',//车辆性质未选
+          chassisNumber: '',//车辆车架号
+          carSource: '',//车辆来源
+          carSpecifications: '',//车辆规格
+          brndNm: '',//车辆品牌
+          salePrice: '',//车辆价格
         }
       }
     },
@@ -238,6 +209,7 @@
         this.carFrom.carSeries = carBrand.series.name
         this.carFrom.carModelId = carBrand.model.id
         this.carFrom.carModel = carBrand.model.name
+        this.errorMsg.brndNm = ''
       },
       async getDocumentByType (documentType) {
         try {
@@ -312,12 +284,15 @@
         switch (this.isNum) {
           case 9:
             this.carFrom.carType = item.key;
+            this.errorMsg.carType = ''
             break;
           case 12:
             this.carFrom.carSpecifications = item.key;
+            this.errorMsg.carSpecifications = ''
             break;
           case 13:
             this.carFrom.carType2 = item.key;
+            this.errorMsg.carType2 = ''
             break;
           default:
             return;
@@ -351,29 +326,14 @@
         return [...arguments].map(item => item).join('')
       },
       verifyForm () {
-        let flag = true
-        const carFrom = {...this.carFrom}
-        const rules = _.cloneDeep(this.rules)
-        if(carFrom.carNature === 'new_car') {
-          delete rules.chassisNumber
-        }
-        for (let key in this.rules) {
-          if (rules.hasOwnProperty(key)) {
-            try {
-              rules[key].forEach(item => {
-                if (item.required) {
-                  if (!carFrom[key]) {
-                    this.$toast(item.msg || '提示');
-                    flag = false
-                    throw Error();
-                  }
-                }
-              })
-            } catch (e) {
-            }
+        let num = 0;
+        for (let item in this.errorMsg) {
+          this.errorMsg[item] = this.returnMsg(item, this.carFrom[item]);
+          if (this.errorMsg[item]) {
+            num++;
           }
         }
-        return flag
+        return num === 0
       },
       /**
        * 保存车辆
@@ -403,8 +363,17 @@
        */
       discern () {
         this.$bridge.callHandler('vinOCR', '', (res) => {
-          this.carFrom.chassisNumber = res.vin || ''
+          this.carFrom.chassisNumber = res.VIN || ''
         })
+      },
+      changeNature (val) {
+        if (val === 'new_car') {
+          this.rulesForm("order-credit-car-xh")
+          delete this.errorMsg.chassisNumber
+        } else {
+          this.rulesForm("order-credit-old-car-xh")
+          this.errorMsg.chassisNumber = ''
+        }
       }
     },
     mounted () {
@@ -412,6 +381,7 @@
       if (this.$route.query) {
         this.initData()
       }
+      this.rulesForm("order-credit-car-xh");//新车
       // this.loading = true
     }
   }
@@ -421,5 +391,9 @@
     /* 字体边框背景颜色 */
     .zh-main {
         color: rgb(196, 37, 42);
+    }
+
+    .labelClass {
+        left: calc(100% + 1.33333rem);
     }
 </style>

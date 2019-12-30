@@ -18,56 +18,48 @@
               </div>
             </section>
             <section>
-              <van-field
-                v-model="projProjectInfo.customerName"
-                clearable
-                label="客户姓名:"
-                input-align="right"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
-                :error-message="errorMsg.customerName"
-              />
+              <div class="van-cell">
+                <div class="van-cell__title van-field__label">客户姓名:</div>
+                <div class="van-cell__value">{{ projProjectInfo.customerName }}</div>
+              </div>
             </section>
             <section>
-              <van-field
-                v-model="projProjectInfo.contactPhone"
-                type="number"
-                clearable
-                label="联系电话:"
-                input-align="right"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
-                @blur.prevent="()=>{ return errorMsg.contactPhone = rules('phone',$event,this)}"
-                :error-message="errorMsg.contactPhone"
-              />
+              <div class="van-cell">
+                <div class="van-cell__title van-field__label">联系电话:</div>
+                <div class="van-cell__value">{{ projProjectInfo.contactPhone }}</div>
+              </div>
             </section>
             <section>
               <van-cell
-                title="单位性质:"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :title="'单位性质:'+(isView?'*':'')"
+                :is-link="isView"
                 :value="projProjectInfo.unitCharName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','单位性质', 'unitChar')"
+                @click="!isView?'':loadList('unit_Property','单位性质', 'unitChar')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.unitChar"
               />
             </section>
             <section>
               <van-cell
-                title="文化程度:"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :title="'文化程度:'+(isView?'*':'')"
+                :is-link="isView"
                 :value="projProjectInfo.levelEducationName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','文化程度', 'levelEducation')"
+                @click="!isView?'':loadList('DegreeOfEducation','文化程度', 'levelEducation')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.levelEducation"
               />
             </section>
             <section>
               <van-cell
-                title="婚姻状况:"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :title="'婚姻状况:'+(isView?'*':'')"
+                :is-link="isView"
                 :value="projProjectInfo.marriageName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('marriage_type','婚姻状况', 'marriage')"
+                @click="!isView?'':loadList('marriage_type','婚姻状况', 'marriage')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.marriage"
               />
             </section>
           </van-row>
@@ -80,7 +72,8 @@
             <img
               :src="require('./../../../assets/old_images/icon-ocr2.png')"
               class="xh-OCR"
-              @click="OCRScan('1');"
+              @click="OCRScan"
+              v-if="isView"
             />
           </div>
           <van-row
@@ -91,56 +84,70 @@
               <van-field
                 v-model="projProjectInfo.spsNm"
                 clearable
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                label="配偶姓名:"
+                name="spsNm"
+                label-width="100px"
+                :label="'配偶姓名:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
+                :placeholder="isView?'请填写':''"
+                :disabled="!isView"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsNm"
+                error-message-align="right"
               />
             </section>
             <section>
               <van-field
                 v-model="projProjectInfo.spsCtcTel"
                 type="number"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 clearable
-                label="联系电话:"
+                name="spsCtcTel"
+                label-width="100px"
+                :label="'联系电话:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
-                @blur.prevent="()=>{ return errorMsg.spsCtcTel = rules('phone',$event,this)}"
+                :placeholder="isView?'请填写':''"
+                :disabled="!isView"
+                @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCtcTel"
+                error-message-align="right"
               />
             </section>
             <section>
               <van-field
                 v-model="projProjectInfo.spsCrdtNo"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
                 clearable
-                label="证件号码:"
+                name="spsCrdtNo"
+                label-width="100px"
+                :label="'证件号码:'+(isView?'*':'')"
                 input-align="right"
-                placeholder="请输入"
-                :disabled="params.activityId == 'WF_PROJ_APPR_01_T12'?true:false"
-                @blur.prevent="()=>{ return errorMsg.spsCrdtNo = cpCertificateNum($event)}"
+                :placeholder="isView?'请填写':''"
+                :disabled="!isView"
+                @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsCrdtNo"
+                error-message-align="right"
               />
             </section>
             <section>
               <van-cell
-                title="单位性质:"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :title="'单位性质:'+(isView?'*':'')"
+                :is-link="isView"
                 :value="projProjectInfo.spsUnitCharName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
+                @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
+                label-class="labelClass"
+                :value-class="projProjectInfo.spsUnitCharName?'':'xh-value-none'"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.spsUnitChar"
               />
             </section>
             <section>
               <van-cell
-                title="文化程度:"
-                :required="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
-                :is-link="params.activityId == 'WF_PROJ_APPR_01_T12'?false:true"
+                :title="'文化程度:'+(isView?'*':'')"
+                :is-link="isView"
                 :value="projProjectInfo.spsCltrDgrName"
-                @click="params.activityId == 'WF_PROJ_APPR_01_T12'?true:loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
+                @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
+                label-class="labelClass"
+                :value-class="projProjectInfo.spsUnitCharName?'':'xh-value-none'"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.spsCltrDgr"
               />
             </section>
           </van-row>
@@ -155,158 +162,203 @@
           <section>
             <van-cell
               title="业务来源:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="(projProjectInfo.bsnSrcName?projProjectInfo.bsnSrcName:'') + (projProjectInfo.isAccessCarName?' | '+projProjectInfo.isAccessCarName:'')"
-              @click="loadType('业务来源','bsnSrc')"
+              @click="!isView?'':loadType('业务来源','bsnSrc')"
+              label-class="labelClass"
+              :value-class="projProjectInfo.isAccessCarName?'':'xh-value-none'"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.bsnSrc"
             />
           </section>
           <!-- 接口请求 -->
           <section>
             <van-cell
               title="车商:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.carDealersIdName"
-              @click="loadType('车商', 'carDealersId')"
+              @click="!isView?'':loadType('车商', 'carDealersId')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.carDealersId"
             />
           </section>
           <section>
             <van-cell
               title="反担保状况:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.counterGuaranteeStatusName"
-              @click="loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
+              @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.counterGuaranteeStatus"
             />
           </section>
           <section>
             <van-cell
               title="是否拆单:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.wthrBlName"
-              @click="loadList('yes_no','是否拆单','wthrBl')"
+              @click="!isView?'':loadList('yes_no','是否拆单','wthrBl')"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.wthrBl"
             />
           </section>
           <section v-if="projProjectInfo.wthrBl=='1'">
             <van-field
               v-model="projProjectInfo.blRsn"
               clearable
+              :disabled="!isView"
               label="拆单原因:"
               input-align="right"
-              placeholder="请输入拆单原因"
+              :placeholder="isView?'请填写':''"
             />
           </section>
           <section>
             <van-cell
               title="预调查地址:"
-              required
-              is-link
+              :required="isView"
+              :border="false"
+              :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
               @click="show2 = true"
+              label-class="labelClass"
+              :value-class="projProjectInfo.wbtProvCityZonName?'':'xh-value-none'"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.wbtProvCityZonCode"
             />
           </section>
           <section>
             <van-field
               v-model="projProjectInfo.addressDetail"
-              required
+              :required="isView"
               clearable
+              name="addressDetail"
+              :disabled="!isView"
               label="具体地址:"
               input-align="right"
-              placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.addressDetail"
+              error-message-align="right"
             />
           </section>
         </van-col>
       </van-row>
     </Card>
     <!-- 车辆信息 -->
-    <Card class="xh-top-10">
+    <Card class="xh-top-10" :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell
-            :title="projProjectInfo.cars && projProjectInfo.cars.length > 0 && projProjectInfo.isAses != '1'?'车辆信息（请侧滑进行编辑或删除）':'车辆信息'"
+          车辆信息
+          <!-- <van-cell
+            title=""
           >
-            <!-- <van-icon
-              slot="right-icon"
-              name="plus"
-              style="line-height: inherit;"
-              @click="pullCars"
-              v-if="projProjectInfo.isAses == '1' ? false : true"
-            />-->
             <van-icon
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
               @click="pullCars"
+              v-if="isView"
             />
-          </van-cell>
+          </van-cell>-->
         </section>
       </template>
-      <van-row class="xh-swipe-button">
-        <van-col span="24" v-for="(i,index) in projProjectInfo.cars" :key="index">
-          <van-swipe-cell :right-width="130" :disabled="i.isCreditAdd == '1'?true:false">
+      <van-row class="xh-row xh-swipe-button">
+        <van-col
+          span="24"
+          class="xh-row-col"
+          style="padding: 0;"
+          v-for="(i,index) in projProjectInfo.cars"
+          :key="index"
+        >
+          <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
+          <section>
+            <van-cell
+              title="车辆类别:"
+              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
+            />
+          </section>
+          <section>
+            <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
+          </section>
+          <section>
+            <van-cell
+              title="车辆规格:"
+              :border="false"
+              :value="returnText('vehicle_specifications',i.carSpecifications)"
+            />
+          </section>
+          <section>
+            <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
+          </section>
+          <section>
+            <van-cell title="车辆品牌:" :value="i.automarke.brndNm" />
+          </section>
+          <section>
+            <van-cell title="车系:" :value="i.automarke.carSeries" />
+          </section>
+          <section>
+            <van-cell title="车辆型号:" :value="i.automarke.carModel" />
+          </section>
+          <section v-show="i.chassisNumber">
+            <van-cell title="车架号:" :value="i.chassisNumber" />
+          </section>
+          <section>
+            <van-cell title="销售价(元):" :value="i.salePrice" />
+          </section>
+          <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
+          <div v-if="i.carNature == 'old_car'">
             <section>
-              <van-cell
-                title="车辆类别:"
-                :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
-              />
+              <van-cell title="发动机号:" :value="i.engineNum" />
             </section>
             <section>
-              <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
-            </section>
-            <section>
-              <van-cell
-                title="车辆规格:"
-                :value="returnText('vehicle_specifications',i.carSpecifications)"
-              />
-            </section>
-            <section>
-              <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
-            </section>
-            <section>
-              <van-cell title="车辆品牌:" :value="i.automarke.brndNm" />
-            </section>
-            <section>
-              <van-cell title="车系:" :value="i.automarke.carSeries" />
-            </section>
-            <section>
-              <van-cell title="车辆型号:" :value="i.automarke.carModel" />
-            </section>
-            <section v-show="i.chassisNumber">
               <van-cell title="车架号:" :value="i.chassisNumber" />
             </section>
             <section>
-              <van-cell title="销售价(元):" :value="i.salePrice" />
+              <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
             </section>
-            <!-- 二手车是否已评估 isAses 评估后显示-->
-            <div v-if="projProjectInfo.isAses == '1'">
-              <section>
-                <van-cell title="评估价(元)：" :value="i.estimateOriginalPrice" />
-              </section>
-              <section>
-                <van-cell title="最高送审金额(元)：" :value="i.hgstAmt" />
-              </section>
-              <section>
-                <van-cell title="评估公司：" :value="i.asesInstNm" />
-              </section>
-            </div>
             <section>
-              <van-cell title="备注：" :value="i.remark" />
+              <van-cell title="行驶里程（万公里）:" :value="i.roadHaul" />
             </section>
-            <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
+            <section>
+              <van-cell title="上牌日期:" :value="i.plateDate" />
+            </section>
+          </div>
+          <!-- 二手车是否已评估 isAses 评估后显示-->
+          <div v-if="i.isAses == '1'">
+            <section>
+              <van-cell title="评估价(元):" :value="i.estimateOriginalPrice" />
+            </section>
+            <section>
+              <van-cell title="最高送审金额(元):" :value="i.hgstAmt" />
+            </section>
+            <section>
+              <van-cell title="评估公司:" :value="i.asesInstNm" />
+            </section>
+          </div>
+          <section>
+            <van-cell title="备注：" :value="i.remark" />
+          </section>
+          <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
               <van-button
                 type="warning"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsEdit(i)"
+                :disabled="i.isCreditAdd == '1'?true:false"
+                @click.native="carsEdit(i,index)"
               >修改</van-button>
               <van-button
                 type="danger"
                 style="height:100%;border-radius: 0;"
-                @click.native="carsDel(i)"
+                @click.native="carsDel(i,index)"
               >删除</van-button>
             </span>
-          </van-swipe-cell>
+          </van-swipe-cell>-->
         </van-col>
       </van-row>
     </Card>
@@ -319,93 +371,125 @@
           <section>
             <van-cell
               title="业务模式:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.businessModelName"
-              @click="loadType('业务模式','businessModel')"
+              @click="!isView?'':loadType('业务模式','businessModel')"
+              :value-class="projProjectInfo.businessModelName?'':'xh-value-none'"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.businessModel"
             />
           </section>
           <section>
             <van-cell
               title="贷款期限:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.loanTerm"
-              @click="loadType('贷款期限','loanTerm')"
+              @click="!isView?'':loadType('贷款期限','loanTerm')"
+              label-class="labelClass"
+              :value-class="projProjectInfo.loanTerm?'':'xh-value-none'"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.loanTerm"
             />
           </section>
           <!-- 请求接口 -->
           <section>
             <van-cell
               title="放款平台:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.dsbrPltfrmNm"
-              @click="loadType('放款平台','platform')"
+              @click="!isView?'':loadType('放款平台','platform')"
+              :value-class="projProjectInfo.dsbrPltfrmNm?'':'xh-value-none'"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.loanPlatfomrId"
             />
           </section>
           <section>
             <van-cell
               title="产品类别:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.productCategoryIdName"
-              @click="loadType('产品类别','productCategoryId')"
+              @click="!isView?'':loadType('产品类别','productCategoryId')"
+              :value-class="projProjectInfo.productCategoryIdName?'':'xh-value-none'"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.productCategoryId"
             />
           </section>
           <section>
             <van-cell
               title="产品名称:"
-              required
-              is-link
+              :required="isView"
+              :is-link="isView"
               :value="projProjectInfo.productIdName"
-              @click="loadType('产品名称','productId')"
+              @click="!isView?'':loadType('产品名称','productId')"
+              :value-class="projProjectInfo.productIdName?'':'xh-value-none'"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.productId"
             />
           </section>
           <section>
             <van-field
               v-model="projProjectInfo.loanAmt"
               type="number"
-              required
+              name="loanAmt"
+              :required="isView"
               clearable
+              :disabled="!isView"
               label="银行贷款金额(元):"
               input-align="right"
-              placeholder="请输入"
+              :placeholder="isView?'请填写':''"
               :error-message="errorMsg.loanAmt"
+              @blur.prevent="ruleMessge"
+              error-message-align="right"
             />
           </section>
           <!-- 中建投 -->
-          <div v-if="projProjectInfo.businessModel==4">
+          <!-- <div v-if="projProjectInfo.businessModel==4">
             <section>
               <van-cell title="客户首付成数:" :value="projProjectInfo.paymentNumberName" />
             </section>
             <section>
               <van-cell title="客户保证金(%):" :value="projProjectInfo.customerBond" />
             </section>
-          </div>
-          <div v-if="projProjectInfo.businessModel != 4">
-            <section>
-              <van-cell
-                title="盗抢险:"
-                required
-                is-link
-                :value="projProjectInfo.thiefRescueName"
-                @click="loadType('盗抢险','thiefRescue')"
-              />
-            </section>
-            <section>
-              <van-cell
-                title="盗抢险购买平台:"
-                required
-                is-link
-                :value="projProjectInfo.rbrinsPltfrmNmName"
-                @click="loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
-              />
-            </section>
-            <section>
-              <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
-            </section>
-          </div>
+          </div>-->
+          <!-- <div v-if="projProjectInfo.businessModel != 4"> -->
+          <section>
+            <van-cell
+              title="盗抢险:"
+              :required="isView"
+              :is-link="isView"
+              :value="projProjectInfo.thiefRescueName"
+              @click="!isView?'':loadType('盗抢险','thiefRescue')"
+              :value-class="projProjectInfo.thiefRescueName?'':'xh-value-none'"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.thiefRescue"
+            />
+          </section>
+          <section>
+            <van-cell
+              title="盗抢险购买平台:"
+              :required="isView"
+              :is-link="isView"
+              :value="projProjectInfo.rbrinsPltfrmNmName"
+              @click="!isView?'':loadType('盗抢险购买平台', 'rbrinsPltfrmNmId')"
+              label-class="labelClass"
+              :value-class="projProjectInfo.rbrinsPltfrmNmName?'':'xh-value-none'"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.rbrinsPltfrmNmId"
+            />
+          </section>
+          <section>
+            <van-cell title="贷款金额区间:" :value="projProjectInfo.loanRegion" />
+          </section>
+          <!-- </div> -->
           <section>
             <van-cell title="银行费率(%):" :value="projProjectInfo.bankNewRate" />
           </section>
@@ -416,102 +500,41 @@
             <van-cell title="返利费率(%):" :value="projProjectInfo.rebateStandard" />
           </section>
 
-          <!-- 是联合贷 -->
-          <div v-if="projProjectInfo.businessModel==2">
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingCarRatio"
-                type="number"
-                required
-                clearable
-                label="加融车价金额(元):"
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="rentingCarRatioCount"
-                :error-message="errorMsg.rentingCarRatio"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingServiceFee"
-                type="number"
-                required
-                clearable
-                label="担保服务费(元)："
-                input-align="right"
-                placeholder="请输入"
-                @blur.prevent="rentingServiceFeeCount"
-                :error-message="errorMsg.rentingServiceFee"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingRatio"
-                type="number"
-                clearable
-                label="加融车价比例%:"
-                disabled
-                input-align="right"
-                placeholder="加融车价金额/销售价"
-                error
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.rentingAmt"
-                type="number"
-                clearable
-                label="加融总金额(元):"
-                disabled
-                input-align="right"
-                placeholder="加融车价金额+担保服务费"
-                error
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.totalLoanAmt"
-                type="number"
-                clearable
-                required
-                label="贷款总金额(元):"
-                disabled
-                input-align="right"
-                placeholder="银行贷款金额+加融车价金额"
-                error
-              />
-            </section>
-          </div>
-          <section v-if="projProjectInfo.isQuickadjust=='1'">
+          <!-- <section v-if="projProjectInfo.isQuickadjust=='1'">
             <van-cell
               title="是否t+0:"
-              is-link
-              required
+              :is-link="isView"
+              :required="isView"
               :value="projProjectInfo.isTandzeroName"
-              @click="loadList('yes_no','是否t+0','isTandzero')"
+              @click="!isView?'':loadList('yes_no','是否t+0','isTandzero')"
             />
-          </section>
+          </section>-->
           <section>
             <van-field
               v-model="projProjectInfo.rentingAmtGps"
               type="number"
               clearable
+              name="rentingAmtGps"
+              :disabled="!isView"
               label="加融金额(元):"
               input-align="right"
-              :required="projProjectInfo.thiefRescue == 0?true:false"
-              placeholder="(含GPS加融费用)"
+              :required="isView?projProjectInfo.thiefRescue == 0:false"
+              :placeholder="isView?'请填写(含GPS加融费用)':''"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.rentingAmtGps"
+              error-message-align="right"
             />
           </section>
 
-          <div
+          <!-- <div
             v-if="projProjectInfo.businessModel==1 || projProjectInfo.businessModel==2 || projProjectInfo.businessModel==3"
           >
             <section>
               <van-cell
-                is-link
+                :is-link="isView"
                 :value="projProjectInfo.marginRatioName"
                 title="保证金比例(%):"
-                @click="loadList('Margin_Ratio','保证金比例','marginRatio')"
+                @click="!isView?'':loadList('Margin_Ratio','保证金比例','marginRatio')"
                 :disabled="projProjectInfo.businessModel==2?true:false"
               />
             </section>
@@ -530,6 +553,7 @@
               <van-field
                 v-model="projProjectInfo.concactNum"
                 clearable
+                :disabled="!isView"
                 label="合同编号:"
                 input-align="right"
                 placeholder="请输入"
@@ -540,6 +564,7 @@
                 v-model="projProjectInfo.accountNum"
                 type="number"
                 clearable
+                :disabled="!isView"
                 label="还款卡号:"
                 input-align="right"
                 placeholder="请输入"
@@ -549,6 +574,7 @@
               <van-field
                 v-model="projProjectInfo.accountName"
                 clearable
+                :disabled="!isView"
                 label="还款卡账户名称:"
                 input-align="right"
                 placeholder="请输入"
@@ -558,20 +584,22 @@
               <van-field
                 v-model="projProjectInfo.accountBank"
                 clearable
+                :disabled="!isView"
                 label="还款卡开户行:"
                 input-align="right"
                 placeholder="请输入"
               />
             </section>
-          </div>
+          </div>-->
           <section>
             <van-field
               v-model="projProjectInfo.surcharge"
               type="number"
               clearable
+              :disabled="!isView"
               label="附加费(元):"
               input-align="right"
-              placeholder="请填写附加费"
+              :placeholder="isView?'请填写':''"
             />
           </section>
         </van-col>
@@ -579,8 +607,14 @@
     </Card>
 
     <!-- 提交按钮 -->
-    <div class="xh-submit" style="padding: 20px 0;">
-      <van-button size="large" class="xh-bg-main" @click="submitProject" :loading="loading">保 存</van-button>
+    <div class="xh-submit" style="padding: 20px 10px;" v-if="isView">
+      <van-button
+        size="large"
+        class="xh-bg-main"
+        @click="submitProject"
+        :loading="dLoading"
+        :disabled="dLoading"
+      >保 存</van-button>
     </div>
 
     <!-- 弹出选项 -->
@@ -596,6 +630,8 @@
         />
       </div>
     </van-action-sheet>
+    <!-- 图片选择方式 -->
+    <van-action-sheet :close-on-click-overlay="false" v-model="show4" :actions="actions" @select="onSelect" />
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="show2" @getProvince="confirmSelect"></Provinces>
   </div>
@@ -609,8 +645,12 @@ import {
   getProductTypeList,
   getLoanPlatformTree,
   getAllTpBuyPlatform,
-  setProjectInfo
+  setProjectInfo,
+  setNewCar,
+  deleteCar
 } from "@/api/project";
+// 校验
+import formValidator from "@/mixins/formValidator";
 // 自定义组件
 import redCard from "@/components/redCard/index";
 import Provinces from "@/components/provinces/index";
@@ -652,6 +692,7 @@ Components.forEach(item => {
 import { mapState } from "vuex";
 
 export default {
+  mixins: [formValidator],
   name: "projectInfo",
   components: {
     redCard,
@@ -668,9 +709,28 @@ export default {
     })
   },
   watch: {
+    // 婚姻状况
+    "projProjectInfo.marriage"(newValue, oldValue) {
+      var arr = [
+        "spsCltrDgr",
+        "spsUnitChar",
+        "spsNm",
+        "spsCtcTel",
+        "spsCrdtNo"
+      ];
+      if (newValue == "2" || newValue == "4") {
+        arr.forEach((item, index) => {
+          this.$set(this.errorMsg, item, "");
+        });
+      } else {
+        arr.forEach((item, index) => {
+          Vue.delete(this.errorMsg, item);
+        });
+      }
+    },
     // 获取贷款期限
     "projProjectInfo.businessModel"(val) {
-      if (val) {
+      if (val && this.isView) {
         this.productTypeList({
           type: 2,
           carType: this.carType,
@@ -682,28 +742,32 @@ export default {
     },
     // 查询放款平台
     "projProjectInfo.loanTerm"(val) {
+      console.log('jhgjh', val)
       if (val && this.projProjectInfo.businessModel) {
-        this.loanPlatformTree();
+        this.loanPlatformTree(val);
       }
     },
     // 获取放款平台name 和 产品类别
     "projProjectInfo.loanPlatfomrs"(val) {
-      if (Array.isArray(val) && val.length > 0) {
+      
+          console.log(val);
+      if (Array.isArray(val) && val.length > 0 && this.isView) {
         if (val[1] != "") {
           let ids = val[1];
-          this.platformId = ids;
-          this.platform.forEach(t => {
-            if (t.children) {
-              t.children.forEach(f => {
-                if (f.value == ids) {
-                  this.bankRate = f.intrt;
-                  this.projProjectInfo.bankNewRate = f.intrt;
-                  this.projProjectInfo.dsbrPltfrmNm = f.label;
-                  this.projProjectInfo.loanPlatfomrId = f.value;
-                }
-              });
-            }
-          });
+          // this.platformId = ids;
+          // this.platform.forEach(t => {
+          //   if (t.children) {
+          //     t.children.forEach(f => {
+          //       if (f.value == ids) {
+          //         this.bankRate = f.intrt;
+          //         this.projProjectInfo.bankNewRate = f.intrt;
+          //         this.projProjectInfo.dsbrPltfrmNm = f.label;
+          //         this.projProjectInfo.loanPlatfomrId = f.value;
+          //       }
+          //     });
+          //   }
+          // });
+          
           this.productTypeList({
             type: 3,
             carType: this.carType,
@@ -717,7 +781,7 @@ export default {
     },
     // 获取产品list
     "projProjectInfo.productCategoryId"(val) {
-      if (val) {
+      if (val && this.isView) {
         this.productTypeList({
           type: 4,
           companyId: this.projProjectInfo.companyId,
@@ -727,7 +791,7 @@ export default {
     },
     // 获取产品详情
     "dataList.productId"(val) {
-      if (val) {
+      if (val && this.isView) {
         this.productTypeList({
           type: 5,
           productId: val
@@ -735,12 +799,25 @@ export default {
       }
     }
   },
+  // activated(){
+  //   let datas = JSON.parse(sessionStorage.getItem('pro'));
+  //   console.log(datas);
+  //   if(datas) {
+  //     this.projProjectInfo = datas;
+  //     this.newCar(this.$store.state.credit.carData);
+  //   }
+  // },
   data() {
     return {
+      actions: [
+        { name: "相机扫描识别", value: "scan" },
+        { name: "相册导入识别", value: "album" }
+      ],
       params: {}, // 传过来的数据
       show3: false, //弹框选择
       show2: false, //地址选择
-      loading: false,
+      show4: false, // 图片选择
+      dLoading: false,
       options: [], // 字典集合
       valueKey: "label", // 下拉选择取的哪个描述值
       valueId: "", // 下拉选择取的哪个value值
@@ -757,124 +834,140 @@ export default {
       bankGuaranteeRate: "",
       bankRate: "",
       businessList: [], //业务来源
-
-      isNum: "",
-      isVal: "",
       selectName: "",
       fieldName: "", // 选择字段名
-      areaList: {
-        province_list: {},
-        city_list: {},
-        county_list: {}
-      },
-      bankArr: [], //银行数组
-      bankList: {},
-      customerName: "", // 客户名字
-      contactPhone: "", // 客户电话
-      certificateNum: "", // 客户证件号码
-      certificateTypeName: "", // 客户证件描述
-      spsNm: "", // 客户配偶名字
-      spsCtcTel: "", // 客户配偶电话
-      spsCrdtNo: "", // 客户配偶证件号码
-      spsCrdtTpName: "", // 客户配偶证件描述
-      selectType: "", //选择的类别
+      // 初始化数据
       projProjectInfo: {
         loanPlatfomrs: [],
-        companyName: "",
-        officeName: "",
-        groupName: "",
-        businessGroupIds: "",
-        contactPhone: "",
-        levelEducation: "",
-        unitChar: "",
-        marriage: "",
-        customerName: "",
-        certificateNum: "",
-        spsCltrDgr: "",
-        spsUnitChar: "",
-        bsnSrc: "",
-        isAccessCar: "",
-        carDealersId: "",
-        counterGuaranteeStatus: "",
-        wthrBl: "",
-        blRsn: "",
-        addressDetail: "",
-        sngldayPrd: "",
-        productCategoryId: "",
-        productCategoryIdName: "",
-        loanPlatfomrId: "",
-        productId: "",
-        thiefRescue: "",
-        businessModel: "",
-        businessModelName: "",
-        rbrinsPltfrmNmId: "",
-        rbrinsPltfrmNmName: "", // 盗抢险购买平台
-        loanTerm: "",
-        loanAmt: "",
-        isQuickadjust: "",
-        isTandzero: "",
-        guaranteeRate: "",
-        bankNewRate: "",
-        rebateStandard: "",
-        loanRegion: "",
-        rentingAmtGps: "",
-        rentingCarRatio: "",
-        rentingServiceFee: "",
-        rentingAmt: "",
-        marginRatio: "",
-        keepPrice: "",
-        concactNum: "",
-        accountNum: "",
-        accountName: "",
-        accountBank: "",
-        spsNm: "",
-        spsCrdtNo: "",
-        spsCtcTel: "",
         wbtProvCityId: [],
-        wbtProvCityZonName: "",
-        productIdName: "",
-        customerBond: "",
-        paymentNumber: "",
-        paymentNumberName: "",
-        ruleFlag: "",
         cars: []
       },
-      getProductCategory: [], //产品类别
-      pattern: [], //产品名称
-      loanRegion: "", //贷款区间
-      buyPlatform: [], //盗抢险购买平台
-      rules: {},
-      imgList: [], //图片
       errorMsg: {
-        // 验证初始化
+        loanPlatfomrId: "",
+        wbtProvCityZonCode: "",
+        productId: "",
+        thiefRescue: "",
+        counterGuaranteeStatus: "",
+        bsnSrc: "",
+        rbrinsPltfrmNmId: "",
+        loanAmt: "",
         customerName: "",
-        contactPhone: "",
+        cars: "",
+        loanTerm: "",
+        productCategoryId: "",
+        addressDetail: "",
+        wthrBl: "",
+        marriage: "",
+        businessModel: "",
         unitChar: "",
         levelEducation: "",
-        marriage: "",
-        isAccessCar: "",
-        carDealersIdName: "",
-        counterGuaranteeStatus: "",
-        wthrBl: "",
-        wthrDcn: "",
-        wbtProvCityZon: "",
-        addressDetail: "",
-        productCategoryId: "",
-        dsbrPltfrmNm: "",
-        productIdName: "",
-        loanAmt: "" //银行贷款金额
+        contactPhone: "",
+        carDealersId: ""
       },
       carNature: "", //车辆性质
       carType: "", //车辆类型
       carType2: "", //车辆类型2
-      platformId: "" //
+      platformId: "", //
+      isView: false
     };
   },
   methods: {
     pullCars() {
-      this.$router.push("/vehicle");
+      const query = {
+        customerId: this.params.customerId,
+        customerNum: this.params.customerNum
+      };
+      this.$store.dispatch("credit/removeCarData");
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
+      this.$router.push({ path: "/vehicle", query });
     },
-    //
+    // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
+    carsEdit(rows, inx) {
+      const query = {
+        customerId: this.params.customerId,
+        customerNum: this.params.customerNum,
+        brndNm: rows.automarke.brndNm,
+        carModelId: rows.automarke.carModelId,
+        carBrandId: rows.automarke.brndNmId,
+        carSeriesId: rows.automarke.carSeriesId,
+        index: inx,
+        ...rows
+      };
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
+      this.$router.push({
+        path: "/vehicle",
+        query
+      });
+    },
+    // 车辆删除
+    carsDel(rows, inx) {
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.projProjectInfo.cars.splice(inx, 1);
+      });
+    },
+    // 新增 - 编辑车辆
+    newCar(data) {
+      let rows = {
+        carType: data.carType,
+        carType2: data.carType2,
+        carNature: data.carNature, // new_car 新车 ----- 1 二手车
+        carSource: data.carSource,
+        carSeries: data.carSeriesId,
+        carSpecifications: data.carSpecifications,
+        automarke: {
+          carModelId: data.carModelId,
+          brndNmId: data.carBrandId,
+          id: "",
+          carSeriesId: data.carSeriesId,
+          delFlag: "0"
+        },
+        salePrice: data.salePrice,
+        remark: data.remark,
+        delFlag: "0",
+        proj: {
+          id: this.params.projectId
+        },
+        ruleFlag: "Y",
+        carLoanPart: data.carLoanPart, //车辆贷款部分
+        anchoredTransportCompany: data.anchoredTransportCompany, // 挂靠运输公司
+        estimateOriginalPrice: data.estimateOriginalPrice, //评估价
+        hgstAmt: data.hgstAmt, //最高送审金额
+        asesInstNm: data.asesInstNm,
+        assessId: data.assessId
+      };
+      if (data.id) {
+        rows.id = data.id;
+      }
+      // if(data.ruleFlag == 'Y'){
+      //   rows.id = this.params.projCarId;
+      // }
+      setNewCar(rows)
+        .then(res => {
+          this.projProjectInfo.cars = res.data;
+          sessionStorage.removeItem("pro");
+          let cars = this.projProjectInfo.cars;
+          if (Array.isArray(cars) && cars.length > 0) {
+            this.carType = cars[0].carType + "-" + cars[0].carType2;
+            this.carNature = cars[0].carNature;
+            this.$store.dispatch("credit/removeCarData");
+            this.productTypeList({
+              type: 1,
+              carType: cars[0].carType + "-" + cars[0].carType2,
+              carNature: cars[0].carNature,
+              companyId: this.projProjectInfo.companyId
+            });
+          }
+        })
+        .catch(() => {
+          sessionStorage.removeItem("pro");
+        });
+    },
     // 字典转换
     returnText(n, val, list, ids, field) {
       let name;
@@ -957,9 +1050,11 @@ export default {
       this.$set(this.projProjectInfo, "productId", ids);
     },
     // 省市区选择
-    confirmSelect(code,name) {
+    confirmSelect(code, name) {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
+      this.projProjectInfo.wbtProvCityZonCode = name;
+      this.errorMsg.wbtProvCityZonCode = '';
       this.show2 = false;
     },
     // 其他接口数据
@@ -1067,12 +1162,14 @@ export default {
       if (this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName + "Name"] = row.label;
+        this.errorMsg[this.fieldName] = '';
         if (this.selectName == "业务来源") {
           this.getCustomer();
         }
       } else {
         this.projProjectInfo[this.fieldName] = row[this.valueId];
         this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
+        this.errorMsg[this.fieldName] = '';
         switch (this.selectName) {
           case "业务来源":
             if (this.fieldName == "bsnSrc") {
@@ -1084,6 +1181,25 @@ export default {
             }
             break;
           case "业务模式":
+            // 初始数据
+            let arr = [
+              "loanTerm",
+              "dsbrPltfrmNm",
+              "loanPlatfomrId",
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             this.productTypeList({
               type: 2,
               carType: this.carType,
@@ -1093,9 +1209,43 @@ export default {
             });
             break;
           case "贷款期限":
-            this.loanPlatformTree();
+            // 初始数据
+            let arr3 = [
+              "dsbrPltfrmNm",
+              "loanPlatfomrId",
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "bankNewRate",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr3.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            this.loanPlatformTree(row.value);
             break;
           case "放款平台":
+            // 初始数据
+            let arr2 = [
+              "productCategoryIdName",
+              "productCategoryId",
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr2.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             if (this.fieldName == "isRoot") {
               this.valueKey = "dsbrPltfrmNm";
               this.valueId = "id";
@@ -1118,6 +1268,20 @@ export default {
             }
             break;
           case "产品类别":
+            // 初始数据
+            let arr1 = [
+              "productIdName",
+              "productId",
+              "thiefRescueName",
+              "thiefRescue",
+              "loanRegion",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr1.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
+            // 其他
             this.productTypeList({
               type: 4,
               companyId: this.projProjectInfo.companyId,
@@ -1125,6 +1289,16 @@ export default {
             });
             break;
           case "产品名称":
+            // 初始数据
+            let arr4 = [
+              "thiefRescue",
+              "loanRegion",
+              "guaranteeRate",
+              "rebateStandard"
+            ];
+            arr4.forEach(t => {
+              this.projProjectInfo[t] = "";
+            });
             this.productTypeList({
               type: 5,
               productId: row.productId
@@ -1172,13 +1346,18 @@ export default {
     },
     // 获取报单数据
     loanData() {
-      this.loading = true;
+      Toast.loading({
+        message: "加载中...",
+        forbidClick: true,
+        duration: 0,
+        loadingType: "spinner",
+        overlay: true
+      });
       getProjectInfo({
         id: this.params.projectId
-      }).then(res => {
-        const { code, data, msg } = res;
-        if (code == 200) {
-          // Toast.clear();
+      })
+        .then(res => {
+          const { code, data, msg } = res;
           const {
             projectInfo,
             courseMap,
@@ -1249,6 +1428,12 @@ export default {
               companyId: row.companyId
             });
           }
+          let loanPlatfomrs = this.returnVal(row.loanPlatId, "number")
+              ? this.loanPlatfomrsReturn(
+                  this.returnVal(loanPlatfomr.blngInstid, "number"),
+                  this.returnVal(row.loanPlatId, "number")
+                )
+              : [];
 
           this.projProjectInfo = {
             loanPlatfomr: loanPlatfomr,
@@ -1284,12 +1469,7 @@ export default {
             rbrinsPltfrmNmId: this.returnVal(row.rbrinsPltfrmNmId, "number"),
             productCategoryId: this.returnVal(row.productCategoryId),
             loanPlatfomrId: this.returnVal(row.loanPlatId),
-            loanPlatfomrs: this.returnVal(row.loanPlatId, "number")
-              ? this.loanPlatfomrsReturn(
-                  this.returnVal(loanPlatfomr.blngInstid, "number"),
-                  this.returnVal(row.loanPlatId, "number")
-                )
-              : [],
+            loanPlatfomrs: loanPlatfomrs,
             companyName: this.returnVal(row.companyName),
             officeName: this.returnVal(row.officeName),
             counterGuaranteeStatus: this.returnVal(row.counterGuaranteeStatus),
@@ -1319,6 +1499,7 @@ export default {
             accountBank: this.returnVal(row.accountBank),
             wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
             wbtProvCityZon: row.wbtProvCityZonCode,
+            wbtProvCityZonCode: row.wbtProvCityZonCode,
             paymentNumber: this.returnVal(row.paymentNumber),
             paymentNumberName: this.returnVal(row.paymentNumberName),
             customerBond: this.returnVal(row.customerBond),
@@ -1367,7 +1548,13 @@ export default {
             isTandzeroName: this.returnText("yes_no", row.isTandzero),
             marginRatioName: this.returnText("Margin_Ratio", row.marginRatio),
             productIdName: proPat.productName,
-            thiefRescueName: this.returnText("", row.thiefRescue, thiefRescue, 'id','name')
+            thiefRescueName: this.returnText(
+              "",
+              row.thiefRescue,
+              thiefRescue,
+              "id",
+              "name"
+            )
           };
 
           setTimeout(() => {
@@ -1376,24 +1563,25 @@ export default {
 
             this.getCustomer();
             this.getPlatform();
-            this.loading = false;
+            Toast.clear();
           }, 500);
-        } else {
-          this.$notify({ type: "danger", message: msg });
-          this.loading = false;
-        }
-      });
+        })
+        .catch(() => {
+          Toast.clear();
+        });
     },
     // 查询放款平台
-    loanPlatformTree() {
+    loanPlatformTree(val) {
+      if(val == undefined || val == null || val == '' || val == null) {
+        return
+      }
       let obj = {
-        loanCount: this.projProjectInfo.loanTerm,
+        loanCount: val,
         businessMode: this.projProjectInfo.businessModel
       };
-      getLoanPlatformTree().then(res => {
+      getLoanPlatformTree(obj).then(res => {
         if (res.code == 200) {
           this.platform = res.data;
-          console.log(this.projProjectInfo.loanPlatfomrId);
           if (this.projProjectInfo.loanPlatfomrId) {
             this.$set(
               this.projProjectInfo,
@@ -1485,7 +1673,6 @@ export default {
     submitProject() {
       if (this.isRule) {
         let yanzheng = true;
-        // this.loading = true;
         for (let i = 0; i < this.projProjectInfo.cars.length; i++) {
           if (!this.projProjectInfo.cars[i].salePrice) {
             yanzheng = false;
@@ -1493,45 +1680,6 @@ export default {
           }
         }
         if (yanzheng) {
-          if (this.projProjectInfo.isChangeProj == "1") {
-            [this.projProjectInfo.customerName, this.projProjectInfo.spsNm] = [
-              this.projProjectInfo.spsNm,
-              this.projProjectInfo.customerName
-            ];
-            [
-              this.projProjectInfo.certificateNum,
-              this.projProjectInfo.spsCrdtNo
-            ] = [
-              this.projProjectInfo.spsCrdtNo,
-              this.projProjectInfo.certificateNum
-            ];
-            [
-              this.projProjectInfo.contactPhone,
-              this.projProjectInfo.spsCtcTel
-            ] = [
-              this.projProjectInfo.spsCtcTel,
-              this.projProjectInfo.contactPhone
-            ];
-            [
-              this.projProjectInfo.levelEducation,
-              this.projProjectInfo.spsCltrDgr
-            ] = [
-              this.projProjectInfo.spsCltrDgr,
-              this.projProjectInfo.levelEducation
-            ];
-            [
-              this.projProjectInfo.unitChar,
-              this.projProjectInfo.spsUnitChar
-            ] = [
-              this.projProjectInfo.spsUnitChar,
-              this.projProjectInfo.unitChar
-            ];
-          }
-
-          // let wbtProvCityName = this.$refs.cascader.currentLabels?this.$refs.cascader.currentLabels:this.$refs.cascader.inputValue;
-          // if(Array.isArray(wbtProvCityName)) {
-          //   wbtProvCityName = wbtProvCityName.join('-');
-          // }
           let formList = { ...this.projProjectInfo };
           var dataList = {
             projectId: formList.projectId,
@@ -1652,29 +1800,60 @@ export default {
           dataList.loanPlatfomr.dsbrPltfrmNm = formList.dsbrPltfrmNm;
           this.postProject(dataList);
         } else {
-          this.loading = false;
           this.$notify({
             type: "danger",
-            message: "保存失败,请检查车辆信息填写是否完整"
+            message: "有车辆价格未填"
           });
         }
       }
     },
     // 提交数据
     postProject(dataList) {
-      setProjectInfo(dataList).then(res => {
-        if (res.code == 200) {
-          this.loanData();
-          this.$notify({ type: "success", message: res.msg });
-        } else {
-          this.$notify({ type: "danger", message: res.msg });
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.projProjectInfo[item]);
+        if (this.errorMsg[item]) {
+          num++;
         }
+      }
+      console.log(this.errorMsg);
+      if (num !== 0) {
+        return;
+      }
+      this.dLoading = true;
+      setProjectInfo(dataList)
+        .then(res => {
+          this.$notify({ type: "success", message: res.msg });
+          this.dLoading = false;
+          this.$router.go(-1);
+        })
+        .catch(() => {
+          this.dLoading = false;
+        });
+    },
+    OCRScan() {
+      this.show4 = true;
+    },
+    onSelect(rows) {
+      this.$bridge.callHandler("idCardOCR", rows.value, res => {
+        this.projProjectInfo.spsNm = res.ID_NAME || "";
+        this.projProjectInfo.spsCrdtNo = res.ID_NUM || "";
+        this.show4 = false;
       });
     }
   },
   mounted() {
-    this.params = this.$route.query;
-    this.loanData();
+    if (this.$route.query.info) {
+      this.params = JSON.parse(this.$route.query.info);
+    } else {
+      this.params = this.$route.query;
+    }
+    this.isView = this.params.isView == 0;
+    let datas = JSON.parse(sessionStorage.getItem("pro"));
+    if (!datas) {
+      this.loanData();
+    }
+    this.rulesForm("order-project-xh");
   }
 };
 </script>
@@ -1690,6 +1869,11 @@ export default {
     .van-cell__right-icon {
       color: #fff;
     }
+    .labelClass,
+    .van-field__error-message {
+      text-align: right;
+      color: #d3d3d3;
+    }
   }
   .xh-card-head {
     .xh-OCR {
@@ -1700,6 +1884,12 @@ export default {
       padding-top: 0;
     }
   }
+  .van-field__control:disabled {
+    -webkit-text-fill-color: #fff;
+  }
+}
+.xh-value-none {
+  display: none;
 }
 </style>
 

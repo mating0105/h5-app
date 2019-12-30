@@ -37,11 +37,23 @@
                         银行放款信息
                     </template>
                     <div>
-                        <van-field label="主借人还款卡号：" :border="false" label-width='150' input-align="right" required v-model="bankLoanInfo.repaymentBankCardNo" placeholder="请输入" />
-                        <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')"/>
-                        <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')"/>
+                        <van-field 
+                            label="主借人还款卡号：" 
+                            :border="false" 
+                            label-width='130' 
+                            input-align="right" 
+                            :required="approvalConclusionDesc=='通过'||approvalConclusionDesc=='已放款'"
+                            v-model="bankLoanInfo.repaymentBankCardNo" 
+                            placeholder="请输入" 
+                            name="repaymentBankCardNo"
+                            @blur.prevent="ruleMessge($event,null,ruleMsg)" 
+                            :error-message="errorMsg.repaymentBankCardNo"
+                            right-icon="scan"
+                            @click-right-icon="IdcardLoading"/>
+                        <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
+                        <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
-                            <van-field :border="false" label-width='150' input-align="right" label="实际放款金额（元）：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"/>
+                            <van-field :border="false" label-width='150' input-align="right" label="实际放款金额（元）：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"  name='factLoanAmt' @blur.prevent="ruleMessge" :error-message="errorMsg.factLoanAmt"/>
                             <van-cell :border='false' title="实际放款时间：" value-class='rightClass' v-model="bankLoanInfo.factLoanDate" @click="showPopupTime('actualLendTime')" is-link value="请选择"/>
                         </div>
                     </div>
@@ -52,7 +64,6 @@
                         放款凭证
                     </template>
                     <imageList :dataList="dataList"></imageList>
-                    
                 </Card>
                 <!-- 意见描述 -->
                 <Card style="margin-top:15px;">
@@ -60,7 +71,7 @@
                         意见描述
                     </template>
                     <div>
-                        <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit />
+                        <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言" show-word-limit @blur.prevent="verifyComments" :error-message='errMsg'/>
                     </div>
                 </Card>
                 <!-- 通知业务员 -->
@@ -68,7 +79,7 @@
                     <template v-slot:header>
                         <div class="notice">
                             <p>通知业务员</p>
-                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">{{form.projectInfo.customerName}}</van-checkbox>
+                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">{{form.projectInfo.clientManager.name}}</van-checkbox>
                         </div>
                     </template>
                 </Card>
@@ -129,6 +140,8 @@
                 @confirm="confirmTime"
                 @cancel="cancelTime"/>
         </van-popup>
+        <!-- 身份证识别/银行卡识别 -->
+        <van-action-sheet v-model="showScan" :actions="actions" @select="discern" />
     </ViewPage>
 </template>
 
@@ -136,6 +149,7 @@
   import Vue from 'vue';
   import { mapGetters } from 'vuex'
   import dayjs from 'dayjs'
+  import request from '@/utils/request';
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card/index';
   import redCard from "@/components/redCard/index";
@@ -144,17 +158,19 @@
   import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
-  import {getProjectInfo,getPeople,submitProcess,loanInfoDetail} from '@/api/makeLoan.js';
+  import {getProjectInfo,getPeople,submitProcess,loanInfoDetail,fieldRules} from '@/api/makeLoan.js';
   import { getDic } from "@/api/createCustomer";
-  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify } from 'vant';
-
-  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify];
+  import { Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast,ActionSheet  } from 'vant';
+  import formValidator from '@/mixins/formValidator'
+  
+  const Components = [Dialog, Button, Row, Col, Tab, Tabs, Cell, CellGroup,Picker,Popup,Field,DatetimePicker,Checkbox,Notify,Toast,ActionSheet ];
   Components.forEach(item => {
-  Vue.use(item);
-});
+    Vue.use(item);
+  });
 
 export default {
   name:'bakLend',
+  mixins: [formValidator],
   components: {
     redCard,
     Card,
@@ -164,18 +180,12 @@ export default {
     creditInfoTable
   },
   computed:{
-    info() {
-        return this.getStringToObj(this.$route.query.info);
-    },
-    dealState() {
-        // 1代表可以编辑3不可以编辑
-        return this.$route.query.dealState;
-    }
   },
   data() {
     return {
         activeName: "1",
         listLoading:false,
+        params:{},//跳转接收的数据
         columns: [],
         imgWalkList: [],//图片
         popupShow: false,
@@ -186,7 +196,13 @@ export default {
         salesmanChecked: false,
         cashierChecked:false,//财务人员勾选
         form:{},
-        bankLoanInfo:{},//放款信息
+        bankLoanInfo:{
+            repaymentBankCardNo:'',
+            accountBank:'',
+            advanceInstitutionDate:'',
+            factLoanAmt:'',
+            factLoanDate:''
+        },//放款信息
         commentsDesc:'',//意见描述
         FinanceCashier:'',
         FinanceCashierDesc:'请选择',//财务人员
@@ -200,11 +216,11 @@ export default {
         dictionaryData:{},//字典数据
         submitloading:false,
         businessKey:0,
-        projectId:0,
+        dealState:false,//false:'待办'  true:'已办'
         dataList: [],
         iconClass:'ellipsis',
         rightBoxList:[
-            {value:1,title:'项目基本信息',url:"/bigDataQueryDetail"},
+            {value:1,title:'项目基本信息',url:"/projectInfo"},
             {value:2,title:'做单基本信息',url:"/lendProcess"},
             {value:3,title:'客户及配偶',url:"/clientIndex"},
             {value:4,title:'紧急联系人',url:"/contactPerson"},
@@ -216,8 +232,8 @@ export default {
             {value:10,title:'担保人收入',url:"/incomeGuarantor"},
             {value:11,title:'调查结论',url:"/survey"},
             {value:12,title:'相关文档',url:"/proDocument"},
-            {value:13,title:'GPS安装信息',url:"/A"},
-            {value:14,title:'合同照片',url:"/C"},
+            {value:13,title:'GPS安装信息',url:"/gps"},
+            {value:14,title:'合同照片',url:"/contractUpload"},
         ],
         //----tab:2--征信信息
         creditList: {
@@ -227,12 +243,47 @@ export default {
             carInfos: [],
             surDtlList: []
         },
+        //验证字段规则
+        ruleData:[],
+        errorMsg: {
+            factLoanAmt:'',//实际放款金额
+            advanceInstitutionDate:'',//录机时间
+            repaymentBankCardNo:'',//主借人还款卡号
+        },
+        formData:{},
+        errMsg:'',
+        //识别
+        showScan:false,
+        actions: [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" }
+        ],
+
     };
   },
   methods: {
+    ruleMsg() {
+        if(this.approvalConclusionDesc=='通过'||this.approvalConclusionDesc=='已放款'){
+            this.errorMsg.repaymentBankCardNo = this.returnMsg(
+                "repaymentBankCardNo",
+                this.bankLoanInfo.repaymentBankCardNo
+            );
+        }else{
+            this.errorMsg.repaymentBankCardNo='';
+        }
+    },
     //----------导航----------------
     goPage(item){
-        this.$router.push({ path: item.url, query: {info:this.info,dealState:this.dealState }});
+        let queryData={
+            customerId:this.projectForm.projectInfo.customerId,
+            customerNum:this.projectForm.projectInfo.customerNum,
+            projectId:this.projectForm.projectInfo.projectId,
+            remark:this.params.info.remark,
+            lpCertificateNum:this.projectForm.projectInfo.certificateNum,
+            isView:1,//  0:修改  1：查看
+            projectNo:this.projectForm.projectInfo.projectNo,
+        }
+        this.$router.push({path: val.url, query:item.value==2 ? this.$route.query : queryData});
     },
     //-----------显示选择弹框--------------
     showPopupType(type) {
@@ -264,6 +315,9 @@ export default {
             case 'approvalConclusion':
                 this.approvalConclusion=value.value;
                 this.approvalConclusionDesc=value.label;
+                if(this.approvalConclusion=='02'||this.approvalConclusion=='04'){
+                    this.errorMsg.repaymentBankCardNo='';
+                }
                 if(this.approvalConclusion!=='10'){
                     this.bankLoanInfo.factLoanAmt='';
                     this.bankLoanInfo.factLoanDate='';
@@ -318,6 +372,7 @@ export default {
         switch(this.popupShowTimeSign){
             case 'recordTime':
                 this.bankLoanInfo.advanceInstitutionDate=dayjs(this.currentDate).format('YYYY-MM-DD');
+                this.errorMsg.advanceInstitutionDate='';
                 break;
             case 'actualLendTime':
                 this.bankLoanInfo.factLoanDate=dayjs(this.currentDate).format('YYYY-MM-DD');
@@ -340,8 +395,9 @@ export default {
             }
             const data=await loanInfoDetail(para);
             if(data.code==200){
-                this.projectId=data.data.borrowerInfo.projectId;
-                this.getProjectInfo(this.projectId);
+                this.bankLoanInfo=data.data.bankLoanInfo;
+                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD'):'';
+                this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){
             console.log(err)
@@ -392,8 +448,46 @@ export default {
         });
         return name;
     },
+    verifyComments(){
+        if(this.commentsDesc==''){
+            this.errMsg='请输入意见描述!'
+        }else{
+            this.errMsg=''
+        }
+        return this.errMsg;
+    },
     //--------------提交-------------
     async submit() {
+        let num=0;
+        for (let item in this.errorMsg) {
+            if(this.approvalConclusionDesc=='已放款'){
+                this.errorMsg[item]=this.returnMsg(item, this.bankLoanInfo[item]);
+                if(this.errorMsg[item]!==''){
+                    num++;
+                }
+            }else if(this.approvalConclusionDesc=='通过'){
+                if(item!=='factLoanAmt'){
+                    this.errorMsg[item]=this.returnMsg(item, this.bankLoanInfo[item]);
+                    if(this.errorMsg[item]!==''){
+                        num++;
+                    }
+                }
+            }else{
+                if(item=='advanceInstitutionDate'){
+                    this.errorMsg[item]=this.returnMsg(item, this.bankLoanInfo[item]);
+                    if(this.errorMsg[item]!==''){
+                        num++;
+                    }
+                }
+            }
+        }
+        var verify=this.verifyComments();
+        if(num!==0){
+            return;
+        }
+        if(verify!==''){
+            return;
+        }
         try{  
             let para={};
             let wfCommentInfo={};
@@ -404,7 +498,7 @@ export default {
                     conclusionCode:this.approvalConclusion,
                     customerNum:this.form.projectInfo.customerNum,
                     customerName:this.form.projectInfo.customerName,
-                    msgType:'WF_BANK_MAKE_LOAN_YWY',
+                    msgType:'WF_BANK_MAKE_LOAN_CW',
                     isSendMsg:1,
                     receiver:this.form.projectInfo.clientManager.id,
                     projectNo:this.salesmanChecked?this.form.projectInfo.projectNo:'',
@@ -417,7 +511,7 @@ export default {
                     conclusionCode:this.approvalConclusion,
                     customerNum:this.form.projectInfo.customerNum,
                     customerName:this.form.projectInfo.customerName,
-                    msgType:'WF_BANK_MAKE_LOAN_YWY',
+                    msgType:'WF_BANK_MAKE_LOAN_CW',
                     isSendMsg:this.salesmanChecked?1:0,
                     receiver:this.form.projectInfo.clientManager.id,
                     projectNo:this.salesmanChecked?this.form.projectInfo.projectNo:'',
@@ -517,15 +611,32 @@ export default {
             console.log(e)
         }
     },
+    /**
+     * 识别
+    */
+    IdcardLoading(){
+        this.showScan=true;
+    },
+    //银行卡
+    discern(e){
+        this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
+            this.bankLoanInfo.repaymentBankCardNo = res.BANK_NUM || ''
+        })
+        this.showScan=false;
+    }
   },
   mounted() {
-    // this.params = this.$route.query;
-    // console.log(this.$route.query,'this.$route.query')
-    // this.businessKey=47,//Number(this.$route.query.info.businesskey),//||47;
-    // this.dealState=false,//this.$route.query.dealState==1?false:true || false;
+    this.params = {
+        info: this.getStringToObj(this.$route.query.info),
+        dealState: this.$route.query.dealState
+    };
+    this.businessKey=Number(this.params.info.businesskey);
+    this.dealState=this.params.dealState==1?false:true;
     this.getDictionaryData();
     this.getFinanceCashier();
-    
+    if(!this.dealState){
+       this.rulesForm("order-bankloan-zh");
+    }
   }
 };
 </script>

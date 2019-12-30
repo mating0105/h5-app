@@ -57,7 +57,7 @@
               </van-cell-group>
             </section>
           </card>
-          <div class="xh-submit">
+          <div class="xh-submit" style="padding:0 10px 10px 10px;">
             <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
           </div>
         </div>
@@ -102,7 +102,9 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
+import Cookies from 'js-cookie'
 import { getPaymentDetail, getDic, submitGo } from "@/api/payment";
+import { mapState } from "vuex";
 const Components = [
   Button,
   Row,
@@ -129,7 +131,9 @@ export default {
     return {
       activeName: "project",
       params: {}, //上个页面接收的数据
-      data: {},
+      data: {
+        projProjectInfo: {}
+      },
       meunRow: [
         {
           name: "项目基本信息",
@@ -159,7 +163,7 @@ export default {
           name: "GPS安装信息",
           key: 6,
           icon: "icon-gps.png",
-          url: "/vehicleList"
+          url: "/gpsurl"
         }
       ],
       show: false,
@@ -180,28 +184,56 @@ export default {
       conclusion: "", //审批结论
       message: "", //意见描述
       conclusionCode: "",
-      loading: false
+      loading: false,
+      accout:'',
     };
+  },
+  computed: {
+    ...mapState({
+      token: state => state.user.token
+    })
   },
   methods: {
     meunList(row) {
       this.params.dealState = "3";
-      this.$router.push({
-        name: row.url,
-        query: {
-          info: JSON.stringify(this.params.info),
-          dealState: this.params.dealState
-        }
-      });
+      if (row.url == "/paymentProjectInfo") {
+        this.$router.push({
+          path: row.url,
+          query: {
+            projectId: this.data.projBudgetList.projectId,
+            isView: "1"
+          }
+        });
+      } else if (row.url == "/gpsurl") {
+        this.$router.push({
+          path: row.url,
+          query: {
+            url: `http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`
+          }
+        });
+      } else {
+        this.$router.push({
+          path: row.url,
+          query: {
+            info: JSON.stringify(this.params.info),
+            dealState: this.params.dealState
+          }
+        });
+      }
     },
     loadData() {
+      this.loading = true;
       getPaymentDetail({
         projectId: this.params.info.projectId,
         businesskey: this.params.info.businesskey
       })
         .then(res => {
-          this.loading = false;
           this.data = res.data;
+          console.log(this.data.projProjectInfo.riskMeasure.gpsNum);
+          if (this.data.projProjectInfo.riskMeasure.gpsNum == "0") {
+            this.meunRow.splice(4, 1);
+          }
+          this.loading = false;
         })
         .catch(e => {
           this.loading = false;
@@ -268,6 +300,7 @@ export default {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
+    this.accout = Cookies.get('loginName');
     this.loadData(); //加载详情数据
   }
 };

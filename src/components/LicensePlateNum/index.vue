@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-19 18:39:30
+ * @LastEditTime : 2019-12-26 09:28:55
  -->
 
 <template>
@@ -13,9 +13,12 @@
       :arr="cacheNumArr"
       :first="cacheFirst"
       @click="clickShowKeyboard"
-      isScan
       @scanChange="scanChange"
+      isScan
+      :isNew="false"
+      v-if="isEdit"
     ></showList>
+    <div v-else>{{value}}</div>
     <div class="plate_number">
       <van-popup
         :overlay="true"
@@ -25,21 +28,12 @@
       >
         <div class="pop-content">
           <div class="operate-btn">
-            <div
-              @click.stop="closeKeyboard"
-              class="cancel"
-            >取消</div>
+            <div @click.stop="closeKeyboard" class="cancel">取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div
-              @click.stop="sub"
-              class="ok"
-            >确定</div>
+            <div @click.stop="sub" class="ok">确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList
-              :arr="numArr"
-              :first="first"
-            ></showList>
+            <showList :arr="numArr" :first="first"></showList>
           </div>
           <div class="plate_chinese_box">
             <!-- 点击对应的汉字，进行输入 -->
@@ -55,27 +49,15 @@
     </div>
     <!-- 英文 数字 键盘 -->
     <div class="allBoard">
-      <van-popup
-        position="bottom"
-        v-model="showAllBoard"
-      >
+      <van-popup position="bottom" v-model="showAllBoard">
         <div class="pop-content">
           <div class="operate-btn">
-            <div
-              @click.stop="closeKeyboard"
-              class="cancel"
-            >取消</div>
+            <div @click.stop="closeKeyboard" class="cancel">取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div
-              @click.stop="sub"
-              class="ok"
-            >确定</div>
+            <div @click.stop="sub" class="ok">确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList
-              :arr="numArr"
-              :first="first"
-            ></showList>
+            <showList :arr="numArr" :first="first"></showList>
           </div>
 
           <div class="plate_number_box">
@@ -97,8 +79,6 @@
 import Vue from "vue";
 import ShowList from "./showList";
 // 其他组件
-import { bridge } from "@/utils/bridge";
-// 其他组件
 import { Popup, Notify } from "vant";
 const Components = [Popup, Notify];
 
@@ -111,7 +91,14 @@ export default {
   props: {
     value: {
       type: [String, null, undefined]
-    }
+    },
+    type: {
+      type: String
+    },
+    isEdit:{
+       type: Boolean,
+       default:true
+    },
   },
   data() {
     return {
@@ -198,17 +185,21 @@ export default {
     };
   },
   watch: {
-    value(val) {
-      this.judgeCarNum();
+    value(val, oldValue) {
+      if (oldValue !== "") {
+        this.judgeCarNum(val);
+      } else {
+        this.judgeCarNum(val, true);
+      }
     }
   },
   mounted() {
-    this.judgeCarNum(true);
+    this.judgeCarNum(this.value, true);
   },
   methods: {
-    judgeCarNum(flag) {
-      if (this.value) {
-        const [first, ...numArr] = this.value.split("");
+    judgeCarNum(num, flag) {
+      if (num) {
+        const [first, ...numArr] = num.substr(0, 8).split("");
         this.first = first;
         this.numArr = numArr;
         if (flag) {
@@ -222,7 +213,7 @@ export default {
     },
     // 唤起键盘
     clickShowKeyboard() {
-      this.judgeCarNum();
+      this.judgeCarNum(this.value);
       if (!this.first) {
         this.showChinese = true;
       } else {
@@ -263,21 +254,27 @@ export default {
     },
     // OCR识别
     scanChange() {
-      // TODO
-      bridge.callhandler("vinOCR",null, data => {
-        console.log(1111,data)
+      this.$bridge.callHandler("plateOCR", null, data => {
+        const { PLATE_NUM: plateNum } = data;
+        this.judgeCarNum(plateNum, true);
+        this.$emit("input", plateNum);
+        this.$emit("licensePlateNumChange", {
+          value: plateNum,
+          type: this.type
+        });
       });
     },
     sub() {
       const first = this.first;
       const numArr = this.numArr;
       const combinate = `${first}${numArr.join("")}`;
-      if (combinate.length === 8) {
+      if (combinate.length === 7 || combinate.length === 8) {
         this.cacheFirst = first;
         this.cacheNumArr = numArr;
         this.$emit("input", combinate);
         this.$emit("licensePlateNumChange", {
-          value: combinate
+          value: combinate,
+          type: this.type
         });
         this.clear();
       } else {

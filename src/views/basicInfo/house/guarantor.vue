@@ -9,26 +9,27 @@
               name="plus"
               style="line-height: inherit;"
               @click="pathHouse"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <div class="xh-row">
         <div class="xh-row-col xh-swipe-button"  v-for="(i,index) in houseList" :key="index">
-          <van-swipe-cell :right-width="130">
-            <div class="xh-form-body">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
+            <div class="xh-form-body" @click="seeDetails(i)">
               <van-col span="24">
                 <van-col span="12">
                   <span class="xh-main xh-title">房产所有人：</span>
-                  <span class="xh-black">{{ i.cuGuaranteeName }}</span>
                 </van-col>
                 <van-col span="12" class="xh-text-right">
-                  <span class="xh-main">{{ i.houseTypeDesc }}</span>
+                  <span class="xh-black">{{ i.cuGuaranteeName }}</span>
+                  <van-tag color="#ee0a24">{{ i.houseTypeDesc }}</van-tag>
                 </van-col>
               </van-col>
               <van-col span="24" class="xh-top-10">
-                <span class="xh-main xh-title">房产所在地：</span>
-                <span class="xh-black">{{ i.provCityZon }}</span>
+                <van-col span="6" class="xh-main xh-title">房产所在地：</van-col>
+                <van-col span="18" class="xh-text-right">{{ i.provCityZon }}</van-col>
               </van-col>
             </div>
             <span slot="right">
@@ -62,7 +63,8 @@ import {
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 } from "vant";
 
 const Components = [
@@ -71,7 +73,8 @@ const Components = [
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 ];
 
 Components.forEach(item => {
@@ -81,7 +84,8 @@ export default {
   data() {
     return {
       houseList: [],
-      loading: false
+      loading: false,
+      isView: false
     }
   },
   computed: {
@@ -106,7 +110,7 @@ export default {
       return name;
     },
     pathHouse() {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addHouseGuarantor', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -128,11 +132,14 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, type: 1 } });
+      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addHouseGuarantor', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
-      this.loading = true;
       deleteGuaranteeHouse({
         id: rows.id
       }).then(res => {
@@ -140,15 +147,13 @@ export default {
           type: "success",
           message: res.msg
         });
-        this.loading = false;
         this.loadData();
-      }).catch(()=>{
-        this.loading = false;
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView == 0;
     this.loadData();
   }
 }

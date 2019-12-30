@@ -99,8 +99,82 @@ export function createNewProj(params) {
 // 是否出现终止
 export function isEndActive(params) {
   return request({
-    url: 'order/projProject/getProcesstype',
+    url: '/order/projProject/getProcesstype',
     method: 'get',
     params
   })
 }
+// 内勤 提交的接口
+export function postGetUserIds(params) {
+  return request({
+    url: '/order/projProject/getUserIds',
+    method: 'post',
+    data: params
+  })
+}
+// 内勤 提交的接口
+export function getAcceptList(params) {
+  return request({
+    url: '/order/projProject/chooseAccept',
+    method: 'get',
+    params
+  })
+}
+// 保存 风控措施
+export function postWindControl(params) {
+  return request({
+    url: '/order/project/saveRiskMeasureCondition',
+    method: 'post',
+    data: params
+  })
+}
+
+// 记录保存结果红点是否存在
+export function getIsSave(params) {
+  return request({
+    url: '/order/project/checkProjInfo',
+    method: 'post',
+    data: params
+  })
+}
+// 是否可报单
+export function getDeclaration(params) {
+  return request({
+    url: '/order/project/checkProj',
+    method: 'get',
+    params
+  })
+}
+// 新增车辆 
+export function setNewCar(params) {
+  return request({
+    url: '/order/project/saveCar',
+    method: 'post',
+    data: params
+  })
+}
+// 删除车辆 
+export function deleteCar(params) {
+  return request({
+    url: '/order/project/deleteCar',
+    method: 'post',
+    data: params
+  })
+}
+// 报单流程回退
+export function setProcessBack(params) {
+  return request({
+    url: '/order/projProject/returnTask',
+    method: 'post',
+    data: params
+  })
+}
+// 报单流程终止
+export function setProcessStop(params) {
+  return request({
+    url: '/order/creditProcess/stopTask',
+    method: 'get',
+    params
+  })
+}
+

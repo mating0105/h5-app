@@ -10,14 +10,18 @@
                 name="customerName"
                 v-model="formData.customerName"
                 clearable
-                required
+                :required="isView"
+                :disabled="!isView"
                 label="担保人姓名："
                 input-align="right"
-                placeholder="请输入担保人姓名"
+                label-width="100px"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
-                :error-message="errorMsg.loanPersonName"
-                right-icon="photograph"
-                @click-right-icon="OCRScan"
+                :error-message="errorMsg.customerName"
+                error-message-align="right"
+                :right-icon="isView?'photograph':''"
+                @click-right-icon="OCRScan(1)"
+                class="xh-right-icon"
               />
             </section>
             <section>
@@ -25,30 +29,38 @@
                 name="certificateNum"
                 v-model="formData.certificateNum"
                 clearable
-                required
+                :required="isView"
+                :disabled="!isView"
                 label="证件号码："
                 input-align="right"
-                placeholder="请输入证件号码"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.certificateNum"
+                error-message-align="right"
               />
             </section>
             <section>
               <van-cell
                 title="是否共债人："
-                required
-                is-link
+                :required="isView"
+                :is-link="isView"
                 :value="formData.isBondsDesc"
-                @click.native="loadList('是否供债人')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.isBonds"
+                @click.native="!isView?'':loadList('是否供债人')"
               />
             </section>
             <section>
               <van-cell
                 title="与客户关系："
-                required
-                is-link
+                :required="isView"
+                :is-link="isView"
                 :value="formData.relationCusDesc"
-                @click.native="loadList('与客户关系')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.relationCus"
+                @click.native="!isView?'':loadList('与客户关系')"
               />
             </section>
             <section>
@@ -56,94 +68,135 @@
                 name="contactPhone"
                 v-model="formData.contactPhone"
                 clearable
-                required
+                :required="isView"
+                :disabled="!isView"
                 label="联系电话："
                 input-align="right"
-                placeholder="请输入联系电话"
+              :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.contactPhone"
+                error-message-align="right"
               />
             </section>
             <section>
               <van-cell
                 title="文化程度："
-                required
-                is-link
+                :required="isView"
+                :is-link="isView"
                 :value="formData.levelEducationDesc"
-                @click.native="loadList('文化程度')"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.levelEducation"
+                @click.native="!isView?'':loadList('文化程度')"
+              />
+            </section>
+            <section>
+              <van-cell
+                title="单位性质："
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.unitChar"
+                :is-link="isView"
+                :value="formData.unitCharDesc"
+                @click.native="!isView?'':loadList('单位性质')"
               />
             </section>
             <section>
               <van-field
                 v-model="formData.primarySchool"
                 clearable
+                :disabled="!isView"
                 label="曾就读小学："
                 input-align="right"
-                placeholder="请输入曾就读小学"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
               <van-cell
                 title="户籍地址："
-                required
-                is-link
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.pProvCityZonId"
+                :is-link="isView"
                 :value="formData.pProvCityZon"
-                @click.native="loadList('户籍地址')"
+                @click.native="!isView?'':loadList('户籍地址')"
               />
             </section>
             <section>
               <van-cell
                 title="居住地："
-                required
-                is-link
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.rProvCityZonId"
+                :is-link="isView"
                 :value="formData.rProvCityZon"
-                @click.native="loadList('居住地')"
+                @click.native="!isView?'':loadList('居住地')"
               />
             </section>
             <section>
               <van-field
                 v-model="formData.spsRsdncDtlAdr"
-                required
+                :required="isView"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsRsdncDtlAdr"
+                error-message-align="right"
                 clearable
+                :disabled="!isView"
                 label="居住地详细地址："
+                label-width="130px"
                 input-align="right"
-                placeholder="请输入详细地址"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
               <van-cell
                 title="子女情况："
-                required
-                is-link
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.childrenSituation"
+                :is-link="isView"
                 :value="formData.childrenSituationDesc"
-                @click.native="loadList('子女情况')"
+                @click.native="!isView?'':loadList('子女情况')"
               />
             </section>
             <section v-if="formData.childrenSituation != '0'">
               <van-cell
                 title="子女上学情况："
-                required
-                is-link
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.schoolSituation"
+                :is-link="isView"
                 :value="formData.schoolSituationDesc"
-                @click.native="loadList('子女上学情况')"
+                @click.native="!isView?'':loadList('子女上学情况')"
               />
             </section>
             <section>
               <van-field
                 v-model="formData.localResidence"
                 clearable
+                type="number"
+                :disabled="!isView"
                 label="本地居住年限(年)："
+                label-width="120px"
                 input-align="right"
-                placeholder="请输入居住年限"
+              :placeholder="isView?'请填写':''"
               />
             </section>
             <section>
               <van-cell
                 title="婚姻状况："
-                required
-                is-link
+                :required="isView"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.marriage"
+                :is-link="isView"
                 :value="formData.marriageDesc"
-                @click.native="loadList('婚姻状况')"
+                @click.native="!isView?'':loadList('婚姻状况')"
               />
             </section>
           </van-col>
@@ -152,73 +205,85 @@
           <section>
             <van-field
               name="spsNm"
-              v-model="spsNm"
+              v-model="formData.spsNm"
               clearable
-              required
+              :required="isView"
+              :disabled="!isView"
               label="配偶姓名："
               input-align="right"
-              placeholder="请输入配偶姓名"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsNm"
-              right-icon="photograph"
-              @click-right-icon="OCRScan"
+              error-message-align="right"
+              :right-icon="isView?'photograph':''"
+              @click-right-icon="OCRScan(2)"
+              class="xh-right-icon"
             />
           </section>
           <section>
             <van-field
               name="spsCrdtNo"
-              v-model="spsCrdtNo"
+              v-model="formData.spsCrdtNo"
               clearable
-              required
+              :required="isView"
+              :disabled="!isView"
               label="配偶证件号码："
               input-align="right"
-              placeholder="请输入配偶证件号码"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCrdtNo"
+              error-message-align="right"
             />
           </section>
           <section>
             <van-field
               name="spsCtcTel"
-              v-model="spsCtcTel"
+              v-model="formData.spsCtcTel"
               clearable
-              required
+              :required="isView"
+              :disabled="!isView"
               label="配偶联系电话："
               input-align="right"
-              placeholder="请输入配偶联系电话"
+              :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.spsCtcTel"
+              error-message-align="right"
             />
           </section>
           <section>
             <van-cell
               title="配偶文化程度："
-              required
-              is-link
+              :required="isView"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.spsCltrDgr"
+              :is-link="isView"
               :value="formData.spsCltrDgrDesc"
-              @click.native="loadList('配偶文化程度')"
+              @click.native="!isView?'':loadList('配偶文化程度')"
             />
           </section>
           <section>
             <van-cell
               title="配偶单位性质："
-              required
-              is-link
+              :required="isView"
+              label-class="labelClass"
+              @blur.prevent="ruleMessge"
+              :label="errorMsg.spsUnitChar"
+              :is-link="isView"
               :value="formData.spsUnitCharDesc"
-              @click.native="loadList('配偶单位性质')"
+              @click.native="!isView?'':loadList('配偶单位性质')"
             />
           </section>
           </van-col>
         </van-row>
       </div>
       <!-- 保 存按钮 -->
-      <div class="xh-submit">
+      <div class="xh-submit" v-if="isView">
         <van-button
           size="large"
           class="xh-bg-main"
-          :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
           :loading="subLoading"
-          :disabled="subDisabled"
+          :disabled="subLoading"
           @click.native="custSubmit"
         >保 存</van-button>
       </div>
@@ -234,6 +299,8 @@
           @confirm="onConfirm"
         />
       </van-action-sheet>
+      <!-- 图片选择方式 -->
+      <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -259,6 +326,8 @@ import { getGuaranteeInfo, setGuaranteeInfo } from "@/api/client";
 import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
+// 校验
+import formValidator from '@/mixins/formValidator'
 import { mapState } from "vuex";
 const Components = [
   Dialog,
@@ -278,6 +347,7 @@ Components.forEach(item => {
 });
 
 export default {
+  mixins: [formValidator],
   components: {
     ViewPage,
     Provinces
@@ -290,8 +360,9 @@ export default {
   },
   data() {
     return {
-      isView: 0, // 是否查看
+      isView: false, // 是否查看
       loading: false,
+      show3: false,
       formData: {
         certificateNum: "",
         childrenSituation: "",
@@ -322,14 +393,9 @@ export default {
       rules: {}, //验证 方法
       // cpCertificateNum: cpCertificateNum,//身份证验证
       errorMsg: {
-        localResidence: "", //本地居住年限(年)
         spsRsdncDtlAdr: "", //居住地详细地址
-        spsNm: "", //配偶姓名
-        spsCrdtNo: "", //配偶证件号码
-        spsCtcTel: "", //配偶联系电话
         contactPhone: "", //联系电话
         primarySchool: "", //曾就读小学
-
         certificateNum: "",
         childrenSituation: "",
         customerName: "",
@@ -337,11 +403,10 @@ export default {
         isBonds: "",
         levelEducation: "",
         marriage: "",
-        pProvCityZonId: "",
-        rProvCityZonId: "",
         relationCus: "",
         schoolSituation: "",
-        unitChar: ""
+        rProvCityZonId: "",
+        pProvCityZonId: ""
       },
       selectShow: false, //下拉选择器显示
       selectLoading: true, //下拉选择 loading
@@ -349,22 +414,79 @@ export default {
       addressShow: false, // 城市下拉选择器显示
       columns: [], //待选择列表
       subLoading: false, //提交loading
-      subDisabled: false, //按钮禁用状态
       customerName: "", // 客户名字
       contactPhone: "", // 客户电话
       certificateNum: "", // 客户证件号码
       spsNm: "", // 客户配偶名字
       spsCtcTel: "", // 客户配偶电话
       spsCrdtNo: "", // 客户配偶证件号码
-      ruleData: {}
+      ruleData: {},
+      actions: [
+        { name: "相机扫描识别", value: "scan" },
+        { name: "相册导入识别", value: "album" }
+      ],
+      ocrType: ''
     };
   },
+  watch: {
+    'formData.marriage'(val) {
+      if(val == 2 || val == 4) {
+        this.errorMsg = {
+          spsRsdncDtlAdr: "", //居住地详细地址
+          spsNm: "", //配偶姓名
+          spsCrdtNo: "", //配偶证件号码
+          spsCtcTel: "", //配偶联系电话
+          contactPhone: "", //联系电话
+          primarySchool: "", //曾就读小学
+          certificateNum: "",
+          childrenSituation: "",
+          customerName: "",
+          emgrCtcpsnNm: "",
+          isBonds: "",
+          levelEducation: "",
+          marriage: "",
+          relationCus: "",
+          schoolSituation: "",
+          unitChar: "",
+          rProvCityZonId: "",
+          pProvCityZonId: ""
+        }
+      } else {
+        this.errorMsg = {
+          spsRsdncDtlAdr: "", //居住地详细地址
+          contactPhone: "", //联系电话
+          primarySchool: "", //曾就读小学
+          certificateNum: "",
+          childrenSituation: "",
+          customerName: "",
+          emgrCtcpsnNm: "",
+          isBonds: "",
+          levelEducation: "",
+          marriage: "",
+          relationCus: "",
+          schoolSituation: "",
+          rProvCityZonId: "",
+          pProvCityZonId: ""
+        }
+      }
+    }
+  },
   methods: {
-    OCRScan() {
-      bridge.callhandler("OCRScan", "1", data => {
-        this.$set(this, "spsNm", data.ID_NAME);
-        this.$set(this, "spsCrdtNo", data.ID_NUM);
-      });
+    onSelect(rows) {
+      this.$bridge.callHandler('idCardOCR', rows.value, (res) => {
+        if(this.ocrType == 1) {
+          this.formData.customerName = res.ID_NAME || '';
+          this.formData.certificateNum = res.ID_NUM || '';
+        } else {
+          this.formData.spsNm = res.ID_NAME || '';
+          this.formData.spsCrdtNo = res.ID_NUM || '';
+        }
+        this.show3 = false;
+      })
+    },
+    OCRScan(type) {
+      this.ocrType = type;
+      this.show3 = true;
     },
     // 字典转换
     returnText(n, val) {
@@ -391,6 +513,10 @@ export default {
           this.columns = this.wordbook.DegreeOfEducation;
           this.selectShow = true;
           break;
+        case "单位性质":
+          this.columns = this.wordbook.unit_Property;
+          this.selectShow = true;
+          break;
         case "户籍地址":
           this.addressShow = true;
           break;
@@ -407,6 +533,14 @@ export default {
           break;
         case "婚姻状况":
           this.columns = this.wordbook.marriage_type;
+          this.selectShow = true;
+          break;
+        case "配偶文化程度":
+          this.columns = this.wordbook.DegreeOfEducation;
+          this.selectShow = true;
+          break;
+        case "配偶单位性质":
+          this.columns = this.wordbook.unit_Property;
           this.selectShow = true;
           break;
       }
@@ -437,6 +571,18 @@ export default {
           this.formData.marriageDesc = rows.label;
           this.formData.marriage = rows.value;
           break;
+        case "单位性质":
+          this.formData.unitCharDesc = rows.label;
+          this.formData.unitChar = rows.value;
+          break;
+        case "配偶文化程度":
+          this.formData.spsCltrDgrDesc = rows.label;
+          this.formData.spsCltrDgr = rows.value;
+          break;
+        case "配偶单位性质":
+          this.formData.spsUnitCharDesc = rows.label;
+          this.formData.spsUnitChar = rows.value;
+          break;
       }
       this.selectShow = false;
     },
@@ -461,30 +607,29 @@ export default {
     },
     subMit() {
       this.subLoading = true;
-      this.subDisabled = true;
       setGuaranteeInfo(this.subData).then(res => {
-        try {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.$router.go(-1);
-        } catch(t) {
-          console.log(t);
-        }
-        
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
         this.subLoading = false;
-        this.subDisabled = false;
+        this.$router.go(-1);
+      }).catch(()=>{
+        this.subLoading = false;
       });
     },
 
-    // submit
+    // 保存
     custSubmit() {
-      let sub1 = false,
-        sub2 = false,
-        errNum = 0;
+      let num = 0;
       for (let item in this.errorMsg) {
-        this.errorMsg[item] ? errNum++ : "";
+        this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
       }
       this.subData = {
         ...this.formData,
@@ -498,75 +643,7 @@ export default {
           : "",
         projectId: this.params.projectId
       };
-
       this.subMit();
-    },
-    // 有接口验证的时候
-    urlRules(urls, rows) {
-      let param = rows.params.split(",");
-      let obj = {};
-      param.forEach(t => {
-        obj[t] = this.formData[t];
-      });
-      requestUrl.getList(urls, obj, "soa").then(res => {
-        if (res.data.code === 200) {
-          let { message } = res.data.data;
-          this.errorMsg[rows.field] = message;
-        } else {
-          this.$toast(res.data.msg);
-        }
-      });
-    },
-    // 验证值
-    returnMsg(name, value) {
-      if (this.ruleData[name]) {
-        let infoObj = this.ruleData[name];
-        let error = ""; // 错误信息
-        if (infoObj.mustFill) {
-          if (value == "" || value === undefined || value === null) {
-            error = "必填项，不能为空";
-          }
-        } else {
-          if (value == "" || value === undefined || value === null) {
-            error = "";
-          }
-        }
-        if (infoObj.regular.length > 0) {
-          for (let i = 0; i < infoObj.regular.length; i += 1) {
-            const { rule, message } = infoObj.regular[i];
-            const reg = new RegExp(rule);
-            if (!reg.test(value)) {
-              error = message;
-            } else {
-              if (infoObj.urlSuffix) {
-                this.urlRules(infoObj.urlSuffix, infoObj);
-              }
-            }
-          }
-        }
-        return error;
-      }
-    },
-    ruleMessge(e) {
-      let name = e.target.name;
-      let val = e.target.value;
-      this.errorMsg[name] = this.returnMsg(name, val);
-    },
-    // 获取验证信息
-    rulesForm() {
-      requestUrl
-        .getList(
-          "/manage/regularConfig/getRegularByServer",
-          { serverName: "order/viceProj" },
-          "soa"
-        )
-        .then(res => {
-          if (res.data.code === 200) {
-            this.ruleData = res.data.data;
-          } else {
-            this.$toast(res.data.message);
-          }
-        });
     },
     // 获取新信息
     loadClient() {
@@ -575,46 +652,60 @@ export default {
       };
       this.loading = true;
       getGuaranteeInfo(obj).then(res => {
-        const { code, data, msg } = res;
+        const { data } = res;
         try {
-          this.formData = res.data;
-          // this.formData.birthday = toUserCard(this.formData.certificateNum, 1);
+          this.formData = data;
           this.formData.isBondsDesc = this.returnText(
             "yes_no",
-            this.formData.isBonds
+            data.isBonds
           );
           this.formData.relationCusDesc = this.returnText(
             "relation_Cus",
-            this.formData.relationCus
+            data.relationCus
           );
           this.formData.marriageDesc = this.returnText(
             "marriage_type",
-            this.formData.marriage
+            data.marriage
           );
           this.formData.levelEducationDesc = this.returnText(
             "DegreeOfEducation",
-            this.formData.levelEducation
+            data.levelEducation
           );
           this.formData.childrenSituationDesc = this.returnText(
             "children",
-            this.formData.childrenSituation
+            data.childrenSituation
           );
           this.formData.schoolSituationDesc = this.returnText(
             "school_Situation",
-            this.formData.schoolSituation
+            data.schoolSituation
           );
           this.formData.spsCltrDgrDesc = this.returnText(
             "DegreeOfEducation",
-            this.formData.spsCltrDgr
+            data.spsCltrDgr
           );
           this.formData.unitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.unitChar
+            data.unitChar
           );
           this.formData.spsUnitCharDesc = this.returnText(
             "unit_Property",
-            this.formData.spsUnitChar
+            data.spsUnitChar
           );
+
+          this.formData.spsCltrDgrDesc = this.returnText(
+            "DegreeOfEducation",
+            data.spsCltrDgr
+          );
+          this.formData.spsUnitCharDesc = this.returnText(
+            "unit_Property",
+            data.spsUnitChar
+          );
+          this.formData.unitCharDesc = this.returnText(
+            "unit_Property",
+            data.unitChar
+          );
+          this.formData.pProvCityZonId = data.pProvCityZonCode;
+          this.formData.rProvCityZonId = data.rProvCityZonCode;
           this.loading = false;
         } catch {
           this.loading = false;
@@ -624,10 +715,11 @@ export default {
   },
   created() {
     this.params = this.$route.query;
-    if (this.params.type == 1) {
-      this.isView = this.params.type;
+    this.isView = this.params.isView == 0;
+    if (this.params.id) {
       this.loadClient();
     }
+    this.rulesForm("order/cuGuarantee");
   }
 };
 </script>

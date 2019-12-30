@@ -14,7 +14,7 @@
                        placeholder="请输入"/>
         </Card>
 
-        <Card style="margin-top: 1rem;">
+        <Card style="margin-top: 1rem;" v-if="dataList.carInfos && dataList.carInfos.length">
             <template v-slot:header>
                 车辆信息
             </template>
@@ -40,7 +40,7 @@
         </Card>
 
 
-        <Card style="margin-top: 1rem;">
+        <Card style="margin-top: 1rem;" v-if="perInfoList.length">
             <template v-slot:header>
                 征信客户
             </template>

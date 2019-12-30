@@ -39,14 +39,28 @@
   import Card from '@/components/card';
   import imageList from '@/components/imageList'
   import result from '../viewCompoents/result'
-  import { Field, Button, ActionSheet, Popup, Toast } from 'vant'
+  import { Field, Button, ActionSheet, Popup, Toast, Dialog } from 'vant'
   import Vue from 'vue'
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
   import { reply, bankReply } from '@/api/bigData'
   import _ from 'lodash'
 
-  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
+  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Dialog)
+  const bank = {
+    joiDebtorSpouse: ['0205'],//共债人配偶
+    borrowerSpouse: ['0203'],//借款人配偶
+    security: ['0206'],//担保人
+    borrower: ['0202'],//借款人
+    joiDebtor: ['0204'],//共债人
+  }
+  const bigData = {
+    joiDebtorSpouse: ['0210'],//共债人配偶
+    borrowerSpouse: ['0208'],//借款人配偶
+    security: ['0211'],//担保人
+    borrower: ['0207'],//借款人
+    joiDebtor: ['0209'],//共债人
+  }
 
   export default {
     name: "creditNextStep",
@@ -64,13 +78,7 @@
           minHeight: 80
         },
         users: [],
-        obj: {
-          joiDebtorSpouse: ['0114', '0115', '0116', '2004'],//共债人配偶
-          borrowerSpouse: ['0105', '0106', '0107', '0108', '2002', '0203'],//借款人配偶
-          security: ['0120', '0117', '0118', '0119', '2005'],//担保人
-          borrower: ['0101', '0102', '0103', '0104', '2001', '0202'],//借款人
-          joiDebtor: ['0109', '0110', '0111', '0112', '2003'],//共债人
-        },
+        obj: {},
         edit: true,
         form: {},
         surDtlList: null,
@@ -90,6 +98,9 @@
           })
         }
         return obj
+      },
+      type () {
+        return this.isBank ? 'creditResult' : 'bigDataResult'
       }
     },
     methods: {
@@ -142,6 +153,11 @@
           const form = data.cuCreditRegister
           form.surDtlList = data.cuCreditRegister.surDtlList.reverse()
           const users = _.cloneDeep(form.surDtlList)
+          if (this.isBank) {
+            this.obj = bank
+          } else {
+            this.obj = bigData
+          }
           users.forEach(item => {
             item.dataList = []
             const arr = this.obj[item.creditObjectType]
@@ -158,30 +174,76 @@
           console.log(e)
         }
       },
+      checkCar () {
+        let flag = true
+        if (this.form.carInfos.length) {
+          this.form.carInfos.forEach(item => {
+            if (item.carNature === 'old_car' && !item.evaluatingPrice) {
+              flag = false
+            }
+          })
+        }
+        return flag
+      },
+      checkResult () {
+        let flag = true
+        if (!this.surDtlList) {
+          return
+        }
+        this.surDtlList.forEach(item => {
+          if (!item[this.type]) {
+            flag = false
+          }
+        })
+        return flag
+      },
       async submit () {
         try {
-          this.loading = true
+          if(!this.checkResult()) {
+            Toast.fail('未选择征信结果!')
+            return
+          }
           if (this.isBank) {
-            const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
-            await bankReply(params)
-            this.loading = false
-            this.$nextTick(() => {
-              Toast.success('提交成功')
-            })
-            this.$nextTick(() => {
-              this.$router.push('/lendProcessList')//todo
-            })
+            if (!this.checkCar()) {
+              Dialog.confirm({
+                title: '提示',
+                message: '暂无二手车评估价，确定提交流程吗？'
+              }).then(() => {
+                this.loading = true
+                this.submitBank()
+              }).catch(() => {
+                //
+              });
+            } else {
+              this.submitBank()
+            }
           } else {
+            this.loading = true
             await reply(this.form.surDtlList)
             this.loading = false
             this.$nextTick(() => {
               Toast.success('提交成功')
             })
             this.$nextTick(() => {
-              this.$router.push('/bigDataQueryList')//todo
+              this.$router.push('/bigDataQueryList')
             })
           }
-
+        } catch (e) {
+          this.loading = false
+          console.log(e)
+        }
+      },
+      async submitBank () {
+        try {
+          const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
+          await bankReply(params)
+          this.loading = false
+          this.$nextTick(() => {
+            Toast.success('提交成功')
+          })
+          this.$nextTick(() => {
+            this.$router.push('/lendProcessList')
+          })
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -190,7 +252,7 @@
     },
     mounted () {
       this.getCreditInfo()
-      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      // this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isBank = Boolean(this.$route.query.isBank)
     }
   }

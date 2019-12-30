@@ -1,34 +1,35 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <Card :bodyPadding="true">
       <template v-slot:header>
         <section class="xh-plus">
-          <van-cell title="家庭收入(*请侧滑进行编辑或删除)">
+          <van-cell title="家庭收入">
             <van-icon
               slot="right-icon"
               name="plus"
               style="line-height: inherit;"
               @click="pullUrl"
+              v-if="isView"
             />
           </van-cell>
         </section>
       </template>
       <van-row class="xh-row">
-        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index" @click.native="pushUrl(i)">
-          <van-swipe-cell :right-width="130">
-            <van-col span="24">
+        <van-col span="24" class="xh-row-col xh-swipe-button" v-for="(i,index) in homelist" :key="index">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
+            <van-col span="24" @click.native="seeDetails(i)">
               <van-col span="24">
                 <van-col span="12">
                   <span class="xh-main xh-title">收入人：</span>
-                  <span class="xh-black">{{ i.incomePeopleDesc}}</span>
                 </van-col>
                 <van-col span="12" class="xh-text-right">
-                  <span class="xh-main">{{ i.occupationalStatusDesc }}</span>
+                  <span class="xh-black">{{ i.incomePeopleDesc}}</span>
+                  <van-tag color="#ee0a24">{{ i.occupationalStatusDesc }}</van-tag>
                 </van-col>
               </van-col>
               <van-col span="24" class="xh-top-10">
-                <span class="xh-main xh-title">单位名称：</span>
-                <span class="xh-black">{{ i.companyName }}</span>
+                <van-col span="6" class="xh-main xh-title">单位名称：</van-col>
+                <van-col span="18" class="xh-text-right">{{ i.companyName }}</van-col>
               </van-col>
             </van-col>
             <span slot="right">
@@ -63,7 +64,8 @@ import {
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 } from "vant";
 
 const Components = [
@@ -72,7 +74,8 @@ const Components = [
   Icon,
   Cell,
   SwipeCell,
-  Button
+  Button,
+  Tag
 ];
 
 Components.forEach(item => {
@@ -93,7 +96,8 @@ export default {
     return {
       homelist: [],
       params: {},
-
+      isView: false,
+      loading: false
     }
   },
   methods: {
@@ -111,51 +115,46 @@ export default {
       let dataList = {
         customerId: this.params.customerId
       };
+      this.loading = true;
       getIncomeList(dataList).then(res => {
-        if(res.code == 200) {
-          this.homelist = res.data;
-          this.homelist.forEach(t => {
-            t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
-            t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
-          });
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
-      })
+        this.homelist = res.data;
+        this.homelist.forEach(t => {
+          t.incomePeopleDesc = this.returnText('income_person', t.incomePeople);
+          t.occupationalStatusDesc = this.returnText('OccupationalStatus', t.occupationalStatus);
+        });
+        this.loading = false;
+      }).catch(()=> {
+        this.loading = false;
+      });
     },
     // 跳转新增
     pullUrl(){
-      this.$router.push({ path: '/addIncome', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addIncome', query: {...this.params, isView: 0 } });
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.id, type: 1 } });
+      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addIncome', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
       deleteIncomeList({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView == 0;
     this.loadData();
   },
 }

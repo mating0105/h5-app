@@ -78,7 +78,7 @@ export function getUsers(params) {
  */
 export function submitCredit(params) {
   return request({
-    url: 'order/creditProcess/submitCredit',
+    url: '/order/creditProcess/submitCredit',
     method: 'post',
     data: params
   })
@@ -90,8 +90,20 @@ export function submitCredit(params) {
  */
 export function stopTask(params) {
   return request({
-    url: 'order/creditProcess/stopTask',
+    url: '/order/creditProcess/stopTask',
     method: 'get',
     params
+  })
+}
+
+/**
+ * 重新发起征信检测
+ * @param params
+ */
+export function checkedReregisterMob(params) {
+  return request({
+    url: '/order/creditInfo/checkedReregisterMob',
+    method: 'post',
+    data: params
   })
 }

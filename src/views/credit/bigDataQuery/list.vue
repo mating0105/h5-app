@@ -1,11 +1,12 @@
 <template>
-    <ViewPage>
+    <ViewPage :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
+                    @cancel="onCancel"
             />
         </template>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -19,10 +20,10 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
-                                <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
+                                <van-cell :title="item.customerNum" value="" icon="notes-o"></van-cell>
                             </section>
                         </template>
                         <van-row style="min-height: 10rem">
@@ -60,7 +61,7 @@
                                         class="xh-radius"
                                         style="border-radius: 6px;"
                                         @click.stop="startForm(item)"
-                                >查询大数据征信
+                                >{{item.bigDataResult ? '重新' : ''}}查询大数据征信
                                 </van-button>
                             </div>
                         </template>
@@ -132,19 +133,18 @@
         return name;
       },
       onLoad () {
-        this.loading = true;
+        this.loading = !this.isLoading;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
-          setTimeout(() => {
-            data.result.forEach(t => {
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.params.pageIndex++;
-            // 数据全部加载完成
-            this.finished = this.list.length === data.totalCount;
-          }, 500);
+          data.result.forEach(t => {
+            this.list.push(t);
+          });
+          // 加载状态结束
+          this.loading = false;
+          this.params.pageIndex++;
+          // 数据全部加载完成
+          this.finished = this.list.length === data.totalCount;
+          this.isLoading = false;
         }).catch(() => {
           this.error = true
           this.loading = false
@@ -154,7 +154,13 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g,'');
         this.onLoad()
+      },
+      // 取消搜索
+      onCancel() {
+        this.params.searchKey = '';
+        this.onSearch();
       },
       startFormFn (item) {
         this.startForm(item, {edit: false})
@@ -169,13 +175,14 @@
       //下拉刷新
       onRefresh () {
         this.list = []
-        this.finished = false
         this.params.pageIndex = 1
-        this.onLoad();
-        this.loading = false;
+        if(this.finished) {
+          this.finished = false
+        } else {
+          this.onLoad()
+        }
         setTimeout(() => {
           Toast.success('刷新成功');
-          this.isLoading = false;
         }, 500);
       }
     },

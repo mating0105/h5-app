@@ -89,10 +89,11 @@
   //0112 共债人银行征信授权书
   //2003 共债人银行卡正反面
 
+  //0113 共债人配偶身份证正面
   //0114 共债人配偶身份证反面
   //0115 共债人配偶授权书
   //0116 共债人配偶银行征信授权书
-  //2004 共债人配偶英航卡正反面
+  //2004 共债人配偶银行卡正反面
 
   export default {
     name: "creditNextStep",
@@ -112,15 +113,16 @@
         },
         users: [],
         obj: {
-          joiDebtorSpouse: ['0114', '0115', '0116', '2004'],//共债人配偶
-          borrowerSpouse: ['0105', '0106', '0107', '0108', '2002', '0203'],//借款人配偶
+          joiDebtorSpouse: ['0113', '0114', '0115', '0116', '2004'],//共债人配偶
+          borrowerSpouse: ['0105', '0106', '0107', '0108', '2002'],//借款人配偶
           security: ['0120', '0117', '0118', '0119', '2005'],//担保人
-          borrower: ['0101', '0102', '0103', '0104', '2001', '0202'],//借款人
+          borrower: ['0101', '0102', '0103', '0104', '2001'],//借款人
           joiDebtor: ['0109', '0110', '0111', '0112', '2003'],//共债人
         },
         changeUserList: [],
         showUser: false,
-        taskData: {}
+        taskData: {},
+        whiteList: []
       }
     },
     computed: {
@@ -161,9 +163,10 @@
           data.forEach(item => {
             item.declare = declare;
           })
+          const isRequire = !this.whiteList.includes(documentType)
           obj.dataList.push({
             declare: declare,//图片描述
-            isRequire: true,//*是否必须
+            isRequire: isRequire,//*是否必须
             deletable: true,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.customerNum,

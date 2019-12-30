@@ -10,15 +10,24 @@
                 <div class="xh-card-padding">
                   <van-row class="xh-top-10">
                     <van-col :span="8">客户姓名：</van-col>
-                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.customerName?params.customerName:'--' }}</van-col>
+                    <van-col
+                      :span="16"
+                      class="xh-text-right xh-ellipsis"
+                    >{{ params.customerName?params.customerName:'--' }}</van-col>
                   </van-row>
                   <van-row class="xh-top-10">
                     <van-col :span="8">联系电话：</van-col>
-                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.contactPhone?params.contactPhone:'--' }}</van-col>
+                    <van-col
+                      :span="16"
+                      class="xh-text-right xh-ellipsis"
+                    >{{ params.contactPhone?params.contactPhone:'--' }}</van-col>
                   </van-row>
                   <van-row class="xh-top-10">
                     <van-col :span="8">证件号码：</van-col>
-                    <van-col :span="16" class="xh-text-right xh-ellipsis">{{ params.certificateNum?params.certificateNum + ' | 身份证':'--' }}</van-col>
+                    <van-col
+                      :span="16"
+                      class="xh-text-right van-ellipsis"
+                    >{{ params.certificateNum?params.certificateNum + ' | 身份证':'--' }}</van-col>
                   </van-row>
                 </div>
               </template>
@@ -34,64 +43,155 @@
                 <div class="xh-icon">
                   <img :src="require('./../../assets/old_images/'+i.icon)" alt />
                 </div>
-                <div class="xh-ellipsis xh-top-10" style="font-size:14px;">{{ i.name }}</div>
+                <div class="van-multi-ellipsis--l2 xh-top-10" style="font-size:14px;">{{ i.name }}</div>
                 <!-- 徽章 -->
-                <xh-badge toTop="15" toRight="30"></xh-badge>
+                <xh-badge toTop="15" toRight="30" v-if="i.show == 1"></xh-badge>
               </van-col>
             </van-row>
           </div>
 
-          <!-- 审批结论 -->
+          <div v-if="isView">
+            <!-- 审批结论 -->
 
-          <!-- <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10" v-if="params.activityId == 'WF_PROJ_APPR_01_T04'"> -->
-          <van-row class="xh-page-mian xh-card-box xh-radius xh-top-10">
-            <van-cell :border="false" title="审批结论" title-class="xh-blue" is-link :value="completionDesc" @click="linkCode"/>
-          </van-row>
-
-          <controlMeasure></controlMeasure>
-
-          <!-- 意见 -->
-          <Card style="margin: 10px 0;">
-            <template v-slot:header>意见描述</template>
-            <section>
-              <van-cell-group :border="false">
-                <van-field
-                  v-model="message"
-                  rows="2"
-                  autosize
-                  label-width="0"
-                  :border="false"
-                  type="textarea"
-                  maxlength="200"
-                  placeholder="请输入"
-                  show-word-limit
-                />
-              </van-cell-group>
-            </section>
-          </Card>
-          <!-- 有终止的提交按钮 -->
-          <div class="xh-submit" v-if="isActive">
-            <van-row>
-              <van-col :span="4"><van-button size="large" type="default" style="color: #000;">终止</van-button></van-col>
-              <van-col :span="20"><van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button></van-col>
+            <van-row
+              class="xh-page-mian xh-card-box xh-radius xh-top-10"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
+            >
+              <van-cell
+                :border="false"
+                title="审批结论"
+                title-class="xh-blue"
+                is-link
+                :value="completionDesc"
+                @click="linkCode"
+              />
             </van-row>
-          </div>
-          <!-- 提交按钮 -->
-          <div class="xh-submit" v-else>
-            <van-button size="large" class="xh-bg-main" @click="submitTask" :loading="loading">提 交</van-button>
+
+            <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'">
+              <Card style="margin: 10px 0;">
+                <template slot="header">风控措施</template>
+                <van-row>
+                  <van-cell-group :border="false">
+                    <van-cell
+                      title="手动评级"
+                      required
+                      is-link
+                      :border="false"
+                      :value="returnText('GradeManual', windControl.gradeManual)"
+                      @click="params.dealState != '1' ? '':loadType('手动评级', 'GradeManual')"
+                    />
+                    <van-cell title="是否加入关注名单" :border="false" required>
+                      <radio
+                        v-model="windControl.isFoucusList"
+                        :disabled="params.dealState != '1'"
+                      >
+                        <radio-item label="1">是</radio-item>
+                        <radio-item label="0">否</radio-item>
+                      </radio>
+                    </van-cell>
+                    <van-cell
+                      title="风控条件"
+                      required
+                      is-link
+                      :border="false"
+                      :value="returnText('risk_condition', windControl.riskCondition)"
+                      @click="params.dealState != '1' ? '':loadType('风控条件', 'risk_condition')"
+                    />
+                    <van-cell title="是否上门" :border="false" required>
+                      <radio
+                        v-model="windControl.wthrDtd"
+                        :disabled="params.dealState != '1'"
+                      >
+                        <radio-item label="1">是</radio-item>
+                        <radio-item label="0">否</radio-item>
+                      </radio>
+                    </van-cell>
+                    <van-field
+                      v-model="windControl.gpsNum"
+                      :disabled="params.dealState != '1'"
+                      required
+                      clearable
+                      type="number"
+                      :border="false"
+                      label="GPS数量(台)"
+                      input-align="right"
+                      placeholder="请输入"
+                      @blur.prevent="()=>{ }"
+                    />
+                  </van-cell-group>
+                </van-row>
+              </Card>
+            </div>
+
+            <!-- 审批官选择做单文员 -->
+            <van-row
+              class="xh-page-mian xh-card-box xh-radius xh-top-10"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'"
+            >
+              <van-cell
+                :border="false"
+                title="选择做单文员"
+                title-class="xh-blue"
+                :is-link="isName"
+                :value="windControl.acceptPersonlDesc"
+                @click="isName?acceptCode():false"
+              />
+            </van-row>
+
+            <!-- 意见 -->
+            <Card style="margin: 10px 0;">
+              <template v-slot:header>意见描述</template>
+              <section>
+                <van-cell-group :border="false">
+                  <van-field
+                    v-model="message"
+                    rows="2"
+                    autosize
+                    label-width="0"
+                    :border="false"
+                    type="textarea"
+                    maxlength="200"
+                    placeholder="请输入"
+                    show-word-limit
+                  />
+                </van-cell-group>
+              </section>
+            </Card>
+            <!-- 有终止的提交按钮 -->
+            <div class="xh-submit" v-if="isActive">
+              <van-row>
+                <van-col :span="4">
+                  <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;" @click="submitStop">终止</van-button>
+                </van-col>
+                <van-col :span="20">
+                  <van-button
+                    size="large"
+                    class="xh-bg-main"
+                    @click="submitTask"
+                    :loading="dLoading"
+                    :disabled="dLoading"
+                  >提 交</van-button>
+                </van-col>
+              </van-row>
+            </div>
+            <!-- 提交按钮 -->
+            <div class="xh-submit" v-else>
+              <van-button size="large" class="xh-bg-main" @click="submitTask" :disabled="dLoading" :loading="dLoading">提 交</van-button>
+            </div>
           </div>
         </div>
       </van-tab>
       <van-tab title="征信信息" name="2">
-        <creditInfoTable title="人行征信" :dataList="surDtlList" type="creditResult"></creditInfoTable>
-        <creditInfoTable title="互联网查询" :dataList="surDtlList" type="bigDataResult"></creditInfoTable>
+        <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+        <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3">
-        <ApprovalRecord></ApprovalRecord>
+        <ApprovalRecord :requestParams="{
+          businessKey: params.projectId,
+          businessType: 11
+        }"></ApprovalRecord>
       </van-tab>
     </van-tabs>
-
-    
 
     <!-- 弹出选项 -->
     <van-action-sheet get-container="#app" v-model="showSheet" class="xh-list">
@@ -110,21 +210,55 @@
 </template>
 <script>
 import Vue from "vue";
-import { Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker } from "vant";
+import {
+  Button,
+  Row,
+  Col,
+  Cell,
+  Tab,
+  Tabs,
+  Field,
+  CellGroup,
+  ActionSheet,
+  Picker,
+  Dialog
+} from "vant";
 import {
   setProjectTask,
   setProjectProcess,
-  isEndActive
+  isEndActive,
+  postGetUserIds,
+  getProjectInfo,
+  getAcceptList,
+  postWindControl,
+  getIsSave,
+  setProcessBack,
+  setProcessStop
 } from "@/api/project";
+import { getCreditInfo } from '@/api/credit'
+import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
 import Card from "@/components/card/index";
-import ViewPage from '@/layout/components/ViewPage';
-import ApprovalRecord from '@/views/basicInfo/approvalRecord';
-import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
-import controlMeasure from '@/views/basicInfo/payment/controlMeasure';
+import ViewPage from "@/layout/components/ViewPage";
+import ApprovalRecord from "@/views/basicInfo/approvalRecord";
+import creditInfoTable from "@/views/credit/viewCompoents/creditInfoTable";
+import controlMeasure from "@/views/basicInfo/payment/controlMeasure";
+import radio from "@/components/radio";
+import radioItem from "@/components/radio/radioItem";
 
-const Components = [ Button, Row, Col, Cell, Tab, Tabs, Field, CellGroup, ActionSheet, Picker ];
+const Components = [
+  Button,
+  Row,
+  Col,
+  Cell,
+  Tab,
+  Tabs,
+  Field,
+  CellGroup,
+  ActionSheet,
+  Picker
+];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -138,10 +272,26 @@ export default {
     Card,
     ApprovalRecord,
     creditInfoTable,
-    controlMeasure
+    controlMeasure,
+    radio,
+    radioItem
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    })
+  },
+  watch: {
+    activeName(val) {
+      if(val == 2) {
+        this.getCreditInfo();
+      }
+    }
   },
   data() {
     return {
+      isView: false,
       activeName: "1",
       selected: 1,
       showSheet: false,
@@ -151,73 +301,83 @@ export default {
           name: "项目基本信息",
           key: 1,
           icon: "icon-project.png",
-          url: "/projectInfo"
+          url: "/projectInfo",
+          show: 0
         },
         {
           name: "客户及配偶",
           key: 2,
           icon: "icon-spouse.png",
-          url: "/clientIndex"
+          url: "/clientIndex",
+          show: 0
         },
         {
           name: "紧急联系人",
           key: 3,
           icon: "icon-contact.png",
-          url: "/contactPerson"
+          url: "/contactPerson",
+          show: 0
         },
         {
           name: "新增房产信息",
           key: 4,
           icon: "icon-house.png",
-          url: "/houseUser"
+          url: "/houseUser",
+          show: 0
         },
         {
           name: "家庭收入",
           key: 5,
           icon: "icon-income.png",
-          url: "/incomeFamily"
+          url: "/incomeFamily",
+          show: 0
         },
         {
           name: "名下车辆",
           key: 6,
           icon: "icon-carinfo.png",
-          url: "/vehicleList"
+          url: "/vehicleList",
+          show: 0
         },
         {
           name: "担保人信息",
           key: 7,
           icon: "icon-guarantor.png",
-          url: "/guarantor"
+          url: "/guarantor",
+          show: 0
         },
         {
           name: "担保人房产",
           key: 8,
           icon: "icon-guarantor.png",
-          url: "/houseGuarantor"
+          url: "/houseGuarantor",
+          show: 0
         },
         {
           name: "担保人收入信息",
           key: 9,
           icon: "icon-guarantorhouse.png",
-          url: "/incomeGuarantor"
+          url: "/incomeGuarantor",
+          show: 0
         },
         {
           name: "调查结论",
           key: 10,
           icon: "icon-findings.png",
-          url: "/survey"
+          url: "/survey",
+          show: 0
         },
         {
           name: "相关文档",
           key: 11,
           icon: "icon-filed.png",
-          url: "/proDocument"
+          url: "/proDocument",
+          show: 0
         }
       ],
       params: {},
-      message: '',
+      message: "",
       postFrom: {
-        processedBy: "",
         businessKey: "",
         commentsDesc: "",
         conclusionCode: "01"
@@ -227,83 +387,205 @@ export default {
       showQRCode: false,
       qrCodeUrl: "",
       loading: false,
-      surDtlList: [],
+      dLoading: false, // 按钮loading
       completionList: [
-        { label: '通过', value: '01'},
-        { label: '退回', value: '03'},
-        { label: '拒绝', value: '04'}
+        { label: "通过", value: "01" },
+        { label: "退回", value: "03" },
+        { label: "拒绝", value: "04" }
       ],
-      completionDesc: '通过',
-      completion: '01', // 结论
-      typeTitle: '',
-      isActive: false
+      completionDesc: "通过",
+      completion: "01", // 结论
+      typeTitle: "",
+      isActive: false,
+
+      windControl: {}, // 获取风控措施信息
+      personlList: [], // 做单人员列表
+      dataList: { // 征信数据
+        investigateBank: '',
+        investigateBankName: '',
+        isInternetCredit: '',
+        carInfos: [],
+        surDtlList: []
+      },
+      isName: true, // 那个需求
     };
   },
   methods: {
-    handleClose() {
-      this.$toast("关闭!");
+    // 字典转换
+    returnText(n, val) {
+      let name;
+      this.wordbook[n].forEach(e => {
+        if (e.value == val) {
+          name = e.label;
+        }
+      });
+      return name;
     },
     confirm(row) {
-      if(this.typeTitle == '下一节点处理人') {
-        this.postFrom.processedBy = row.id;
-        this.postProcess();
-      } else {
-        this.completionDesc = row.label;
-        this.completion = row.value;
+      switch (this.typeTitle) {
+        case "下一节点处理人":
+          this.postFrom.processedBy = row.id;
+          this.postProcess();
+          break;
+        case "意见":
+          this.completionDesc = row.label;
+          this.completion = row.value;
+          break;
+        case "手动评级":
+          this.windControl.gradeManual = row.value;
+          break;
+        case "风控条件":
+          this.windControl.riskCondition = row.value;
+          break;
+        case "选择做单文员":
+          this.windControl.acceptPersonl = row.value;
+          this.windControl.acceptPersonlDesc = row.label;
+          break;
+        default:
+          break;
       }
       this.showSheet = false;
     },
     submitTask() {
-      if(this.message == '') {
+      this.dLoading = true;
+      switch (this.params.activityId) {
+        case "WF_PROJ_APPR_01_T01":
+          this.createTask();
+          break;
+        case "WF_PROJ_APPR_01_T04":
+          if (this.completion == "01") {
+            this.getUserIds();
+          } else {
+            this.postProcess();
+          }
+          break;
+        case "WF_PROJ_APPR_01_T52":
+          if (this.completion == "01") {
+            this.setWindControl();
+          } else {
+            this.postProcess();
+          }
+          break;
+        default:
+          this.createTask();
+          break;
+      }
+    },
+    // 第一个节点
+    createTask() {
+      if (this.message == "") {
         this.message = "同意";
       }
       let obj = {
         conclusionCode: "01",
         businessKey: this.params.projectId,
         commentsDesc: this.message
-      }
+      };
       setProjectTask(obj).then(res => {
-        if(res.code == 200) {
-          let objArr = [];
-          let { data } = res;
-          this.typeTitle = '下一节点处理人';
-          this.showSheet = true;
-          data.list.forEach(t => {
-            objArr.push({
-              ...t,
-              label: t.companyName+'-'+t.name
-            })
+        let objArr = [];
+        let { data } = res;
+        this.typeTitle = "下一节点处理人";
+        this.showSheet = true;
+        data.list.forEach(t => {
+          objArr.push({
+            ...t,
+            label: t.companyName + "-" + t.name
           });
-          this.columns = objArr;
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
+        });
+        this.columns = objArr;
+        this.dLoading = false;
+      }).catch(()=>{
+        this.dLoading = false;
+      });
+    },
+    // 内勤和审批官
+    getUserIds() {
+      if (this.completion != "01" && this.message == "") {
+        this.$toast("请填写您的意见");
+        return;
+      }
+      let obj = {
+        conclusionCode: this.completion,
+        businessKey: this.params.projectId,
+        commentsDesc: this.message
+      };
+      postGetUserIds(obj).then(res => {
+        let objArr = [];
+        let { data } = res;
+        this.typeTitle = "下一节点处理人";
+        this.showSheet = true;
+        data.list.forEach(t => {
+          objArr.push({
+            ...t,
+            label: t.companyName + "-" + t.name
           });
-        }
+        });
+        this.columns = objArr;
+        this.dLoading = false;
+      }).catch(()=>{
+        this.dLoading = false;
       });
     },
     // 提交流程
     postProcess() {
-      if(this.message == '') {
+      if (this.completion != "01" && this.message == "") {
+        this.$toast("请填写您的意见");
+        this.dLoading = false;
+        return;
+      }
+      if (this.message == "") {
         this.postFrom.commentsDesc = "同意";
       } else {
         this.postFrom.commentsDesc = this.message;
       }
-      this.postFrom.businessKey = this.params.id;
-      // this.postFrom.businessKey = "2019121486";
-      setProjectProcess(this.postFrom).then(res => {
-        if(res.code == 200) {
+      this.postFrom.conclusionCode = this.completion;
+      this.postFrom.businessKey = this.params.projectId;
+      if(this.completion == '03') {
+        setProcessBack(this.postFrom).then(res => {
           this.$notify({
             type: "success",
             message: res.msg
           });
-        } else {
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      } else {
+        setProjectProcess(this.postFrom).then(res => {
           this.$notify({
-            type: "danger",
+            type: "success",
             message: res.msg
           });
-        }
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      }
+    },
+    // 流程终止 
+    submitStop() {
+      this.dLoading = true;
+      Dialog.confirm({
+        title: '确定终止项目报单吗？',
+        message: ''
+      }).then(() => {
+        setProcessStop({
+          businessKey: this.params.projectId,
+          businessType: 11
+        }).then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          this.$router.push("/lendProcessList");
+        }).catch(()=>{
+          this.dLoading = false;
+        });
+      }).catch(() => {
+        this.dLoading = false;
       });
     },
     meunList(row) {
@@ -311,7 +593,7 @@ export default {
     },
     // 其他情况弹出同意不同意
     linkCode() {
-      this.typeTitle = '意见';
+      this.typeTitle = "意见";
       this.showSheet = true;
       this.columns = this.completionList;
     },
@@ -320,44 +602,191 @@ export default {
       isEndActive({
         projId: this.params.projectId
       }).then(res => {
-        this.isActive = res.data == '05'?true:false;
+        this.isActive = res.data == "05" ? true : false;
       });
-    }
+    },
+    // 获取风控措施回显
+    loadData() {
+      getProjectInfo({
+        id: this.params.projectId
+      }).then(res => {
+        let { data } = res;
+        this.windControl = {
+          projId: data.projectInfo.projectId, //项目id
+          gradeManual: data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
+          riskCondition: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.riskCondition, //风控条件
+          gpsNum: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
+          wthrDtd: data.projectInfo.wthrDtd, //是否上门
+          isFoucusList: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.isFoucusList, //是否关注名单
+        }
+      });
+    },
+    // 获取做单文员
+    getAcceptPersonl() {
+      getAcceptList({
+        projId: this.params.projectId,
+        ename: 'AcceptOrdersClerk'
+      }).then(res => {
+        let { data } = res;
+        let arr = [];
+        if(data.list) {
+          data.list.forEach(t => {
+            arr.push({
+              value: t.id,
+              label: t.companyName + "-" + t.name
+            });
+          });
+        }
+        if(arr.length == 1) {
+          let obj = arr[0];
+          this.windControl.acceptPersonlDesc = obj.label;
+          this.windControl.acceptPersonl = obj.value;
+          this.isName = false;
+        } else {
+          this.personlList = arr;
+        }
+      })
+    },
+    // 保存风控
+    setWindControl () {
+      for(var i in this.windControl) {
+        if(this.windControl[i] == '' || this.windControl[i] == undefined || this.windControl[i] == null) {
+          this.$toast('带 * 必须填写完整, 且填写无误');
+          this.dLoading = false;
+          return
+        }
+      }
+      if(!this.windControl.acceptPersonl) {
+        this.$toast('您还没有选做单文员');
+        this.dLoading = false;
+        return
+      }
+      postWindControl(this.windControl).then(res => {
+        this.postProcess();
+      }).catch(()=>{
+        this.dLoading = false;
+      });
+    },
+    // 风控选择
+    loadType(title,name) {
+      this.typeTitle = title;
+      this.columns = this.wordbook[name];
+      this.showSheet = true;
+    },
+    // 选择做单文员
+    acceptCode() {
+      this.typeTitle = '选择做单文员';
+      this.columns = this.personlList;
+      this.showSheet = true;
+    },
+    // 记录保存结果红点是否存在
+    getIsSaveObj() {
+      getIsSave({
+        projectId: this.params.projectId
+      }).then(res => {
+        let { data } = res;
+        this.meunRow.forEach(t => {
+          switch (t.url) {
+            case '/projectInfo':
+              t.show = data.projectInfo;
+              break;
+            case '/clientIndex':
+              t.show = data.personalInfo;
+              break;
+            case '/contactPerson':
+              t.show = data.cuEmergencyContact;
+              break;
+            case '/houseUser':
+              t.show = data.customerHouse;
+              break;
+            case '/incomeFamily':
+              t.show = data.customerInco;
+              break;
+            // case '/vehicleList':
+            //   t.show = data.customerCar;
+            //   break;
+            // case '/guarantor':
+            //   t.show = data.cuGuarantee;
+            //   break;
+            // case '/houseGuarantor':
+            //   t.show = data.cuguaranteeHouse;
+            //   break;
+            // case '/incomeGuarantor':
+            //   t.show = data.cuguaranteeInco;
+            //   break; 
+            case '/survey':
+              t.show = data.conclusion;
+              break;
+          
+            default:
+              break;
+          }
+        });
+        this.loading = false;
+      }).catch(()=>{
+        this.loading = false;
+      });
+    },
+    async getCreditInfo () {
+      const params = {
+        lpCertificateNum: this.params.certificateNum
+      }
+      const res = await getCreditInfo(params)
+      this.dataList = res.data.cuCreditRegister;
+    },
   },
   mounted() {
-    console.log(this.$route.query);
     let { info, dealState } = this.$route.query;
-    if(dealState) { // 待办已办进入
+    if (dealState) {
+      // 待办已办进入
+      let obj = JSON.parse(info);
       this.params = {
-        customerName: info.customerName, //客户姓名
-        contactPhone: info.contactPhone, //客户身份证
-        certificateNum: info.certificateNum, //客户手机号码
-        customerId: info.customerId,
-        customerNum: info.customerNum,
-        projectNo: info.projectNo,
-        projectId: info.businesskey,
-        isView: dealState == 3?1:0,
-        activityId: info.activityId
-      }
-      // 
-      switch (info.activityId) {
-        case 'WF_PROJ_APPR_01_T01': // 客户经理待办
-          // this.completionList.splice(this.completionList.findIndex(item => item.value === '03'), 1);
+        customerName: obj.customerName, //客户姓名
+        contactPhone: obj.contactPhone, //客户身份证
+        certificateNum: obj.certificateNum, //客户手机号码
+        customerId: obj.customerId,
+        customerNum: obj.customerNum,
+        projectNo: obj.projectNo,
+        projectId: obj.businesskey,
+        isView: dealState == 1 ? 0 : 1,
+        dealState: dealState,
+        activityId: obj.activityId
+      };
+      this.isView = dealState == 1;
+      // 待办已办
+      switch (obj.activityId) {
+        case "WF_PROJ_APPR_01_T01": // 客户经理待办
+          this.params.isView = 0;
           break;
-        case 'WF_PROJ_APPR_01_T04': // 内勤待办
-          this.completionList.splice(this.completionList.findIndex(item => item.value === '04'), 1);
+        case "WF_PROJ_APPR_01_T04": // 内勤待办
+          this.completionList.splice(
+            this.completionList.findIndex(item => item.value === "04"),
+            1
+          );
+          this.params.isView = 1;
+          break;
+        case "WF_PROJ_APPR_01_T52":
+          this.getAcceptPersonl();
+          this.loadData();
+          this.params.isView = 1;
           break;
         default:
           break;
       }
     } else {
       this.params = this.$route.query;
-      this.endActive();
+      this.params.dealState = this.params.isView == 0?1:3; // 图片 上传 1 ----  查看 3
+      this.params.businesskey = this.$route.query.projectId;
+      this.isView = this.params.isView == 0;
     }
-    // this.surDtlList = {
-    //   lpCertificateNum: this.params.certificateNum,
-    //   id: this.params.customerId
-    // }; 
+    if(this.isView) {
+      this.getIsSaveObj();
+    }
+    this.endActive();
+    let datas = JSON.parse(sessionStorage.getItem('pro'));
+    if(datas) {
+      sessionStorage.removeItem("pro");
+    }
   }
 };
 </script>
@@ -437,7 +866,7 @@ export default {
   }
 }
 .xh-blue {
-  color:#c4252a;
+  color: #c4252a;
   font-weight: 700;
 }
 </style>

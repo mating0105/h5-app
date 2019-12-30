@@ -89,10 +89,13 @@
                     v-model="paymentDetail.projBudgetList.estimateCharges"
                     required
                     clearable
+                    name="estimateCharges"
+                    error-message-align="right"
                     label="评估费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.estimateCharges"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -100,10 +103,13 @@
                     v-model="paymentDetail.projBudgetList.investigateCharges"
                     required
                     clearable
+                    name="investigateCharges"
+                    error-message-align="right"
                     label="调查费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.investigateCharges"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -111,10 +117,13 @@
                     v-model="paymentDetail.projBudgetList.gpsCharges"
                     required
                     clearable
+                    name="gpsCharges"
+                    error-message-align="right"
                     label="GPS费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.gpsCharges"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -122,10 +131,13 @@
                     v-model="paymentDetail.projBudgetList.colligateCharges"
                     required
                     clearable
+                    name="colligateCharges"
+                    error-message-align="right"
                     label="综合服务费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.colligateCharges"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -133,10 +145,13 @@
                     v-model="paymentDetail.projBudgetList.notarialFees"
                     required
                     clearable
+                    name="notarialFees"
+                    error-message-align="right"
                     label="公证费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.notarialFees"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -144,10 +159,13 @@
                     v-model="paymentDetail.projBudgetList.allopatryCharges"
                     required
                     clearable
+                    name="allopatryCharges"
+                    error-message-align="right"
                     label="异地上户费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.allopatryCharges"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -155,10 +173,13 @@
                     v-model="paymentDetail.projBudgetList.doolBail"
                     required
                     clearable
+                    name="doolBail"
+                    error-message-align="right"
                     label="上户保证金(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.doolBail"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -166,10 +187,13 @@
                     v-model="paymentDetail.projBudgetList.agreeBail"
                     required
                     clearable
+                    name="agreeBail"
+                    error-message-align="right"
                     label="履约保证金(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.agreeBail"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -177,10 +201,13 @@
                     v-model="paymentDetail.projBudgetList.collectCarDealer"
                     required
                     clearable
+                    name="collectCarDealer"
+                    error-message-align="right"
                     label="实收车商(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.collectCarDealer"
                   />
                 </van-cell-group>
               </van-row>
@@ -189,37 +216,24 @@
               <template slot="header">缴费明细</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="totalCharges"
-                    required
-                    clearable
-                    label="费用合计"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="()=>{ }"
-                  />
+                  <van-cell title="费用合计" :value="totalCharges" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
                     v-model="paymentDetail.projBudgetList.dcnAmt"
                     required
                     clearable
+                    name="dcnAmt"
+                    error-message-align="right"
                     label="打折金额(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="()=>{ }"
+                    @blur.prevent="ruleMessge"
+                    :error-message="errorMsg.dcnAmt"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="actincmAmt"
-                    required
-                    clearable
-                    label="实收金额(元)"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="()=>{ }"
-                  />
+                  <van-cell title="实收金额(元)" :value="actincmAmt" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
@@ -228,6 +242,9 @@
                     is-link
                     v-model="paymentDetail.projBudgetList.pyfDt"
                     @click="showPopupTime('pyfDt')"
+                    label-class="labelClass"
+                    @blur.prevent="ruleMessge"
+                    :label="errorMsg.pyfDt"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -237,6 +254,9 @@
                     is-link
                     :value="returnText('pyfMod',paymentDetail.projBudgetList.pyfMod)"
                     @click="loadType('缴费方式', 'pyfMod')"
+                    label-class="labelClass"
+                    @blur.prevent="ruleMessge"
+                    :label="errorMsg.pyfMod"
                   />
                 </van-cell-group>
               </van-row>
@@ -247,37 +267,13 @@
               <template slot="header">走款信息</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projProjectInfo.loanAmt"
-                    required
-                    clearable
-                    label="银行贷款金额(元)"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="()=>{ }"
-                  />
+                  <van-cell title="银行贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projProjectInfo.sendLoanAmt"
-                    required
-                    clearable
-                    label="送审金额(元)"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="()=>{ }"
-                  />
+                  <van-cell title="送审金额(元)" :value="paymentDetail.projProjectInfo.sendLoanAmt" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projProjectInfo.loanAmt"
-                    required
-                    clearable
-                    label="应走款金额(元)"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="()=>{ }"
-                  />
+                  <van-cell title="应走款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
@@ -286,6 +282,9 @@
                     is-link
                     :value="returnText('payType',paymentDetail.projPayInfo.payType)"
                     @click="loadType('走款模式', 'payType')"
+                    label-class="labelClass"
+                    @blur.prevent="ruleMessge"
+                    :label="errorMsg.payType"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
@@ -295,24 +294,24 @@
                     is-link
                     :value="paymentDetail.projPayInfo.payTime"
                     @click="showPopupTime('payTime')"
+                    label-class="labelClass"
+                    @blur.prevent="ruleMessge"
+                    :label="errorMsg.payTime"
                   />
                 </van-cell-group>
                 <div v-show="paymentDetail.projPayInfo.payType == '2'">
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeAccount"
-                      required
                       clearable
                       label="银行账号"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="()=>{ }"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
                     <van-cell
                       title="开户银行"
-                      required
                       is-link
                       :value="returnText('payeeBank',paymentDetail.projPayInfo.payeeBank)"
                       @click="loadType('开户银行', 'payeeBank')"
@@ -321,23 +320,19 @@
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeSubBank"
-                      required
                       clearable
                       label="开户支行"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="()=>{ }"
                     />
                   </van-cell-group>
                   <van-cell-group :border="false">
                     <van-field
                       v-model="paymentDetail.projPayInfo.payeeFullName"
-                      required
                       clearable
                       label="账户名"
                       input-align="right"
                       placeholder="请输入"
-                      @blur.prevent="()=>{ }"
                     />
                   </van-cell-group>
                 </div>
@@ -377,7 +372,10 @@
             <van-col :span="4" v-show="this.params.info.activityId">
               <van-button size="large" class="xh-bg-gray" @click="end">终 止</van-button>
             </van-col>
-            <van-col :span="this.params.info.activityId? '19': '24'" :offset="this.params.info.activityId? '1': '0'">
+            <van-col
+              :span="this.params.info.activityId? '19': '24'"
+              :offset="this.params.info.activityId? '1': '0'"
+            >
               <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
             </van-col>
           </van-row>
@@ -393,7 +391,6 @@
         <van-datetime-picker
           :title="timetitle"
           type="datetime"
-          :formatter="formatter"
           v-model="currentDate"
           @confirm="confirmTime"
           @cancel="cancelTime"
@@ -445,6 +442,7 @@ import {
 } from "@/api/payment";
 import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Button,
   Row,
@@ -469,6 +467,7 @@ export default {
     ProjectInfo,
     imageList
   },
+  mixins: [formValidator],
   data() {
     return {
       activeName: "cost",
@@ -478,8 +477,16 @@ export default {
         { name: "上传图片", key: 3 }
       ],
       stepVal: 1,
-      paymentDetail: {}, //基本信息
-      params: {}, //上个页面传过来的参数
+      paymentDetail: {
+        projProjectInfo: {
+          proPat: {}
+        },
+        projPayInfo: {},
+        projBudgetList: {}
+      }, //基本信息
+      params: {
+        info: {}
+      }, //上个页面传过来的参数
       loading: false,
       selectName: "",
       dicList: [], //字典获取
@@ -493,7 +500,28 @@ export default {
       currentDate: new Date(),
       dataList: [], //图片上传
       message: "", //意见描述
-      peopleList: [] //下一节点人数组
+      peopleList: [], //下一节点人数组
+      errorMsg: {
+        estimateCharges: "",
+        investigateCharges: "",
+        gpsCharges: "",
+        colligateCharges: "",
+        notarialFees: "",
+        allopatryCharges: "",
+        doolBail: "",
+        agreeBail: "",
+        collectCarDealer: "",
+        dcnAmt: "",
+        pyfDt: "",
+        pyfMod: "",
+        // ---------------- 走款信息
+        payType: "",
+        payTime: ""
+        // payeeAccount: "",
+        // payeeBank: "",
+        // payeeSubBank: "",
+        // payeeFullName: ""
+      }
     };
   },
   computed: {
@@ -527,11 +555,11 @@ export default {
         colligateCharges +
         doolBail +
         gpsCharges
-      );
+      ).toFixed(2);
     },
     actincmAmt() {
       let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0; //打折金额
-      return parseFloat(this.totalCharges) - dcnAmt;
+      return (parseFloat(this.totalCharges) - dcnAmt).toFixed(2);
     },
     wordbook() {
       return this.$store.state.user.wordbook;
@@ -546,12 +574,17 @@ export default {
       return obj;
     }
   },
+  watch: {},
   methods: {
     stepVhange(val) {
       this.stepVal = val;
     },
     loadData() {
-      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey })
+      this.loading = true;
+      getPaymentDetail({
+        projectId: this.params.info.projectId,
+        businesskey: this.params.info.businesskey
+      })
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
@@ -562,9 +595,36 @@ export default {
     },
     //保存数据
     save() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        if (
+          item == "payType" ||
+          item == "payTime" ||
+          item == "payeeAccount" ||
+          item == "payeeBank" ||
+          item == "payeeSubBank" ||
+          item == "payeeFullName"
+        ) {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projPayInfo[item]
+          );
+        } else {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projBudgetList[item]
+          );
+        }
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      console.log(this.errorMsg);
+      if (num !== 0) {
+        return;
+      }
       this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
-      console.log(this.paymentDetail);
       this.loading = true;
       savePay(this.paymentDetail)
         .then(res => {
@@ -579,6 +639,34 @@ export default {
     //提交流程
     submit() {
       this.loading = true;
+      let num = 0;
+      for (let item in this.errorMsg) {
+        if (
+          item == "payType" ||
+          item == "payTime" ||
+          item == "payeeAccount" ||
+          item == "payeeBank" ||
+          item == "payeeSubBank" ||
+          item == "payeeFullName"
+        ) {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projPayInfo[item]
+          );
+        } else {
+          this.errorMsg[item] = this.returnMsg(
+            item,
+            this.paymentDetail.projBudgetList[item]
+          );
+        }
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        this.loading = false;
+        return;
+      }
       this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
       this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
       submitPay(this.paymentDetail)
@@ -609,18 +697,18 @@ export default {
         .then(() => {
           this.loading = true;
           let data = new FormData();
-          data.append('payInfoId', this.paymentDetail.projPayInfo.id);
-          stopTask(data).then(res =>{
-            this.loading = false;
-            this.$notify({ type: "success", message: "终止成功" });
-            this.$router.go(-1);
-          }).catch(e =>{
-            this.loading = false;
-          })
+          data.append("payInfoId", this.paymentDetail.projPayInfo.id);
+          stopTask(data)
+            .then(res => {
+              this.loading = false;
+              this.$notify({ type: "success", message: "终止成功" });
+              this.$router.go(-1);
+            })
+            .catch(e => {
+              this.loading = false;
+            });
         })
-        .catch(() => {
-          
-        });
+        .catch(() => {});
     },
     //上拉菜单选择
     loadType(title, field) {
@@ -666,32 +754,40 @@ export default {
       let name;
       switch (type) {
         case "pyfMod":
-          this.dicList.pay_method.forEach(e => {
-            if (e.value == val) {
-              name = e.label;
-            }
-          });
+          if (this.dicList.pay_method) {
+            this.dicList.pay_method.forEach(e => {
+              if (e.value == val) {
+                name = e.label;
+              }
+            });
+          }
           break;
         case "payType":
-          this.dicList.payType.forEach(e => {
-            if (e.value == val) {
-              name = e.label;
-            }
-          });
+          if (this.dicList.payType) {
+            this.dicList.payType.forEach(e => {
+              if (e.value == val) {
+                name = e.label;
+              }
+            });
+          }
           break;
         case "payeeBank":
-          this.dicList.BANK_TYPE_JYR.forEach(e => {
-            if (e.value == val) {
-              name = e.label;
-            }
-          });
+          if (this.dicList.BANK_TYPE_JYR) {
+            this.dicList.BANK_TYPE_JYR.forEach(e => {
+              if (e.value == val) {
+                name = e.label;
+              }
+            });
+          }
           break;
         case "product_property":
-          this.dicList.product_property.forEach(e => {
-            if (e.value == val) {
-              name = e.label;
-            }
-          });
+          if (this.dicList.product_property) {
+            this.dicList.product_property.forEach(e => {
+              if (e.value == val) {
+                name = e.label;
+              }
+            });
+          }
           break;
       }
       return name;
@@ -704,14 +800,17 @@ export default {
           this.paymentDetail.projBudgetList[this.fieldName] = row.value;
           this.paymentDetail.projBudgetList[this.fieldName + "Name"] =
             row.label;
+          this.errorMsg[this.fieldName] = "";
           break;
         case "payType":
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
           this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
+          this.errorMsg[this.fieldName] = "";
           break;
         case "payeeBank":
           this.paymentDetail.projPayInfo[this.fieldName] = row.value;
           this.paymentDetail.projPayInfo[this.fieldName + "Name"] = row.label;
+          this.errorMsg[this.fieldName] = "";
           break;
         case "people":
           this.loading = true;
@@ -753,21 +852,21 @@ export default {
           break;
       }
     },
-    formatter(type, value) {
-      if (type == "minute") {
-        return `0`;
-      } else if (type == "year") {
-        return `${value}年`;
-      } else if (type == "month") {
-        return `${value}月`;
-      } else if (type == "day") {
-        return `${value}日`;
-      } else if (type == "hour") {
-        return `${value}时`;
-      }
-    },
+    // formatter(type, value) {
+    //   if (type == "minute") {
+    //     return `0`;
+    //   } else if (type == "year") {
+    //     return `${value}年`;
+    //   } else if (type == "month") {
+    //     return `${value}月`;
+    //   } else if (type == "day") {
+    //     return `${value}日`;
+    //   } else if (type == "hour") {
+    //     return `${value}时`;
+    //   }
+    // },
     confirmTime(value) {
-      var time = format(value, "yyyyMMdd hh");
+      var time = format(value, "yyyyMMdd hh:mm");
       switch (this.timeType) {
         case "pyfDt":
           this.paymentDetail.projBudgetList.pyfDt = time;
@@ -800,7 +899,7 @@ export default {
         });
         this.dataList.push({
           declare: declare, //图片描述
-          isRequire: true, //*是否必须
+          isRequire: false, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
           customerNum: this.params.info.customerNum,
@@ -811,14 +910,17 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
   },
   mounted() {
-    this.params = this.$route.query;
-    console.log(this.params);
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
     this.loadData();
     this.getDict();
     this.loadImg();
+    this.rulesForm("order-capture-xh");
   }
 };
 </script>
@@ -923,5 +1025,10 @@ export default {
 }
 .xh-submit {
   padding: 0 10px 20px 10px;
+}
+.labelClass {
+  color: #ee0a24;
+  text-align: right;
+  left: 0 !important;
 }
 </style>

@@ -8,8 +8,14 @@
             <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum"/>
             <van-cell title="电话号码:" required :border="false" :value="form.telephone"/>
             <van-cell title="征信对象类型:" required :border="false" value="借款人"/>
-            <van-cell title="银行：" :disabled="!edit" :border="false" required :is-link="edit" v-model="dataList.investigateBankName" @click="showPickerFn"/>
-            <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable input-align="right" label="意向贷款金额(元)："
+            <van-cell title="银行：" label-class='labelClass' :label="errorMsg.investigateBankName" :disabled="!edit" :border="false" required :is-link="edit"
+                      :value="dataList.investigateBankName" @click="showPickerFn"/>
+            <van-field class="label_plus"
+                       name="intentionPrice"
+                       @blur.prevent="ruleMessge"
+                       :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required
+                       clearable @blur="checkPrice"
+                       input-align="right" label="意向贷款金额(元)："
                        placeholder="请输入"/>
             <van-field v-model="dataList.remarks" :border="false" :disabled="!edit" type="textarea" placeholder="输入说明" rows="1"
                        :autosize='autosize' class="zh-textarea"/>
@@ -60,7 +66,7 @@
 
         <Card style="margin-top: 1rem;">
             <template v-slot:header>
-                征信客户
+                {{perInfoList.length === 0 ? '新增': ''}}征信客户
                 <div class="card-icon" @click="addPer" v-if="edit">
                     <van-icon name="add-o"/>
                 </div>
@@ -94,6 +100,7 @@
             >终止
             </van-button>
             <van-button size="large" @click="nextStep"
+                        :disabled="Boolean(errorMsg.intentionPrice)"
                         class="xh-btn"
             >下一步
             </van-button>
@@ -101,6 +108,7 @@
 
         <van-popup v-model="showPicker" position="bottom" get-container="#app">
             <van-picker
+                    class="xh-credit-picker"
                     show-toolbar
                     :columns="columns"
                     @cancel="showPicker = false"
@@ -118,6 +126,7 @@
   import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask } from '@/api/credit'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
+  import formValidator from '@/mixins/formValidator'
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog]
   Components.forEach(item => {
@@ -126,6 +135,7 @@
 
   export default {
     name: "reNewCredit",
+    mixins: [formValidator],
     components: {
       ViewPage,
       Card
@@ -156,24 +166,9 @@
         columns: [],
         // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
         perInfoList: [], //客户下面的其他客户数据
-        // errorMsg: { //必填list
-        //   loanPersonName: '',
-        //   telephone: '',// 手机号码验证
-        //   lpCertificateNum: '',
-        // },
-        rules: {
-          intentionPrice: [
-            {
-              required: true,
-              msg: '意向贷款金额未填'
-            }
-          ],
-          investigateBankName: [
-            {
-              required: true,
-              msg: '银行未选'
-            }
-          ],
+        errorMsg: { //必填list
+          investigateBankName: '',
+          intentionPrice: ''
         },
         edit: false,
         query: {},
@@ -219,12 +214,14 @@
         this.dataList.investigateBank = tempBank.id
         this.dataList.investigateBankName = value[0] + '-' + value[1];
         this.dataList.bankCode = tempBank.bankCode;
+        this.errorMsg.investigateBankName = '';
+        this.checkPrice()
       },
       onChange (picker, values) {
         picker.setColumnValues(1, this.bankList[values[0]]);
       },
       async showPickerFn () {
-        if(!this.edit) {
+        if (!this.edit) {
           return
         }
         this.showPicker = true;
@@ -271,7 +268,7 @@
               lpCertificateNum: this.query.lpCertificateNum,
               id: this.query.id
             }
-            if(this.query.again) {
+            if (this.query.again) {
               params.reRegister = 1
             }
             const res = await getCreditInfo(params)
@@ -289,31 +286,7 @@
 
           this.initCar()
           this.initCustomerData()
-
-          // 判断征信终止按钮隐藏和显示
-          // if (this.isInternet == '0' && this.dataList.status == "05") {
-          //   this.canTermin = true
-          // } else {
-          //   this.canTermin = false
-          // }
-          //
-          // if (this.isInternet != '1') {
-          //   if (this.dataList.isSCICBC == '1') {
-          //     this.isInternet = '2'
-          //   } else if (this.dataList.isSCICBC == '2') {
-          //     this.isInternet = '3'
-          //   }
-          // }
-          //
-          // if (!this.dataList.isSCICBC) {
-          //   this.dataList.isSCICBC = '0';
-          // }
-          // if (!this.form.relation) {
-          //   this.form.relation = '1';
-          // }
-          // if (this.form.isSupplement == null || this.form.isSupplement == undefined || this.form.isSupplement == 'undefined') {
-          //   this.form.isSupplement = '0'
-          // }
+          this.checkPrice()
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -339,7 +312,7 @@
         }
       },
       addVehicle () {
-        if(!this.edit) {
+        if (!this.edit) {
           return
         }
         const query = {
@@ -356,10 +329,12 @@
        **/
       async nextStep () {
         try {
+          this.checkPrice()
           if (!this.verifyForm()) {
             return
           }
           this.loading = true
+          this.dataList.surDtlList = [this.form, ...this.perInfoList]
           const {data} = await saveCreditInfo(this.dataList)
 
           const query = {
@@ -406,9 +381,9 @@
       editCar (car, index) {
         const query = {
           customerId: this.dataList.customerId,
-          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
           index: index,
-          ...car
+          ...car,
+          customerNum: this.dataList.perInfo ? this.dataList.perInfo.customerNum : '',
         }
         this.$router.push({
           path: '/vehicle',
@@ -527,29 +502,19 @@
         }
       },
       verifyForm () {
-        let flag = true
-        for (let key in this.rules) {
-          if (this.rules.hasOwnProperty(key)) {
-            try {
-              this.rules[key].forEach(item => {
-                if (item.required) {
-                  if (!this.dataList[key]) {
-                    this.$toast(item.msg || '提示');
-                    flag = false
-                    throw Error();
-                  }
-                }
-              })
-            } catch (e) {
-            }
+        let num = 0;
+        for (let item in this.errorMsg) {
+          this.errorMsg[item] = this.returnMsg(item, this.dataList[item]);
+          if (this.errorMsg[item]) {
+            num++;
           }
         }
-        return flag
+        return num === 0
       },
       /**
        * 终止代办
        */
-      stopTask() {
+      stopTask () {
         Dialog.confirm({
           title: '终止',
           message: '确定终止该流程'
@@ -566,17 +531,49 @@
                 path: '/lendProcessList'
               })
             })
-          }catch (e) {
+          } catch (e) {
             console.log(e)
           }
           // on confirm
         }).catch(() => {
           // on cancel
         });
+      },
+      /**
+       * 贷款金额与销售价
+       */
+      checkPrice () {
+        const investigateBankName = this.dataList.investigateBankName || '';
+        const intentionPrice = this.dataList.intentionPrice || 0;
+        let price = 0
+        const carInfos = this.dataList.carInfos
+        this.errorMsg.intentionPrice = ''
+
+        if (!carInfos.length)
+          return
+
+        carInfos.forEach(item => {
+          if (item.carNature === 'new_car') {
+            price += item.salePrice
+          }
+        })
+
+        if(!price)
+          return;
+
+        if (investigateBankName.includes('中国银行')) {
+          if (intentionPrice >= (price*0.7)) {
+            this.errorMsg.intentionPrice = '贷款金额不能高于销售价7成！'
+          }
+        } else if (investigateBankName.includes('农业银行')) {
+          if (intentionPrice >= (price*0.88)) {
+            this.errorMsg.intentionPrice = '贷款金额不能超过销售价的8.8成'
+          }
+        }
       }
     },
     mounted () {
-      if(this.$route.query.info && this.$route.query.dealState) {
+      if (this.$route.query.info && this.$route.query.dealState) {
         const info = this.getStringToObj(this.$route.query.info)
         const query = this.$route.query
         this.query = {
@@ -584,10 +581,10 @@
           id: info.businesskey
         }
         this.recordParams.businessKey = info.businesskey
-        if(query.dealState == 3) {
+        if (query.dealState == 3) {
           this.edit = false
         }
-        if(query.dealState == 1) {
+        if (query.dealState == 1) {
           this.edit = true
           this.canTermin = true
         }
@@ -597,6 +594,7 @@
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       }
       this.getCreditInfo()
+      this.rulesForm("order-credit-xh");//新车
     },
     destroyed () {
       this.save()
@@ -604,10 +602,26 @@
   }
 </script>
 
-<style>
+<style lang="scss">
 
     .label_plus .van-field__label {
         width: 9rem;
     }
 
+    .labelClass {
+        left: 1.33333rem;
+    }
+
+    .xh-credit-picker {
+
+        .column1 {
+            flex: none;
+            min-width: 25%;
+        }
+
+        .column2 {
+            text-align: left;
+        }
+
+    }
 </style>

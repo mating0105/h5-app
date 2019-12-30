@@ -20,7 +20,9 @@
             <van-cell title="行驶里程（万公里）:" :border="false" :value="carData.roadHaul"/>
             <van-cell v-if="showMore" title="发动机号:" :border="false" :value="carData.engineNum"/>
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
-            <van-field v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
+            <van-field class="label_plus" v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价（元）："
+                       @blur="checkAssessmentCar"
+                       :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
                        placeholder="请输入"/>
         </Card>
 
@@ -31,17 +33,17 @@
             <imageList :dataList="dataList" :view="true"></imageList>
         </Card>
 
-<!--        <Card style="margin-top: 1rem;" v-if="edit">-->
-<!--            <template v-slot:header>-->
-<!--                意见描述-->
-<!--            </template>-->
-<!--            <van-field v-model="carData.evaluatingComm" :border="false" type="textarea" placeholder="输入说明" rows="1"-->
-<!--                       :autosize='autosize' class="zh-textarea"/>-->
-<!--        </Card>-->
+        <!--        <Card style="margin-top: 1rem;" v-if="edit">-->
+        <!--            <template v-slot:header>-->
+        <!--                意见描述-->
+        <!--            </template>-->
+        <!--            <van-field v-model="carData.evaluatingComm" :border="false" type="textarea" placeholder="输入说明" rows="1"-->
+        <!--                       :autosize='autosize' class="zh-textarea"/>-->
+        <!--        </Card>-->
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button class="xh-btn" size="large"
+            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice || Boolean(isError)"
                         @click="save"
             >保存
             </van-button>
@@ -54,7 +56,7 @@
   import Card from '@/components/card'
   import imageList from '@/components/imageList'
   import { getDocumentByType } from '@/api/document'
-  import { save } from "@/api/priceEvaluation";
+  import { save, checkAssessmentCar } from "@/api/priceEvaluation";
   import Vue from 'vue';
   import { Cell, CellGroup, Field, Icon, Button, Toast, Notify } from 'vant';
 
@@ -79,7 +81,8 @@
           minHeight: 80
         },
         dataList: [],
-        edit: false
+        edit: false,
+        isError: 0
       }
     },
     computed: {
@@ -130,7 +133,7 @@
           this.dataList.push({
             declare: declare,//图片描述
             isRequire: true,//*是否必须
-            deletable: true,//是否可以操作-上传和删除
+            deletable: false,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.customerNum,
             customerId: this.$route.query.customerId,
@@ -176,6 +179,27 @@
           this.loading = false
           console.log(e)
         }
+      },
+      async checkAssessmentCar () {
+        try {
+          let params = {
+            id: this.carData.id,
+            salePrice: '',
+            evaluatingPrice: ''
+          }
+          if (this.carData.carNature === 'old_car') {
+            params.evaluatingPrice = this.carData.evaluatingPrice
+          } else {
+            params.salePrice = this.carData.salePrice
+          }
+          if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
+            return
+          }
+          const {data} = await checkAssessmentCar(params)
+          this.isError = data
+        } catch (e) {
+          console.log(e)
+        }
       }
     },
     mounted () {
@@ -186,7 +210,9 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+    .label_plus .van-field__label {
+        width: 9rem;
+    }
 
 </style>

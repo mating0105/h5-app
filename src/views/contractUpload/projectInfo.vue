@@ -96,6 +96,9 @@ export default {
       dataList:[]
     };
   },
+  mounted(){
+    console.log('routeData:',this.routeData)
+  },
   computed: {
     wordbook() {
       return this.$store.state.user.wordbook;
@@ -119,11 +122,12 @@ export default {
     this.initImage();
     this.getListDetails();
   },
+
   methods: {
     // 获取 userInfo
     getListDetails(){
       this.loading = true;
-      api.getListDetails({id:this.routeData.id}).then(res=>{
+      api.getListDetails({id:this.routeData.projectId}).then(res=>{
         res.code === 200 ? this.loading = false : ''
         let {customerName, certificateNum, contactPhone, spsNm, spsCrdtNo, spsCtcTel} = {...res.data.projectInfo.customer};
 

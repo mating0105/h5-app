@@ -189,5 +189,13 @@ div:focus {
 .xh-fold-panel.is-always-shadow {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
-
+// 图标颜色
+.xh-right-icon {
+  .van-icon {
+    color: rgb(196, 37, 42);
+  }
+  .van-icon::before {
+    font-size: 22px;
+  }
+}
 

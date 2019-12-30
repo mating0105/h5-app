@@ -1,14 +1,15 @@
 <template>
-    <ViewPage :goPage='rightFn' iconClass="ellipsis" :rightMenuList="cuCreditStatus">
+    <ViewPage :goPage='rightFn' iconClass="filter-o" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
         <template v-slot:head>
             <van-search
                     v-model="params.searchKey"
                     placeholder="请输入搜索关键词"
                     show-action
                     @search="onSearch"
+                    @cancel="onCancel"
             />
         </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="margin-bottom: 4rem">
             <van-list
                     style="min-height: 80vh"
                     v-model="loading"
@@ -19,7 +20,7 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
                                 <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -51,7 +52,7 @@
                             </span>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer>
+                        <template v-slot:footer v-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
                                         v-if="item.status === '01' || item.status === '-1'"
@@ -70,7 +71,7 @@
                                         type="danger"
                                         class="xh-radius"
                                         style="border-radius: 6px;"
-                                        @click.stop="startForm(item, {again: true})"
+                                        @click.stop="startFormAgain(item)"
                                 >重新发起征信
                                 </van-button>
                             </div>
@@ -95,7 +96,7 @@
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/credit";
+  import { getList, checkedReregisterMob } from "@/api/credit";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -159,19 +160,18 @@
         return name;
       },
       onLoad () {
-        this.loading = true;
+        this.loading = !this.isLoading;
         getList(this.params).then(res => {
           const {code, data, msg} = res;
-          setTimeout(() => {
-            data.result.forEach(t => {
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.params.pageIndex++;
-            // 数据全部加载完成
-            this.finished = this.list.length === data.totalCount;
-          }, 500);
+          data.result.forEach(t => {
+            this.list.push(t);
+          });
+          // 加载状态结束
+          this.params.pageIndex++;
+          // 数据全部加载完成
+          this.finished = this.list.length === data.totalCount;
+          this.loading = false;
+          this.isLoading = false;
         }).catch(() => {
           this.error = true
           this.loading = false
@@ -181,15 +181,32 @@
         this.list = []
         this.finished = false
         this.params.pageIndex = 1
+        this.params.searchKey = this.params.searchKey.replace(/\s+/g, '');
         this.onLoad()
       },
+      // 取消搜索
+      onCancel () {
+        this.params.searchKey = '';
+        this.params.status = '';
+        this.onSearch();
+      },
       startFormFn (item) {
-        this.startForm(item, {edit: false})
+        this.$router.push({path: '/bigDataQueryDetail', query: {edit: false, lpCertificateNum: item.lpCertificateNum, id: item.id}})
+        // this.startForm(item, {edit: false})
       },
       // 发起报单
       startForm (item, query = {}) {
         removeValue("credit");
         this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
+      },
+      // 重新发起
+      async startFormAgain (item) {
+        try {
+          await checkedReregisterMob({lpCertificateNum: item.lpCertificateNum})
+          this.startForm(item, {again: true})
+        } catch (e) {
+          console.log(e)
+        }
       },
       // 新建客户
       addClint () {
@@ -204,13 +221,14 @@
       //下拉刷新
       onRefresh () {
         this.list = []
-        this.finished = false
         this.params.pageIndex = 1
-        this.onLoad();
-        this.loading = false;
+        if (this.finished) {
+          this.finished = false
+        } else {
+          this.onLoad()
+        }
         setTimeout(() => {
           Toast.success('刷新成功');
-          this.isLoading = false;
         }, 500);
       }
     },

@@ -18,7 +18,7 @@ export function getList(params) {
  */
 export function reply(params) {
   return request({
-    url: 'order/creditInfo/updateCreditResult',
+    url: '/order/creditInfo/updateCreditResult',
     method: 'post',
     data: params
   })
@@ -30,7 +30,7 @@ export function reply(params) {
  */
 export function bankReply(params) {
   return request({
-    url: 'order/creditProcess/submitBankInsideCreditInfo',
+    url: '/order/creditProcess/submitBankInsideCreditInfo',
     method: 'post',
     data: params
   })

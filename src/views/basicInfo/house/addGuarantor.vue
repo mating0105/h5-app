@@ -5,40 +5,145 @@
         <van-row>
           <van-col :span="24">
             <section>
-              <van-cell title="担保人：" required is-link :value="form.cuGuaranteeName" @click.native="loadList('担保人')" />
+              <van-cell
+                title="担保人："
+                :required="isView"
+                :is-link="isView"
+                :value="form.cuGuaranteeName"
+                label-class="labelClass"
+                :label="errorMsg.guaranteeId"
+                @click.native="!isView?'':loadList('担保人')"
+              />
             </section>
             <section>
-              <van-cell title="房产性质：" required is-link :value="form.houseTypeDesc" @click.native="loadList('房产性质')" />
+              <van-cell
+                title="房产性质："
+                :required="isView"
+                :is-link="isView"
+                :value="form.houseTypeDesc"
+                label-class="labelClass"
+                :label="errorMsg.houseType"
+                @blur.prevent="ruleMessge"
+                @click.native="!isView?'':loadList('房产性质')"
+              />
             </section>
             <section>
-              <van-cell title="房产区域：" required is-link :value="form.houseZonDesc" @click.native="loadList('房产区域')" />
+              <van-cell
+                title="房产区域："
+                :required="isView"
+                :is-link="isView"
+                :value="form.houseZonDesc"
+                label-class="labelClass"
+                :label="errorMsg.houseZon"
+                @blur.prevent="ruleMessge"
+                @click.native="!isView?'':loadList('房产区域')"
+              />
             </section>
             <section>
-              <van-field name="propertyValue" v-model="form.propertyValue" type="number" clearable required label="产权价值(万元)："
-                input-align="right" placeholder="请输入产权价值" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyValue"/>
+              <van-field
+                name="propertyValue"
+                v-model="form.propertyValue"
+                type="number"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="产权价值(万元)："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.propertyValue"
+                error-message-align="right"
+              />
             </section>
             <section>
-              <van-field name="ownerProperty" v-model="form.ownerProperty" clearable required label="产权所有人：" input-align="right"
-                placeholder="请输入产权所有人" @blur.prevent="ruleMessge" :error-message="errorMsg.ownerProperty"/>
+              <van-field
+                name="ownerProperty"
+                v-model="form.ownerProperty"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="产权所有人："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.ownerProperty"
+                error-message-align="right"
+              />
             </section>
             <section>
-              <van-cell title="房产所在地：" required is-link :value="form.provCityZon" @click.native="loadList('房产所在地')" />
+              <van-cell
+                title="房产所在地："
+                :required="isView"
+                :is-link="isView"
+                :value="form.provCityZon"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+                :label="errorMsg.provCityZon"
+                @click.native="!isView?'':loadList('房产所在地')"
+              />
             </section>
             <section>
-              <van-field name="specificAddress" v-model="form.specificAddress" clearable required label="详细地址：" input-align="right"
-                placeholder="请输入详细地址" @blur.prevent="ruleMessge" :error-message="errorMsg.specificAddress"/>
+              <van-field
+                name="specificAddress"
+                v-model="form.specificAddress"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="详细地址："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.specificAddress"
+                error-message-align="right"
+              />
             </section>
             <section>
-              <van-field name="houseArea" v-model="form.houseArea" type="number" clearable required label="房产面积(m２)：" input-align="right"
-                placeholder="请输入房产面积" @blur.prevent="ruleMessge" :error-message="errorMsg.houseArea"/>
+              <van-field
+                name="houseArea"
+                v-model="form.houseArea"
+                type="number"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="房产面积(m²)："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.houseArea"
+                error-message-align="right"
+              />
             </section>
             <section>
-              <van-field name="propertyHolderNum" v-model="form.propertyHolderNum" type="number" clearable required label="产权共有人数(个)："
-                input-align="right" placeholder="请输入产权共有人数" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyHolderNum"/>
+              <van-field
+                name="propertyHolderNum"
+                v-model="form.propertyHolderNum"
+                type="number"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="产权共有人数(个)："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.propertyHolderNum"
+                error-message-align="right"
+              />
             </section>
             <section>
-              <van-field name="propertyOwneratio" v-model="form.propertyOwneratio" type="number" clearable required label="本人产权占有比(%)："
-                input-align="right" placeholder="请输入本人产权占有比" @blur.prevent="ruleMessge" :error-message="errorMsg.propertyOwneratio"/>
+              <van-field
+                name="propertyOwneratio"
+                v-model="form.propertyOwneratio"
+                type="number"
+                clearable
+                :required="isView"
+                :disabled="!isView"
+                label="本人产权占有比(%)："
+                input-align="right"
+                :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.propertyOwneratio"
+                error-message-align="right"
+              />
             </section>
 
             <!-- 下拉选择器 -->
@@ -55,14 +160,18 @@
 
             <!-- 弹出省市区 -->
             <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
-
           </van-col>
         </van-row>
       </div>
       <!-- 保 存按钮 -->
-      <div class="xh-submit">
-        <van-button size="large" class="xh-bg-main" :class="[subDisabled ? 'buttonNoColor' : 'buttonColor']"
-          :loading="loading" :disabled="subDisabled" @click.native="custSubmit">保 存</van-button>
+      <div class="xh-submit" v-if="isView">
+        <van-button
+          size="large"
+          class="xh-bg-main"
+          :loading="dLoading"
+          :disabled="dLoading"
+          @click.native="custSubmit"
+        >保 存</van-button>
       </div>
     </div>
   </ViewPage>
@@ -82,11 +191,17 @@ import {
   Area,
   Picker
 } from "vant";
-import { getGuaranteeHouse, setGuaranteeHouse, editGuaranteeHouse } from "@/api/client";
+import {
+  getGuaranteeHouse,
+  setGuaranteeHouse,
+  editGuaranteeHouse
+} from "@/api/client";
 import { toUserCard } from "@/utils/validate";
 import ViewPage from "@/layout/components/ViewPage";
 import Provinces from "@/components/provinces/index";
 import { mapState } from "vuex";
+// 校验
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Dialog,
   Button,
@@ -104,52 +219,49 @@ Components.forEach(item => {
   Vue.use(item);
 });
 export default {
+  mixins: [formValidator],
   data() {
     return {
-      isView: 0,
-      loading: false,
+      isView: false,
       form: {
-        guaranteeId: '',
-        houseArea: '',
-        houseType: '',
-        houseZon: '',
-        ishashouse: '',
-        ownerProperty: '',
-        propertyHolderNum: '',
-        propertyOwneratio: '',
-        propertyValue: '',
-        provCityZonId: '',
-        specificAddress: '',
+        guaranteeId: "",
+        houseArea: "",
+        houseType: "",
+        houseZon: "",
+        ownerProperty: "",
+        propertyHolderNum: "",
+        propertyOwneratio: "",
+        propertyValue: "",
+        provCityZon: "",
+        specificAddress: ""
       },
       errorMsg: {
-        guaranteeId: '',
-        houseArea: '',
-        houseType: '',
-        houseZon: '',
-        ishashouse: '',
-        ownerProperty: '',
-        propertyHolderNum: '',
-        propertyOwneratio: '',
-        propertyValue: '',
-        provCityZonId: '',
-        specificAddress: '',
+        guaranteeId: "",
+        houseArea: "",
+        houseType: "",
+        houseZon: "",
+        ownerProperty: "",
+        propertyHolderNum: "",
+        propertyOwneratio: "",
+        propertyValue: "",
+        provCityZon: "",
+        specificAddress: ""
       },
       selectShow: false, //下拉选择器显示
       selectLoading: true, //下拉选择 loading
-      pickerTitle: '',//下拉列表title
-      addressShow: false,// 城市下拉选择器显示
+      pickerTitle: "", //下拉列表title
+      addressShow: false, // 城市下拉选择器显示
       columns: [], //待选择列表
       // 下拉菜单 List
-      guaranteeList: [],//担保人
+      guaranteeList: [], //担保人
       loading: false, // loading
-      subDisabled: false, //按钮禁用状态
-      projectId: '',//项目id
-      ruleData: {},
-    }
+      dLoading: false, //按钮禁用状态
+      projectId: "" //项目id
+    };
   },
   components: {
     ViewPage,
-    Provinces,
+    Provinces
   },
   computed: {
     // 所有字典
@@ -171,30 +283,30 @@ export default {
     loadList(key) {
       this.pickerTitle = key;
       switch (key) {
-        case '担保人':
+        case "担保人":
           this.selectShow = true;
           this.columns = this.guaranteeList;
           break;
-        case '房产性质':
+        case "房产性质":
           this.selectShow = true;
           this.columns = this.wordbook.Property_nature;
           break;
-        case '房产区域':
+        case "房产区域":
           this.selectShow = true;
           this.columns = this.wordbook.Property_area;
           break;
-        case '房产所在地':
+        case "房产所在地":
           this.addressShow = true;
           break;
-      
+
         default:
           break;
       }
     },
     loadData(id) {
       var dataList = {
-            projectId: this.params.projectId
-          };
+        projectId: this.params.projectId
+      };
       if (id) {
         dataList.id = id;
       }
@@ -205,32 +317,41 @@ export default {
             this.guaranteeList.push({
               label: e.customerName,
               value: e.id
-            })
-          })
+            });
+          });
           if (id) {
             this.form = data;
-            this.form.houseTypeDesc = this.returnText('Property_nature', this.form.houseType);
-            this.form.houseZonDesc = this.returnText('Property_area', this.form.houseZon);
+            this.form.houseTypeDesc = this.returnText(
+              "Property_nature",
+              this.form.houseType
+            );
+            this.form.houseZonDesc = this.returnText(
+              "Property_area",
+              this.form.houseZon
+            );
           }
           this.loading = false;
         } catch {
           this.loading = false;
         }
-      })
+      });
     },
     onConfirm(rows) {
       switch (this.pickerTitle) {
         case "担保人":
           this.form.cuGuaranteeName = rows.label;
           this.form.guaranteeId = rows.value;
+          this.errorMsg.guaranteeId = "";
           break;
         case "房产性质":
           this.form.houseTypeDesc = rows.label;
           this.form.houseType = rows.value;
+          this.errorMsg.houseType = "";
           break;
         case "房产区域":
           this.form.houseZonDesc = rows.label;
           this.form.houseZon = rows.value;
+          this.errorMsg.houseZon = "";
           break;
       }
       this.selectShow = false;
@@ -239,13 +360,25 @@ export default {
     // 省市区选择
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
+      this.errorMsg.provCityZon = "";
       this.form.provCityZonCode = code;
       this.addressShow = false;
     },
     // 保存
     custSubmit() {
-      // this.loading = true;
-      if(this.isView == 0) {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.form[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+
+      if (num !== 0) {
+        return;
+      }
+      this.dLoading = true;
+      if (!this.form.id) {
         setGuaranteeHouse(this.form).then(res => {
           try {
             this.$notify({
@@ -253,11 +386,11 @@ export default {
               message: res.msg
             });
             this.$router.go(-1);
-            this.loading = false;
+            this.dLoading = false;
           } catch {
-            this.loading = false;
+            this.dLoading = false;
           }
-        })
+        });
       } else {
         editGuaranteeHouse(this.form).then(res => {
           try {
@@ -266,25 +399,23 @@ export default {
               message: res.msg
             });
             this.$router.go(-1);
-            this.loading = false;
+            this.dLoading = false;
           } catch {
-            this.loading = false;
+            this.dLoading = false;
           }
-        })
+        });
       }
-    },
-    ruleMessge() {
-
     }
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView == 0;
     if (this.params.id) {
-      this.isView = 1;
-      this.loadData(this.params.id)
+      this.loadData(this.params.id);
     } else {
-      this.loadData()
+      this.loadData();
     }
+    this.rulesForm("customer/cuPersonalHouse");
   }
-}
+};
 </script>

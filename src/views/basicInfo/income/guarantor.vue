@@ -4,7 +4,8 @@
       <template v-slot:header>
         <section class="xh-plus">
           <van-cell title="担保人收入">
-            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"/>
+            <van-icon slot="right-icon" name="plus" style="line-height: inherit;" @click="pullUrl"
+              v-if="isView"/>
           </van-cell>
         </section>
       </template>
@@ -13,8 +14,8 @@
           v-for="(i,index) in guarantorList"
           :key="index"
         >
-          <van-swipe-cell :right-width="130">
-            <div class="xh-form-body">
+          <van-swipe-cell :right-width="130" :disabled="!isView">
+            <div class="xh-form-body" @click="seeDetails(i)">
               <section>
                 <van-cell title="担保人姓名：" :value="i.cuGuaranteeName" />
               </section>
@@ -86,7 +87,8 @@ export default {
     return {
       guarantorList: [],
       projectId: "",
-      params: {}
+      params: {},
+      isView: false
     };
   },
   computed: {
@@ -107,7 +109,7 @@ export default {
       return name;
     },
     pullUrl() {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, type: 0 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...this.params, isView: 0 } });
     },
     loadData() {
       let obj = {
@@ -130,30 +132,28 @@ export default {
     },
     // 修改
     editList(rows) {
-      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, type: 1 } });
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 0 } });
+    },
+    // 查看详情
+    seeDetails(rows) {
+      this.$router.push({ path: '/addGuarantorIncome', query: {...rows, projectId: this.params.projectId, isView: 1 } });
     },
     // 删除
     delList(rows) {
       deleteGuaranteeIncome({
         id: rows.id
       }).then(res => {
-        if(res.code == 200) {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.loadData();
-        } else {
-          this.$notify({
-            type: "danger",
-            message: res.msg
-          });
-        }
+        this.$notify({
+          type: "success",
+          message: res.msg
+        });
+        this.loadData();
       });
     }
   },
   mounted() {
     this.params = this.$route.query;
+    this.isView = this.params.isView == 0;
     this.loadData();
   }
 };

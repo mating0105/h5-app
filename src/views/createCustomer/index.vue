@@ -1,14 +1,24 @@
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading" class="xh-creat">
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
-        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
-          <van-icon name="plus" style="margin-top:30px;" />
-          <p>身份证正面</p>
+        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('src')">
+          <div v-if="!src">
+            <van-icon name="plus" style="margin-top:30px;" />
+            <p>身份证正面</p>
+          </div>
+          <div v-else>
+            <img :src="src" alt style="width:100%;" />
+          </div>
         </van-col>
-        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg">
-          <van-icon name="plus" style="margin-top:30px;" />
-          <p>身份证反面</p>
+        <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('srcBack')">
+          <div v-if="!srcBack">
+            <van-icon name="plus" style="margin-top:30px;" />
+            <p>身份证反面</p>
+          </div>
+          <div v-else>
+            <img :src="srcBack" alt style="width:100%;" />
+          </div>
         </van-col>
       </van-row>
     </div>
@@ -21,9 +31,12 @@
             required
             clearable
             label="客户姓名"
+            name="customerName"
             input-align="right"
+            error-message-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.customerName"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -31,11 +44,13 @@
             v-model="customerData.certificateNum"
             required
             clearable
+            name="certificateNum"
             label="身份证号码"
             input-align="right"
+            error-message-align="right"
             placeholder="请输入"
-            @blur.click="getIdcard"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.certificateNum"
           />
         </van-cell-group>
         <van-cell-group :border="false" v-show="params.credit">
@@ -45,6 +60,9 @@
             is-link
             :value="returnText('credit_object_type',customerData.creditObjectType)"
             @click="loadType('征信对象类型', 'creditObjectType')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.creditObjectType"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -56,29 +74,44 @@
         <van-cell-group :border="false">
           <van-cell title="年龄" :value="customerData.age" />
         </van-cell-group>
-        <van-cell-group :border="false">
-          <van-cell title="民族" required is-link v-model="customerData.nation" @click="showFamily" />
+        <van-cell-group :border="false" v-show="!params.credit">
+          <van-cell
+            title="民族"
+            required
+            is-link
+            v-model="customerData.nation"
+            @click="showFamily"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.nation"
+          />
         </van-cell-group>
         <van-cell-group :border="false">
           <van-field
             v-model="customerData.familyAddress"
             required
             clearable
+            name="familyAddress"
+            error-message-align="right"
             label="身份证住址"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.familyAddress"
           />
         </van-cell-group>
-        <van-cell-group :border="false">
+        <van-cell-group :border="false" v-show="!params.credit">
           <van-field
             v-model="customerData.signOrg"
             required
             clearable
+            name="signOrg"
+            error-message-align="right"
             label="身份证签发机关"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.signOrg"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -88,6 +121,9 @@
             is-link
             v-model="customerData.startDate"
             @click="showTime('jrnlDateStart')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.startDate"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -97,6 +133,9 @@
             is-link
             v-model="customerData.endDate"
             @click="showTime('jrnlDateEnd')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.endDate"
           />
         </van-cell-group>
         <van-cell-group :border="false">
@@ -104,10 +143,13 @@
             v-model="customerData.contactPhone"
             required
             clearable
+            name="contactPhone"
+            error-message-align="right"
             label="手机号码"
             input-align="right"
             placeholder="请输入"
-            @blur.prevent="()=>{ }"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.contactPhone"
           />
         </van-cell-group>
       </div>
@@ -115,7 +157,7 @@
     <div class="xh-notice">*识别信息可能存在误差，请仔细核对后再保存</div>
     <!-- 提交按钮 -->
     <div class="xh-submit" style="padding: 20px 10px;">
-      <van-button size="large" class="xh-bg-main" @click="submit" :loading="loading">保 存</van-button>
+      <van-button size="large" class="xh-bg-main" @click="submit">保 存</van-button>
     </div>
     <!-- 时间选择器 -->
     <van-action-sheet get-container="#app" v-model="show1" class="xh-list">
@@ -126,6 +168,8 @@
         v-model="currentDate"
         @confirm="confirmTime"
         @cancel="cancelTime"
+        :min-date="minDate"
+        :max-date="maxDate"
       />
     </van-action-sheet>
     <!-- 民族选择 -->
@@ -166,17 +210,21 @@ import {
   CellGroup,
   DatetimePicker,
   ActionSheet,
-  Picker
+  Picker,
+  Toast,
+  ImagePreview,
+  Dialog
 } from "vant";
 import ViewPage from "@/layout/components/ViewPage";
 import MapSheet from "@/components/provinces/index";
 import card from "@/components/card/index";
 import { format } from "@/utils/format";
-import bridge from "@/utils/bridge";
+import { uploadsDocument } from "@/api/document";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
 import { mapState } from "vuex";
+import formValidator from "@/mixins/formValidator";
 const Components = [
   Button,
   Row,
@@ -186,7 +234,10 @@ const Components = [
   CellGroup,
   DatetimePicker,
   ActionSheet,
-  Picker
+  Picker,
+  Toast,
+  ImagePreview,
+  Dialog
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -197,22 +248,22 @@ export default {
     card,
     MapSheet
   },
+  mixins: [formValidator],
   data() {
     return {
       customerData: {
-        "sex": "", //性别
-        "birthday": "",//出生日期
-        "customerName": "",//客户姓名
-        "certificateNum": "",//身份证号码
-        "age": "",//年龄
-        "creditObjectType": "",//征信对象类型
-        "nationName": "",//民族
-        "nation": "",//
-        "familyAddress": "",//身份证住址
-        "signOrg": "",//身份证签发机关
-        "startDate": "",//起始日
-        "endDate": "",//截止日
-        "contactPhone": ""//手机号码
+        sex: "", //性别
+        birthday: "", //出生日期
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号码
+        age: "", //年龄
+        creditObjectType: "", //征信对象类型
+        nation: "", //
+        familyAddress: "", //身份证住址
+        signOrg: "", //身份证签发机关
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "" //手机号码
       },
       show1: false,
       show2: false,
@@ -224,8 +275,8 @@ export default {
       ],
       title1: "",
       currentDate: new Date(),
-      //   minDate: new Date(1949, 01, 01),
-      //   maxDate: new Date(2099, 12, 31)
+      minDate: new Date(1949, 1, 1),
+      maxDate: new Date(2099, 12, 31),
       timeType: "", //区分打开时间弹框标识
       familyList: [], //民族数组
       loading: false,
@@ -233,7 +284,20 @@ export default {
       options: [],
       valueKey: "label",
       selectName: "",
-      valueId: "id" // 下拉选择取的哪个value值
+      valueId: "id", // 下拉选择取的哪个value值
+      src:"", //正面图片
+      srcBack: "", //背面图片
+      errorMsg: {
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号
+        nation: "", //民族
+        familyAddress: "", //身份证住址
+        signOrg: "", //身份证签发机关
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "" //手机号
+      },
+      sign: "" //标识点击正反面照片查看
     };
   },
   computed: {
@@ -241,6 +305,13 @@ export default {
     ...mapState({
       wordbook: state => state.user.wordbook
     })
+  },
+  watch: {
+    "customerData.certificateNum"(e) {
+      this.customerData.sex = getSex(e);
+      this.customerData.birthday = getBirth(e);
+      this.customerData.age = getAge(e);
+    }
   },
   methods: {
     formatter(type, value) {
@@ -264,11 +335,23 @@ export default {
             : new Date();
           break;
         case "jrnlDateEnd":
-          this.show1 = true;
-          this.title1 = "请选择截止日";
-          this.currentDate = this.customerData.endDate
-            ? new Date(this.customerData.endDate)
-            : new Date();
+          Dialog.confirm({
+            title: "",
+            message: "身份证是否长期有效？",
+            confirmButtonText:'是',
+            cancelButtonText:'否'
+          })
+            .then(() => {
+              this.customerData.endDate = "9999-99-99";
+              this.errorMsg.endDate = "";
+            })
+            .catch(() => {
+              this.show1 = true;
+              this.title1 = "请选择截止日";
+              this.currentDate = this.customerData.endDate
+                ? new Date(this.customerData.endDate)
+                : new Date();
+            });
           break;
       }
     },
@@ -278,9 +361,11 @@ export default {
       switch (this.timeType) {
         case "jrnlDateStart":
           this.customerData.startDate = time;
+          this.errorMsg.startDate = "";
           break;
         case "jrnlDateEnd":
           this.customerData.endDate = time;
+          this.errorMsg.endDate = "";
           break;
       }
       this.show1 = false;
@@ -294,16 +379,16 @@ export default {
       this.show2 = true;
     },
     getFamily(id, label) {
-      this.customerData.nationName = label;
-      this.customerData.nation = id;
+      this.customerData.nation = label;
       this.show2 = false;
+      this.errorMsg.nation = "";
     },
     //通过身份证查性别和出生年月、年龄
-    getIdcard(e) {
-      this.customerData.sex = getSex(e.target.value);
-      this.customerData.birthday = getBirth(e.target.value);
-      this.customerData.age = getAge(e.target.value);
-    },
+    // getIdcard(e) {
+    //   this.customerData.sex = getSex(e.target.value);
+    //   this.customerData.birthday = getBirth(e.target.value);
+    //   this.customerData.age = getAge(e.target.value);
+    // },
     //获取民族
     getFamilyDic() {
       let arr = [
@@ -333,13 +418,28 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
-      // this.customerData[this.fieldName + "Name"] = row.label;
+      console.log(this.fieldName);
+      this.errorMsg[this.fieldName] = "";
     },
     cancel() {},
     //保存信息
     submit() {
+      let num = 0;
+      for (let item in this.errorMsg) {
+        this.errorMsg[item] = this.returnMsg(item, this.customerData[item]);
+        if (this.errorMsg[item]) {
+          num++;
+        }
+      }
+      if (num !== 0) {
+        return;
+      }
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
+        if (this.customerData.creditObjectType === "borrower") {
+          Toast.fail("不能添加借款人");
+          return;
+        }
         this.$store.dispatch("credit/setCustomerData", {
           data: this.customerData,
           index: this.$route.query.index
@@ -347,26 +447,117 @@ export default {
         this.$router.go(-1);
       } else {
         //新建客户，走接口
+        if (this.src && this.srcBack) {
         this.loading = true;
-        console.log(this.customerData);
-        submitCreate(this.customerData).then(res => {
-          this.loading = false;
-          this.$notify({
-            type: "success",
-            message: "保存成功"
+        submitCreate(this.customerData)
+          .then(res => {
+            const params = {
+              kind: "1",
+              customerNum: res.data.customerNum,
+              customerId: res.data.id
+            };
+            this.uploadImg("0101", params, this.dataURLtoFile(this.src));
+            this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+
+          //   this.$notify({
+          //     type: "success",
+          //     message: "建档成功"
+          //   });
+          //   this.loading = false;
+          //   this.$router.go(-1);
+          // })
+          // .catch(e => {
+          //   this.loading = false;
           });
-        });
+        } else {
+          this.$notify({
+            type: "danger",
+            message: "请上传身份证正反面"
+          });
+        }
       }
     },
+    uploadImg(val, params, file) {
+      params.documentType = val;
+      params.file = file;
+      uploadsDocument(params)
+        .then(res => {
+          this.$notify({
+            type: "success",
+            message: "建档成功"
+          });
+          this.loading = false;
+          this.$router.go(-1);
+        })
+        .catch(e => {
+          this.loading = false;
+        });
+    },
     //点击上传身份证图片
-    loadImg() {
+    loadImg(name) {
+      this.sign = name;
+      if (this[name]) {
+        this.actions = [
+          { name: "相机扫描识别", value: "scan" },
+          { name: "相册导入识别", value: "album" },
+          { name: "查看", value: "see" }
+        ];
+      } else {
+        this.actions = [
+          { name: "相机扫描识别", value: "scan" },
+          { name: "相册导入识别", value: "album" }
+        ];
+      }
       this.show3 = true;
+    },
+    newData(val) {
+      let d = val.split(".");
+      let a = d.join("-");
+      return a;
     },
     //选择获取图片方式
     onSelect(e) {
-      bridge.callhandler("idCardOCR", { type: e.value }, data => {
-        console.log(data);
-      });
+      if (e.value == "see") {
+        if (this.sign == "src") {
+          ImagePreview([this.src]);
+        } else {
+          ImagePreview([this.srcBack]);
+        }
+      } else {
+        this.$bridge.callHandler("idCardOCR", e.value, data => {
+          if (data.ID_TYPE == "正面") {
+            this.$set(this.customerData, "customerName", data.ID_NAME);
+            this.$set(this.customerData, "certificateNum", data.ID_NUM);
+            this.$set(this.customerData, "familyAddress", data.ID_ADDRESS);
+            this.$set(this.customerData, "nation", data.ID_FOLK);
+            if (data.ID_SEX == "女") {
+              this.$set(this.customerData, "sex", "2");
+            } else if (data.ID_SEX == "男") {
+              this.$set(this.customerData, "sex", "1");
+            }
+            this.src = "data:image/jpg;base64," + data.FRONT_IMG;
+          } else if (data.ID_TYPE == "背面") {
+            this.$set(this.customerData, "signOrg", data.ID_ISSUE);
+            if (data.ID_VALID.indexOf("-") != -1) {
+              this.$set(
+                this.customerData,
+                "startDate",
+                this.newData(data.ID_VALID.split("-")[0])
+              );
+              if (data.ID_VALID.split("-")[1] == "长期") {
+                this.$set(this.customerData, "endDate", "9999-12-30");
+              } else {
+                this.$set(
+                  this.customerData,
+                  "endDate",
+                  this.newData(data.ID_VALID.split("-")[1])
+                );
+              }
+            }
+            this.srcBack = "data:image/jpg;base64," + data.BACK_IMG;
+          }
+        }); //原生直接调用
+      }
       this.show3 = false;
     },
     // 字典转换
@@ -387,16 +578,24 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      console.log(this.customerData)
     }
   },
   mounted() {
     this.getFamilyDic();
     this.params = this.$route.query;
-    console.log(this.params);
+    this.rulesForm("cs-personal-xh");
     if (this.params.credit) {
       //从征信里进入
       this.loadData();
+      this.errorMsg = {
+        customerName: "", //客户姓名
+        certificateNum: "", //身份证号
+        familyAddress: "", //身份证住址
+        startDate: "", //起始日
+        endDate: "", //截止日
+        contactPhone: "", //手机号
+        creditObjectType: "" //征信对象类型
+      };
     } else {
       //新建客户
     }
@@ -416,6 +615,7 @@ export default {
   border: 1px dashed #999;
   height: 100px;
   text-align: center;
+  overflow: hidden;
 }
 .xh-customer-family {
   padding: 10px 20px;
@@ -433,5 +633,8 @@ export default {
 .xh-notice {
   color: #c4252a;
   padding: 0 20px;
+}
+.xh-creat .labelClass {
+  left: calc(100% + 1.33333rem);
 }
 </style>
