@@ -21,7 +21,7 @@
       <van-pull-refresh v-model="loading" @refresh="onRefresh">
         <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
           <Card class="xh-top-10" :bodyPadding="true">
-            <van-row class="contractUploadBox">
+            <van-row class="contractUploadBox" @click="seeDetails(item)">
               <van-col span="24">
                 <span class="projectNo">NO.{{item.projectNo}}</span>
               </van-col>
@@ -136,6 +136,18 @@ export default {
     },
     // 合同上传
     goUpload(item) {
+      this.scroll = this.$refs.listBox.$refs.placeholder.offsetParent.scrollTop;
+      this.$router.push({ path: "/contractUpload", query: {
+          customerId:item.customerId,customerNum:item.customerNum,projectId:item.projectId,remark:item.remark,
+          lpCertificateNum:item.certificateNum ,id:item.id
+        } 
+      });
+    },
+    goPage(item){
+      this.$router.push({ path: item.path, query: item.params });
+    },
+    // 查看详情
+    seeDetails(item) {
       this.scroll = this.$refs.listBox.$refs.placeholder.offsetParent.scrollTop;
       this.$router.push({ path: "/contractUpload", query: {
           customerId:item.customerId,customerNum:item.customerNum,projectId:item.projectId,remark:item.remark,
