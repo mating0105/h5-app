@@ -32,12 +32,13 @@
               <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>
             </van-row>
             <template v-slot:footer>
-              <div style="text-align:right;" v-for="btn in item.pgslist">
+              <div style="text-align:right;">
                 <van-button
+                  v-for="btn in item.pgslist"
                   plain
                   type="danger"
                   class="xh-radius"
-                  style="border-radius: 6px;"
+                  style="border-radius: 6px;margin-left:5px;"
                   v-show="btn"
                   @click="gpsUrl(btn,item)"
                 >{{btn}}</van-button>
@@ -57,8 +58,28 @@ import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
 import Cookies from "js-cookie";
-import { Row, Col, Icon, Cell, Button, List, Search, Toast,PullRefresh } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Search, Toast,PullRefresh];
+import {
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Search,
+  Toast,
+  PullRefresh
+} from "vant";
+const Components = [
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Search,
+  Toast,
+  PullRefresh
+];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -114,34 +135,30 @@ export default {
                   break;
                 case "1":
                   t.gpsname = "待派单";
-                  t.pgslist = ["申请加装", "订单修改"];
+                  t.pgslist = ["订单修改"];
                   break;
                 case "2":
                   t.gpsname = "待接单";
-                  t.pgslist = ["申请加装", "订单修改"];
+                  t.pgslist = ["订单修改"];
                   break;
                 case "3":
                   t.gpsname = "待施工";
-                  t.pgslist = ["申请加装", "订单修改"];
+                  t.pgslist = ["订单修改"];
                   break;
                 case "4":
                   t.gpsname = "施工中";
-                  t.pgslist = ["申请加装", "订单修改"];
+                  t.pgslist = ["订单修改"];
                   break;
                 case "5":
                   t.gpsname = "保险待出单";
-                  if (t.insurance == "1") {
-                    t.pgslist = ["申请加装", "申请拆除", "完善盗抢险"];
-                  } else {
-                    t.pgslist = ["申请加装", "申请拆除"];
-                  }
+                  t.pgslist = ["申请拆除"];
                   break;
                 case "6":
                   t.gpsname = "订单完成";
                   if (t.insurance == "1") {
-                    t.pgslist = ["申请加装", "申请加装", "查看电子保单"];
+                    // t.pgslist = ["查看电子保单"];
                   } else {
-                    t.pgslist = ["申请加装", "申请拆除"];
+                    t.pgslist = ["申请拆除"];
                   }
                   break;
                 case "0":
@@ -207,6 +224,10 @@ export default {
       let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${item.chassisNumber}`;
       switch (name) {
         case "申请安装":
+        // let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
+        // url = this.GPS_URL + "installOrderList?" + param + commonData;
+        // break;
+        case "申请加装":
           let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
           url = this.GPS_URL + "installOrderList?" + param + commonData;
           break;
@@ -257,7 +278,8 @@ export default {
     }
   },
   mounted() {
-    this.accout = Cookies.get("loginName");
+    // this.accout = Cookies.get("loginName");
+    this.accout = '18349309486';
     this.onLoad();
   }
 };

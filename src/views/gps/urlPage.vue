@@ -14,8 +14,8 @@
 <script>
 import Vue from "vue";
 import ViewPage from "@/layout/components/ViewPage";
-import {Toast} from 'vant'
-Vue.use(Toast)
+import { Toast } from "vant";
+Vue.use(Toast);
 
 export default {
   components: {
@@ -29,9 +29,11 @@ export default {
   },
   mounted() {
     this.url = this.$store.state.user.gpsUrl;
-    // Toast(this.url);
-    // console.log(this.$store.state.user.gpsUrl,22222)
     this.heightPage = document.body.clientHeight - 45;
+    window.addEventListener("message", e => {
+      console.log(e.data);
+      this.$router.go(-2);
+    },false);
   }
 };
 </script>
