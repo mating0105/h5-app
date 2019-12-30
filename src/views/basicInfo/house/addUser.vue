@@ -91,13 +91,15 @@
               v-model="formData.houseArea"
               :required="isView"
               :disabled="!isView"
-              label="房产面积(m²)："
+              label="房产面积："
               input-align="right"
               :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.houseArea"
               error-message-align="right"
-            />
+            >
+              <span slot="button" v-if="formData.houseArea">m²</span>
+            </van-field>
           </section>
         </div>
 

@@ -144,6 +144,9 @@
                 :error-message="errorMsg.spsRsdncDtlAdr"
                 error-message-align="right"
                 clearable
+                rows="1"
+                autosize
+                type="textarea"
                 :disabled="!isView"
                 label="居住地详细地址："
                 label-width="130px"
@@ -181,11 +184,13 @@
                 clearable
                 type="number"
                 :disabled="!isView"
-                label="本地居住年限(年)："
+                label="本地居住年限："
                 label-width="120px"
                 input-align="right"
               :placeholder="isView?'请填写':''"
-              />
+              >
+                <div slot="button" v-if="formData.localResidence">年</div>
+              </van-field>
             </section>
             <section>
               <van-cell
@@ -300,7 +305,8 @@
         />
       </van-action-sheet>
       <!-- 图片选择方式 -->
-      <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
+      <van-action-sheet :close-on-click-overlay="false" cancel-text="取消"
+  @cancel="show3 = false" v-model="show3" :actions="actions" @select="onSelect" />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -550,38 +556,47 @@ export default {
         case "是否供债人":
           this.formData.isBondsDesc = rows.label;
           this.formData.isBonds = rows.value;
+          this.errorMsg.isBonds = '';
           break;
         case "与客户关系":
           this.formData.relationCusDesc = rows.label;
           this.formData.relationCus = rows.value;
+          this.errorMsg.relationCus = '';
           break;
         case "文化程度":
           this.formData.levelEducationDesc = rows.label;
           this.formData.levelEducation = rows.value;
+          this.errorMsg.levelEducation = '';
           break;
         case "子女情况":
           this.formData.childrenSituationDesc = rows.label;
           this.formData.childrenSituation = rows.value;
+          this.errorMsg.childrenSituation = '';
           break;
         case "子女上学情况":
           this.formData.schoolSituationDesc = rows.label;
           this.formData.schoolSituation = rows.value;
+          this.errorMsg.schoolSituation = '';
           break;
         case "婚姻状况":
           this.formData.marriageDesc = rows.label;
           this.formData.marriage = rows.value;
+          this.errorMsg.marriage = '';
           break;
         case "单位性质":
           this.formData.unitCharDesc = rows.label;
           this.formData.unitChar = rows.value;
+          this.errorMsg.unitChar = '';
           break;
         case "配偶文化程度":
           this.formData.spsCltrDgrDesc = rows.label;
           this.formData.spsCltrDgr = rows.value;
+          this.errorMsg.spsCltrDgr = '';
           break;
         case "配偶单位性质":
           this.formData.spsUnitCharDesc = rows.label;
           this.formData.spsUnitChar = rows.value;
+          this.errorMsg.spsUnitChar = '';
           break;
       }
       this.selectShow = false;
@@ -594,11 +609,13 @@ export default {
           this.formData.pProvCityZon = name;
           this.formData.pProvCityZonId = code;
           this.formData.pProvCityZonCode = code;
+          this.errorMsg.pProvCityZonId = '';
           break;
         case "居住地":
           this.formData.rProvCityZon = name;
           this.formData.rProvCityZonId = code;
           this.formData.rProvCityZonCode = code;
+          this.errorMsg.rProvCityZonId = '';
           break;
         default:
           break;

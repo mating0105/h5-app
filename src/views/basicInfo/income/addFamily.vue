@@ -114,13 +114,15 @@
               :required="isView"
               type="number"
               clearable
-              label="从业年限(年)："
+              label="从业年限："
               input-align="right"
               :placeholder="isView?'请填写':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.workingYears"
               error-message-align="right"
-            />
+            >
+              <div slot="button" v-if="formData.workingYears">年</div>
+            </van-field>
           </section>
           <div
             v-if="formData.occupationalStatus == 1 || formData.occupationalStatus == 2 || formData.occupationalStatus == 3 || formData.occupationalStatus == 4"
@@ -131,11 +133,13 @@
                 type="number"
                 v-model="formData.employeesNumber"
                 :disabled="!isView"
-                label="员工人数(个)："
+                label="员工人数："
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
-              />
+              >
+                <div slot="button" v-if="formData.employeesNumber">个</div>
+              </van-field>
             </section>
             <section>
               <van-field
@@ -143,11 +147,13 @@
                 type="number"
                 v-model="formData.turnover"
                 :disabled="!isView"
-                label="年营业额(万元)："
+                label="年营业额："
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
-              />
+              >
+                <div slot="button" v-if="formData.turnover">万元</div>
+              </van-field>
             </section>
             <section>
               <van-cell
@@ -163,11 +169,13 @@
                 name="profit"
                 v-model="formData.profit"
                 :disabled="!isView"
-                label="利润比(%)："
+                label="利润比："
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
-              />
+              >
+                <div slot="button" v-if="formData.profit">%</div>
+              </van-field>
             </section>
           </div>
           <div v-if="formData.occupationalStatus == 3 || formData.occupationalStatus == 4">
@@ -185,28 +193,32 @@
                 name="registerCapital"
                 v-model="formData.registerCapital"
                 :disabled="!isView"
-                label="注册资金(万元)："
+                label="注册资金："
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.registerCapital"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="formData.registerCapital">万元</div>
+              </van-field>
             </section>
             <section>
               <van-field
                 name="totalShares"
                 v-model="formData.totalShares"
                 :disabled="!isView"
-                label="占股比例(%)："
+                label="占股比例："
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.totalShares"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="formData.totalShares">%</div>
+              </van-field>
             </section>
           </div>
 
@@ -218,15 +230,18 @@
                 name="personalIncome"
                 v-model="formData.personalIncome"
                 :disabled="!isView"
-                label="月固定收入(元)："
+                label="月固定收入："
                 input-align="right"
+                label-width="100px"
                 clearable
                 :required="isView"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.personalIncome"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="formData.personalIncome">元</div>
+              </van-field>
             </section>
             <section>
               <van-cell
@@ -542,10 +557,12 @@ export default {
         case "收入人":
           this.formData.incomePeople = rows.value;
           this.formData.incomePeopleDesc = rows.label;
+          this.errorMsg.incomePeople = '';
           break;
         case "职业状况":
           this.formData.occupationalStatus = rows.value;
           this.formData.occupationalStatusDesc = rows.label;
+          this.errorMsg.occupationalStatus = '';
           break;
         case "单位性质":
           this.formData.unitChar = rows.value;
@@ -555,10 +572,12 @@ export default {
         case "行业领域":
           this.formData.idyDmn = rows.value;
           this.formData.idyDmnDesc = rows.label;
+          this.errorMsg.idyDmn = '';
           break;
         case "月固定收入状况":
           this.formData.personalIncomeStatus = rows.value;
           this.formData.personalIncomeStatusDesc = rows.label;
+          this.errorMsg.personalIncomeStatus = '';
           break;
         case "收入佐证":
           this.formData.incomeEvidence = rows.value;
@@ -568,10 +587,12 @@ export default {
         case "场地性质":
           this.formData.fieldNature = rows.value;
           this.formData.fieldNatureDesc = rows.label;
+          this.errorMsg.fieldNature = '';
           break;
         case "股份构成":
           this.formData.sharesConstitute = rows.value;
           this.formData.sharesConstituteDesc = rows.label;
+          this.errorMsg.sharesConstitute = '';
           break;
       }
       this.selectShow = false;
@@ -648,7 +669,6 @@ export default {
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
         if (this.errorMsg[item]) {
-          console.log(this.errorMsg[item], item);
           num++;
         }
       }

@@ -9,8 +9,7 @@
               <van-field
                 name="customerName"
                 v-model="formData.customerName"
-                :required="isView"
-                :disabled="!isView"
+                disabled
                 clearable
                 label="客户姓名："
                 input-align="right"
@@ -18,18 +17,18 @@
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.customerName"
                 error-message-align="right"
-                :right-icon="isView?'photograph':''"
+              />
+              <!-- :right-icon="isView?'photograph':''"
                 @click-right-icon="OCRScan(1)"
                 class="xh-right-icon"
-              />
+              />-->
             </section>
             <section>
               <van-field
                 name="certificateNum"
                 v-model="formData.certificateNum"
-                :required="isView"
                 clearable
-                :disabled="!isView"
+                disabled
                 label="证件号码："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
@@ -43,8 +42,7 @@
                 name="contactPhone"
                 v-model="formData.contactPhone"
                 clearable
-                :required="isView"
-                :disabled="!isView"
+                disabled
                 label="联系电话："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
@@ -97,6 +95,7 @@
                 :disabled="!isView"
                 label="曾就读小学："
                 input-align="right"
+                label-width="100px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.primarySchool"
@@ -135,7 +134,11 @@
                 clearable
                 :disabled="!isView"
                 label="居住地详细地址："
+                rows="1"
+                autosize
+                type="textarea"
                 input-align="right"
+                label-width="140px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.spsRsdncDtlAdr"
@@ -174,13 +177,15 @@
                 :required="isView"
                 :disabled="!isView"
                 type="number"
-                label="本地居住年限(年)："
+                label="本地居住年限："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.localResidence"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="formData.localResidence">年</div>
+              </van-field>
             </section>
           </van-col>
         </van-row>
@@ -199,7 +204,7 @@
               :error-message="errorMsg.spsNm"
               error-message-align="right"
               :right-icon="isView?'photograph':''"
-              @click-right-icon="OCRScan(2)"
+              @click-right-icon="OCRScan"
               class="xh-right-icon"
             />
           </section>
@@ -293,7 +298,14 @@
         />
       </van-action-sheet>
       <!-- 图片选择方式 -->
-      <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
+      <van-action-sheet
+        :close-on-click-overlay="false"
+        cancel-text="取消"
+        @cancel="show3 = false"
+        v-model="show3"
+        :actions="actions"
+        @select="onSelect"
+      />
 
       <!-- 弹出省市区 -->
       <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -463,18 +475,12 @@ export default {
   methods: {
     onSelect(rows) {
       this.$bridge.callHandler("idCardOCR", rows.value, res => {
-        if (this.ocrType == 1) {
-          this.formData.customerName = res.ID_NAME || "";
-          this.formData.certificateNum = res.ID_NUM || "";
-        } else {
-          this.formData.spsNm = res.ID_NAME || "";
-          this.formData.spsCrdtNo = res.ID_NUM || "";
-        }
+        this.formData.spsNm = res.ID_NAME || "";
+        this.formData.spsCrdtNo = res.ID_NUM || "";
         this.show3 = false;
       });
     },
-    OCRScan(type) {
-      this.ocrType = type;
+    OCRScan() {
       this.show3 = true;
     },
     // 字典转换
@@ -531,30 +537,37 @@ export default {
         case "婚姻状况":
           this.formData.marriage = rows.value;
           this.formData.marriageDesc = rows.label;
+          this.errorMsg.marriage = "";
           break;
         case "文化程度":
           this.formData.levelEducation = rows.value;
           this.formData.levelEducationDesc = rows.label;
+          this.errorMsg.levelEducation = "";
           break;
         case "子女情况":
           this.formData.childrenSituation = rows.value;
           this.formData.childrenSituationDesc = rows.label;
+          this.errorMsg.childrenSituation = "";
           break;
         case "子女上学情况":
           this.formData.schoolSituation = rows.value;
           this.formData.schoolSituationDesc = rows.label;
+          this.errorMsg.schoolSituation = "";
           break;
         case "配偶文化程度":
           this.formData.spsCltrDgr = rows.value;
           this.formData.spsCltrDgrDesc = rows.label;
+          this.errorMsg.spsCltrDgr = "";
           break;
         case "单位性质":
           this.formData.unitChar = rows.value;
           this.formData.unitCharDesc = rows.label;
+          this.errorMsg.unitChar = "";
           break;
         case "配偶单位性质":
           this.formData.spsUnitChar = rows.value;
           this.formData.spsUnitCharDesc = rows.label;
+          this.errorMsg.spsUnitChar = "";
           break;
       }
       this.selectShow = false;

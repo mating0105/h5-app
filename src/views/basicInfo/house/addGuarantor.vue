@@ -47,13 +47,15 @@
                 clearable
                 :required="isView"
                 :disabled="!isView"
-                label="产权价值(万元)："
+                label="产权价值："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyValue"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="form.propertyValue">万元</div>
+              </van-field>
             </section>
             <section>
               <van-field
@@ -64,6 +66,7 @@
                 :disabled="!isView"
                 label="产权所有人："
                 input-align="right"
+                label-width="100px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.ownerProperty"
@@ -105,13 +108,15 @@
                 clearable
                 :required="isView"
                 :disabled="!isView"
-                label="房产面积(m²)："
+                label="房产面积："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.houseArea"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="form.houseArea">m²</div>
+              </van-field>
             </section>
             <section>
               <van-field
@@ -121,13 +126,16 @@
                 clearable
                 :required="isView"
                 :disabled="!isView"
-                label="产权共有人数(个)："
+                label="产权共有人数："
                 input-align="right"
+                label-width="120px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyHolderNum"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="form.propertyHolderNum">个</div>
+              </van-field>
             </section>
             <section>
               <van-field
@@ -137,13 +145,16 @@
                 clearable
                 :required="isView"
                 :disabled="!isView"
-                label="本人产权占有比(%)："
+                label="本人产权占有比："
                 input-align="right"
+                label-width="130px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyOwneratio"
                 error-message-align="right"
-              />
+              >
+                <div slot="button" v-if="form.propertyOwneratio"> %</div>
+              </van-field>
             </section>
 
             <!-- 下拉选择器 -->
