@@ -396,7 +396,7 @@ export default {
             const data=await loanInfoDetail(para);
             if(data.code==200){
                 this.bankLoanInfo=data.data.bankLoanInfo;
-                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD'):'';
+                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD'):dayjs(new Date()).format('YYYY-MM-DD');
                 this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){

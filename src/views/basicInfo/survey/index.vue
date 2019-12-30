@@ -229,6 +229,20 @@
               :disabled="true"
               :border="false"
             />
+            <van-field
+              v-model="ruleForm.jrnlCardno"
+              clearable
+              :border="false"
+              type="number"
+              :required="bankWaterFlag"
+              input-align="right"
+              label="流水卡号："
+              :disabled="!isView"
+              :right-icon="!isView?'':'photograph'"
+              :placeholder="isView?'请填写':''"
+              class="xh-right-icon"
+              @click-right-icon="OCRScan(1)"
+            />
             <van-cell
               title="流水开始日期："
               :required="bankWaterFlag"
@@ -252,20 +266,6 @@
               label-class="labelClass"
               @blur.prevent="ruleMessge"
               :label="errorMsg.jrnlDateEnd"
-            />
-            <van-field
-              v-model="ruleForm.jrnlCardno"
-              clearable
-              :border="false"
-              type="number"
-              :required="bankWaterFlag"
-              input-align="right"
-              label="流水卡号："
-              :disabled="!isView"
-              :right-icon="!isView?'':'photograph'"
-              :placeholder="isView?'请填写':''"
-              class="xh-right-icon"
-              @click-right-icon="OCRScan(1)"
             />
 
             <van-field

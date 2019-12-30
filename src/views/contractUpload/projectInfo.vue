@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :loading="loading">
+  <!-- <ViewPage :loading="loading"> -->
     <div class="projectInfo">
       <Card>
         <template v-slot:header>
@@ -53,7 +53,7 @@
         <van-button size="large" style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;" @click="submitRemark"> 提交 </van-button>
       </div>
     </div>
-  </ViewPage>
+  <!-- </ViewPage> -->
 </template>
 
 <script>
@@ -93,11 +93,9 @@ export default {
         phone: "",
         idCard: ""
       }],
-      dataList:[]
+      dataList:[],
+      projectInfo:{}
     };
-  },
-  mounted(){
-    console.log('routeData:',this.routeData)
   },
   computed: {
     wordbook() {
@@ -124,11 +122,13 @@ export default {
   },
 
   methods: {
+
     // 获取 userInfo
     getListDetails(){
       this.loading = true;
       api.getListDetails({id:this.routeData.projectId}).then(res=>{
         res.code === 200 ? this.loading = false : ''
+        this.projectInfo = res.data.projectInfo;
         let {customerName, certificateNum, contactPhone, spsNm, spsCrdtNo, spsCtcTel} = {...res.data.projectInfo.customer};
 
         this.userInfo[0].name = customerName;
@@ -141,38 +141,22 @@ export default {
     },
 
     // 图片上传 与 展示
-    async getDocumentByType(documentType) {
-      this.dataList = [];
-      let params = {
-        customerNum: this.customerNum,
-        documentType: documentType
-      };
-      let { data } = await getDocumentByType(params);
-      let declare = this.documentType[documentType]
-        ? this.documentType[documentType].label
-        : "图片描述";
-      data.forEach(item => {
-        item.declare = declare;
-      });
-      this.dataList.push({
-        declare: declare, //图片描述
-        isRequire: true, //*是否必须
-        deletable: true, //是否可以操作-上传和删除
-        documentType: documentType,
-        customerNum: this.routeData.customerNum,
-        customerId: this.routeData.customerId,
-        kind: "1",
-        fileList: data
-      });
-    },
     initImage() {
-      this.getDocumentByType("1801"); //主借人 - 融资租赁合同
-      this.getDocumentByType("1806"); //主借人 - 融资租赁业务告知书"
-      this.getDocumentByType("1802"); //主借人 - 抵押合同
-      this.getDocumentByType("1803"); //主借人 - 车辆验收合格单
-      this.getDocumentByType("1804"); //主借人 - 委托扣款授权书
-      this.getDocumentByType("1805"); //主借人 - 加融费用收取证明
-      this.getDocumentByType("1807"); //主借人 - 收车授权委托书
+      this.dataList = [];
+      api.getImagesList({kind:'1',customerId:this.routeData.customerId,documentTypeParent:'ht'}).then(res => {
+        res.data.forEach(item=>{
+          this.dataList.push({
+              declare: item.name, //图片描述
+              isRequire: true, //*是否必须
+              deletable: true, //是否可以操作-上传和删除
+              documentType: item.type,
+              customerNum: this.routeData.customerNum,
+              customerId: this.routeData.customerId,
+              kind: "1",
+              fileList: item.documents || []
+            });
+        })
+      })
     },
 
     // 提交备注

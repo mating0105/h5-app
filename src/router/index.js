@@ -309,7 +309,7 @@ export const constantRoutes = [
   { 
     path: '/contractUpload/',
     name: 'contractUpload',
-    component: () => import('@/views/contractUpload/projectInfo'),
+    component: () => import('@/views/contractUpload/upload'),
     meta: {title: '合同上传', icon: 'dashboard', keepAlive: true}
   },
   {
