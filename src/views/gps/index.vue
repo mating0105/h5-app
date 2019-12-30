@@ -100,6 +100,7 @@ export default {
         pageSize: 10
       },
       GPS_URL: "http://dev.wwvas.com:10001/#/",
+      // GPS_URL: "http://192.168.50.55:8089/#/",
       accout: "",
       isLoading: false
     };
