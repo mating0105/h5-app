@@ -1,14 +1,16 @@
 
 <template>
   <ViewPage>
-    <iframe
-      id="iframepage"
-      :src="url"
-      frameborder="0"
-      scrolling="auto"
-      width="100%"
-      :height="heightPage"
-    ></iframe>
+    <div class="xh-iframe-container">
+        <iframe
+                id="iframepage"
+                :src="url"
+                frameborder="0"
+                scrolling="auto"
+                width="100%"
+                :height="heightPage"
+        ></iframe>
+    </div>
   </ViewPage>
 </template>
 <script>
@@ -37,3 +39,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+    .xh-iframe-container {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
+    }
+</style>
