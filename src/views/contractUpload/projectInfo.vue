@@ -45,11 +45,11 @@
 
       <Card style="margin-top: 10px;">
         <template v-slot:header> 意见描述 </template>
-        <van-field v-model="remark" :border="false" type="textarea" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
+        <van-field v-model="remark" :border="false" type="textarea" :disabled="isView" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
       </Card>
 
       <!-- 提交按钮 -->
-      <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;">
+      <div style="margin: 45px 10px 30px 10px; display: flex; flex-direction: row;" v-if="!isView">
         <van-button size="large" style="background-color: #C4252A; color: white;margin-left: 3px;border-radius: 8px;flex:1;" @click="submitRemark"> 提交 </van-button>
       </div>
     </div>
@@ -94,7 +94,8 @@ export default {
         idCard: ""
       }],
       dataList:[],
-      projectInfo:{}
+      projectInfo:{},
+      isView: false, // 是否查看
     };
   },
   computed: {
@@ -117,7 +118,6 @@ export default {
   activated(){
     this.remark = this.$route.query.remark || '';
     this.resetUserInfo();
-    this.initImage();
     this.getListDetails();
   },
 
@@ -137,6 +137,8 @@ export default {
         this.userInfo[1].name = spsNm;
         this.userInfo[1].phone = spsCtcTel;
         this.userInfo[1].idCard = spsCrdtNo;
+        this.isView = this.projectInfo.bankMakeLoan && this.projectInfo.bankMakeLoan.processState == '已放款';
+        this.initImage();
       })
     },
 
@@ -148,7 +150,7 @@ export default {
           this.dataList.push({
               declare: item.name, //图片描述
               isRequire: true, //*是否必须
-              deletable: true, //是否可以操作-上传和删除
+              deletable: !this.isView, //是否可以操作-上传和删除
               documentType: item.type,
               customerNum: this.routeData.customerNum,
               customerId: this.routeData.customerId,

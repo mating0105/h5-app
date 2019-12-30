@@ -343,6 +343,9 @@
             creditRegisterId: data.creditRegisterId,
             ...this.query
           }
+          if(this.canTermin) {
+            query.canTermin = this.canTermin
+          }
           this.loading = false
           this.$nextTick(() => {
             Toast.success('保存成功')
