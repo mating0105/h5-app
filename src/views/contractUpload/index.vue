@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :rightMenuList="rightMenuList" :goPage="goPage" :iconClass="'ellipsis'" :backFn="closeNativeWebView" :scroll="true">
+  <ViewPage :backFn="closeNativeWebView" :scroll="true">
     <template v-slot:head>
       <van-search
         v-model="params.searchKey"
@@ -39,7 +39,7 @@
             </van-row>
             <template v-slot:footer>
               <div class="upBtn">
-                <van-button round type="info" size="small" @click="goUpload(item)">合同上传</van-button>
+                <van-button round type="info" size="small" @click="goUpload(item)" v-show="item.bankMakeLoan === null || item.bankMakeLoan.processState !== '已放款'">合同上传</van-button>
               </div>
             </template>
           </Card>
@@ -82,20 +82,7 @@ export default {
         pageSize: 10,
         searchKey: ""
       },
-      scroll: 0,
-      rightMenuList:[{
-        title:'项目基本信息',path:'/paymentProjectInfo'
-      },{
-        title:'费用信息',path:'/costDetail'
-      },{
-        title:'走款信息',path:'/c'
-      },{
-        title:'相关文档',path:'/proDocument'
-      },{
-        title:'风控措施',path:'/controlMeasure'
-      },{
-        title:'GPS 安装信息',path:'/c'
-      }],
+      scroll: 0
     };
   },
   watch: {

@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :class="dealState?'':'lendProcess'">
+    <ViewPage :rightMenuList='rightBoxList' :goPage='goPage' :iconClass="iconClass" :backFn='backFn' :loading="listLoading" :class="dealState?'lendProcessAlready':'lendProcess'">
         <van-tabs v-model="activeName" v-if="projectForm.projectInfo" @change='changeTab'>
             <van-tab title="做单基本信息" name="1" class="tabBox">
                 <div v-show="stepIndex==1" style="margin-top:10px;">
@@ -26,10 +26,10 @@
                                 <van-field label="主借人还款卡号：" disabled :border="false" label-width='150' input-align="right"
                                            v-model="form.loanInfo.repaymentBankCardNo"/>
                                 <van-cell title="还款卡银行：" :border='false' :value="form.loanInfo.accountBank"/>
-                                <van-cell title="录机时间：" :border='false' :value="form.loanInfo.advanceInstitutionDate"/>
+                                <van-cell title="录机时间：" :border='false' :value="form.loanInfo.advanceInstitutionDate?dayjs(form.loanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm'):''"/>
                                 <van-field :border="false" disabled label-width='150' input-align="right" label="实际放款金额（元）："
                                            v-model="form.loanInfo.factLoanAmt"/>
-                                <van-cell :border='false' disabled title="实际放款时间：" v-model="form.loanInfo.factLoanDate" value="请选择"/>
+                                <van-cell :border='false' disabled title="实际放款时间：" :value="form.loanInfo.factLoanDate?dayjs(form.loanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''"/>
                             </div>
                         </Card>
                         <!-- 放款凭证 -->
@@ -45,14 +45,14 @@
                             借款人信息
                         </template>
                         <div>
-                            <van-field name='mainBorrowerName' :disabled="dealState" label="主借人姓名：" :placeholder="dealState?'':'请输入'" :border="false"
+                            <van-field name='mainBorrowerName' disabled label="主借人姓名：" placeholder="" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerName" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerName"/>
                             <van-field
                                     name='mainBorrowerId'
-                                    :disabled="dealState"
+                                    disabled
                                     label="主借人身份证："
-                                    :placeholder="dealState?'':'请输入'"
+                                    placeholder=""
                                     :border="false"
                                     label-width='150'
                                     input-align="right"
@@ -61,9 +61,8 @@
                                     @blur.click="getIdcard"
                                     @blur.prevent="ruleMessge"
                                     :error-message="errorMsg.mainBorrowerId"
-                                    :right-icon="dealState ? '' : 'scan'"
-                                    @click-right-icon="IdcardLoading('idCardOCR')"/>
-                            <van-field name='mainBorrowerPhone' :disabled="dealState" label="主借人电话：" :placeholder="dealState?'':'请输入'" :border="false"
+                                    />
+                            <van-field name='mainBorrowerPhone' disabled label="主借人电话：" placeholder="" :border="false"
                                        label-width='150' input-align="right" required v-model="form.borrowerInfo.mainBorrowerPhone" @blur.prevent="ruleMessge"
                                        :error-message="errorMsg.mainBorrowerPhone"/>
                             <van-cell title="主借人性别：" :border="false" :value-class="dealState?'':'rightClass'" :is-link='!dealState'
@@ -314,6 +313,7 @@
   import brand from '@/components/carBrand/brand';
   import creditInfoTable from '@/views/credit/viewCompoents/creditInfoTable';
   import imageList from '@/components/imageList';
+  import dayjs from 'dayjs'
   import { getSex, getAge } from "@/utils/customer";
   import { getDic } from "@/api/createCustomer";
   import { getCreditInfo } from '@/api/credit'
@@ -354,6 +354,7 @@
         iconClass: 'ellipsis',
         userName:'',
         params:{},//传过来额数据
+        dayjs:dayjs,
         //---tab:1--基本信息
         form: {},//车辆信息、贷款信息、收款人信息、借款人信息
         projectForm: {},//项目信息
@@ -990,6 +991,9 @@
 
     .lendProcess .van-cell__right-icon {
         color: #323233;
+    }
+    .lendProcessAlready .van-cell__value--alone {
+        color: #969799;
     }
 
 </style>

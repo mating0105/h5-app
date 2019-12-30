@@ -134,7 +134,7 @@
         <van-popup position="bottom" :overlay="true" v-model="popupShowTime">
             <van-datetime-picker 
                 v-model="currentDate" 
-                type="date" 
+                type="datetime" 
                 :title='title2'
                 @change="changeDate" 
                 @confirm="confirmTime"
@@ -371,11 +371,11 @@ export default {
     changeDate (value) {
         switch(this.popupShowTimeSign){
             case 'recordTime':
-                this.bankLoanInfo.advanceInstitutionDate=dayjs(this.currentDate).format('YYYY-MM-DD');
+                this.bankLoanInfo.advanceInstitutionDate=dayjs(this.currentDate).format('YYYY-MM-DD HH:mm');
                 this.errorMsg.advanceInstitutionDate='';
                 break;
             case 'actualLendTime':
-                this.bankLoanInfo.factLoanDate=dayjs(this.currentDate).format('YYYY-MM-DD');
+                this.bankLoanInfo.factLoanDate=dayjs(this.currentDate).format('YYYY-MM-DD HH:mm');
                 break;
             }
     },
@@ -396,7 +396,7 @@ export default {
             const data=await loanInfoDetail(para);
             if(data.code==200){
                 this.bankLoanInfo=data.data.bankLoanInfo;
-                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD'):'';
+                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?dayjs(data.data.bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm'):dayjs(new Date()).format('YYYY-MM-DD HH:mm');
                 this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){
