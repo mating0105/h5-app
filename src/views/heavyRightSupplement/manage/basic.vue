@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-30 10:22:28
+ * @LastEditTime : 2019-12-30 16:52:39
  -->
 
 <template>
@@ -84,7 +84,7 @@
           </van-col>
           <van-col span="24">
             <van-cell
-              :value="item.carFrameNum"
+              :value="item.chassisNumber"
               title="车架号:"
             />
           </van-col>
@@ -108,7 +108,7 @@
           </van-col>
           <van-col span="24">
             <van-cell
-              :value="item.estimateOriginalPrice"
+              :value="item.evaluatingPrice"
               title="评估价:"
             />
           </van-col>
