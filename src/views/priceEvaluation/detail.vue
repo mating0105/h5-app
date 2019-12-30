@@ -181,25 +181,25 @@
         }
       },
       async checkAssessmentCar () {
-        try {
-          let params = {
-            id: this.carData.id,
-            salePrice: '',
-            evaluatingPrice: ''
-          }
-          if (this.carData.carNature === 'old_car') {
-            params.evaluatingPrice = this.carData.evaluatingPrice
-          } else {
-            params.salePrice = this.carData.salePrice
-          }
-          if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
-            return
-          }
-          const {data} = await checkAssessmentCar(params)
-          this.isError = data
-        } catch (e) {
-          console.log(e)
-        }
+        // try {
+        //   let params = {
+        //     id: this.carData.id,
+        //     salePrice: '',
+        //     evaluatingPrice: ''
+        //   }
+        //   if (this.carData.carNature === 'old_car') {
+        //     params.evaluatingPrice = this.carData.evaluatingPrice
+        //   } else {
+        //     params.salePrice = this.carData.salePrice
+        //   }
+        //   if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
+        //     return
+        //   }
+        //   const {data} = await checkAssessmentCar(params)
+        //   this.isError = data
+        // } catch (e) {
+        //   console.log(e)
+        // }
       }
     },
     mounted () {
