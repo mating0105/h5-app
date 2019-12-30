@@ -4,7 +4,7 @@
             <NavBar v-if='!headerShow' :title="title" :backFn="backFn" :rightFn='rightFn' :iconClass='iconClass' :rightMenuList="rightMenuList" :goPage='goPage'></NavBar>
             <slot name="head"></slot>
         </div>
-        <div class="wrapper" ref="wrapper">
+        <div class="wrapper" ref="wrapper" :class="[wrapperClass]">
             <div :class="{'content': margin}">
                 <slot></slot>
             </div>
@@ -44,6 +44,7 @@ import { log } from 'util';
         default: () => []
       },
       headerShow:Boolean,//显示返回头部   false/不传:显示；true：不显示
+      wrapperClass:''
     },
     components: {
       NavBar
@@ -96,6 +97,19 @@ import { log } from 'util';
 
         > .content {
             margin: 1rem;
+        }
+
+        &.margin-top-1 {
+            margin-top: 1rem;
+        }
+    }
+    .wrapperClass{
+        height: calc(100% - 50px);
+        overflow: auto;
+        >div{
+            min-height: 100%;
+            height: 100%;
+            overflow: auto;
         }
     }
 

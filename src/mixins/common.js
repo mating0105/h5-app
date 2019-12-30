@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-20 22:28:19
+ * @LastEditTime : 2019-12-30 10:14:31
  */
 
 export default {
@@ -11,6 +11,18 @@ export default {
     return {};
   },
   methods: {
+    /**
+     * @description: 保留几位小数
+     * @param {any} value  任何数
+     * @param {number} num 需要保留几位小数
+     */
+    keepDecimal(val, num = 2) {
+      let number = val * 1;
+      if (val === undefined || val === null || val instanceof Object || isNaN(number)) {
+        return "";
+      }
+      return number.toFixed(num);
+    },
     /**
      * @description: 将JSON字符串转化成JSON对象
      * @param {string} str json字符串类型
@@ -26,26 +38,26 @@ export default {
     /**
      * @description: 返回几层
      * @param {number | string} index 返回几层
-     * @return:
      */
     goBack(index = -1) {
       this.$router.go(index);
     },
-    // 加载加载图片防止打包后图片的路径不对
     loadingImg(imgName) {
       return require(`../images/${imgName}`);
     },
-    dataURLtoFile: function (dataurl, filename = new Date() + '.jpg') {
-      let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]), n = bstr.length;
+    dataURLtoFile: function(dataurl, filename = new Date() + ".jpg") {
+      let arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]),
+        n = bstr.length;
       let u8arr = new Uint8Array(n);
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
       }
-      return new File([u8arr], filename, {type: mime});
+      return new File([u8arr], filename, { type: mime });
     },
-    closeNativeWebView () {
-      this.$bridge.callHandler('returnBack', '', (res) => {})//调用原生关闭webview
+    closeNativeWebView() {
+      this.$bridge.callHandler("returnBack", "", res => {}); //调用原生关闭webview
     }
   },
   filters: {
@@ -55,7 +67,6 @@ export default {
      * @param {array} list 当前需要解码的数组
      * @return: 当前code所对应的中文名
      */
-
     codeInToName(value, list) {
       if (!Array.isArray(list)) {
         return "";

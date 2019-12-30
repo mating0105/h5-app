@@ -1,5 +1,5 @@
 <template>
-    <ViewPage :loading="loading" :headerShow='true'>
+    <ViewPage :loading="listLoading" :headerShow='true' :wrapperClass="'wrapperClass'">
         <template v-slot:head>
             <van-tabs v-model="active" @change='changeState' swipeable>
                 <div v-for="item in tabList" :key="item.value">
@@ -7,8 +7,8 @@
                 </div>
             </van-tabs>
         </template> 
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-            <div class="wrapper" ref="wrapper" style="margin:10px;">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="height:100%;overflow:auto;">
+            <div class="wrapper" ref="wrapper" style="margin:10px;min-height:100%;">
                 <van-search placeholder="搜索" v-model="pageData.searchKey" input-align='left' clearable @blur.click="onSearch"/>
                 <van-list 
                 v-model="loading" 
@@ -150,6 +150,7 @@ export default {
     methods: {
         onLoad () {
             this.loading = true;
+            this.listLoading=true;
             findList(this.pageData).then(res => {
                 const {code, data, msg} = res;
                 setTimeout(() => {
@@ -158,13 +159,15 @@ export default {
                     });
                     // 加载状态结束
                     this.loading = false;
+                    this.listLoading=false;
                     this.pageData.pageIndex++;
                     // 数据全部加载完成
                     this.finished = this.listData.length === data.totalCount;
                 }, 500);
             }).catch(() => {
                 this.error = true
-                this.loading = false
+                this.loading = false;
+                this.listLoading=false;
             });
         },
         onSearch(){
@@ -262,6 +265,6 @@ export default {
   }
 }
 .van-pull-refresh__track{
-    height:100%;
+    min-height:100%;
 }
 </style>
