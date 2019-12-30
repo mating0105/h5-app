@@ -56,12 +56,12 @@
   import Card from '@/components/card';
   // import electronicContract from './electronicContract'
   import imageList from '@/components/imageList'
-  import { Field, Button, ActionSheet, Popup, Toast } from 'vant'
+  import { Field, Button, ActionSheet, Popup, Toast, Picker } from 'vant'
   import Vue from 'vue'
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo, createTask, getUsers, submitCredit } from '@/api/credit'
 
-  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast)
+  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Picker)
 
   //0101 主借人身份证正面
   //0102 主借人身份证正面
@@ -249,9 +249,16 @@
           this.$nextTick(() => {
             Toast.success('保存成功')
           })
-          this.$nextTick(() => {
-            this.$router.push('/creditList')
-          })
+          if(this.$route.query.canTermin) {
+            this.$nextTick(() => {
+              this.$router.push('/lendProcessList')
+            })
+          } else {
+            this.$nextTick(() => {
+              this.$router.push('/creditList')
+            })
+          }
+
         } catch (e) {
           this.loading = false
           console.log(e)
