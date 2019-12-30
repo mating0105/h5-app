@@ -51,10 +51,10 @@
                             right-icon="scan"
                             @click-right-icon="IdcardLoading"/>
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
-                        <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
+                        <van-cell title="录机时间：" :border='false' required is-link :value="dayjs(bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm')" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
                             <van-field :border="false" label-width='150' input-align="right" label="实际放款金额（元）：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"  name='factLoanAmt' @blur.prevent="ruleMessge" :error-message="errorMsg.factLoanAmt"/>
-                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass' v-model="bankLoanInfo.factLoanDate" @click="showPopupTime('actualLendTime')" is-link value="请选择"/>
+                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass' :value="dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm')" @click="showPopupTime('actualLendTime')" is-link value="请选择"/>
                         </div>
                     </div>
                 </Card>
@@ -185,6 +185,7 @@ export default {
     return {
         activeName: "1",
         listLoading:false,
+        dayjs:dayjs,
         params:{},//跳转接收的数据
         columns: [],
         imgWalkList: [],//图片
@@ -199,7 +200,7 @@ export default {
         bankLoanInfo:{
             repaymentBankCardNo:'',
             accountBank:'',
-            advanceInstitutionDate:'',
+            advanceInstitutionDate:null,
             factLoanAmt:'',
             factLoanDate:''
         },//放款信息
@@ -371,11 +372,11 @@ export default {
     changeDate (value) {
         switch(this.popupShowTimeSign){
             case 'recordTime':
-                this.bankLoanInfo.advanceInstitutionDate=dayjs(this.currentDate).format('YYYY-MM-DD HH:mm');
+                this.bankLoanInfo.advanceInstitutionDate=(new Date(dayjs(this.currentDate).format('YYYY-MM-DD HH:mm'))).getTime();
                 this.errorMsg.advanceInstitutionDate='';
                 break;
             case 'actualLendTime':
-                this.bankLoanInfo.factLoanDate=dayjs(this.currentDate).format('YYYY-MM-DD HH:mm');
+                this.bankLoanInfo.factLoanDate=(new Date(dayjs(this.currentDate).format('YYYY-MM-DD HH:mm'))).getTime();
                 break;
             }
     },
