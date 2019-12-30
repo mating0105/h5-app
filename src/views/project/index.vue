@@ -73,12 +73,12 @@
                 <van-row>
                   <van-cell-group :border="false">
                     <van-cell
-                      title="手动评级"
+                      title="风控评级"
                       required
                       is-link
                       :border="false"
                       :value="returnText('GradeManual', windControl.gradeManual)"
-                      @click="params.dealState != '1' ? '':loadType('手动评级', 'GradeManual')"
+                      @click="params.dealState != '1' ? '':loadType('风控评级', 'GradeManual')"
                     />
                     <van-cell title="是否加入关注名单" :border="false" required>
                       <radio
@@ -97,7 +97,7 @@
                       :value="returnText('risk_condition', windControl.riskCondition)"
                       @click="params.dealState != '1' ? '':loadType('风控条件', 'risk_condition')"
                     />
-                    <van-cell title="是否上门" :border="false" required>
+                    <van-cell title="业务员上门调查" :border="false" required>
                       <radio
                         v-model="windControl.wthrDtd"
                         :disabled="params.dealState != '1'"
@@ -431,7 +431,7 @@ export default {
           this.completionDesc = row.label;
           this.completion = row.value;
           break;
-        case "手动评级":
+        case "风控评级":
           this.windControl.gradeManual = row.value;
           break;
         case "风控条件":

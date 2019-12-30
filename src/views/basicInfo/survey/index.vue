@@ -92,7 +92,7 @@
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
                 type="textarea"
-              input-align="right"
+                input-align="right"
                 rows="1"
                 :border="false"
                 :disabled="!isView"
@@ -108,7 +108,7 @@
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
                 type="textarea"
-              input-align="right"
+                input-align="right"
                 rows="1"
                 :border="false"
                 :disabled="!isView"
@@ -123,7 +123,7 @@
                 label="担保人房产及收入报告："
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
-              input-align="right"
+                input-align="right"
                 type="textarea"
                 rows="1"
                 :border="false"
@@ -138,7 +138,7 @@
               v-model="ruleForm.inveInfo"
               :required="isView"
               label="调查意见情况："
-                :placeholder="isView?'请填写':''"
+              :placeholder="isView?'请填写':''"
               type="textarea"
               rows="1"
               autosize
@@ -154,7 +154,7 @@
               v-model="ruleForm.infoDetail"
               :required="isView"
               label="差资料明细："
-                :placeholder="isView?'请填写':''"
+              :placeholder="isView?'请填写':''"
               type="textarea"
               rows="1"
               :border="false"
@@ -320,7 +320,14 @@
       />
     </van-action-sheet>
     <!-- 图片选择方式 -->
-    <van-action-sheet :close-on-click-overlay="false" v-model="show3" :actions="actions" @select="onSelect" />
+    <van-action-sheet
+      :close-on-click-overlay="false"
+      v-model="show3"
+      :actions="actions"
+      @select="onSelect" 
+      cancel-text="取消"
+      @cancel="show3 = false"
+    />
 
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="addressShow" @getProvince="addressOnConfirm"></Provinces>
@@ -497,7 +504,7 @@ export default {
     },
     onSelect(rows) {
       this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
-        if(this.bankNum == 1) {
+        if (this.bankNum == 1) {
           this.$set(this.ruleForm, "jrnlCardno", data.BANK_NUM);
         } else {
           this.$set(this.ruleForm, "paymentCarNum", data.BANK_NUM);

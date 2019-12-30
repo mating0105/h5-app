@@ -25,10 +25,9 @@
                 <van-cell title="房产所有人:"  :value="list.ownerProperty"/>
               </section>
               <section v-if="list.isHasHouse == '1'">
-                <div class="van-cell">
-                  <div class="van-cell__title">房产面积(m<sup>2</sup>)：</div>
-                  <div class="van-cell__value">{{ list.houseArea }}</div>
-                </div>
+                <van-cell title="房产面积:"  :value="list.houseArea">
+                  <span slot="right-icon" style="line-height: inherit;" v-if="list.houseArea"> m²</span>
+                </van-cell>
               </section>
               <section v-if="list.isHasHouse == '1'">
                 <van-cell title="房产所在地:"  :value="list.provCityZon"/>
