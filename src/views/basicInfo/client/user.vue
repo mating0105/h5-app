@@ -204,7 +204,7 @@
               :error-message="errorMsg.spsNm"
               error-message-align="right"
               :right-icon="isView?'photograph':''"
-              @click-right-icon="OCRScan(2)"
+              @click-right-icon="OCRScan"
               class="xh-right-icon"
             />
           </section>
@@ -475,18 +475,12 @@ export default {
   methods: {
     onSelect(rows) {
       this.$bridge.callHandler("idCardOCR", rows.value, res => {
-        if (this.ocrType == 1) {
-          this.formData.customerName = res.ID_NAME || "";
-          this.formData.certificateNum = res.ID_NUM || "";
-        } else {
-          this.formData.spsNm = res.ID_NAME || "";
-          this.formData.spsCrdtNo = res.ID_NUM || "";
-        }
+        this.formData.spsNm = res.ID_NAME || "";
+        this.formData.spsCrdtNo = res.ID_NUM || "";
         this.show3 = false;
       });
     },
-    OCRScan(type) {
-      this.ocrType = type;
+    OCRScan() {
       this.show3 = true;
     },
     // 字典转换
