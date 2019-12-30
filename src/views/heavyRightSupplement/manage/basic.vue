@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-27 17:04:07
+ * @LastEditTime : 2019-12-30 10:22:28
  -->
 
 <template>
@@ -20,50 +20,43 @@
         <van-col span="24">
           <van-cell
             :value="details.customerName"
-            class="info"
             title="客户姓名:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
             :value="details.certificateNum"
-            class="info"
             title="证件号码:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
             :value="details.contactPhone"
-            class="info"
             title="手机号码:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
             :value="details.creditObjectType"
-            class="info"
             title="征信对象类型:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
             :value="details.dsbrPltfrmNm"
-            class="info"
             title="银行:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.intentionPrice"
-            class="info"
-            title="意向贷款金额(元):"
+            :value="details.intentionPrice+' 元'"
+            title="意向贷款金额:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.loanAmt"
-            class="info"
-            title="贷款金额(元):"
+            :value="details.loanAmt+' 元'"
+            title="贷款金额:"
           />
         </van-col>
       </van-row>
@@ -86,42 +79,36 @@
           <van-col span="24">
             <van-cell
               :value="item.carNatureDesc"
-              class="info"
               title="车辆性质:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.carFrameNum"
-              class="info"
               title="车架号:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.carBrandNm"
-              class="info"
               title="车辆品牌:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.carSeries"
-              class="info"
               title="车系:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.carModel"
-              class="info"
               title="车辆型号:"
             />
           </van-col>
           <van-col span="24">
             <van-cell
               :value="item.estimateOriginalPrice"
-              class="info"
               title="评估价:"
             />
           </van-col>
@@ -130,22 +117,22 @@
               :border="false"
               :error-message="errorMsg.actualInvoicedPrice[index]"
               @blur.prevent="ruleMessge($event,index)"
-              class="info"
               input-align="right"
-              label="实际开票价(元):"
+              label="实际开票价:"
               label-width="120"
               name="actualInvoicedPrice"
               placeholder="请输入"
               required
               type="number"
               v-model="item.actualInvoicedPrice"
-            />
+            >
+              <template v-slot:right-icon>
+                <span>元</span>
+              </template>
+            </van-field>
           </van-col>
           <van-col span="24">
             <van-cell
-              :label="errorMsg.licensePlateNum[index]"
-              class="info"
-              label-class="labelClass"
               required
               title="车牌号:"
             >
@@ -154,6 +141,10 @@
                 type="licensePlateNum"
                 v-model="item.licensePlateNum"
               ></licensePlateNum>
+              <div
+                class="van-cell__label"
+                style="color: #ee0a24;"
+              >{{ errorMsg.licensePlateNum[index] }}</div>
             </van-cell>
           </van-col>
           <van-col span="24">
@@ -161,7 +152,6 @@
               :border="false"
               :error-message="errorMsg.engineNum[index]"
               @blur.prevent="ruleMessge($event,index)"
-              class="info"
               input-align="right"
               label="发动机号:"
               name="engineNum"
@@ -175,7 +165,6 @@
               :border="false"
               :error-message="errorMsg.insuranceExpire[index]"
               @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
-              class="info"
               input-align="right"
               is-link
               label="保险到期日:"
@@ -212,7 +201,6 @@
               :border="false"
               :error-message="errorMsg.mortgageTime"
               @click="dateRowClick('mortgageTime','办理抵押上牌日期')"
-              class="info"
               input-align="right"
               is-link
               label="办理抵押上牌日期:"
@@ -229,7 +217,6 @@
               :border="false"
               :error-message="errorMsg.registeredPlace"
               @blur.prevent="ruleMessge"
-              class="info"
               clearable
               input-align="right"
               label="上户地点:"
@@ -244,7 +231,6 @@
               :border="false"
               :error-message="errorMsg.transactionDate"
               @click="dateRowClick('transactionDate','交易日期')"
-              class="info"
               input-align="right"
               is-link
               label="交易日期:"
@@ -257,10 +243,7 @@
           </section>
           <section>
             <van-cell
-              :label="errorMsg.ispackage"
               @blur.prevent="ruleMessge"
-              class="info"
-              label-class="labelClass"
               required
               title="是否有套票:"
             >
@@ -270,6 +253,10 @@
                 @singleChange="singleChange"
                 type="ispackage"
               ></singleConnect>
+              <div
+                class="van-cell__label"
+                style="color: #ee0a24;"
+              >{{ errorMsg.ispackage }}</div>
             </van-cell>
           </section>
           <section>
@@ -278,9 +265,8 @@
               :error-message="errorMsg.packageDeal"
               @blur.prevent="ruleMessge($event,null,packageDealBlur)"
               @input="inputValue"
-              class="info"
               input-align="right"
-              label="套票成交价（元）:"
+              label="套票成交价"
               label-width="120"
               name="packageDeal"
               placeholder="请输入"
@@ -288,16 +274,19 @@
               type="number"
               v-if="details.ispackage*1 === 1"
               v-model="details.packageDeal"
-            />
+            >
+              <template v-slot:right-icon>
+                <span>元</span>
+              </template>
+            </van-field>
           </section>
           <section>
             <van-field
               :border="false"
               :error-message="errorMsg.differenceCarprice"
               @blur.prevent="ruleMessge"
-              class="info"
               input-align="right"
-              label="与贷款金额差价（元）"
+              label="与贷款金额差价"
               label-width="140"
               name="differenceCarprice"
               placeholder="自动计算"
@@ -305,14 +294,15 @@
               required
               v-if="details.ispackage*1 === 1"
               v-model="details.differenceCarprice"
-            />
+            >
+              <template v-slot:right-icon>
+                <span>元</span>
+              </template>
+            </van-field>
           </section>
           <section>
             <van-cell
-              :label="errorMsg.dishonestyCustomer"
               @blur.prevent="ruleMessge"
-              class="info"
-              label-class="labelClass"
               required
               title="是否失信客户:"
             >
@@ -322,6 +312,10 @@
                 @singleChange="singleChange"
                 type="dishonestyCustomer"
               ></singleConnect>
+              <div
+                class="van-cell__label"
+                style="color: #ee0a24;"
+              >{{ errorMsg.dishonestyCustomer }}</div>
             </van-cell>
           </section>
           <section>
@@ -330,7 +324,6 @@
               :error-message="errorMsg.ownershipRegisterDate"
               @blur.prevent="ruleMessge"
               @click="dateRowClick('ownershipRegisterDate','重权登记日期')"
-              class="info"
               input-align="right"
               is-link
               label="重权登记日期:"
@@ -536,9 +529,11 @@ export default {
       this.details.packageDeal = value;
       if (value) {
         if (this.details.loanAmt) {
-          this.details.differenceCarprice = value * 1 - this.details.loanAmt;
+          this.details.differenceCarprice = this.keepDecimal(
+            value * 1 - this.details.loanAmt
+          );
         } else {
-          this.details.differenceCarprice = value;
+          this.details.differenceCarprice = this.keepDecimal(value);
         }
         this.errorMsg.differenceCarprice = "";
         this.errorMsg.packageDeal = "";
@@ -631,7 +626,7 @@ export default {
             const { code, data, msg } = res;
             if (code == 200) {
               this.$notify({ type: "success", message: msg });
-              // this.goBack();
+              this.goBack();
             } else {
               this.$notify({ type: "danger", message: msg });
             }
@@ -655,10 +650,6 @@ export default {
   .form-content {
     padding: 10px 0;
   }
-  .info {
-    padding-top: 0;
-    padding-bottom: 0.4rem;
-  }
   .xh-fold-panel >>> .van-collapse-item__content {
     padding: 10px 0 0 0;
   }
@@ -667,9 +658,5 @@ export default {
       color: rgb(196, 37, 42);
     }
   }
-}
-.labelClass {
-  color: #ee0a24;
-  text-align: right;
 }
 </style>
