@@ -30,7 +30,7 @@
         border-radius: 5px;
         border: 1px solid #ebeef5;
         background-color: #fff;
-        overflow: hidden;
+        // overflow: hidden;
         color: #303133;
         transition: .3s;
         margin: 1rem;

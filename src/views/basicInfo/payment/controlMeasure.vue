@@ -17,7 +17,7 @@
           <van-cell-group :border="false">
               <van-cell title="风控条件" :value="returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition)" />
           </van-cell-group>
-          <van-cell title="是否上门" :border="false" required>
+          <van-cell title="业务员上门调查" :border="false" required>
             <radio v-model="data.projProjectInfo.wthrDtd" :disabled="params.dealState != '1'">
               <radio-item label="1">是</radio-item>
               <radio-item label="0">否</radio-item>
