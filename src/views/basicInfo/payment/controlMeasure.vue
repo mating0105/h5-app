@@ -106,7 +106,11 @@ export default {
         this.gradeManual = this.returnText('GradeManual',data.projProjectInfo && data.projProjectInfo.customer.gradeManual);
         this.riskCondition = this.returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition);
 
-      });
+      }).catch(err => {
+        setTimeout(()=>{
+          this.$router.go(-1);
+        },1000)
+      });;
     },
     // 获取其他字典接口
     getDict() {

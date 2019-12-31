@@ -165,12 +165,10 @@ export default {
         projBudgetList:{},
         projPayInfo:{}
       },
-
       productProperty:'',
       payMethod:'',
       payType:'',
       bankTypeJry:'',
-
       params: {},
     };
   },
@@ -184,7 +182,10 @@ export default {
         this.payType = this.returnText('payType',res.data.projPayInfo.payType);
         this.bankTypeJry = this.returnText('BANK_TYPE_JYR',res.data.projPayInfo.payeeBank);
       }).catch(err => {
-        console.log('err:',err)
+        setTimeout(()=>{
+          this.$router.go(-1);
+        },1000)
+        
       });
     },
     // 获取其他字典接口
