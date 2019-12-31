@@ -463,7 +463,7 @@
               @blur.prevent="ruleMessge"
               error-message-align="right"
             >
-              <div slot="button">元</div>
+              <div slot="button" v-if="projProjectInfo.loanAmt">元</div>
             </van-field>
           </section>
           <!-- 中建投 -->
