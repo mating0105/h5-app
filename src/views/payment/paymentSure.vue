@@ -205,12 +205,13 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
-        let url = this.$prefixurl + `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&type=xh_h5`;
-        this.$store.dispatch("user/gspUrl", url);
-        // this.$router.push({
-        //   path: row.url
-        // });
-        window.location.replace(url);
+        let url =
+          this.$prefixurl +
+          `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&type=xh_h5`;
+        //通知移动端加载gps安装页面
+        this.$bridge.callHandler("loadUrl", url, data => {
+          this.onLoad();
+        });
       } else {
         this.$router.push({
           path: row.url,

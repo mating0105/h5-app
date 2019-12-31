@@ -7,7 +7,7 @@
     :scroll="true"
   >
     <template v-slot:head>
-      <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
+      <van-search v-model="params.searchKey" :placeholder="pl" show-action @search="onSearch" />
     </template>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
@@ -101,7 +101,8 @@ export default {
         pageSize: 10
       },
       accout: "",
-      isLoading: false
+      isLoading: false,
+      pl:'请输入客户信息'
     };
   },
   computed: {
@@ -126,6 +127,12 @@ export default {
       this.loading = !this.isLoading;
       gpsList(this.params).then(res => {
         if (res.code == 200) {
+          if(this.pl == '请输入客户信息'){
+            this.pl = '111';
+          }else{
+            this.pl = '222';
+          }
+          
           setTimeout(() => {
             res.data.result.forEach(t => {
               switch (t.gpsIsDone) {
