@@ -105,7 +105,7 @@ export default {
         this.data = data;
         this.gradeManual = this.returnText('GradeManual',data.projProjectInfo && data.projProjectInfo.customer.gradeManual);
         this.riskCondition = this.returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition);
-        
+
       });
     },
     // 获取其他字典接口

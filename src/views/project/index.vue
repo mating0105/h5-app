@@ -181,7 +181,7 @@
           </div>
         </div>
       </van-tab>
-      <van-tab title="征信信息" name="2">
+      <van-tab title="征信信息" name="2" v-if="isCredit">
         <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
         <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
       </van-tab>
@@ -408,6 +408,7 @@ export default {
         surDtlList: []
       },
       isName: true, // 那个需求
+      isCredit: true, // 是否显示征信
     };
   },
   methods: {
