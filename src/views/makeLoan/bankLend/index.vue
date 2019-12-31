@@ -51,7 +51,7 @@
                             right-icon="scan"
                             @click-right-icon="IdcardLoading"/>
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
-                        <van-cell title="录机时间：" :border='false' required is-link :value="bankLoanInfo.advanceInstitutionDate?dayjs(bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm'):dayjs(new Date()).format('YYYY-MM-DD HH:mm')" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
+                        <van-cell title="录机时间：" :border='false' required is-link :value="dayjs(bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm')" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
                             <van-field :border="false" label-width='150' input-align="right" label="实际放款金额（元）：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"  name='factLoanAmt' @blur.prevent="ruleMessge" :error-message="errorMsg.factLoanAmt"/>
                             <van-cell :border='false' title="实际放款时间：" value-class='rightClass' :value="bankLoanInfo.factLoanDate?dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''" @click="showPopupTime('actualLendTime')" is-link/>
@@ -397,6 +397,7 @@ export default {
             const data=await loanInfoDetail(para);
             if(data.code==200){
                 this.bankLoanInfo=data.data.bankLoanInfo;
+                this.bankLoanInfo.advanceInstitutionDate=data.data.bankLoanInfo.advanceInstitutionDate?data.data.bankLoanInfo.advanceInstitutionDate:new Date().getTime();
                 this.getProjectInfo(data.data.borrowerInfo.projectId);
             }
         }catch(err){
