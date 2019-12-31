@@ -6,6 +6,7 @@
                     :src="url"
                     frameborder="0"
                     scrolling="auto"
+                    height="heightPage"
             ></iframe>
         </div>
     </ViewPage>
