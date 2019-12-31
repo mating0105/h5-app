@@ -99,24 +99,25 @@ export default {
           return false;
 
         } else {
-          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}`;
+          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}&type=xh_h5`;
           this.$store.dispatch("user/gspUrl", url);
-
+          window.location.replace(url);
         }
-      }
+      }else{
 
-      let json = {projectId:this.projectInfo.projectId,businesskey:''};
-      let params = {
-        projectNo:this.projectInfo.projectNo,
-        customerId:this.projectInfo.customerId,
-        customerNum:this.projectInfo.customerNum,
-        projectId:this.projectInfo.projectId,
-        isView:'1',
-        projectNo:this.projectInfo.projectNo,
-        info:JSON.stringify(json),
-        dealState:3
-      };
-      this.$router.push({ path: item.path, query: params });
+        let json = {projectId:this.projectInfo.projectId,businesskey:''};
+        let params = {
+          projectNo:this.projectInfo.projectNo,
+          customerId:this.projectInfo.customerId,
+          customerNum:this.projectInfo.customerNum,
+          projectId:this.projectInfo.projectId,
+          isView:'1',
+          projectNo:this.projectInfo.projectNo,
+          info:JSON.stringify(json),
+          dealState:3
+        };
+        this.$router.push({ path: item.path, query: params });
+      }
     },
     changeTabs(title){
       if(title === 'creditReportingInfo'){
