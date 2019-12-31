@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-30 16:52:39
+ * @LastEditTime : 2019-12-31 18:31:52
  -->
 
 <template>
@@ -49,140 +49,133 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.intentionPrice+' 元'"
+            :value="judgeNumber(details.intentionPrice)"
             title="意向贷款金额:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="details.loanAmt+' 元'"
+            :value="judgeNumber(details.loanAmt)"
             title="贷款金额:"
           />
         </van-col>
       </van-row>
     </Card>
-
-    <van-collapse
-      class="xh-fold-panel is-always-shadow"
-      v-model="activeName"
-    >
-      <van-collapse-item
-        name="car"
-        title="车辆信息"
-        title-class="left-title"
+    <Card class="xh-top-10">
+      <template v-slot:header>
+        <section class="xh-plus">
+          <van-cell>
+            <span>车辆信息</span>
+          </van-cell>
+        </section>
+      </template>
+      <van-row
+        :key="index"
+        class="form-content"
+        v-for="(item,index) in details.cars"
       >
-        <van-row
-          :key="index"
-          class="xh-fold-panel-item"
-          v-for="(item,index) in details.cars"
-        >
-          <van-col span="24">
-            <van-cell
-              :value="item.carNatureDesc"
-              title="车辆性质:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              :value="item.chassisNumber"
-              title="车架号:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              :value="item.carBrandNm"
-              title="车辆品牌:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              :value="item.carSeries"
-              title="车系:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              :value="item.carModel"
-              title="车辆型号:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              :value="item.evaluatingPrice"
-              title="评估价:"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-field
-              :border="false"
-              :error-message="errorMsg.actualInvoicedPrice[index]"
-              @blur.prevent="ruleMessge($event,index)"
-              input-align="right"
-              label="实际开票价:"
-              label-width="120"
-              name="actualInvoicedPrice"
-              placeholder="请输入"
-              required
-              type="number"
-              v-model="item.actualInvoicedPrice"
-            >
-              <template v-slot:right-icon>
-                <span>元</span>
-              </template>
-            </van-field>
-          </van-col>
-          <van-col span="24">
-            <van-cell
-              required
-              title="车牌号:"
-            >
-              <licensePlateNum
-                @licensePlateNumChange="licensePlateNumChange(...arguments,index)"
-                type="licensePlateNum"
-                v-model="item.licensePlateNum"
-              ></licensePlateNum>
-              <div
-                class="van-cell__label"
-                style="color: #ee0a24;"
-              >{{ errorMsg.licensePlateNum[index] }}</div>
-            </van-cell>
-          </van-col>
-          <van-col span="24">
-            <van-field
-              :border="false"
-              :error-message="errorMsg.engineNum[index]"
-              @blur.prevent="ruleMessge($event,index)"
-              input-align="right"
-              label="发动机号:"
-              name="engineNum"
-              placeholder="请输入"
-              required
-              v-model="item.engineNum"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-field
-              :border="false"
-              :error-message="errorMsg.insuranceExpire[index]"
-              @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
-              input-align="right"
-              is-link
-              label="保险到期日:"
-              label-width="120"
-              name
-              placeholder="请选择"
-              readonly
-              required
-              v-model="item.insuranceExpire"
-            />
-          </van-col>
-          <van-col span="24">
-            <van-divider />
-          </van-col>
-        </van-row>
-      </van-collapse-item>
-    </van-collapse>
-
+        <van-col span="24">
+          <van-cell
+            :value="item.carNatureDesc"
+            title="车辆性质:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="item.chassisNumber"
+            title="车架号:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="item.carBrandNm"
+            title="车辆品牌:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="item.carSeries"
+            title="车系:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="item.carModel"
+            title="车辆型号:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            :value="item.evaluatingPrice"
+            title="评估价:"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-field
+            :border="false"
+            :error-message="errorMsg.actualInvoicedPrice[index]"
+            @blur.prevent="ruleMessge($event,index)"
+            input-align="right"
+            label="实际开票价:"
+            label-width="120"
+            name="actualInvoicedPrice"
+            placeholder="请输入"
+            required
+            type="number"
+            v-model="item.actualInvoicedPrice"
+          >
+            <template v-slot:right-icon>
+              <span>元</span>
+            </template>
+          </van-field>
+        </van-col>
+        <van-col span="24">
+          <van-cell
+            required
+            title="车牌号:"
+          >
+            <licensePlateNum
+              @licensePlateNumChange="licensePlateNumChange(...arguments,index)"
+              type="licensePlateNum"
+              v-model="item.licensePlateNum"
+            ></licensePlateNum>
+            <div
+              class="van-cell__label"
+              style="color: #ee0a24;"
+            >{{ errorMsg.licensePlateNum[index] }}</div>
+          </van-cell>
+        </van-col>
+        <van-col span="24">
+          <van-field
+            :border="false"
+            :error-message="errorMsg.engineNum[index]"
+            @blur.prevent="ruleMessge($event,index)"
+            input-align="right"
+            label="发动机号:"
+            name="engineNum"
+            placeholder="请输入"
+            required
+            v-model="item.engineNum"
+          />
+        </van-col>
+        <van-col span="24">
+          <van-field
+            :border="false"
+            :error-message="errorMsg.insuranceExpire[index]"
+            @click="dateRowClick('insuranceExpire','保险到期日','cars',index)"
+            input-align="right"
+            is-link
+            label="保险到期日:"
+            label-width="120"
+            name
+            placeholder="请选择"
+            readonly
+            required
+            v-model="item.insuranceExpire"
+          />
+        </van-col>
+      </van-row>
+    </Card>
     <Card class="xh-top-10">
       <template v-slot:header>
         <section class="xh-plus">
@@ -204,7 +197,7 @@
               input-align="right"
               is-link
               label="办理抵押上牌日期:"
-              label-width="120"
+              label-width="130"
               name
               placeholder="请选择"
               readonly
@@ -462,6 +455,12 @@ export default {
     this.queryDetails();
   },
   methods: {
+    judgeNumber(num) {
+      if(num === null) {
+        num = '';
+      }
+      return `${num} 元`;
+    },
     packageDealBlur() {
       this.errorMsg.differenceCarprice = this.returnMsg(
         "differenceCarprice",
