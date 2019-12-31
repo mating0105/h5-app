@@ -221,7 +221,7 @@ export default {
         insurance = "0";
       }
       const chassisNumber = item.chassisNumber || ''
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${chassisNumber}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${chassisNumber}&type=xh_h5`;
       switch (name) {
         case "申请安装":
         // let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
@@ -253,9 +253,10 @@ export default {
           break;
       }
       this.$store.dispatch("user/gspUrl", url);
-      this.$router.push({
-        name: "Gpsurl"
-      });
+      // this.$router.push({
+      //   name: "Gpsurl"
+      // });
+      window.location.replace(url);
     },
     rightFn(item) {
       this.list = [];
@@ -279,7 +280,7 @@ export default {
   },
   mounted() {
     this.accout = Cookies.get("loginName");
-    // this.accout = '15881033156';
+    // this.accout = '18349309486';
     this.onLoad();
   }
 };
