@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <ViewPage
     :goPage="rightFn"
     iconClass="ellipsis"
@@ -46,23 +45,6 @@
               </div>
             </template>
           </Card>
-=======
-    <ViewPage
-            :goPage="rightFn"
-            iconClass="ellipsis"
-            :rightMenuList="cuCreditStatus"
-            :backFn="closeNativeWebView"
-            :scroll="true"
-    >
-        <template v-slot:head>
-            <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
-        </template>
-        <div>
-            <p>token: {{token}}</p>
-            <p>name：{{userName}}</p>
-            <p>loginName：{{loginName}}</p>
-            <p>cookieKeys:{{cookieKeys}}</p>
->>>>>>> 19f8a5f0e2c2a0c1021efcbbb684037eb4d3aab6
         </div>
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
             <van-list
