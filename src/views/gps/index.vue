@@ -253,11 +253,10 @@ export default {
         default:
           break;
       }
-      this.$store.dispatch("user/gspUrl", url);
-      // this.$router.push({
-      //   name: "Gpsurl"
-      // });
-      window.location.replace(url);
+      //通知移动端加载gps安装页面
+      this.$bridge.callHandler("loadUrl", url, data => {
+        this.onLoad();
+      })
     },
     rightFn(item) {
       this.list = [];
@@ -281,7 +280,7 @@ export default {
   },
   mounted() {
     this.accout = Cookies.get("loginName");
-    // this.accout = '15881033156';
+    // this.accout = '18628215095';
     this.onLoad();
   }
 };
