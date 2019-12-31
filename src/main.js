@@ -14,8 +14,9 @@ import mixins from "@/mixins/common";
 Vue.mixin(mixins);
 
 import Bridge from './utils/JSbridge'
-Vue.prototype.$bridge = Bridge
-
+Vue.prototype.$bridge = Bridge;
+Vue.prototype.$prefixurl = 'http://172.16.10.5:10004/#/';//测试gps
+// Vue.prototype.$prefixurl = 'http://xhh5.wwvas.com/#/';// 正式gps
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

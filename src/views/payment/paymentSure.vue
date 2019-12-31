@@ -205,7 +205,7 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
-        let url = `http://dev.wwvas.com:10001/#/orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`;
+        let url = this.$prefixurl + `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`;
         this.$store.dispatch("user/gspUrl", url);
         this.$router.push({
           path: row.url
