@@ -103,20 +103,21 @@ export default {
           this.$store.dispatch("user/gspUrl", url);
           window.location.replace(url);
         }
-      }
+      }else{
 
-      let json = {projectId:this.projectInfo.projectId,businesskey:''};
-      let params = {
-        projectNo:this.projectInfo.projectNo,
-        customerId:this.projectInfo.customerId,
-        customerNum:this.projectInfo.customerNum,
-        projectId:this.projectInfo.projectId,
-        isView:'1',
-        projectNo:this.projectInfo.projectNo,
-        info:JSON.stringify(json),
-        dealState:3
-      };
-      this.$router.push({ path: item.path, query: params });
+        let json = {projectId:this.projectInfo.projectId,businesskey:''};
+        let params = {
+          projectNo:this.projectInfo.projectNo,
+          customerId:this.projectInfo.customerId,
+          customerNum:this.projectInfo.customerNum,
+          projectId:this.projectInfo.projectId,
+          isView:'1',
+          projectNo:this.projectInfo.projectNo,
+          info:JSON.stringify(json),
+          dealState:3
+        };
+        this.$router.push({ path: item.path, query: params });
+      }
     },
     changeTabs(title){
       if(title === 'creditReportingInfo'){
