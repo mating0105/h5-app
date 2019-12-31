@@ -91,8 +91,7 @@ export default {
     },
     goPage(item){
       if(item.title === 'GPS 安装信息'){
-        
-        if(this.gpsInfo){
+        if(!this.gpsInfo){
           this.$notify({
             type: "danger",
             message: "未安装 GPS!"
@@ -100,8 +99,7 @@ export default {
           return false;
 
         } else {
-
-          let url = `http://dev.wwvas.com:10001/#/orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}`;
+          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}`;
           this.$store.dispatch("user/gspUrl", url);
 
         }
