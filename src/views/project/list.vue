@@ -15,8 +15,9 @@
         :error.sync="error"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
+        style="padding: 0.5rem 1rem;"
       >
-        <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
+        <div v-for="(item,ie) in list" :key="ie" class="van-clearfix xh-clearfix">
           <Card class="xh-top-10" :bodyPadding="true">
             <template v-slot:header>
               <section class="xh-plus">
@@ -245,6 +246,11 @@ export default {
   z-index: 99;
   .van-button {
     border-radius: 0;
+  }
+}
+.xh-clearfix {
+  .card {
+    margin: 0.5rem 0;
   }
 }
 </style>
