@@ -1,319 +1,137 @@
 <template>
-  <ViewPage
-    :goPage="rightFn"
-    iconClass="ellipsis"
-    :rightMenuList="cuCreditStatus"
-    :backFn="closeNativeWebView"
-    :scroll="true"
-  >
-    <template v-slot:head>
-      <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
-    </template>
-      <div>
-          <p>token: {{token}}</p>
-          <p>name：{{userName}}</p>
-          <p>loginName：{{loginName}}</p>
-          <p>cookieKeys:{{cookieKeys}}</p>
-      </div>
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-list
-        style="min-height: 80vh"
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        :error.sync="error"
-        error-text="请求失败，点击重新加载"
-        @load="onLoad"
-      >
-        <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">
-          <Card class="xh-top-10" :bodyPadding="true">
-            <template v-slot:header>
-              <section class="xh-plus">
-                <van-cell :title="item.projectNo" :value="item.gpsname" icon="notes-o"></van-cell>
-              </section>
-            </template>
-            <van-row>
-              <van-col span="24">客户名称：{{item.customerName}}</van-col>
-              <van-col span="24" class="xh-top-10">身份证：{{item.idcard}}</van-col>
-              <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>
-            </van-row>
-            <template v-slot:footer>
-              <div style="text-align:right;">
-                <van-button
-                  v-for="btn in item.pgslist"
-                  plain
-                  type="danger"
-                  class="xh-radius"
-                  style="border-radius: 6px;margin-left:5px;"
-                  v-show="btn"
-                  @click="gpsUrl(btn,item)"
-                >{{btn}}</van-button>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </van-list>
-    </van-pull-refresh>
-  </ViewPage>
+    <ViewPage>
+        <van-button type="default" @click="clickFn">默认按钮</van-button>
+        <!--        <van-button type="primary">主要按钮</van-button>-->
+        <!--        <van-button type="info">信息按钮</van-button>-->
+        <!--        <van-button type="warning">警告按钮</van-button>-->
+        <!--        <van-button type="danger">危险按钮</van-button>-->
+        <p>token: {{token}}</p>
+        <p>name：{{userName}}</p>
+        <p>loginName：{{loginName}}</p>
+        <p>cookieKeys:{{cookieKeys}}</p>
+        <!--        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>-->
+        <!--        <p style="color: #21C272">{{test}}</p>-->
+        <!--        <input type="file">-->
+        <iframe
+                id="iframepage"
+                src="http://dev.wwvas.com:10001/#/installOrderList?loanAmount=100000.00&prodqty=undefined&insurance=undefined&ownername=林顺辉&idcard=511021197206082828&mobile=13158585858&contactname=向召&contactmobile=null&vehiclecategory=2&vehicletype=乘用车&model=1&price=200000.00&showTitle=false&externalid=XM201912271820&externalcustnum=undefined&externalvehicleid=201912271923&username=18349309486"
+                frameborder="0"
+                scrolling="auto"
+                width="100%"
+                :height="heightPage"
+        ></iframe>
+        <van-uploader style='margin-top: 1rem;' v-model="fileList" multiple/>
+    </ViewPage>
+
 </template>
 
 <script>
-import Vue from "vue";
-import ViewPage from "@/layout/components/ViewPage";
-import Card from "@/components/card/index";
-import { gpsList, GPS_URL } from "@/api/payment";
-import { mapState } from "vuex";
-import Cookies from "js-cookie";
-import { getToken } from '@/utils/auth'
-import {
-  Row,
-  Col,
-  Icon,
-  Cell,
-  Button,
-  List,
-  Search,
-  Toast,
-  PullRefresh
-} from "vant";
-const Components = [
-  Row,
-  Col,
-  Icon,
-  Cell,
-  Button,
-  List,
-  Search,
-  Toast,
-  PullRefresh
-];
+  import { mapGetters } from 'vuex'
+  import ViewPage from '@/layout/components/ViewPage';
+  import Vue from 'vue'
+  import { Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader } from 'vant';
+  import { getList } from '@/api/table'
+  import { getToken } from '@/utils/auth'
+  import Cookies from 'js-cookie'
 
-Components.forEach(item => {
-  Vue.use(item);
-});
-export default {
-  components: {
-    ViewPage,
-    Card
-  },
-  data() {
-    return {
-      list: [],
-      loading: false,
-      error: false,
-      finished: false,
-      params: {
-        pageIndex: 1,
-        pageSize: 10
+  const Components = [Button, Checkbox, Field, Cell, CellGroup, List, Toast, Uploader]
+
+  Components.forEach(item => {
+    Vue.use(item)
+  })
+
+  export default {
+    name: 'Dashboard',
+    components: {
+      ViewPage
+      // van-button
+      // NavBar
+    },
+    computed: {
+      ...mapGetters([
+        'name'
+      ])
+    },
+    data () {
+      return {
+        check: true,
+        value: '',
+        dataList: [],
+        loading: false,
+        finished: false,
+        msg: 'test data',
+        test: '',
+        token: getToken(),
+        userName:'',
+        loginName:'',
+        cookieKeys:{},
+        fileList: [
+          {url: 'https://img.yzcdn.cn/vant/leaf.jpg'},
+        ]
+      }
+    },
+    methods: {
+      async getList () {
+        const response = await getList()
+        this.dataList = response.data.items
+        this.finished = true
       },
-      accout: "",
-      isLoading: false,
-      token: getToken(),
-      userName:Cookies.get('name'),
-      loginName:Cookies.get('loginName'),
-      cookieKeys:Cookies.get(),
-    };
-  },
-  computed: {
-    ...mapState({
-      name: state => state.user.name,
-      wordbook: state => state.user.wordbook
-    }),
-    cuCreditStatus() {
-      return (
-        [{ label: "全部", value: "" }, ...this.wordbook.WW_GPS_IS_DONE] || []
-      );
-    }
-  },
-  methods: {
-    onSearch() {
-      this.list = [];
-      this.finished = false;
-      this.params.pageIndex = 1;
-      this.onLoad();
-    },
-    onLoad() {
-      this.loading = !this.isLoading;
-      gpsList(this.params).then(res => {
-        if (res.code == 200) {
-          setTimeout(() => {
-            res.data.result.forEach(t => {
-              switch (t.gpsIsDone) {
-                case "-1":
-                  t.gpsname = "待申请";
-                  t.pgslist = ["申请安装"];
-                  break;
-                case "1":
-                  t.gpsname = "待派单";
-                  t.pgslist = ["订单修改"];
-                  break;
-                case "2":
-                  t.gpsname = "待接单";
-                  t.pgslist = ["订单修改"];
-                  break;
-                case "3":
-                  t.gpsname = "待施工";
-                  t.pgslist = ["订单修改"];
-                  break;
-                case "4":
-                  t.gpsname = "施工中";
-                  t.pgslist = ["订单修改"];
-                  break;
-                case "5":
-                  t.gpsname = "保险待出单";
-                  t.pgslist = [];
-                  break;
-                case "6":
-                  t.gpsname = "订单完成";
-                  if (t.insurance == "1") {
-                    // t.pgslist = ["查看电子保单"];
-                  } else {
-                    t.pgslist = [];
-                  }
-                  break;
-                case "0":
-                  t.gpsname = "订单作废";
-                  t.pgslist = [];
-                  break;
-                case "-9":
-                  t.gpsname = "订单作废(删除车辆)";
-                  t.pgslist = [];
-                  break;
-                case "10":
-                  t.gpsname = "拆除-待接单";
-                  t.pgslist = [];
-                  break;
-                case "20":
-                  t.gpsname = "拆除-待接单";
-                  t.pgslist = [];
-                  break;
-                case "30":
-                  t.gpsname = "拆除-待施工";
-                  t.pgslist = [];
-                  break;
-                case "40":
-                  t.gpsname = "拆除-施工中";
-                  t.pgslist = [];
-                  break;
-                case "60":
-                  t.gpsname = "拆除-订单完成";
-                  t.pgslist = [];
-                  break;
-                case "70":
-                  t.gpsname = "拆除-订单取消";
-                  t.pgslist = [];
-                  break;
-              }
-              this.list.push(t);
-            });
-            // 加载状态结束
-            this.loading = false;
-            this.isLoading = false;
-            this.params.pageIndex++;
-            // 数据全部加载完成
-            if (this.list.length == res.data.totalCount) {
-              this.finished = true;
-            } else {
-              this.finished = false;
-            }
-          }, 500);
-        } else {
-          this.$notify({ type: "danger", message: msg });
-          this.loading = false;
+      //js调app
+      sendMsg (fnName) {
+        let msg = this.msg
+        this.$bridge.callHandler(fnName, msg, (res) => {
+          Toast('获取app响应数据:' + res)
+          this.test = res
+        })
+      },
+      // app调js
+      getAPPDate (fnName) {
+        this.$bridge.registerHandler(fnName, (data, responseCallback) => {
+          Toast('app主动调用js方法，传入数据:' + data)
+          responseCallback(data)
+        })
+      },
+      clickFn () {
+        try {
+          this.sendMsg('callNativeCode')
+          // if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.callNativeCode) {
+          //   window.webkit.messageHandlers.callNativeCode.postMessage('callNativeCode')
+          // }
+          // if (window.WebViewJavascriptBridge) {
+          //   //do your work here
+          // } else {
+          //   document.addEventListener(
+          //     'WebViewJavascriptBridgeReady'
+          //     , function () {
+          //       //do your work here
+          //     },
+          //     false
+          //   );
+          // }
+        } catch (e) {
+          Toast(e);
         }
-      });
-    },
-    gpsUrl(name, item) {
-      let url = "";
-      let insurance;
-      if (item.thiefRescue != null && item.thiefRescue != "2") {
-        insurance = "1";
-      } else {
-        insurance = "0";
       }
-      const chassisNumber = item.chassisNumber || ''
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${chassisNumber}&type=xh_h5`;
-      switch (name) {
-        case "申请安装":
-        // let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
-        // url = this.GPS_URL + "installOrderList?" + param + commonData;
-        // break;
-        case "申请加装":
-          let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
-          url = this.$prefixurl + "installOrderList?" + param + commonData;
-          break;
-        case "订单修改":
-          url =
-            this.$prefixurl +
-            `modifyOrder?&loanAmount=${item.loanAmount}&id=${item.orderId}` +
-            commonData;
-          break;
-        case "申请拆除":
-          url =
-            this.$prefixurl+
-            `repairOrderList?&notRepair=true&orderId=${item.orderId}` +
-            commonData;
-          break;
-        case "完善盗抢险":
-          url = this.$prefixurl + `insurance?id=${item.orderId}` + commonData;
-          break;
-        case "查看电子保单":
-          url = this.$prefixurl + `elePolicy?id=${item.orderId}` + commonData;
-          break;
-        default:
-          break;
-      }
-      this.$store.dispatch("user/gspUrl", url);
-      // this.$router.push({
-      //   name: "Gpsurl"
-      // });
-      window.location.replace(url);
     },
-    rightFn(item) {
-      this.list = [];
-      this.params.pageIndex = 1;
-      this.params.status = item.value;
-      this.onLoad();
-    },
-    //下拉刷新
-    onRefresh() {
-      this.list = [];
-      this.params.pageIndex = 1;
-      if (this.finished) {
-        this.finished = false;
-      } else {
-        this.onLoad();
-      }
-      setTimeout(() => {
-        Toast.success("刷新成功");
-      }, 500);
+    mounted () {
+      this.getAPPDate('callJsCode')
+      // this.getList()
+      this.userName=Cookies.get('name');
+      this.loginName=Cookies.get('loginName');
+      this.cookieKeys=Cookies.get();
     }
-  },
-  mounted() {
-    this.accout = Cookies.get("loginName");
-    this.userName=Cookies.get('name');
-    this.loginName=Cookies.get('loginName');
-    this.cookieKeys=Cookies.get();
-    // this.accout = '15881033156';
-    // this.onLoad();
   }
-};
 </script>
 
-<style lang="scss">
-.xh-plus {
-  span {
-    color: rgb(196, 37, 42);
-  }
-}
-.xh-fixed-submit {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 99;
-  .van-button {
-    border-radius: 0;
-  }
-}
+<style lang="scss" scoped>
+    /*.dashboard {*/
+    /*    &-container {*/
+    /*        margin: 30px;*/
+    /*    }*/
+
+    /*    &-text {*/
+    /*        font-size: 30px;*/
+    /*        line-height: 46px;*/
+    /*    }*/
+    /*}*/
 </style>
