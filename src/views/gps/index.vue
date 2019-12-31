@@ -1,59 +1,26 @@
 <template>
-    <ViewPage
-            :goPage="rightFn"
-            iconClass="ellipsis"
-            :rightMenuList="cuCreditStatus"
-            :backFn="closeNativeWebView"
-            :scroll="true"
-    >
-        <template v-slot:head>
-            <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
-        </template>
-        <div>
-            <p>token: {{token}}</p>
-            <p>name：{{userName}}</p>
-            <p>loginName：{{loginName}}</p>
-            <p>cookieKeys:{{cookieKeys}}</p>
-        </div>
-<!--        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">-->
-<!--            <van-list-->
-<!--                    style="min-height: 80vh"-->
-<!--                    v-model="loading"-->
-<!--                    :finished="finished"-->
-<!--                    finished-text="没有更多了"-->
-<!--                    :error.sync="error"-->
-<!--                    error-text="请求失败，点击重新加载"-->
-<!--                    @load="onLoad"-->
-<!--            >-->
-<!--                <div v-for="(item,index) in list" :key="index" :title="item" class="van-clearfix">-->
-<!--                    <Card class="xh-top-10" :bodyPadding="true">-->
-<!--                        <template v-slot:header>-->
-<!--                            <section class="xh-plus">-->
-<!--                                <van-cell :title="item.projectNo" :value="item.gpsname" icon="notes-o"></van-cell>-->
-<!--                            </section>-->
-<!--                        </template>-->
-<!--                        <van-row>-->
-<!--                            <van-col span="24">客户名称：{{item.customerName}}</van-col>-->
-<!--                            <van-col span="24" class="xh-top-10">身份证：{{item.idcard}}</van-col>-->
-<!--                            <van-col span="24" class="xh-top-10">手机号码：{{item.mobile}}</van-col>-->
-<!--                        </van-row>-->
-<!--                        <template v-slot:footer>-->
-<!--                            <div style="text-align:right;">-->
-<!--                                <van-button-->
-<!--                                        v-for="btn in item.pgslist"-->
-<!--                                        plain-->
-<!--                                        type="danger"-->
-<!--                                        class="xh-radius"-->
-<!--                                        style="border-radius: 6px;margin-left:5px;"-->
-<!--                                        v-show="btn"-->
-<!--                                        @click="gpsUrl(btn,item)"-->
-<!--                                >{{btn}}</van-button>-->
-<!--                            </div>-->
-<!--                        </template>-->
-<!--                    </Card>-->
-<!--                </div>-->
-<!--            </van-list>-->
-<!--        </van-pull-refresh>-->
+    <ViewPage>
+        <van-button type="default" @click="clickFn">默认按钮</van-button>
+        <!--        <van-button type="primary">主要按钮</van-button>-->
+        <!--        <van-button type="info">信息按钮</van-button>-->
+        <!--        <van-button type="warning">警告按钮</van-button>-->
+        <!--        <van-button type="danger">危险按钮</van-button>-->
+        <p>token: {{token}}</p>
+        <p>name：{{userName}}</p>
+        <p>loginName：{{loginName}}</p>
+        <p>cookieKeys:{{cookieKeys}}</p>
+        <!--        <p style="font-weight: 600;font-size: 2rem">这是返回的消息:</p>-->
+        <!--        <p style="color: #21C272">{{test}}</p>-->
+        <!--        <input type="file">-->
+        <iframe
+                id="iframepage"
+                src="http://dev.wwvas.com:10001/#/installOrderList?loanAmount=100000.00&prodqty=undefined&insurance=undefined&ownername=林顺辉&idcard=511021197206082828&mobile=13158585858&contactname=向召&contactmobile=null&vehiclecategory=2&vehicletype=乘用车&model=1&price=200000.00&showTitle=false&externalid=XM201912271820&externalcustnum=undefined&externalvehicleid=201912271923&username=18349309486"
+                frameborder="0"
+                scrolling="auto"
+                width="100%"
+                :height="heightPage"
+        ></iframe>
+        <van-uploader style='margin-top: 1rem;' v-model="fileList" multiple/>
     </ViewPage>
 </template>
 
