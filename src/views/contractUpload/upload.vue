@@ -65,7 +65,7 @@ export default {
         this.loading = true
         const params = {
           lpCertificateNum: this.projectInfo.certificateNum,
-          // id: this.projectInfo.id
+          id: this.projectInfo.id
           // lpCertificateNum: '511623198710011746',
           
         }
