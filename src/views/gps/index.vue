@@ -9,12 +9,6 @@
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
-      <div>
-          <p>token: {{token}}</p>
-          <p>name：{{userName}}</p>
-          <p>loginName：{{loginName}}</p>
-          <p>cookieKeys:{{cookieKeys}}</p>
-      </div>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
         style="min-height: 80vh"
@@ -108,10 +102,6 @@ export default {
       },
       accout: "",
       isLoading: false,
-      token: getToken(),
-      userName:Cookies.get('name'),
-      loginName:Cookies.get('loginName'),
-      cookieKeys:Cookies.get(),
     };
   },
   computed: {
