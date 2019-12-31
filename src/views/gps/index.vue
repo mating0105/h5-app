@@ -100,6 +100,7 @@ export default {
         pageSize: 10
       },
       GPS_URL: "http://dev.wwvas.com:10001/#/",
+      // GPS_URL: "http://192.168.50.55:8089/#/",
       accout: "",
       isLoading: false
     };
@@ -280,7 +281,7 @@ export default {
   },
   mounted() {
     this.accout = Cookies.get("loginName");
-    // this.accout = '18349309486';
+    // this.accout = '15881033156';
     this.onLoad();
   }
 };
