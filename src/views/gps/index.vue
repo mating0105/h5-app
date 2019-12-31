@@ -290,8 +290,11 @@ export default {
   },
   mounted() {
     this.accout = Cookies.get("loginName");
+    this.userName=Cookies.get('name');
+    this.loginName=Cookies.get('loginName');
+    this.cookieKeys=Cookies.get();
     // this.accout = '15881033156';
-    this.onLoad();
+    // this.onLoad();
   }
 };
 </script>
