@@ -35,6 +35,7 @@ export default {
   },
   mounted() {
     let query = this.$route.query;
+    console.log(query);
     this.isView = query.isView;
     if(query.activityId) {
       switch (query.activityId) {

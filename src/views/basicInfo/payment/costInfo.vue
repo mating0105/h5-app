@@ -170,7 +170,8 @@ export default {
   },
   methods: {
     loadData() {
-      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey }).then(res => {
+    console.log('projectId: ,',this.params.info);
+      getPaymentDetail({ projectId: this.params.info && this.params.info.projectId,businesskey: this.params.info.businesskey }).then(res => {
         this.payDetail = res.data;
       });
     },
@@ -199,10 +200,12 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$route.query);
     this.params = {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
+
     this.loadData();
     this.getDict();
   }
