@@ -102,7 +102,7 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 import { getPaymentDetail, getDic, submitGo } from "@/api/payment";
 import { mapState } from "vuex";
 const Components = [
@@ -185,7 +185,7 @@ export default {
       message: "", //意见描述
       conclusionCode: "",
       loading: false,
-      accout:'',
+      accout: ""
     };
   },
   computed: {
@@ -205,11 +205,10 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
+        let url = `http://dev.wwvas.com:10001/#/orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`;
+        this.$store.dispatch("user/gspUrl", url);
         this.$router.push({
-          path: row.url,
-          query: {
-            url: `http://dev.wwvas.com:10001/#/orderDetail?id=${this.params.info.id}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}`
-          }
+          path: row.url
         });
       } else {
         this.$router.push({
@@ -300,7 +299,8 @@ export default {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
-    this.accout = Cookies.get('loginName');
+    this.accout = Cookies.get("loginName");
+    // this.accout = '18349309486';
     this.loadData(); //加载详情数据
   }
 };
