@@ -26,10 +26,10 @@
                                 <van-field label="主借人还款卡号：" disabled :border="false" label-width='150' input-align="right"
                                            v-model="form.loanInfo.repaymentBankCardNo"/>
                                 <van-cell title="还款卡银行：" :border='false' :value="form.loanInfo.accountBank"/>
-                                <van-cell title="录机时间：" :border='false' :value="form.loanInfo.advanceInstitutionDate?dayjs(form.loanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm:ss'):''"/>
+                                <van-cell title="录机时间：" :border='false' :value="form.loanInfo.advanceInstitutionDate?dayjs(form.loanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm'):''"/>
                                 <van-field :border="false" disabled label-width='150' input-align="right" label="实际放款金额（元）："
                                            v-model="form.loanInfo.factLoanAmt"/>
-                                <van-cell :border='false' disabled title="实际放款时间：" :value="form.loanInfo.factLoanDate?dayjs(form.loanInfo.factLoanDate).format('YYYY-MM-DD HH:mm:ss'):''"/>
+                                <van-cell :border='false' disabled title="实际放款时间：" :value="form.loanInfo.factLoanDate?dayjs(form.loanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''"/>
                             </div>
                         </Card>
                         <!-- 放款凭证 -->

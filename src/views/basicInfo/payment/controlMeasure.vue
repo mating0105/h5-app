@@ -6,7 +6,7 @@
         <template slot="header">风控措施</template>
         <van-row>
           <van-cell-group :border="false">
-              <van-cell title="手动评级" :value="returnText('GradeManual',data.projProjectInfo.customer.gradeManual)" />
+              <van-cell title="手动评级" :value="gradeManual" />
           </van-cell-group>
           <van-cell title="是否加入关注名单" :border="false" required>
             <radio v-model="data.projProjectInfo.riskMeasure.isFoucusList" :disabled="params.dealState != '1'">
@@ -15,7 +15,7 @@
             </radio>
           </van-cell>
           <van-cell-group :border="false">
-              <van-cell title="风控条件" :value="returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition)" />
+              <van-cell title="风控条件" :value="riskCondition" />
           </van-cell-group>
           <van-cell title="业务员上门调查" :border="false" required>
             <radio v-model="data.projProjectInfo.wthrDtd" :disabled="params.dealState != '1'">
@@ -89,17 +89,23 @@ export default {
       selectName: "",
       fieldName: "",
       options: [],
-      valueKey: "label"
+      valueKey: "label",
+      params:{
+        info:{}
+      },
+      gradeManual: '',
+      riskCondition: ''
     };
   },
   methods: {
     loadData() {
-      getPaymentDetail({ projectId: this.params.info.projectId,businesskey: this.params.info.businesskey }).then(res => {
-        if (res.code == 200) {
-          this.data = res.data;
-        } else {
-          this.$notify({ type: "danger", message: msg });
-        }
+      let info = this.params.info;
+      getPaymentDetail({ projectId: info.projectId,businesskey: info.businesskey }).then(res => {
+        let { data } = res;
+        this.data = data;
+        this.gradeManual = this.returnText('GradeManual',data.projProjectInfo && data.projProjectInfo.customer.gradeManual);
+        this.riskCondition = this.returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition);
+        
       });
     },
     // 获取其他字典接口
@@ -124,13 +130,13 @@ export default {
       return name;
     },
   },
-  mounted() {
+  created(){
     this.params = {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
-    this.loadData();
     this.getDict();
+    this.loadData();
   }
 };
 </script>
