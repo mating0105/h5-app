@@ -1,7 +1,7 @@
 <template>
   <!-- 此页面由于产品设计不合理, 预计作废, 暂且保留 -->
   <ViewPage :rightMenuList="rightMenuList" :goPage="goPage" :iconClass="'ellipsis'" :loading="loading">
-    <van-tabs v-model="activeName"@change="changeTabs">
+    <van-tabs v-model="activeName" @change="changeTabs">
       <van-tab title="项目信息" name="projectInfo">
         <ProjectInfo></ProjectInfo>
       </van-tab>
@@ -72,16 +72,8 @@ export default {
           lpCertificateNum: this.projectInfo.certificateNum
         }
         const res = await getCreditInfo(params)
-        // this.dataList = res.data.cuCreditRegister;
         this.loading = false
         this.surDtlList = res.data.cuCreditRegister.surDtlList;
-        // this.surDtlList.forEach(e => {
-        //   if (e.creditObjectType === 'borrower') {
-        //     this.form = e;
-        //   } else {
-        //     this.perInfoList.push(e);
-        //   }
-        // })
 
       } catch (e) {
         this.loading = false
@@ -99,8 +91,7 @@ export default {
     },
     goPage(item){
       if(item.title === 'GPS 安装信息'){
-        
-        if(this.gpsInfo){
+        if(!this.gpsInfo){
           this.$notify({
             type: "danger",
             message: "未安装 GPS!"
@@ -108,8 +99,7 @@ export default {
           return false;
 
         } else {
-
-          let url = `http://dev.wwvas.com:10001/#/orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}`;
+          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}`;
           this.$store.dispatch("user/gspUrl", url);
 
         }

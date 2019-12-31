@@ -9,6 +9,12 @@
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
+      <div>
+          <p>token: {{token}}</p>
+          <p>name：{{userName}}</p>
+          <p>loginName：{{loginName}}</p>
+          <p>cookieKeys:{{cookieKeys}}</p>
+      </div>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
         style="min-height: 80vh"
@@ -58,6 +64,7 @@ import Card from "@/components/card/index";
 import { gpsList, GPS_URL } from "@/api/payment";
 import { mapState } from "vuex";
 import Cookies from "js-cookie";
+import { getToken } from '@/utils/auth'
 import {
   Row,
   Col,
@@ -99,10 +106,12 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      GPS_URL: "http://dev.wwvas.com:10001/#/",
-      // GPS_URL: "http://192.168.50.55:8089/#/",
       accout: "",
-      isLoading: false
+      isLoading: false,
+      token: getToken(),
+      userName:Cookies.get('name'),
+      loginName:Cookies.get('loginName'),
+      cookieKeys:Cookies.get(),
     };
   },
   computed: {
@@ -152,14 +161,14 @@ export default {
                   break;
                 case "5":
                   t.gpsname = "保险待出单";
-                  t.pgslist = ["申请拆除"];
+                  t.pgslist = [];
                   break;
                 case "6":
                   t.gpsname = "订单完成";
                   if (t.insurance == "1") {
                     // t.pgslist = ["查看电子保单"];
                   } else {
-                    t.pgslist = ["申请拆除"];
+                    t.pgslist = [];
                   }
                   break;
                 case "0":
@@ -223,7 +232,7 @@ export default {
         insurance = "0";
       }
       const chassisNumber = item.chassisNumber || ''
-      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${chassisNumber}`;
+      let commonData = `&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&externalvehicleid=${item.id}&username=${this.accout}&capital=${item.capital}&impvin=${chassisNumber}&type=xh_h5`;
       switch (name) {
         case "申请安装":
         // let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
@@ -231,33 +240,34 @@ export default {
         // break;
         case "申请加装":
           let param = `loanAmount=${item.loanAmount}&prodqty=${item.gpsnums}&insurance=${insurance}&ownername=${item.customerName}&idcard=${item.idcard}&mobile=${item.mobile}&contactname=${item.contactname}&contactmobile=${item.contactmobile}&vehiclecategory=${item.vehiclecategory}&vehicletype=${item.vehicletype}&model=${item.model}&price=${item.price}`;
-          url = this.GPS_URL + "installOrderList?" + param + commonData;
+          url = this.$prefixurl + "installOrderList?" + param + commonData;
           break;
         case "订单修改":
           url =
-            this.GPS_URL +
+            this.$prefixurl +
             `modifyOrder?&loanAmount=${item.loanAmount}&id=${item.orderId}` +
             commonData;
           break;
         case "申请拆除":
           url =
-            this.GPS_URL +
+            this.$prefixurl+
             `repairOrderList?&notRepair=true&orderId=${item.orderId}` +
             commonData;
           break;
         case "完善盗抢险":
-          url = this.GPS_URL + `insurance?id=${item.orderId}` + commonData;
+          url = this.$prefixurl + `insurance?id=${item.orderId}` + commonData;
           break;
         case "查看电子保单":
-          url = this.GPS_URL + `elePolicy?id=${item.orderId}` + commonData;
+          url = this.$prefixurl + `elePolicy?id=${item.orderId}` + commonData;
           break;
         default:
           break;
       }
       this.$store.dispatch("user/gspUrl", url);
-      this.$router.push({
-        name: "Gpsurl"
-      });
+      // this.$router.push({
+      //   name: "Gpsurl"
+      // });
+      window.location.replace(url);
     },
     rightFn(item) {
       this.list = [];
@@ -281,7 +291,7 @@ export default {
   },
   mounted() {
     this.accout = Cookies.get("loginName");
-    // this.accout = '15881033156';
+    // this.accout = '18349309486';
     this.onLoad();
   }
 };
