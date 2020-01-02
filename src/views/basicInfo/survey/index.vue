@@ -324,7 +324,7 @@
       :close-on-click-overlay="false"
       v-model="show3"
       :actions="actions"
-      @select="onSelect" 
+      @select="onSelect"
       cancel-text="取消"
       @cancel="show3 = false"
     />

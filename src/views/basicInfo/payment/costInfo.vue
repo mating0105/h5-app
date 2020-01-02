@@ -20,16 +20,16 @@
             <van-cell title="产品名称" :value="payDetail.projProjectInfo.productName" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell
-              title="产品性质"
-              :value="productProperty"
-            />
+            <van-cell title="产品性质" :value="productProperty" />
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell title="贷款金额(元)" :value="payDetail.projProjectInfo.loanAmt" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="贷款期数" :value="payDetail.projProjectInfo.proPat ? payDetail.projProjectInfo.proPat.loanCount : ''" />
+            <van-cell
+              title="贷款期数"
+              :value="payDetail.projProjectInfo.proPat ? payDetail.projProjectInfo.proPat.loanCount : ''"
+            />
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell title="放款平台" :value="payDetail.projProjectInfo.dsbrPltfrmNm" />
@@ -121,10 +121,7 @@
               <van-cell title="银行账号" :value="payDetail.projPayInfo.payeeAccount" />
             </van-cell-group>
             <van-cell-group :border="false">
-              <van-cell
-                title="开户银行"
-                :value="bankTypeJry"
-              />
+              <van-cell title="开户银行" :value="bankTypeJry" />
             </van-cell-group>
             <van-cell-group :border="false">
               <van-cell title="开户支行" :value="payDetail.projPayInfo.payeeSubBank" />
@@ -135,7 +132,7 @@
           </div>
           <!-- <div>
             {{payDetail.projPayInfo}}
-          </div> -->
+          </div>-->
         </van-row>
       </card>
     </div>
@@ -161,32 +158,48 @@ export default {
   data() {
     return {
       payDetail: {
-        projProjectInfo:{},
-        projBudgetList:{},
-        projPayInfo:{}
+        projProjectInfo: {},
+        projBudgetList: {},
+        projPayInfo: {}
       },
-      productProperty:'',
-      payMethod:'',
-      payType:'',
-      bankTypeJry:'',
-      params: {},
+      productProperty: "",
+      payMethod: "",
+      payType: "",
+      bankTypeJry: "",
+      params: {}
     };
   },
   methods: {
     loadData() {
-      getPaymentDetail({ projectId: this.params.info && this.params.info.projectId,businesskey: this.params.info.businesskey}).then(res => {
-        this.payDetail = res.data;
-        
-        this.productProperty = this.returnText('product_property',res.data.projProjectInfo.productProperty);
-        this.payMethod = this.returnText('pay_method',res.data.projBudgetList.pyfMod);
-        this.payType = this.returnText('payType',res.data.projPayInfo.payType);
-        this.bankTypeJry = this.returnText('BANK_TYPE_JYR',res.data.projPayInfo.payeeBank);
-      }).catch(err => {
-        setTimeout(()=>{
-          this.$router.go(-1);
-        },1000)
-        
-      });
+      getPaymentDetail({
+        projectId: this.params.info && this.params.info.projectId,
+        businesskey: this.params.info.businesskey
+      })
+        .then(res => {
+          this.payDetail = res.data;
+
+          this.productProperty = this.returnText(
+            "product_property",
+            res.data.projProjectInfo.productProperty
+          );
+          this.payMethod = this.returnText(
+            "pay_method",
+            res.data.projBudgetList.pyfMod
+          );
+          this.payType = this.returnText(
+            "payType",
+            res.data.projPayInfo.payType
+          );
+          this.bankTypeJry = this.returnText(
+            "BANK_TYPE_JYR",
+            res.data.projPayInfo.payeeBank
+          );
+        })
+        .catch(err => {
+          setTimeout(() => {
+            this.$router.go(-1);
+          }, 1000);
+        });
     },
     // 获取其他字典接口
     getDict() {
@@ -217,7 +230,7 @@ export default {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
-    console.log('businesskey:',this.params.info);
+    console.log("businesskey:", this.params.info);
 
     this.loadData();
     this.getDict();

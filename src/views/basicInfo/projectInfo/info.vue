@@ -235,23 +235,23 @@
           </section>
           <section>
             <!-- <div class="xh-address"> -->
-              <van-field
-                v-model="projProjectInfo.addressDetail"
-                :required="isView"
-                clearable
-                name="addressDetail"
-                :disabled="!isView"
-                label="具体地址:"
-                input-align="right"
-                :placeholder="isView?'请填写':''"
-                @blur.prevent="ruleMessge"
-                :error-message="errorMsg.addressDetail"
-                error-message-align="right"
-              />
-              <!-- <div class="xh-address-result">
+            <van-field
+              v-model="projProjectInfo.addressDetail"
+              :required="isView"
+              clearable
+              name="addressDetail"
+              :disabled="!isView"
+              label="具体地址:"
+              input-align="right"
+              :placeholder="isView?'请填写':''"
+              @blur.prevent="ruleMessge"
+              :error-message="errorMsg.addressDetail"
+              error-message-align="right"
+            />
+            <!-- <div class="xh-address-result">
                 <div class="xh-address-row" v-for="u in 10">{{ u }}</div>
               </div>
-            </div> -->
+            </div>-->
           </section>
         </van-col>
       </van-row>
@@ -315,8 +315,8 @@
             <van-cell title="车架号:" :value="i.chassisNumber" />
           </section>
           <section>
-            <van-cell title="销售价:" :value="i.salePrice" >
-              <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice"> 元</div>
+            <van-cell title="销售价:" :value="i.salePrice">
+              <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice">元</div>
             </van-cell>
           </section>
           <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
@@ -331,8 +331,8 @@
               <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
             </section>
             <section>
-              <van-cell title="行驶里程:" :value="i.roadHaul" >
-                <div slot="right-icon" style="line-height: inherit;" v-if="i.roadHaul"> 公里</div>
+              <van-cell title="行驶里程:" :value="i.roadHaul">
+                <div slot="right-icon" style="line-height: inherit;" v-if="i.roadHaul">公里</div>
               </van-cell>
             </section>
             <section>
@@ -342,13 +342,13 @@
           <!-- 二手车是否已评估 isAses 评估后显示-->
           <div v-if="i.isAses == '1'">
             <section>
-              <van-cell title="评估价:" :value="i.estimateOriginalPrice" >
-                <div slot="right-icon" style="line-height: inherit;" > 元</div>
+              <van-cell title="评估价:" :value="i.estimateOriginalPrice">
+                <div slot="right-icon" style="line-height: inherit;">元</div>
               </van-cell>
             </section>
             <section>
-              <van-cell title="最高送审金额:" :value="i.hgstAmt" >
-                <div slot="right-icon" style="line-height: inherit;" v-if="i.hgstAmt"> 元</div>
+              <van-cell title="最高送审金额:" :value="i.hgstAmt">
+                <div slot="right-icon" style="line-height: inherit;" v-if="i.hgstAmt">元</div>
               </van-cell>
             </section>
             <section>
@@ -507,18 +507,30 @@
           </section>
           <!-- </div> -->
           <section>
-            <van-cell title="银行费率:" :value="projProjectInfo.bankNewRate" >
-              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.bankNewRate"> %</div>
+            <van-cell title="银行费率:" :value="projProjectInfo.bankNewRate">
+              <div
+                slot="right-icon"
+                style="line-height: inherit;"
+                v-if="projProjectInfo.bankNewRate"
+              >%</div>
             </van-cell>
           </section>
           <section>
-            <van-cell title="担保费率:" :value="projProjectInfo.guaranteeRate" >
-              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.guaranteeRate"> %</div>
+            <van-cell title="担保费率:" :value="projProjectInfo.guaranteeRate">
+              <div
+                slot="right-icon"
+                style="line-height: inherit;"
+                v-if="projProjectInfo.guaranteeRate"
+              >%</div>
             </van-cell>
           </section>
           <section>
-            <van-cell title="返利费率:" :value="projProjectInfo.rebateStandard" >
-              <div slot="right-icon" style="line-height: inherit;" v-if="projProjectInfo.rebateStandard"> %</div>
+            <van-cell title="返利费率:" :value="projProjectInfo.rebateStandard">
+              <div
+                slot="right-icon"
+                style="line-height: inherit;"
+                v-if="projProjectInfo.rebateStandard"
+              >%</div>
             </van-cell>
           </section>
 
@@ -544,8 +556,9 @@
               :placeholder="isView?'请填写(含GPS加融费用)':''"
               @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
-              error-message-align="right">
-                <div slot="button" v-if="projProjectInfo.rentingAmtGps">元</div>
+              error-message-align="right"
+            >
+              <div slot="button" v-if="projProjectInfo.rentingAmtGps">元</div>
             </van-field>
           </section>
 
@@ -656,8 +669,14 @@
       </div>
     </van-action-sheet>
     <!-- 图片选择方式 -->
-    <van-action-sheet :close-on-click-overlay="false" cancel-text="取消"
-  @cancel="show4 = false" v-model="show4" :actions="actions" @select="onSelect" />
+    <van-action-sheet
+      :close-on-click-overlay="false"
+      cancel-text="取消"
+      @cancel="show4 = false"
+      v-model="show4"
+      :actions="actions"
+      @select="onSelect"
+    />
     <!-- 弹出省市区 -->
     <Provinces :showMap.sync="show2" @getProvince="confirmSelect"></Provinces>
   </div>
@@ -768,15 +787,14 @@ export default {
     },
     // 查询放款平台
     "projProjectInfo.loanTerm"(val) {
-      console.log('jhgjh', val)
+      console.log("jhgjh", val);
       if (val && this.projProjectInfo.businessModel) {
         this.loanPlatformTree(val);
       }
     },
     // 获取放款平台name 和 产品类别
     "projProjectInfo.loanPlatfomrs"(val) {
-      
-          console.log(val);
+      console.log(val);
       if (Array.isArray(val) && val.length > 0 && this.isView) {
         if (val[1] != "") {
           let ids = val[1];
@@ -793,7 +811,7 @@ export default {
           //     });
           //   }
           // });
-          
+
           this.productTypeList({
             type: 3,
             carType: this.carType,
@@ -1080,7 +1098,7 @@ export default {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
       this.projProjectInfo.wbtProvCityZonCode = name;
-      this.errorMsg.wbtProvCityZonCode = '';
+      this.errorMsg.wbtProvCityZonCode = "";
       this.show2 = false;
     },
     // 其他接口数据
@@ -1188,14 +1206,14 @@ export default {
       if (this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName + "Name"] = row.label;
-        this.errorMsg[this.fieldName] = '';
+        this.errorMsg[this.fieldName] = "";
         if (this.selectName == "业务来源") {
           this.getCustomer();
         }
       } else {
         this.projProjectInfo[this.fieldName] = row[this.valueId];
         this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
-        this.errorMsg[this.fieldName] = '';
+        this.errorMsg[this.fieldName] = "";
         switch (this.selectName) {
           case "业务来源":
             if (this.fieldName == "bsnSrc") {
@@ -1455,11 +1473,11 @@ export default {
             });
           }
           let loanPlatfomrs = this.returnVal(row.loanPlatId, "number")
-              ? this.loanPlatfomrsReturn(
-                  this.returnVal(loanPlatfomr.blngInstid, "number"),
-                  this.returnVal(row.loanPlatId, "number")
-                )
-              : [];
+            ? this.loanPlatfomrsReturn(
+                this.returnVal(loanPlatfomr.blngInstid, "number"),
+                this.returnVal(row.loanPlatId, "number")
+              )
+            : [];
 
           this.projProjectInfo = {
             loanPlatfomr: loanPlatfomr,
@@ -1598,8 +1616,8 @@ export default {
     },
     // 查询放款平台
     loanPlatformTree(val) {
-      if(val == undefined || val == null || val == '' || val == null) {
-        return
+      if (val == undefined || val == null || val == "" || val == null) {
+        return;
       }
       let obj = {
         loanCount: val,
