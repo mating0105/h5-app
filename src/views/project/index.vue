@@ -81,10 +81,7 @@
                       @click="params.dealState != '1' ? '':loadType('风控评级', 'GradeManual')"
                     />
                     <van-cell title="是否加入关注名单" :border="false" required>
-                      <radio
-                        v-model="windControl.isFoucusList"
-                        :disabled="params.dealState != '1'"
-                      >
+                      <radio v-model="windControl.isFoucusList" :disabled="params.dealState != '1'">
                         <radio-item label="1">是</radio-item>
                         <radio-item label="0">否</radio-item>
                       </radio>
@@ -98,10 +95,7 @@
                       @click="params.dealState != '1' ? '':loadType('风控条件', 'risk_condition')"
                     />
                     <van-cell title="业务员上门调查" :border="false" required>
-                      <radio
-                        v-model="windControl.wthrDtd"
-                        :disabled="params.dealState != '1'"
-                      >
+                      <radio v-model="windControl.wthrDtd" :disabled="params.dealState != '1'">
                         <radio-item label="1">是</radio-item>
                         <radio-item label="0">否</radio-item>
                       </radio>
@@ -161,7 +155,14 @@
             <div class="xh-submit" v-if="isActive">
               <van-row>
                 <van-col :span="4">
-                  <van-button size="large" type="default" :disabled="dLoading" :loading="dLoading" style="color: #000;" @click="submitStop">终止</van-button>
+                  <van-button
+                    size="large"
+                    type="default"
+                    :disabled="dLoading"
+                    :loading="dLoading"
+                    style="color: #000;"
+                    @click="submitStop"
+                  >终止</van-button>
                 </van-col>
                 <van-col :span="20">
                   <van-button
@@ -176,7 +177,13 @@
             </div>
             <!-- 提交按钮 -->
             <div class="xh-submit" v-else>
-              <van-button size="large" class="xh-bg-main" @click="submitTask" :disabled="dLoading" :loading="dLoading">提 交</van-button>
+              <van-button
+                size="large"
+                class="xh-bg-main"
+                @click="submitTask"
+                :disabled="dLoading"
+                :loading="dLoading"
+              >提 交</van-button>
             </div>
           </div>
         </div>
@@ -186,10 +193,12 @@
         <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3">
-        <ApprovalRecord :requestParams="{
+        <ApprovalRecord
+          :requestParams="{
           businessKey: params.projectId,
           businessType: 11
-        }"></ApprovalRecord>
+        }"
+        ></ApprovalRecord>
       </van-tab>
     </van-tabs>
 
@@ -235,7 +244,7 @@ import {
   setProcessBack,
   setProcessStop
 } from "@/api/project";
-import { getCreditInfo } from '@/api/credit'
+import { getCreditInfo } from "@/api/credit";
 import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
@@ -284,7 +293,7 @@ export default {
   },
   watch: {
     activeName(val) {
-      if(val == 2) {
+      if (val == 2) {
         this.getCreditInfo();
       }
     }
@@ -400,15 +409,16 @@ export default {
 
       windControl: {}, // 获取风控措施信息
       personlList: [], // 做单人员列表
-      dataList: { // 征信数据
-        investigateBank: '',
-        investigateBankName: '',
-        isInternetCredit: '',
+      dataList: {
+        // 征信数据
+        investigateBank: "",
+        investigateBankName: "",
+        isInternetCredit: "",
         carInfos: [],
         surDtlList: []
       },
       isName: true, // 那个需求
-      isCredit: true, // 是否显示征信
+      isCredit: true // 是否显示征信
     };
   },
   methods: {
@@ -482,22 +492,24 @@ export default {
         businessKey: this.params.projectId,
         commentsDesc: this.message
       };
-      setProjectTask(obj).then(res => {
-        let objArr = [];
-        let { data } = res;
-        this.typeTitle = "下一节点处理人";
-        this.showSheet = true;
-        data.list.forEach(t => {
-          objArr.push({
-            ...t,
-            label: t.companyName + "-" + t.name
+      setProjectTask(obj)
+        .then(res => {
+          let objArr = [];
+          let { data } = res;
+          this.typeTitle = "下一节点处理人";
+          this.showSheet = true;
+          data.list.forEach(t => {
+            objArr.push({
+              ...t,
+              label: t.companyName + "-" + t.name
+            });
           });
+          this.columns = objArr;
+          this.dLoading = false;
+        })
+        .catch(() => {
+          this.dLoading = false;
         });
-        this.columns = objArr;
-        this.dLoading = false;
-      }).catch(()=>{
-        this.dLoading = false;
-      });
     },
     // 内勤和审批官
     getUserIds() {
@@ -510,22 +522,24 @@ export default {
         businessKey: this.params.projectId,
         commentsDesc: this.message
       };
-      postGetUserIds(obj).then(res => {
-        let objArr = [];
-        let { data } = res;
-        this.typeTitle = "下一节点处理人";
-        this.showSheet = true;
-        data.list.forEach(t => {
-          objArr.push({
-            ...t,
-            label: t.companyName + "-" + t.name
+      postGetUserIds(obj)
+        .then(res => {
+          let objArr = [];
+          let { data } = res;
+          this.typeTitle = "下一节点处理人";
+          this.showSheet = true;
+          data.list.forEach(t => {
+            objArr.push({
+              ...t,
+              label: t.companyName + "-" + t.name
+            });
           });
+          this.columns = objArr;
+          this.dLoading = false;
+        })
+        .catch(() => {
+          this.dLoading = false;
         });
-        this.columns = objArr;
-        this.dLoading = false;
-      }).catch(()=>{
-        this.dLoading = false;
-      });
     },
     // 提交流程
     postProcess() {
@@ -541,53 +555,61 @@ export default {
       }
       this.postFrom.conclusionCode = this.completion;
       this.postFrom.businessKey = this.params.projectId;
-      if(this.completion == '03') {
-        setProcessBack(this.postFrom).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
+      if (this.completion == "03") {
+        setProcessBack(this.postFrom)
+          .then(res => {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.dLoading = false;
+            this.$router.push("/lendProcessList");
+          })
+          .catch(() => {
+            this.dLoading = false;
           });
-          this.dLoading = false;
-          this.$router.push("/lendProcessList");
-        }).catch(()=>{
-          this.dLoading = false;
-        });
       } else {
-        setProjectProcess(this.postFrom).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
+        setProjectProcess(this.postFrom)
+          .then(res => {
+            this.$notify({
+              type: "success",
+              message: res.msg
+            });
+            this.dLoading = false;
+            this.$router.push("/lendProcessList");
+          })
+          .catch(() => {
+            this.dLoading = false;
           });
-          this.dLoading = false;
-          this.$router.push("/lendProcessList");
-        }).catch(()=>{
-          this.dLoading = false;
-        });
       }
     },
-    // 流程终止 
+    // 流程终止
     submitStop() {
       this.dLoading = true;
       Dialog.confirm({
-        title: '确定终止项目报单吗？',
-        message: ''
-      }).then(() => {
-        setProcessStop({
-          businessKey: this.params.projectId,
-          businessType: 11
-        }).then(res => {
-          this.$notify({
-            type: "success",
-            message: res.msg
-          });
-          this.dLoading = false;
-          this.$router.push("/lendProcessList");
-        }).catch(()=>{
+        title: "确定终止项目报单吗？",
+        message: ""
+      })
+        .then(() => {
+          setProcessStop({
+            businessKey: this.params.projectId,
+            businessType: 11
+          })
+            .then(res => {
+              this.$notify({
+                type: "success",
+                message: res.msg
+              });
+              this.dLoading = false;
+              this.$router.push("/lendProcessList");
+            })
+            .catch(() => {
+              this.dLoading = false;
+            });
+        })
+        .catch(() => {
           this.dLoading = false;
         });
-      }).catch(() => {
-        this.dLoading = false;
-      });
     },
     meunList(row) {
       this.$router.push({ path: row.url, query: this.params });
@@ -614,23 +636,29 @@ export default {
         let { data } = res;
         this.windControl = {
           projId: data.projectInfo.projectId, //项目id
-          gradeManual: data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
-          riskCondition: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.riskCondition, //风控条件
-          gpsNum: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
+          gradeManual:
+            data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
+          riskCondition:
+            data.projectInfo.riskMeasure &&
+            data.projectInfo.riskMeasure.riskCondition, //风控条件
+          gpsNum:
+            data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
           wthrDtd: data.projectInfo.wthrDtd, //是否上门
-          isFoucusList: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.isFoucusList, //是否关注名单
-        }
+          isFoucusList:
+            data.projectInfo.riskMeasure &&
+            data.projectInfo.riskMeasure.isFoucusList //是否关注名单
+        };
       });
     },
     // 获取做单文员
     getAcceptPersonl() {
       getAcceptList({
         projId: this.params.projectId,
-        ename: 'AcceptOrdersClerk'
+        ename: "AcceptOrdersClerk"
       }).then(res => {
         let { data } = res;
         let arr = [];
-        if(data.list) {
+        if (data.list) {
           data.list.forEach(t => {
             arr.push({
               value: t.id,
@@ -638,7 +666,7 @@ export default {
             });
           });
         }
-        if(arr.length == 1) {
+        if (arr.length == 1) {
           let obj = arr[0];
           this.windControl.acceptPersonlDesc = obj.label;
           this.windControl.acceptPersonl = obj.value;
@@ -646,37 +674,43 @@ export default {
         } else {
           this.personlList = arr;
         }
-      })
-    },
-    // 保存风控
-    setWindControl () {
-      for(var i in this.windControl) {
-        if(this.windControl[i] == '' || this.windControl[i] == undefined || this.windControl[i] == null) {
-          this.$toast('带 * 必须填写完整, 且填写无误');
-          this.dLoading = false;
-          return
-        }
-      }
-      if(!this.windControl.acceptPersonl) {
-        this.$toast('您还没有选做单文员');
-        this.dLoading = false;
-        return
-      }
-      postWindControl(this.windControl).then(res => {
-        this.postProcess();
-      }).catch(()=>{
-        this.dLoading = false;
       });
     },
+    // 保存风控
+    setWindControl() {
+      for (var i in this.windControl) {
+        if (
+          this.windControl[i] == "" ||
+          this.windControl[i] == undefined ||
+          this.windControl[i] == null
+        ) {
+          this.$toast("带 * 必须填写完整, 且填写无误");
+          this.dLoading = false;
+          return;
+        }
+      }
+      if (!this.windControl.acceptPersonl) {
+        this.$toast("您还没有选做单文员");
+        this.dLoading = false;
+        return;
+      }
+      postWindControl(this.windControl)
+        .then(res => {
+          this.postProcess();
+        })
+        .catch(() => {
+          this.dLoading = false;
+        });
+    },
     // 风控选择
-    loadType(title,name) {
+    loadType(title, name) {
       this.typeTitle = title;
       this.columns = this.wordbook[name];
       this.showSheet = true;
     },
     // 选择做单文员
     acceptCode() {
-      this.typeTitle = '选择做单文员';
+      this.typeTitle = "选择做单文员";
       this.columns = this.personlList;
       this.showSheet = true;
     },
@@ -684,57 +718,59 @@ export default {
     getIsSaveObj() {
       getIsSave({
         projectId: this.params.projectId
-      }).then(res => {
-        let { data } = res;
-        this.meunRow.forEach(t => {
-          switch (t.url) {
-            case '/projectInfo':
-              t.show = data.projectInfo;
-              break;
-            case '/clientIndex':
-              t.show = data.personalInfo;
-              break;
-            case '/contactPerson':
-              t.show = data.cuEmergencyContact;
-              break;
-            case '/houseUser':
-              t.show = data.customerHouse;
-              break;
-            case '/incomeFamily':
-              t.show = data.customerInco;
-              break;
-            // case '/vehicleList':
-            //   t.show = data.customerCar;
-            //   break;
-            // case '/guarantor':
-            //   t.show = data.cuGuarantee;
-            //   break;
-            // case '/houseGuarantor':
-            //   t.show = data.cuguaranteeHouse;
-            //   break;
-            // case '/incomeGuarantor':
-            //   t.show = data.cuguaranteeInco;
-            //   break; 
-            case '/survey':
-              t.show = data.conclusion;
-              break;
-          
-            default:
-              break;
-          }
+      })
+        .then(res => {
+          let { data } = res;
+          this.meunRow.forEach(t => {
+            switch (t.url) {
+              case "/projectInfo":
+                t.show = data.projectInfo;
+                break;
+              case "/clientIndex":
+                t.show = data.personalInfo;
+                break;
+              case "/contactPerson":
+                t.show = data.cuEmergencyContact;
+                break;
+              case "/houseUser":
+                t.show = data.customerHouse;
+                break;
+              case "/incomeFamily":
+                t.show = data.customerInco;
+                break;
+              // case '/vehicleList':
+              //   t.show = data.customerCar;
+              //   break;
+              // case '/guarantor':
+              //   t.show = data.cuGuarantee;
+              //   break;
+              // case '/houseGuarantor':
+              //   t.show = data.cuguaranteeHouse;
+              //   break;
+              // case '/incomeGuarantor':
+              //   t.show = data.cuguaranteeInco;
+              //   break;
+              case "/survey":
+                t.show = data.conclusion;
+                break;
+
+              default:
+                break;
+            }
+          });
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
         });
-        this.loading = false;
-      }).catch(()=>{
-        this.loading = false;
-      });
     },
-    async getCreditInfo () {
+    async getCreditInfo() {
       const params = {
         lpCertificateNum: this.params.certificateNum
-      }
-      const res = await getCreditInfo(params)
+      };
+      const res = await getCreditInfo(params);
       this.dataList = res.data.cuCreditRegister;
-    },
+    }
   },
   mounted() {
     let { info, dealState } = this.$route.query;
@@ -776,16 +812,16 @@ export default {
       }
     } else {
       this.params = this.$route.query;
-      this.params.dealState = this.params.isView == 0?1:3; // 图片 上传 1 ----  查看 3
+      this.params.dealState = this.params.isView == 0 ? 1 : 3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
     }
-    if(this.isView) {
+    if (this.isView) {
       this.getIsSaveObj();
     }
     this.endActive();
-    let datas = JSON.parse(sessionStorage.getItem('pro'));
-    if(datas) {
+    let datas = JSON.parse(sessionStorage.getItem("pro"));
+    if (datas) {
       sessionStorage.removeItem("pro");
     }
   }

@@ -1,11 +1,18 @@
 <template>
-  <ViewPage 
-  iconClass="filter-o" 
-  :rightMenuList="rightlist" 
-  :goPage="goPage"
-  :backFn="closeNativeWebView">
+  <ViewPage
+    iconClass="filter-o"
+    :rightMenuList="rightlist"
+    :goPage="goPage"
+    :backFn="closeNativeWebView"
+  >
     <template v-slot:head>
-      <van-search v-model="params.searchKey" placeholder="请输入搜索关键词" show-action @search="onSearch" @cancel="onCancel"/>
+      <van-search
+        v-model="params.searchKey"
+        placeholder="请输入搜索关键词"
+        show-action
+        @search="onSearch"
+        @cancel="onCancel"
+      />
     </template>
     <van-pull-refresh v-model="loading" @refresh="onRefresh">
       <van-list
@@ -205,7 +212,7 @@ export default {
       this.params = {
         pageIndex: 1,
         pageSize: 10
-      }
+      };
       this.list = [];
       this.onLoad();
     },

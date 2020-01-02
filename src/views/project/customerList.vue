@@ -20,10 +20,14 @@
         style="padding: 0.5rem 1rem;"
       >
         <div v-for="(item,ie) in list" :key="ie" class="van-clearfix xh-clearfix">
-          <Card class="xh-top-10" :bodyPadding='true'>
+          <Card class="xh-top-10" :bodyPadding="true">
             <template v-slot:header>
               <section class="xh-plus">
-                <van-cell :title="item.customerNum" :value="returnText(item.creditState)" icon="notes-o"></van-cell>
+                <van-cell
+                  :title="item.customerNum"
+                  :value="returnText(item.creditState)"
+                  icon="notes-o"
+                ></van-cell>
               </section>
             </template>
             <van-row @click="selectSubmit(item)">
@@ -46,7 +50,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
 // 其他组件
 import { Row, Col, Icon, Cell, Button, List, Search, PullRefresh } from "vant";
-const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh ];
+const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh];
 
 Components.forEach(item => {
   Vue.use(item);
@@ -63,7 +67,7 @@ export default {
       loading: false,
       error: false,
       finished: false,
-      searchKey: '',
+      searchKey: "",
       params: {
         pageIndex: 1,
         pageSize: 10
@@ -82,7 +86,7 @@ export default {
     returnText(val) {
       let name;
       this.wordbook.credit_result.forEach(e => {
-        if(e.value == val) {
+        if (e.value == val) {
           name = e.label;
         }
       });
@@ -118,7 +122,7 @@ export default {
       this.params = {
         pageIndex: 1,
         pageSize: 10
-      }
+      };
       this.list = [];
       this.onLoad();
     },
@@ -126,42 +130,44 @@ export default {
       this.params = {
         pageIndex: 1,
         pageSize: 10
-      }
+      };
       this.list = [];
       this.onLoad();
     },
     onLoad() {
       this.loading = true;
-      getCustomerList(this.params).then(res => {
-        const { data } = res;
-        setTimeout(() => {
-          data.result.forEach(t => {
-            this.list.push(t);
-          });
-          // 加载状态结束
+      getCustomerList(this.params)
+        .then(res => {
+          const { data } = res;
+          setTimeout(() => {
+            data.result.forEach(t => {
+              this.list.push(t);
+            });
+            // 加载状态结束
+            this.loading = false;
+            this.params.pageIndex++;
+            const { credit_result } = this.wordbook;
+            credit_result.forEach(t => {
+              t.title = t.label;
+            });
+            this.rightlist = credit_result;
+            // 数据全部加载完成
+            if (this.list.length == data.totalCount) {
+              this.finished = true;
+            } else {
+              this.finished = false;
+            }
+            if (data.result.length == 0) {
+              this.finished = true;
+            }
+          }, 500);
+        })
+        .catch(() => {
           this.loading = false;
-          this.params.pageIndex ++;
-          const { credit_result } = this.wordbook;
-          credit_result.forEach(t => {
-            t.title = t.label;
-          });
-          this.rightlist = credit_result;
-          // 数据全部加载完成
-          if (this.list.length == data.totalCount) {
+          setTimeout(() => {
             this.finished = true;
-          } else {
-            this.finished = false;
-          }
-          if(data.result.length == 0) {
-            this.finished = true;
-          }
-        }, 500);
-      }).catch(()=>{
-        this.loading = false;
-        setTimeout(()=> {
-          this.finished = true;
-        },300);
-      });
+          }, 300);
+        });
     },
     confirmInfo(msg) {
       this.$notify({
@@ -173,51 +179,55 @@ export default {
     selectSubmit(item) {
       getCuListManage({
         customerId: item.id
-      }).then(res => {
-        let info,nmlstTp;
-        let { data } = res;
-        if(data.cuListManageList.length > 0) {
-          data.cuListManageList.forEach(t => {
-            nmlstTp = t.nmlstTp
-          });
-          if(nmlstTp === '001' ){
-            info = "这个客户为黑名单客户，是否发起报单？";
-            this.confirmInfo(info);
-          }else if(nmlstTp === '002'){
-            info = "这个客户为灰名单客户，是否发起报单？";
-            this.confirmInfo(info);
-          }else if(nmlstTp === '003'){
-            info = "这个客户为白名单客户";
-            this.confirmInfo(info);
+      })
+        .then(res => {
+          let info, nmlstTp;
+          let { data } = res;
+          if (data.cuListManageList.length > 0) {
+            data.cuListManageList.forEach(t => {
+              nmlstTp = t.nmlstTp;
+            });
+            if (nmlstTp === "001") {
+              info = "这个客户为黑名单客户，是否发起报单？";
+              this.confirmInfo(info);
+            } else if (nmlstTp === "002") {
+              info = "这个客户为灰名单客户，是否发起报单？";
+              this.confirmInfo(info);
+            } else if (nmlstTp === "003") {
+              info = "这个客户为白名单客户";
+              this.confirmInfo(info);
+            } else {
+              this.newProject(item.id);
+            }
           } else {
             this.newProject(item.id);
           }
-        } else {
-          this.newProject(item.id);
-        }
-      }).catch(()=>{
-
-      });
+        })
+        .catch(() => {});
     },
     // 创建一个新报单
     newProject(id) {
       createNewProj({
         id: id
-      }).then(res => {
-        let { data } = res;
-        let projectInfo = data.projectInfo;
-        this.$router.push({ path: '/xhProject', query: {
-          customerName: projectInfo.customerName, //客户姓名
-          contactPhone: projectInfo.contactPhone, //客户身份证
-          certificateNum: projectInfo.certificateNum, //客户手机号码
-          customerId: projectInfo.customerId,
-          customerNum: projectInfo.customerNum,
-          projectNo: projectInfo.projectNo,
-          projectId: projectInfo.projectId,
-          isView: 0
-        }});
-      }).catch(()=>{
-      });
+      })
+        .then(res => {
+          let { data } = res;
+          let projectInfo = data.projectInfo;
+          this.$router.push({
+            path: "/xhProject",
+            query: {
+              customerName: projectInfo.customerName, //客户姓名
+              contactPhone: projectInfo.contactPhone, //客户身份证
+              certificateNum: projectInfo.certificateNum, //客户手机号码
+              customerId: projectInfo.customerId,
+              customerNum: projectInfo.customerNum,
+              projectNo: projectInfo.projectNo,
+              projectId: projectInfo.projectId,
+              isView: 0
+            }
+          });
+        })
+        .catch(() => {});
     }
   },
   mounted() {
