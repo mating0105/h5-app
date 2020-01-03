@@ -81,3 +81,10 @@
 .van-cell .van-field__error-message {
   text-align: right;
 }
+
+.label_plus {
+  display: flex;
+  >div {
+    flex: 1;
+  }
+}

@@ -21,8 +21,8 @@
             </div>
             <div class="xh-contract-status">
                 <div @click="showPopup(item)">
-                    <span v-if="item[type] === 'pass'" class="xh-contract-true">通过</span>
-                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">未通过</span>
+                    <span v-if="item[type] === 'pass'" class="xh-contract-true">{{isBank ? '银行': '大数据'}}征信通过</span>
+                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">{{isBank ? '银行': '大数据'}}征信未通过</span>
                     <span v-else>请选择征信结果</span>
                     <van-icon class="xh-contract-icon" name="arrow"/>
                 </div>

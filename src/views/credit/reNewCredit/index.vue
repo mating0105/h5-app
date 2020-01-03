@@ -607,10 +607,6 @@
 
 <style lang="scss">
 
-    .label_plus .van-field__label {
-        width: 9rem;
-    }
-
     .labelClass {
         left: 1.33333rem;
     }
