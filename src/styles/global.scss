@@ -88,3 +88,15 @@
     flex: 1;
   }
 }
+
+.xh-field-unit{
+  display: flex;
+  align-items: center;
+  .xh-unit {
+    margin-right: 10px;
+    white-space: nowrap;
+  }
+  .xh-cell-value {
+    color: #969799;
+  }
+}

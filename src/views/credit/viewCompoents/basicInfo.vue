@@ -9,9 +9,12 @@
             <van-cell title="电话号码:" :border="false" :value="form.telephone"/>
             <van-cell title="征信对象类型:" :border="false" value="借款人"/>
             <van-cell title="银行：" :border="false" :is-link="edit" v-model="dataList.investigateBankName"/>
-            <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" clearable input-align="right"
-                       label="意向贷款金额(元)："
+            <div class="xh-field-unit">
+                <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" clearable input-align="right"
+                       label="意向贷款金额："
                        placeholder="请输入"/>
+                <span class="xh-unit xh-cell-value">元</span>
+            </div>
         </Card>
 
         <Card style="margin-top: 1rem;" v-if="dataList.carInfos && dataList.carInfos.length">
@@ -27,11 +30,17 @@
                     <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
                     <van-cell title="车辆品牌型号:" :border="false" :value="nameToString(item.brndNm, item.carSeries, item.carModel)"/>
                     <van-cell v-if="item.carNature === 'old_car'" title="车架号:" :border="false" :value="item.chassisNumber"/>
-                    <van-cell v-if="item.carNature === 'new_car'" title="销售价(元):" :border="false" :value="item.salePrice"/>
+                    <div class="xh-field-unit" v-if="item.carNature === 'new_car'">
+                        <van-cell title="销售价:" :border="false" :value="item.salePrice"/>
+                        <span class="xh-unit xh-cell-value">元</span>
+                    </div>
                     <template v-else-if="item.carNature === 'old_car'">
                         <van-cell title="车牌所在地:" :border="false" :value="item.carLicenseLocation"/>
                         <van-cell title="首次上牌日:" :border="false" :value="item.plateDate"/>
-                        <van-cell title="行驶里程（万公里）:" :border="false" :value="item.roadHaul"/>
+                        <div class="xh-field-unit">
+                            <van-cell title="行驶里程:" :border="false" :value="item.roadHaul"/>
+                            <span class="xh-unit xh-cell-value">万公里</span>
+                        </div>
                         <van-cell title="发动机号:" :border="false" :value="item.engineNum"/>
                     </template>
                     <van-cell title="备注:" :value="item.remark"/>
