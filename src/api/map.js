@@ -8,3 +8,14 @@ export function mapMethod(params) {
     params
   })
 } 
+
+export function mapMethodGaoDe() {
+  return request({
+    url: '/customer/cs/cuPersonalInfo/amap/v3',
+    method: 'get',
+    data: {
+      key: '',
+      subdistrict: 3
+    }
+  })
+} 

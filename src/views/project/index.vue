@@ -245,6 +245,7 @@ import {
   setProcessStop
 } from "@/api/project";
 import { getCreditInfo } from "@/api/credit";
+import { mapMethodGaoDe } from "@/api/map";
 import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
@@ -407,7 +408,10 @@ export default {
       typeTitle: "",
       isActive: false,
 
-      windControl: {}, // 获取风控措施信息
+      windControl: {
+        acceptPersonlDesc: "",
+        acceptPersonl: ""
+      }, // 获取风控措施信息
       personlList: [], // 做单人员列表
       dataList: {
         // 征信数据
@@ -646,8 +650,9 @@ export default {
           wthrDtd: data.projectInfo.wthrDtd, //是否上门
           isFoucusList:
             data.projectInfo.riskMeasure &&
-            data.projectInfo.riskMeasure.isFoucusList //是否关注名单
-        };
+            data.projectInfo.riskMeasure.isFoucusList
+        }; //是否关注名单
+        this.getAcceptPersonl();
       });
     },
     // 获取做单文员
@@ -804,7 +809,7 @@ export default {
       AMap.plugin("AMap.CitySearch", function() {
         var citySearch = new AMap.CitySearch();
         citySearch.getLocalCity(function(status, result) {
-            console.log(status, result);
+          console.log(status, result);
           if (status === "complete" && result.info === "OK") {
             // 查询成功，result即为当前所在城市信息
             console.log("通过ip获取当前城市：", result);
@@ -825,6 +830,14 @@ export default {
             });
           }
         });
+      });
+    },
+    getMapGaoDe() {
+      mapMethodGaoDe().then(res => {
+        console.log(res);
+        let { data } = res;
+        let citys = districts[0].districts;
+        citys.forEach(t => {});
       });
     }
   },
@@ -859,7 +872,6 @@ export default {
           this.params.isView = 1;
           break;
         case "WF_PROJ_APPR_01_T52":
-          this.getAcceptPersonl();
           this.loadData();
           this.params.isView = 1;
           break;
@@ -876,11 +888,11 @@ export default {
       this.getIsSaveObj();
     }
     this.endActive();
-    let datas = JSON.parse(sessionStorage.getItem("pro"));
-    if (datas) {
-      sessionStorage.removeItem("pro");
-    }
-    this.getLocation();
+    // let datas = JSON.parse(sessionStorage.getItem("pro"));
+    // if (datas) {
+    //   sessionStorage.removeItem("pro");
+    // }
+    // this.getMapGaoDe();
   }
 };
 </script>
