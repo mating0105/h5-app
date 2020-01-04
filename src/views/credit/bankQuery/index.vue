@@ -173,8 +173,4 @@
 
 <style>
 
-    .label_plus .van-field__label {
-        width: 9rem;
-    }
-
-</style>
+    </style>
