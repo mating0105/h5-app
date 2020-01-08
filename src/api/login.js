@@ -1,10 +1,14 @@
 import request from '@/utils/request'
+import {serviceOther} from '@/utils/request'
 
 export function login(params) {
-  return request({
-    url: '/user/login',
+  return serviceOther({
+    url: '/userauth/oauth/token',
     method: 'post',
-    params
+    params,
+    headers: {
+      Authorization: 'Basic c29yZGVyOnNvcmRlcg=='
+    }
   })
 } 
 

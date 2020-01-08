@@ -67,6 +67,11 @@ module.exports = {
       '/product': {
         target: `http://172.16.10.4:8085`,
         changeOrigin: true
+      },
+      //https://user.test.wwvas.net/userauth/oauth/token
+      '/userauth': {
+        target: `https://user.test.wwvas.net`,
+        changeOrigin: true
       }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,

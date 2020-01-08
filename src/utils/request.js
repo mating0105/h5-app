@@ -21,7 +21,6 @@ const requestFulfilled = config => {
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
     config.headers['token'] = getToken()
-    console.log(getToken())
   }
   return config
 }
@@ -33,10 +32,10 @@ const requestRejected = error => {
 }
 
 const responseFulfilled = response => {
-  const res = response.data
+  const res = response.data || response
 
   // if the custom code is not 20000, it is judged as an error.
-  if (res.code !== 200) {
+  if (res.code !== 200 && !res.access_token) {
     Notify({ type: 'danger', message: res.msg + '' });
     //
     return Promise.reject(new Error(res.message || 'Error'))
