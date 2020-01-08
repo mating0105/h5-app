@@ -112,7 +112,7 @@ export function postGetUserIds(params) {
     data: params
   })
 }
-// 内勤 提交的接口
+// 风控选人
 export function getAcceptList(params) {
   return request({
     url: '/order/projProject/chooseAccept',

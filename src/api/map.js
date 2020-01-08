@@ -11,11 +11,7 @@ export function mapMethod(params) {
 
 export function mapMethodGaoDe() {
   return request({
-    url: '/customer/cs/cuPersonalInfo/amap/v3',
-    method: 'get',
-    data: {
-      key: '',
-      subdistrict: 3
-    }
+    url: '/customer/cs/cuPersonalInfo/amap/v3?key=""&subdistrict=3',
+    method: 'get'
   })
 } 
