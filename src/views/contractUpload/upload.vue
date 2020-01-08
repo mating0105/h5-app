@@ -71,7 +71,8 @@ export default {
       ],
       projectInfo: {},
       gpsInfo: {},
-      accout: ""
+      accout: "",
+      phone:''
     };
   },
   computed: {
@@ -112,7 +113,7 @@ export default {
           });
           return false;
         } else {
-          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}&type=xh_h5`;
+          let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
           //通知移动端加载gps安装页面
           this.$bridge.callHandler("loadUrl", url, data => {
             this.onLoad();
@@ -142,6 +143,7 @@ export default {
   activated() {
     this.getListDetails();
     this.accout = Cookies.get("loginName");
+    this.phone = Cookies.get("phone");
     // this.accout = "18349309486"
   }
 };

@@ -185,7 +185,8 @@ export default {
       message: "", //意见描述
       conclusionCode: "",
       loading: false,
-      accout: ""
+      accout: "",
+      phone:'',
     };
   },
   computed: {
@@ -207,7 +208,7 @@ export default {
       } else if (row.url == "/gpsurl") {
         let url =
           this.$prefixurl +
-          `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&type=xh_h5`;
+          `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
         //通知移动端加载gps安装页面
         this.$bridge.callHandler("loadUrl", url, data => {
           this.onLoad();
@@ -302,6 +303,7 @@ export default {
       dealState: this.$route.query.dealState
     };
     this.accout = Cookies.get("loginName");
+    this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
     this.loadData(); //加载详情数据
   }
