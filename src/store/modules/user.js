@@ -37,12 +37,13 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data && data.token)
-        commit('SET_NAME', data && data.name)
+      login({ username: username.trim(), password: password, grant_type: 'password', applicationtype: 'S' }).then(response => {
+        const data  = response
+        const token = `Bearer ${data.access_token}`
+        commit('SET_TOKEN', token)
+        commit('SET_NAME', data && data.username)
         commit('SET_ACCOUT', data && data.loginName)
-        setToken(data.token)
+        setToken(token)
         resolve()
       }).catch(error => {
         reject(error)
