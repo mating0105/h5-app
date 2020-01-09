@@ -226,7 +226,7 @@
               :border="false"
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
-              @click="show2 = true"
+              @click="!isView?'':show2 = true"
               label-class="labelClass"
               :value-class="projProjectInfo.wbtProvCityZonName?'':'xh-value-none'"
               @blur.prevent="ruleMessge"

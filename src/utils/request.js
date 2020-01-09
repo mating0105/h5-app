@@ -36,6 +36,9 @@ const responseFulfilled = response => {
 
   // if the custom code is not 20000, it is judged as an error.
   if (res.code !== 200 && !res.access_token) {
+    if(res.code == 0) {
+      return res
+    }
     Notify({ type: 'danger', message: res.msg + '' });
     //
     return Promise.reject(new Error(res.message || 'Error'))

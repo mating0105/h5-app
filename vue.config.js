@@ -72,6 +72,10 @@ module.exports = {
       '/userauth': {
         target: `https://user.test.wwvas.net`,
         changeOrigin: true
+      },
+      '/admin': {
+        target: `http://dev.wwvas.com:10000`,
+        changeOrigin: true
       }
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,

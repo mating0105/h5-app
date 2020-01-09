@@ -100,7 +100,7 @@
                         <radio-item label="0">否</radio-item>
                       </radio>
                     </van-cell>
-                    <van-field
+                    <!-- <van-field
                       v-model="windControl.gpsNum"
                       :disabled="params.dealState != '1'"
                       required
@@ -111,6 +111,14 @@
                       input-align="right"
                       placeholder="请输入"
                       @blur.prevent="()=>{ }"
+                    /> -->
+                    <van-cell
+                      title="GPS数量(台)"
+                      required
+                      is-link
+                      :border="false"
+                      :value="windControl.gpsNumDesc"
+                      @click="params.dealState != '1' ? '':loadTypeGps('GPS数量')"
                     />
                   </van-cell-group>
                 </van-row>
@@ -246,6 +254,7 @@ import {
 } from "@/api/project";
 import { getCreditInfo } from "@/api/credit";
 import { mapMethodGaoDe } from "@/api/map";
+import { getGPSData } from "@/api/project";
 import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
@@ -422,7 +431,8 @@ export default {
         surDtlList: []
       },
       isName: true, // 那个需求
-      isCredit: true // 是否显示征信
+      isCredit: true, // 是否显示征信
+      gpsList: [] // gps套餐
     };
   },
   methods: {
@@ -455,6 +465,10 @@ export default {
         case "选择做单文员":
           this.windControl.acceptPersonl = row.value;
           this.windControl.acceptPersonlDesc = row.label;
+          break;
+        case "GPS数量":
+          this.windControl.gpsNum = row.value;
+          this.windControl.gpsNumDesc = row.label;
           break;
         default:
           break;
@@ -640,18 +654,18 @@ export default {
         let { data } = res;
         this.windControl = {
           projId: data.projectInfo.projectId, //项目id
-          gradeManual:
-            data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
-          riskCondition:
-            data.projectInfo.riskMeasure &&
-            data.projectInfo.riskMeasure.riskCondition, //风控条件
-          gpsNum:
-            data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
+          gradeManual: data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
+          riskCondition: data.projectInfo.riskMeasure &&  data.projectInfo.riskMeasure.riskCondition, //风控条件
+          gpsNum: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
           wthrDtd: data.projectInfo.wthrDtd, //是否上门
-          isFoucusList:
-            data.projectInfo.riskMeasure &&
-            data.projectInfo.riskMeasure.isFoucusList
+          isFoucusList: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.isFoucusList
         }; //是否关注名单
+        // 转换文字
+
+
+        if(data.projectInfo.clientManager) {
+          this.findGpsData(data.projectInfo.clientManager.loginName);
+        }
         this.getAcceptPersonl();
       });
     },
@@ -711,6 +725,12 @@ export default {
     loadType(title, name) {
       this.typeTitle = title;
       this.columns = this.wordbook[name];
+      this.showSheet = true;
+    },
+    // gps
+    loadTypeGps(name) {
+      this.typeTitle = name;
+      this.columns = this.gpsList;
       this.showSheet = true;
     },
     // 选择做单文员
@@ -838,6 +858,20 @@ export default {
         let { data } = res;
         let citys = districts[0].districts;
         citys.forEach(t => {});
+      });
+    },
+    findGpsData(val) {
+      getGPSData(val).then(res => {
+        let { data } = res;
+        let arr = data.records;
+        let list = [];
+        arr.forEach(t => {
+          list.push({
+            label: t.cmsPackage.packageprod,
+            value: t.cmsPackage.id
+          });
+        });
+        this.gpsList = list;
       });
     }
   },

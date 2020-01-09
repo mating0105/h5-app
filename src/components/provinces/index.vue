@@ -20,11 +20,20 @@
               <span @click="onConfirm">确定</span>
             </div>
             <div class="xh-text-address">
-              <span @click="provinceTab" :style="{ color: isProvince?'#1989fa':''}">{{ province.name }}</span>
+              <span @click="textTab('province')" :style="{ color: isColor.province?'#1989fa':''}">
+                <span v-if="province.name">{{ province.name }}</span>
+                <span style="color: #ee0a24;" v-else-if="province_list.length > 0 && !province.name">请选择</span>
+              </span>
               <span v-if="city.name">-</span>
-              <span @click="cityTab" :style="{ color: isCity?'#1989fa':''}">{{ city.name }}</span>
+              <span @click="textTab('city')" :style="{ color: isColor.city?'#1989fa':''}">
+                <span v-if="city.name">{{ city.name }}</span>
+                <span style="color: #ee0a24;" v-else-if="city_list.length > 0 && !city.name"> - 请选择</span>
+              </span>
               <span v-if="county.name">-</span>
-              <span @click="countyTab" :style="{ color: isCounty?'#1989fa':''}">{{ county.name }}</span>
+              <span @click="textTab('county')" :style="{ color: isColor.county?'#1989fa':''}">
+                <span v-if="county.name">{{ county.name }}</span>
+                <span style="color: #ee0a24;" v-else-if="county_list.length > 0 && !county.name"> - 请选择</span>
+              </span>
             </div>
           </div>
         </div>
@@ -38,28 +47,28 @@
                 class="van-ellipsis van-picker-column__item"
                 v-for="(i,index) in province_list"
                 :key="index"
-                :id="'p'+index"
+                :id="'province'+index"
                 @click="provinceChenge(i,index)"
                 :style="{ color: i.name == province.name?'#1989fa':'' }"
-                v-if="isProvince"
+                v-if="isColor.province"
               >{{ i.name }}</div>
               <div
                 class="van-ellipsis van-picker-column__item"
                 v-for="(i,index) in city_list"
                 :key="index"
-                :id="'c'+index"
+                :id="'city'+index"
                 @click="cityChenge(i,index)"
                 :style="{ color: i.name == city.name?'#1989fa':'' }"
-                v-if="isCity"
+                v-if="isColor.city"
               >{{ i.name }}</div>
               <div
                 class="van-ellipsis van-picker-column__item"
                 v-for="(i,index) in county_list"
                 :key="index"
-                :id="'co'+index"
+                :id="'county'+index"
                 @click="countyChenge(i,index)"
                 :style="{ color: i.name == county.name?'#1989fa':'' }"
-                v-if="isCounty"
+                v-if="isColor.county"
               >{{ i.name }}</div>
             </div>
           </div>
@@ -89,60 +98,61 @@ export default {
       //   city_list: {},
       //   county_list: {}
       // },
+      // 获取的值 对象
       province: {},
       city: {},
       county: {},
-      isProvince: false,
+      // 是否显示
+      isColor: {
+        province: false,
+        city: false,
+        county: false,
+      },
+      // 省市区集合
       province_list: [],
-      isCity: false,
       city_list: [],
-      isCounty: false,
       county_list: [],
-      number: 1,
-      pr: '',
-      ci: '',
-      co: '',
+      // 当前定点
+      point: {
+        province: '',
+        city: '',
+        county: '',
+      }
     };
   },
   methods: {
-    provinceTab() {
-      this.isProvince = true;
-      this.isCity = false;
-      this.isCounty = false;
-      this.city = {};
-      this.county = {};
-      this.activeAbc(this.pr);
+    textTab(val) {
+      this.showColor(val);
+      this.activeAbc(this.point[val]);
     },
-    cityTab() {
-      this.isProvince = false;
-      this.isCity = true;
-      this.isCounty = false;
-      this.county = {};
-      this.activeAbc(this.ci);
-    },
-    countyTab() {
-      this.isProvince = false;
-      this.isCity = false;
-      this.isCounty = true;
-      this.activeAbc(this.co);
+    showColor(val) {
+      for(var i in this.isColor) {
+        if(i == val) {
+          this.isColor[i] = true;
+        } else {
+          this.isColor[i] = false;
+        }
+      }
     },
     provinceChenge(row,index) {
       this.province = row;
       this.city_list = row.districts;
-      this.isProvince = false;
-      this.isCity = true;
-      this.pr = index;
+      this.county_list = [];
+      this.showColor('city');
+      this.city = {};
+      this.county = {};
+      this.point.province = 'province'+ index;
     },
     cityChenge(row,index) {
       this.city = row;
       this.county_list = row.districts;
-      this.isCounty = true;
-      this.isCity = false;
-      this.ci = index;
+      this.showColor('county');
+      this.county = {};
+      this.point.city = 'city'+index;
     },
     countyChenge(row,index) {
       this.county = row;
-      this.co = index;
+      this.point.county = 'county'+index;
     },
     activeAbc(ids) {
       // 找到锚点
@@ -183,7 +193,7 @@ export default {
       mapMethodGaoDe({}).then(res => {
         let { data } = res;
         this.province_list = data.districts[0].districts;
-        this.isProvince = true;
+        this.showColor('province');
       });
     },
     cancel() {

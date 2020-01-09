@@ -177,4 +177,11 @@ export function setProcessStop(params) {
     params
   })
 }
+// 获取GPS套餐
+export function getGPSData(corpId) {
+  return serviceOther({
+    url: `/admin/cmsPackcust/page/mobile/${ corpId }?page=1&limit=1000&insuranceflag=Y`,
+    method: 'get'
+  })
+}
 
