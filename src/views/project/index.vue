@@ -581,7 +581,7 @@ export default {
               message: res.msg
             });
             this.dLoading = false;
-            this.$router.push("/lendProcessList");
+            this.$bridge.callHandler("jumpToTaskTab", "", res => {});
           })
           .catch(() => {
             this.dLoading = false;
@@ -594,7 +594,7 @@ export default {
               message: res.msg
             });
             this.dLoading = false;
-            this.$router.push("/lendProcessList");
+            this.$bridge.callHandler("jumpToTaskTab", "", res => {});
           })
           .catch(() => {
             this.dLoading = false;
@@ -619,7 +619,7 @@ export default {
                 message: res.msg
               });
               this.dLoading = false;
-              this.$router.push("/lendProcessList");
+              this.$bridge.callHandler("jumpToTaskTab", "", res => {});
             })
             .catch(() => {
               this.dLoading = false;
