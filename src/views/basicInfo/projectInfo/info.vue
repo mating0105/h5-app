@@ -311,9 +311,6 @@
           <section>
             <van-cell title="车辆型号:" :value="i.automarke.carModel" />
           </section>
-          <section v-show="i.chassisNumber">
-            <van-cell title="车架号:" :value="i.chassisNumber" />
-          </section>
           <section>
             <van-cell title="销售价:" :value="i.salePrice">
               <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice">元</div>

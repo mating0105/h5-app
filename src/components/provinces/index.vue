@@ -1,11 +1,6 @@
 //省市区组件
 <template>
   <div>
-    <!-- <van-action-sheet get-container="#app" :close-on-click-overlay="false" v-model="showMap" class="xh-list">
-      <div class="xh-list-body">
-        <van-area :area-list="areaList" @confirm="confirm" @cancel="cancel" />
-      </div>
-    </van-action-sheet>-->
     <van-popup
       get-container="#app"
       round
@@ -93,11 +88,6 @@ export default {
   },
   data() {
     return {
-      // areaList: {
-      //   province_list: {},
-      //   city_list: {},
-      //   county_list: {}
-      // },
       // 获取的值 对象
       province: {},
       city: {},
@@ -163,33 +153,6 @@ export default {
       }
     },
     getMap() {
-      // mapMethod({}).then(res => {
-      //   let json = res.data;
-      //   let provincelist = {},
-      //     citylist = {},
-      //     countrylist = {};
-      //   getGroupMap("province", json.province);
-      //   getGroupMap("city", json.city);
-      //   getGroupMap("country", json.country);
-      //   this.areaList.province_list = provincelist;
-      //   this.areaList.city_list = citylist;
-      //   this.areaList.county_list = countrylist;
-      //   function getGroupMap(name, list) {
-      //     list.forEach(e => {
-      //       switch (name) {
-      //         case "province":
-      //           provincelist[e.id] = e.name;
-      //           break;
-      //         case "city":
-      //           citylist[e.id] = e.name;
-      //           break;
-      //         case "country":
-      //           countrylist[e.id] = e.name;
-      //           break;
-      //       }
-      //     });
-      //   }
-      // });
       mapMethodGaoDe({}).then(res => {
         let { data } = res;
         this.province_list = data.districts[0].districts;
@@ -209,7 +172,7 @@ export default {
       if(this.city.name) {
         list = [this.province, this.city];
       }
-      if(this.city.name) {
+      if(this.county.name) {
         list = [this.province, this.city, this.county];
       }
       list.forEach(t => {
