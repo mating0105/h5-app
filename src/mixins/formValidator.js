@@ -1,4 +1,5 @@
 import { fieldRules, fieldRulesNew } from "@/api/makeLoan";
+const values = ['chassisNumber'] //三要素字段
 
 export default {
   data() {
@@ -15,7 +16,11 @@ export default {
         let error = ""; // 错误信息
         if (infoObj.mustFill) {
           if (value === "" || value === undefined || value === null) {
-            error = "必填项，不能为空";
+            if(values.includes(name)) {
+              error = "请检查扫描结果是否正确";
+            } else {
+              error = "必填项，不能为空";
+            }
           }
         } else {
           if (value === "" || value === undefined || value === null) {
