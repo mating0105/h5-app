@@ -50,7 +50,7 @@ const responseFulfilled = response => {
 
 const responseRejected = error => {
   if(error.response.status === 401) {
-    Vue.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+    Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
   console.log('err' + error) // for debug
