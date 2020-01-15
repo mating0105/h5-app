@@ -8,8 +8,7 @@ const loginForm = {
   password: "lBTqrKS0kZixOFXeZ0HRng=="
 }
 
-
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login','/userAgreement'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // set page title
@@ -17,7 +16,10 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
+  if (whiteList.indexOf(to.path) !== -1) {
+    next()
+    return;
+  }
   if (hasToken) {
     if(!store.state.user.wordbook) {
       try {
