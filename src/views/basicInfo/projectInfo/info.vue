@@ -1089,7 +1089,7 @@ export default {
     confirmSelect(code, name) {
       this.projProjectInfo.wbtProvCityZon = code;
       this.projProjectInfo.wbtProvCityZonName = name;
-      this.projProjectInfo.wbtProvCityZonCode = name;
+      this.projProjectInfo.wbtProvCityZonCode = code;
       this.errorMsg.wbtProvCityZonCode = "";
       this.show2 = false;
     },

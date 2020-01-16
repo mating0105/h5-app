@@ -172,6 +172,7 @@
                 label="利润比："
                 input-align="right"
                 clearable
+                type="number"
                 :placeholder="isView?'请填写':''"
               >
                 <div slot="button" v-if="formData.profit">%</div>
@@ -210,6 +211,7 @@
                 v-model="formData.totalShares"
                 :disabled="!isView"
                 label="占股比例："
+                type="number"
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
@@ -233,6 +235,7 @@
                 label="月固定收入："
                 input-align="right"
                 label-width="100px"
+                type="number"
                 clearable
                 :required="isView"
                 :placeholder="isView?'请填写':''"
@@ -603,8 +606,9 @@ export default {
     },
     // 省市区 ------------------------
     addressOnConfirm(code, name) {
+      console.log(code, name);
       this.formData.provCityZon = name;
-      this.formData.provCityZonCode = code;
+      this.formData.wbtProvCityZonCode = code;
       this.addressShow = false;
       this.errorMsg.provCityZon = "";
     },

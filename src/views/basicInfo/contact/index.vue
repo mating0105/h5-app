@@ -244,7 +244,7 @@ export default {
     onConfirm(row) {
       this['contactlist'+this.ofKey].borrowerRelationship = row.value;
       this['contactlist'+this.ofKey].borrowerRelationshipDesc = row.label;
-      this['errorMsg'+this.ofKey].borrowerRelationship = "";
+      this.errorMsg.borrowerRelationship = "";
       this.selectShow = false;
     },
     // 获取数据
