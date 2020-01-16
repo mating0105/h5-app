@@ -192,6 +192,12 @@
                 :disabled="dLoading"
                 :loading="dLoading"
               >提 交</van-button>
+              <!-- 测试 -->
+              <van-button
+                size="large"
+                class="xh-bg-main"
+                @click="submitCeShi"
+              >测试跳转待办按钮</van-button>
             </div>
           </div>
         </div>
@@ -873,6 +879,10 @@ export default {
         });
         this.gpsList = list;
       });
+    },
+    // 测试按钮
+    submitCeShi() {
+      this.$bridge.callHandler("jumpToTaskTab", "", res => {});
     }
   },
   mounted() {

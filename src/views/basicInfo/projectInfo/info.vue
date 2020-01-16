@@ -234,7 +234,6 @@
             />
           </section>
           <section>
-            <!-- <div class="xh-address"> -->
             <van-field
               v-model="projProjectInfo.addressDetail"
               :required="isView"
@@ -248,10 +247,6 @@
               :error-message="errorMsg.addressDetail"
               error-message-align="right"
             />
-            <!-- <div class="xh-address-result">
-                <div class="xh-address-row" v-for="u in 10">{{ u }}</div>
-              </div>
-            </div>-->
           </section>
         </van-col>
       </van-row>
@@ -1931,24 +1926,6 @@ export default {
 }
 .xh-value-none {
   display: none;
-}
-.xh-address {
-  position: relative;
-  .xh-address-result {
-    position: absolute;
-    top: 40.38px;
-    left: 0;
-    background-color: #f2f2f2;
-    width: 100%;
-    height: 150px;
-    z-index: 10;
-    border-radius: 0 0 6px 6px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    .xh-address-row {
-      padding: 10px;
-    }
-  }
 }
 </style>
 

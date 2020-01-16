@@ -255,9 +255,10 @@ export default {
           break;
       }
       //通知移动端加载gps安装页面
-      this.$bridge.callHandler("loadUrl", url, data => {
-        this.onLoad();
-      })
+      // this.$bridge.callHandler("loadUrl", url, data => {
+      //   this.onLoad();
+      // })
+      window.location.href = url;
     },
     rightFn(item) {
       this.list = [];
@@ -280,9 +281,10 @@ export default {
     }
   },
   mounted() {
-    this.accout = Cookies.get("loginName");
-    this.phone = Cookies.get("phone");
-    // this.accout = '18628215095';
+    // this.accout = Cookies.get("loginName");
+    // this.phone = Cookies.get("phone");
+    this.accout = '15708144458';
+    this.phone = '18283874007'
     this.onLoad();
   }
 };
