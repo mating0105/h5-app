@@ -158,13 +158,10 @@
             customerNum: this.$route.query.customerNum,
             documentType: documentType
           }
-          const {data} = await getDocumentByType(params)
           const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
-          data.forEach(item => {
-            item.declare = declare;
-          })
+
           const isRequire = !this.whiteList.includes(documentType)
-          obj.dataList.push({
+          const beanData = {
             declare: declare,//图片描述
             isRequire: isRequire,//*是否必须
             deletable: true,//是否可以操作-上传和删除
@@ -172,8 +169,14 @@
             customerNum: this.$route.query.customerNum,
             customerId: this.$route.query.customerId,
             kind: '1',
-            fileList: data
+            fileList: []
+          }
+          obj.dataList.push(beanData)
+          const {data} = await getDocumentByType(params)
+          data.forEach(item => {
+            item.declare = declare;
           })
+          beanData.fileList = data
         } catch (e) {
           console.log(e)
         }
