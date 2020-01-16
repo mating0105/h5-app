@@ -206,13 +206,16 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
+        console.log(1111)
         let url =
           this.$prefixurl +
           `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
         //通知移动端加载gps安装页面
-        this.$bridge.callHandler("loadUrl", url, data => {
-          this.onLoad();
-        });
+        // this.$bridge.callHandler("loadUrl", url, data => {
+        //   this.onLoad();
+        // });
+        console.log(url);
+        // window.location.href = url;
       } else {
         this.$router.push({
           path: row.url,
@@ -231,8 +234,9 @@ export default {
       })
         .then(res => {
           this.data = res.data;
-          console.log(this.data.projProjectInfo.riskMeasure.gpsNum);
-          if (this.data.projProjectInfo.riskMeasure.gpsNum == "0") {
+          if (this.data.projGpsInstals[0].gpsnum > 0 && this.data.projGpsInstals[0].gpsIsDone != '-1') {
+            
+          }else{
             this.meunRow.splice(4, 1);
           }
           this.loading = false;
@@ -302,6 +306,7 @@ export default {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
+    console.log(this.params);
     this.accout = Cookies.get("loginName");
     this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
