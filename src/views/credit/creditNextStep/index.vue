@@ -193,11 +193,9 @@
             item.dataList = []
             const arr = this.obj[item.creditObjectType]
             arr.forEach(i => {
-              console.log(i)
               this.getDocumentByType(i, item)
             })
           })
-          console.log(data.cuCreditRegister.surDtlList)
           this.users = data.cuCreditRegister.surDtlList.reverse()
           this.loading = false
         } catch (e) {
