@@ -17,19 +17,18 @@
             <van-cell title="车架号:" :border="false" :value="carData.chassisNumber"/>
             <van-cell title="车牌所在地:" :border="false" :value="carData.carLicenseLocation"/>
             <van-cell title="首次上牌日:" :border="false" :value="carData.plateDate"/>
-            <div class="xh-field-unit">
-                <van-cell title="行驶里程:" :border="false" :value="carData.roadHaul"/>
-                <span class="xh-unit xh-cell-value">公里</span>
-            </div>
+            <van-cell title="行驶里程:" :border="false" :value="carData.roadHaul">
+                <div slot="right-icon" class="xh-cell-right">公里</div>
+            </van-cell>
             <van-cell v-if="showMore" title="发动机号:" :border="false" :value="carData.engineNum"/>
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
-            <div class="xh-field-unit">
-                <van-field class="label_plus" v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right" label="评估价："
-                           @blur="checkAssessmentCar"
-                           :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
-                           placeholder="请输入"/>
-                <span class="xh-unit">元</span>
-            </div>
+            <van-field class="label_plus" v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right"
+                       label="评估价："
+                       @blur="checkAssessmentCar"
+                       :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
+                       placeholder="请输入">
+                <div slot="button">元</div>
+            </van-field>
         </Card>
 
         <Card style="margin-top: 1rem;">
@@ -187,6 +186,7 @@
         }
       },
       async checkAssessmentCar () {
+        this.priceFloat(this.carData, 'evaluatingPrice')
         // try {
         //   let params = {
         //     id: this.carData.id,
@@ -217,4 +217,4 @@
 </script>
 
 <style>
-    </style>
+</style>

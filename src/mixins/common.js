@@ -58,6 +58,32 @@ export default {
     },
     closeNativeWebView() {
       this.$bridge.callHandler("returnBack", "", res => {}); //调用原生关闭webview
+    },
+    /**
+     * 金额保留两位小数
+     * @param obj
+     * @param value
+     */
+    priceFloat (obj, value) {
+      if(obj[value] || obj[value] == '0') {
+        obj[value] = this.returnFloat(obj[value])
+      } else {
+        obj[value] = obj[value]
+      }
+    },
+    returnFloat (value) {
+      value = Math.round(parseFloat(value) * 100) / 100;
+      let xsd = value.toString().split(".");
+      if (xsd.length === 1) {
+        value = value.toString() + ".00";
+        return value;
+      }
+      if (xsd.length > 1) {
+        if (xsd[1].length < 2) {
+          value = value.toString() + "0";
+        }
+        return value;
+      }
     }
   },
   filters: {

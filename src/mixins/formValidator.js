@@ -40,6 +40,8 @@ export default {
               }
             }
           }
+        } else if (infoObj.urlSuffix && !error) {
+          this.urlRules(infoObj.urlSuffix, infoObj, value);
         }
         return error;
       }

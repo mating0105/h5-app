@@ -28,23 +28,17 @@
             <van-cell label-class='labelClass' :label="errorMsg.brndNm" title="车辆品牌型号：" @click="selectBrand" :border="false" required
                       is-link
                       :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
-            <div class="xh-field-unit" v-if="carFrom.carNature === 'new_car'">
-                <van-field :border="false" v-model="carFrom.salePrice" required clearable input-align="right"
-                           label="销售价："
-                           name="salePrice"
-                           @blur.prevent="ruleMessge"
-                           :error-message="errorMsg.salePrice"
-                           placeholder="请输入"/>
-                <span class="xh-unit">元</span>
-            </div>
+            <van-field :border="false" v-if="carFrom.carNature === 'new_car'" v-model="carFrom.salePrice" required clearable input-align="right"
+                       label="销售价："
+                       name="salePrice"
+                       @blur.prevent="priceFloat(carFrom, 'salePrice');ruleMessge($event)"
+                       :error-message="errorMsg.salePrice"
+                       placeholder="请输入"><div slot="button">元</div></van-field>
             <template v-else-if="carFrom.carNature === 'old_car'">
                 <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
                 <van-cell title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
-                <div class="xh-field-unit">
                     <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
-                               placeholder="请输入"/>
-                    <span class="xh-unit">公里</span>
-                </div>
+                               placeholder="请输入"><div slot="button">公里</div></van-field>
                 <van-field v-model="carFrom.engineNum" :border="false" clearable input-align="right" label="发动机号："
                            placeholder="请输入"/>
             </template>

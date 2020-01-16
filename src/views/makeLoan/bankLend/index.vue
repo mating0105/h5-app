@@ -53,7 +53,7 @@
                         <van-cell title="还款卡银行：" :border='false' value-class='rightClass' :value="bankLoanInfo.accountBank" is-link  @click="showPopupType('accountBank')" />
                         <van-cell title="录机时间：" :border='false' required is-link :value="dayjs(bankLoanInfo.advanceInstitutionDate).format('YYYY-MM-DD HH:mm')" value-class='rightClass' @click="showPopupTime('recordTime')" @blur.prevent="ruleMessge" label-class='labelClass' :label="errorMsg.advanceInstitutionDate"/>
                         <div v-if="approvalConclusionDesc=='已放款'">
-                            <van-field :border="false" label-width='150' input-align="right" label="实际放款金额（元）：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"  name='factLoanAmt' @blur.prevent="ruleMessge" :error-message="errorMsg.factLoanAmt"/>
+                            <van-field :border="false" label-width='150' input-align="right" label="实际放款金额：" required placeholder="请输入" v-model="bankLoanInfo.factLoanAmt"  name='factLoanAmt' @blur.prevent="priceFloat(bankLoanInfo, 'factLoanAmt')" :error-message="errorMsg.factLoanAmt"><div slot="button">元</div></van-field>
                             <van-cell :border='false' title="实际放款时间：" value-class='rightClass' :value="bankLoanInfo.factLoanDate?dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''" @click="showPopupTime('actualLendTime')" is-link/>
                         </div>
                     </div>
