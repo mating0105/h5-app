@@ -150,6 +150,7 @@
                 label="年营业额："
                 input-align="right"
                 clearable
+                @blur.prevent="priceFloat(formData, 'turnover')"
                 :placeholder="isView?'请填写':''"
               >
                 <div slot="button" v-if="formData.turnover">万元</div>
@@ -198,7 +199,7 @@
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
-                @blur.prevent="ruleMessge"
+                @blur.prevent="priceFloat(formData, 'registerCapital');ruleMessge($event)"
                 :error-message="errorMsg.registerCapital"
                 error-message-align="right"
               >
@@ -225,7 +226,7 @@
           </div>
 
           <div
-            v-if="formData.occupationalStatus != 1 && formData.occupationalStatus != 2 && formData.occupationalStatus != 3 && formData.occupationalStatus != 4 "
+            v-if="formData.occupationalStatus != 1 && formData.occupationalStatus != 2 && formData.occupationalStatus != 3 && formData.occupationalStatus != 4"
           >
             <section>
               <van-field
@@ -239,7 +240,7 @@
                 clearable
                 :required="isView"
                 :placeholder="isView?'请填写':''"
-                @blur.prevent="ruleMessge"
+                @blur.prevent="priceFloat(formData, 'personalIncome');ruleMessge($event)"
                 :error-message="errorMsg.personalIncome"
                 error-message-align="right"
               >

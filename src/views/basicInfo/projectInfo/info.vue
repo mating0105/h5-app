@@ -452,7 +452,7 @@
               input-align="right"
               :placeholder="isView?'请填写':''"
               :error-message="errorMsg.loanAmt"
-              @blur.prevent="ruleMessge"
+              @blur.prevent="priceFloat(projProjectInfo, 'loanAmt');ruleMessge($event)"
               error-message-align="right"
             >
               <div slot="button" v-if="projProjectInfo.loanAmt">元</div>
@@ -546,8 +546,8 @@
               input-align="right"
               :required="isView?projProjectInfo.thiefRescue == 0:false"
               :placeholder="isView?'请填写(含GPS加融费用)':''"
-              @blur.prevent="ruleMessge"
               :error-message="errorMsg.rentingAmtGps"
+              @blur.prevent="priceFloat(projProjectInfo, 'rentingAmtGps');ruleMessge($event)"
               error-message-align="right"
             >
               <div slot="button" v-if="projProjectInfo.rentingAmtGps">元</div>
@@ -1534,7 +1534,7 @@ export default {
             accountName: this.returnVal(row.accountName),
             accountBank: this.returnVal(row.accountBank),
             wbtProvCityZonName: this.returnVal(row.wbtProvCityZon),
-            wbtProvCityZon: row.wbtProvCityZonCode,
+            wbtProvCityZon: row.wbtProvCityZon,
             wbtProvCityZonCode: row.wbtProvCityZonCode,
             paymentNumber: this.returnVal(row.paymentNumber),
             paymentNumberName: this.returnVal(row.paymentNumberName),
@@ -1773,7 +1773,7 @@ export default {
             accountName: formList.accountName,
             accountBank: formList.accountBank,
             // ------------------------------ 地址 --------
-            wbtProvCityZonCode: formList.wbtProvCityZon,
+            wbtProvCityZonCode: formList.wbtProvCityZonCode,
             wbtProvCityZon: formList.wbtProvCityZonName,
             wbtProvCityZonDesc: formList.wbtProvCityZonName,
             rbrinsPltfrmNmName: formList.rbrinsPltfrmNmName,

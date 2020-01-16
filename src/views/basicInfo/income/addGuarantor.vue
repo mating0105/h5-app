@@ -146,7 +146,7 @@
                   input-align="right"
                   label-width="110px"
                   :placeholder="isView?'请填写':''"
-                  @blur.prevent="ruleMessge"
+                  @blur.prevent="priceFloat(form, 'personalIncome');ruleMessge($event)"
                   :error-message="errorMsg.personalIncome"
                   error-message-align="right"
                 >
