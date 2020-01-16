@@ -474,7 +474,7 @@ export default {
       list: [
         { name: "费用信息", key: 1 },
         { name: "走款信息", key: 2 },
-        { name: "上传图片", key: 3 }
+        { name: "上传凭证", key: 3 }
       ],
       stepVal: 1,
       paymentDetail: {
@@ -638,55 +638,59 @@ export default {
     },
     //提交流程
     submit() {
-      this.loading = true;
-      let num = 0;
-      for (let item in this.errorMsg) {
-        if (
-          item == "payType" ||
-          item == "payTime" ||
-          item == "payeeAccount" ||
-          item == "payeeBank" ||
-          item == "payeeSubBank" ||
-          item == "payeeFullName"
-        ) {
-          this.errorMsg[item] = this.returnMsg(
-            item,
-            this.paymentDetail.projPayInfo[item]
-          );
-        } else {
-          this.errorMsg[item] = this.returnMsg(
-            item,
-            this.paymentDetail.projBudgetList[item]
-          );
+      if (this.dataList[0].fileList.length < 1) {
+        this.$notify({ type: "danger", message: "请上传走款资料" });
+      } else {
+        this.loading = true;
+        let num = 0;
+        for (let item in this.errorMsg) {
+          if (
+            item == "payType" ||
+            item == "payTime" ||
+            item == "payeeAccount" ||
+            item == "payeeBank" ||
+            item == "payeeSubBank" ||
+            item == "payeeFullName"
+          ) {
+            this.errorMsg[item] = this.returnMsg(
+              item,
+              this.paymentDetail.projPayInfo[item]
+            );
+          } else {
+            this.errorMsg[item] = this.returnMsg(
+              item,
+              this.paymentDetail.projBudgetList[item]
+            );
+          }
+          if (this.errorMsg[item]) {
+            num++;
+          }
         }
-        if (this.errorMsg[item]) {
-          num++;
-        }
-      }
-      if (num !== 0) {
-        this.loading = false;
-        return;
-      }
-      this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
-      this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
-      submitPay(this.paymentDetail)
-        .then(res => {
+        if (num !== 0) {
           this.loading = false;
-          let data = res.data.users;
-          this.paymentDetail = res.data.project;
-          let people = [];
-          data.forEach(t => {
-            people.push({
-              ...t,
-              label: t.companyName + "-" + t.name
+          return;
+        }
+        this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
+        this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
+        submitPay(this.paymentDetail)
+          .then(res => {
+            this.loading = false;
+            let data = res.data.users;
+            this.paymentDetail = res.data.project;
+            let people = [];
+            data.forEach(t => {
+              people.push({
+                ...t,
+                label: t.companyName + "-" + t.name
+              });
             });
+            this.peopleList = people;
+            this.loadType("下一节点审批人", "people");
+          })
+          .catch(e => {
+            this.loading = false;
           });
-          this.peopleList = people;
-          this.loadType("下一节点审批人", "people");
-        })
-        .catch(e => {
-          this.loading = false;
-        });
+      }
     },
     //终止流程
     end() {
@@ -899,7 +903,7 @@ export default {
         });
         this.dataList.push({
           declare: declare, //图片描述
-          isRequire: false, //*是否必须
+          isRequire: true, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
           customerNum: this.params.info.customerNum,
@@ -910,7 +914,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    },
+    }
   },
   mounted() {
     this.params = {
