@@ -50,7 +50,7 @@
                 label="产权价值："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
-                @blur.prevent="ruleMessge"
+                @blur.prevent="priceFloat(form, 'propertyValue');ruleMessge($event)"
                 :error-message="errorMsg.propertyValue"
                 error-message-align="right"
               >
