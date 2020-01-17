@@ -1743,7 +1743,8 @@ export default {
                 ? "是"
                 : "",
             gpsMeltingCharge: formList.gpsMeltingCharge,
-            purchaseTaxCharge: formList.purchaseTaxCharge
+            purchaseTaxCharge: formList.purchaseTaxCharge,
+            surcharge: formList.surcharge
           };
           dataList.customer.levelEducation = formList.levelEducation;
           dataList.customer.unitChar = formList.unitChar;
