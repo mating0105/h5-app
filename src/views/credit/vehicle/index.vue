@@ -33,12 +33,16 @@
                        name="salePrice"
                        @blur.prevent="priceFloat(carFrom, 'salePrice');ruleMessge($event)"
                        :error-message="errorMsg.salePrice"
-                       placeholder="请输入"><div slot="button">元</div></van-field>
+                       placeholder="请输入">
+                <div slot="button">元</div>
+            </van-field>
             <template v-else-if="carFrom.carNature === 'old_car'">
                 <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
                 <van-cell title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
-                    <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
-                               placeholder="请输入"><div slot="button">公里</div></van-field>
+                <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
+                           placeholder="请输入">
+                    <div slot="button">公里</div>
+                </van-field>
                 <van-field v-model="carFrom.engineNum" :border="false" clearable input-align="right" label="发动机号："
                            placeholder="请输入"/>
             </template>
@@ -325,27 +329,51 @@
       nameToString () {
         return [...arguments].map(item => item).join('')
       },
-      verifyForm () {
+      async verifyForm () {
         let num = 0;
         for (let item in this.errorMsg) {
-          this.errorMsg[item] = this.returnMsg(item, this.carFrom[item]);
-          if (this.errorMsg[item]) {
-            num++;
+          if(this.errorMsg.hasOwnProperty(item)) {
+            this.errorMsg[item] = this.returnMsg(item, this.carFrom[item]);
           }
         }
-        return num === 0
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            for (let item in this.errorMsg) {
+              if(this.errorMsg.hasOwnProperty(item)) {
+                if(this.errorMsg[item]) {
+                  num++;
+                }
+              }
+            }
+            resolve(num === 0)
+          }, 500)
+        })
       },
       /**
        * 保存车辆
        */
       saveCar () {
-        if (!this.verifyForm()) {
-          return
-        }
-        this.$store.dispatch('credit/setCarData', {
-          data: this.carFrom, index: this.$route.query.index
+        this.loading = true
+        this.verifyForm().then((res) => {
+          if(res) {
+            this.$store.dispatch('credit/setCarData', {
+              data: this.carFrom, index: this.$route.query.index
+            })
+            this.loading = false
+            this.$nextTick(() => {
+              this.$router.go(-1)
+            })
+          } else {
+            this.loading = false
+          }
         })
-        this.$router.go(-1)
+        // if (!this.verifyForm()) {
+        //   return
+        // }
+        // this.$store.dispatch('credit/setCarData', {
+        //   data: this.carFrom, index: this.$route.query.index
+        // })
+        // this.$router.go(-1)
 
       },
       /**
@@ -357,6 +385,7 @@
             this.carFrom[key] = this.$route.query[key] || this.carFrom[key]
           }
         }
+        this.changeNature(this.carFrom.carNature)
       },
       /**
        * 识别
@@ -372,7 +401,8 @@
           delete this.errorMsg.chassisNumber
         } else {
           this.rulesForm("order-credit-old-car-xh")
-          this.errorMsg.chassisNumber = ''
+          // this.errorMsg.chassisNumber = ''
+          Vue.set(this.errorMsg, 'chassisNumber', '')
         }
       }
     },
@@ -381,7 +411,7 @@
       if (this.$route.query) {
         this.initData()
       }
-      this.rulesForm("order-credit-car-xh");//新车
+      // this.rulesForm("order-credit-car-xh");//新车
       // this.loading = true
     }
   }
