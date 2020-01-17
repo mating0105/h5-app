@@ -178,7 +178,7 @@
         let flag = true
         if (this.form.carInfos.length) {
           this.form.carInfos.forEach(item => {
-            if (item.carNature === 'old_car' && !item.evaluatingPrice) {
+            if (item.carNature === 'old_car' && !item.evaluatingPriceDot) {
               flag = false
             }
           })

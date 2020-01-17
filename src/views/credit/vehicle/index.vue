@@ -28,11 +28,11 @@
             <van-cell label-class='labelClass' :label="errorMsg.brndNm" title="车辆品牌型号：" @click="selectBrand" :border="false" required
                       is-link
                       :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
-            <van-field :border="false" v-if="carFrom.carNature === 'new_car'" v-model="carFrom.salePrice" required clearable input-align="right"
+            <van-field :border="false" v-if="carFrom.carNature === 'new_car'" v-model="carFrom.salePriceDto" required clearable input-align="right"
                        label="销售价："
-                       name="salePrice"
-                       @blur.prevent="priceFloat(carFrom, 'salePrice');ruleMessge($event)"
-                       :error-message="errorMsg.salePrice"
+                       name="salePriceDto"
+                       @blur.prevent="priceFloat(carFrom, 'salePriceDto');ruleMessge($event)"
+                       :error-message="errorMsg.salePriceDto"
                        placeholder="请输入">
                 <div slot="button">元</div>
             </van-field>
@@ -136,7 +136,7 @@
           carType2Desc: '',
           carNature: 'new_car',// new_car 新车 ----- old_car 二手车
           carSource: '03',
-          salePrice: '',
+          salePriceDto: '',
           remark: '',
           remarks: '',
           carSpecifications: '',//车辆规格
@@ -144,7 +144,7 @@
           carLicenseLocation: '',//车牌所在地
           areaCode: '',//地区号-- AREA_CODE
           engineNum: '',//发动机号--
-          evaluatingPrice: '',//评估价
+          evaluatingPriceDot: '',//评估价
           roadHaul: '',//行驶里程
           plateDate: '',//首次上牌日
         },
@@ -169,7 +169,7 @@
           carSource: '',//车辆来源
           carSpecifications: '',//车辆规格
           brndNm: '',//车辆品牌
-          salePrice: '',//车辆价格
+          salePriceDto: '',//车辆价格
         }
       }
     },
