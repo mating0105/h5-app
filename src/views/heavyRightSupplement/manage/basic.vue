@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-17 11:11:03
+ * @LastEditTime : 2020-01-17 13:55:09
  -->
 
 <template>
@@ -114,7 +114,7 @@
           <van-field
             :border="false"
             :error-message="errorMsg.actualInvoicedPrice[index]"
-            @blur.prevent="ruleMessge($event,index)"
+            @blur.prevent="actualInvoicedPriceBlur($event,item,index)"
             input-align="right"
             label="实际开票价:"
             label-width="120"
@@ -256,7 +256,7 @@
             <van-field
               :border="false"
               :error-message="errorMsg.packageDeal"
-              @blur.prevent="ruleMessge($event,null,packageDealBlur)"
+              @blur.prevent="packageDealBlur($event)"
               @input="inputValue"
               input-align="right"
               label="套票成交价"
@@ -455,7 +455,13 @@ export default {
     this.queryDetails();
   },
   methods: {
-    packageDealBlur() {
+    actualInvoicedPriceBlur(event, row, index) {
+      row.actualInvoicedPrice = this.keepDecimal(event.target.value);
+      this.ruleMessge(event, index);
+    },
+    packageDealBlur(event) {
+      this.details.packageDeal = this.keepDecimal(event.target.value);
+      this.ruleMessge(event, null);
       this.errorMsg.differenceCarprice = this.returnMsg(
         "differenceCarprice",
         this.details.differenceCarprice

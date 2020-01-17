@@ -307,7 +307,7 @@
             <van-cell title="车辆型号:" :value="i.automarke.carModel" />
           </section>
           <section>
-            <van-cell title="销售价:" :value="i.salePrice">
+            <van-cell title="销售价:" :value="numFilter(i.salePrice)">
               <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice">元</div>
             </van-cell>
           </section>
@@ -334,12 +334,12 @@
           <!-- 二手车是否已评估 isAses 评估后显示-->
           <div v-if="i.isAses == '1'">
             <section>
-              <van-cell title="评估价:" :value="i.estimateOriginalPrice">
+              <van-cell title="评估价:" :value="numFilter(i.estimateOriginalPrice)">
                 <div slot="right-icon" style="line-height: inherit;">元</div>
               </van-cell>
             </section>
             <section>
-              <van-cell title="最高送审金额:" :value="i.hgstAmt">
+              <van-cell title="最高送审金额:" :value="numFilter(i.hgstAmt)">
                 <div slot="right-icon" style="line-height: inherit;" v-if="i.hgstAmt">元</div>
               </van-cell>
             </section>
@@ -553,72 +553,6 @@
               <div slot="button" v-if="projProjectInfo.rentingAmtGps">元</div>
             </van-field>
           </section>
-
-          <!-- <div
-            v-if="projProjectInfo.businessModel==1 || projProjectInfo.businessModel==2 || projProjectInfo.businessModel==3"
-          >
-            <section>
-              <van-cell
-                :is-link="isView"
-                :value="projProjectInfo.marginRatioName"
-                title="保证金比例(%):"
-                @click="!isView?'':loadList('Margin_Ratio','保证金比例','marginRatio')"
-                :disabled="projProjectInfo.businessModel==2?true:false"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.keepPrice"
-                type="number"
-                clearable
-                label="留购价(元):"
-                input-align="right"
-                placeholder="请输入"
-                :disabled="projProjectInfo.businessModel=='2'?true:false"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.concactNum"
-                clearable
-                :disabled="!isView"
-                label="合同编号:"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.accountNum"
-                type="number"
-                clearable
-                :disabled="!isView"
-                label="还款卡号:"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.accountName"
-                clearable
-                :disabled="!isView"
-                label="还款卡账户名称:"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-            <section>
-              <van-field
-                v-model="projProjectInfo.accountBank"
-                clearable
-                :disabled="!isView"
-                label="还款卡开户行:"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </section>
-          </div>-->
           <section>
             <van-field
               v-model="projProjectInfo.surcharge"
@@ -627,6 +561,7 @@
               :disabled="!isView"
               label="附加费:"
               input-align="right"
+              @blur.prevent="priceFloat(projProjectInfo, 'surcharge')"
               :placeholder="isView?'请填写':''"
             >
               <div slot="button" v-if="projProjectInfo.surcharge">元</div>
@@ -1516,14 +1451,15 @@ export default {
             businessModel: this.returnVal(row.businessModelId),
             rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
             loanTerm: this.returnVal(row.loanTerm),
-            loanAmt: this.returnVal(row.loanAmt),
+            loanAmt: this.numFilter(row.loanAmt),
             isQuickadjust: "0",
             isTandzero: this.returnVal(row.isTandzero),
             guaranteeRate: this.returnVal(row.guaranteeRate),
             bankNewRate: this.returnVal(row.bankNewRate),
             rebateStandard: this.returnVal(row.rebateStandard),
             loanRegion: this.returnVal(row.loanRegion),
-            rentingAmtGps: this.returnVal(row.rentingAmtGps),
+            rentingAmtGps: this.numFilter(row.rentingAmtGps),
+            surcharge: this.numFilter(row.surcharge),
             rentingCarRatio: this.returnVal(row.rentingCarRatio),
             rentingServiceFee: this.returnVal(row.rentingServiceFee),
             rentingAmt: this.returnVal(row.rentingAmt),

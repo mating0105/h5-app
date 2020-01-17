@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-17 11:11:28
+ * @LastEditTime : 2020-01-17 13:55:00
  */
 
 export default {
@@ -20,12 +20,16 @@ export default {
     keepDecimal(val, num = 2, company) {
       let number = val * 1;
       if (
+        val === "" ||
         val === undefined ||
         val === null ||
         val instanceof Object ||
         isNaN(number)
       ) {
-        return ` ${company}`;
+        if (company) {
+          return ` ${company}`;
+        }
+        return "";
       }
       if (company) {
         return `${number.toFixed(num)} ${company}`;
@@ -93,6 +97,20 @@ export default {
         }
         return value;
       }
+    },
+    /**
+     * 截取当前数据到小数点后三位
+     * @param {*} value 
+     */
+    numFilter (value) {
+      let realVal = ''
+      if (!isNaN(value) && value!== '' && value !== null) {
+        let tempVal = parseFloat(value).toFixed(3)
+        realVal = tempVal.substring(0, tempVal.length - 1)
+      } else {
+        realVal = ''
+      }
+      return realVal
     }
   },
   filters: {

@@ -23,7 +23,7 @@
             <van-cell title="产品性质" :value="productProperty" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="贷款金额(元)" :value="payDetail.projProjectInfo.loanAmt" />
+            <van-cell title="贷款金额(元)" :value="numFilter(payDetail.projProjectInfo.loanAmt)" />
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell

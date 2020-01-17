@@ -193,11 +193,11 @@
                 :loading="dLoading"
               >提 交</van-button>
               <!-- 测试 -->
-              <van-button
+              <!-- <van-button
                 size="large"
                 class="xh-bg-main"
                 @click="submitCeShi"
-              >测试跳转待办按钮</van-button>
+              >测试跳转待办按钮</van-button> -->
             </div>
           </div>
         </div>
@@ -670,7 +670,7 @@ export default {
 
 
         if(data.projectInfo.clientManager) {
-          this.findGpsData(data.projectInfo.clientManager.loginName);
+          this.findGpsData({mobile: data.projectInfo.clientManager.mobile, thiefRescue: data.projectInfo.thiefRescue == 2?'N':'Y'});
         }
         this.getAcceptPersonl();
       });
@@ -866,6 +866,7 @@ export default {
         citys.forEach(t => {});
       });
     },
+    // 获取GPS套餐
     findGpsData(val) {
       getGPSData(val).then(res => {
         let { data } = res;

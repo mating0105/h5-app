@@ -5,6 +5,7 @@
         <section>
           <van-cell
             name="carModel"
+            :required="isView"
             :is-link="isView"
             title="车辆品牌型号："
             :value="formData.carModel"
@@ -70,13 +71,14 @@
           <van-field
             name="carValue"
             type="number"
+            :required="isView"
             label-width="120px"
             v-model="formData.carValue"
             :disabled="!isView"
             label="车辆价值："
             input-align="right"
             :placeholder="isView?'请填写':''"
-            @blur.prevent="ruleMessge"
+            @blur.prevent="priceFloat(formData, 'carValue');ruleMessge($event)"
             :error-message="errorMsg.carValue"
             error-message-align="right"
           >
@@ -258,7 +260,6 @@ export default {
           num++;
         }
       }
-      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }
@@ -319,6 +320,7 @@ export default {
     this.isView = this.params.isView == 0;
     if (this.params.id) {
       this.formData = this.params;
+      this.formData.carValue = this.numFilter(this.formData.carValue)
     }
     this.rulesForm("cs/cuPersonalCar");
   }
