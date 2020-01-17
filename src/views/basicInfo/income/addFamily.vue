@@ -519,6 +519,7 @@ export default {
             "site_Properties",
             this.formData.fieldNature
           );
+          this.formData.personalIncome = this.numFilter(this.formData.personalIncome);
           this.loading = false;
         } catch {
           this.loading = false;

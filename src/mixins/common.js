@@ -108,7 +108,7 @@ export default {
         let tempVal = parseFloat(value).toFixed(3)
         realVal = tempVal.substring(0, tempVal.length - 1)
       } else {
-        realVal = '-'
+        realVal = ''
       }
       return realVal
     }

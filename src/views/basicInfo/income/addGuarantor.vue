@@ -415,6 +415,7 @@ export default {
               "income_prove",
               this.form.incomeEvidence
             );
+            this.form.personalIncome = this.numFilter(this.form.personalIncome);
           }
           this.loading = false;
         } catch {

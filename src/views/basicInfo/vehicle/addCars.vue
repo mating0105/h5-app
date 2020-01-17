@@ -320,6 +320,7 @@ export default {
     this.isView = this.params.isView == 0;
     if (this.params.id) {
       this.formData = this.params;
+      this.formData.carValue = this.numFilter(this.formData.carValue)
     }
     this.rulesForm("cs/cuPersonalCar");
   }
