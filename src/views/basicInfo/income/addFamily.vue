@@ -510,6 +510,15 @@ export default {
             "income_prove",
             this.formData.incomeEvidence
           );
+          //  
+          this.formData.sharesConstituteDesc = this.returnText(
+            "Shares",
+            this.formData.sharesConstitute
+          );
+          this.formData.fieldNatureDesc = this.returnText(
+            "site_Properties",
+            this.formData.fieldNature
+          );
           this.loading = false;
         } catch {
           this.loading = false;

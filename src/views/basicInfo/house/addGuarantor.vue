@@ -128,13 +128,13 @@
                 :disabled="!isView"
                 label="产权共有人数："
                 input-align="right"
-                label-width="120px"
+                label-width="130px"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
                 :error-message="errorMsg.propertyHolderNum"
                 error-message-align="right"
               >
-                <div slot="button" v-if="form.propertyHolderNum">个</div>
+                <div slot="button" v-if="form.propertyHolderNum">人</div>
               </van-field>
             </section>
             <section>

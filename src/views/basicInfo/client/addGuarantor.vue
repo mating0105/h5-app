@@ -624,6 +624,11 @@ export default {
     },
     subMit() {
       this.subLoading = true;
+      // 居住年限不能小于年龄
+      if(this.formData.localResidence > this.subData.age) {
+        this.$notify({ type: 'danger', message: '居住年限不能大于年龄' });
+        return
+      }
       setGuaranteeInfo(this.subData).then(res => {
         this.$notify({
           type: "success",

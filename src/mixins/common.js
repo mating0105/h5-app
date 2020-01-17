@@ -84,6 +84,20 @@ export default {
         }
         return value;
       }
+    },
+    /**
+     * 截取当前数据到小数点后三位
+     * @param {*} value 
+     */
+    numFilter (value) {
+      let realVal = ''
+      if (!isNaN(value) && value!== '' && value !== null) {
+        let tempVal = parseFloat(value).toFixed(3)
+        realVal = tempVal.substring(0, tempVal.length - 1)
+      } else {
+        realVal = '-'
+      }
+      return realVal
     }
   },
   filters: {

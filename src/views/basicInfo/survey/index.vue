@@ -498,6 +498,11 @@ export default {
     };
   },
   methods: {
+    providerChange() {
+      this.ruleForm.providerName = '';
+      this.ruleForm.providerIdCard = '';
+      this.ruleForm.providerPhone = '';
+    },
     OCRScan(num) {
       this.show3 = true;
       this.bankNum = num;
@@ -620,6 +625,7 @@ export default {
           } else {
             this.getProviderSecurityList(rows.value);
           }
+          this.providerChange();
           break;
         case "姓名":
           this.ruleForm.providerName = rows.label;

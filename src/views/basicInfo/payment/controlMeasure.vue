@@ -6,25 +6,19 @@
         <template slot="header">风控措施</template>
         <van-row>
           <van-cell-group :border="false">
-              <van-cell title="手动评级" :value="gradeManual" />
+            <van-cell title="手动评级" :border="false" :value="gradeManual" />
           </van-cell-group>
-          <van-cell title="是否加入关注名单" :border="false" required>
-            <radio v-model="data.projProjectInfo.riskMeasure.isFoucusList" :disabled="params.dealState != '1'">
-              <radio-item label="1">是</radio-item>
-              <radio-item label="0">否</radio-item>
-            </radio>
-          </van-cell>
           <van-cell-group :border="false">
-              <van-cell title="风控条件" :value="riskCondition" />
+            <van-cell title="是否加入关注名单" :border="false" :value="isFoucusList" />
           </van-cell-group>
-          <van-cell title="业务员上门调查" :border="false" required>
-            <radio v-model="data.projProjectInfo.wthrDtd" :disabled="params.dealState != '1'">
-              <radio-item label="1">是</radio-item>
-              <radio-item label="0">否</radio-item>
-            </radio>
-          </van-cell>
-          <van-cell-group :border="false" required>
-              <van-cell title="GPS数量(台)" :value="data.projProjectInfo.riskMeasure.gpsNum" />
+          <van-cell-group :border="false">
+            <van-cell title="风控条件" :border="false" :value="riskCondition" />
+          </van-cell-group>
+          <van-cell-group :border="false">
+            <van-cell title="业务员上门调查" :border="false" :value="wthrDtd" />
+          </van-cell-group>
+          <van-cell-group :border="false">
+            <van-cell title="GPS数量" :border="false" :value="gpsNumDesc" />
           </van-cell-group>
         </van-row>
       </card>
@@ -38,6 +32,7 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
+import { getGPSData } from "@/api/project";
 import {
   Row,
   Col,
@@ -76,15 +71,6 @@ export default {
   },
   data() {
     return {
-      data: {
-        projProjectInfo:{
-          customer:{
-          },
-          riskMeasure:{
-
-          }
-        }
-      },
       show: false,
       selectName: "",
       fieldName: "",
@@ -94,18 +80,31 @@ export default {
         info:{}
       },
       gradeManual: '',
-      riskCondition: ''
+      riskCondition: '',
+      gpsNumDesc: '',
+      isFoucusList: '',
+      wthrDtd: ''
     };
   },
   methods: {
     loadData() {
       let info = this.params.info;
-      getPaymentDetail({ projectId: info.projectId,businesskey: info.businesskey }).then(res => {
+      getPaymentDetail({ projectId: info.projectId, businesskey: info.businesskey }).then(res => {
         let { data } = res;
-        this.data = data;
-        this.gradeManual = this.returnText('GradeManual',data.projProjectInfo && data.projProjectInfo.customer.gradeManual);
-        this.riskCondition = this.returnText('risk_condition',data.projProjectInfo.riskMeasure.riskCondition);
+        let proj = data.projProjectInfo;
 
+        this.gradeManual = this.returnText('GradeManual',proj.customer.gradeManual);
+        this.riskCondition = this.returnText('risk_condition',proj.riskMeasure.riskCondition);
+        this.isFoucusList = proj.riskMeasure.isFoucusList==0?'否':'是';
+        this.wthrDtd = proj.wthrDtd==0?'否':'是';
+        // this.windControl = {
+        //   gradeManual: proj.customer && proj.customer.gradeManual, //手动评分
+        //   riskCondition: proj.riskMeasure &&  proj.riskMeasure.riskCondition, //风控条件
+        //   gpsNum: proj.riskMeasure && proj.riskMeasure.gpsNum, //gps数量
+        //   wthrDtd: proj.wthrDtd, //是否上门
+        //   isFoucusList: proj.riskMeasure && proj.riskMeasure.isFoucusList
+        // };
+        this.findGpsData({mobile: proj.clientManager.mobile, thiefRescue: proj.thiefRescue == 2?'N':'Y'});
       }).catch(err => {
         setTimeout(()=>{
           this.$router.go(-1);
@@ -133,6 +132,22 @@ export default {
       });
       return name;
     },
+    // 获取GPS套餐
+    findGpsData(val) {
+      getGPSData(val).then(res => {
+        let { data } = res;
+        let arr = data.records;
+        let list = [];
+        arr.forEach(t => {
+          list.push({
+            label: t.cmsPackage.packageprod,
+            value: t.cmsPackage.id
+          });
+        });
+        this.dicList.gpsList = list;
+        this.gpsNumDesc = this.returnText('gpsList',this.data.projProjectInfo.riskMeasure.gpsNum);
+      });
+    }
   },
   created(){
     this.params = {

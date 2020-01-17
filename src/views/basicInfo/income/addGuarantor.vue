@@ -135,7 +135,7 @@
                   error-message-align="right"
                 />
               </section>
-              <section>
+              <section v-if="!condition2">
                 <van-field
                   name="personalIncome"
                   v-model="form.personalIncome"
@@ -153,7 +153,7 @@
                   <div slot="button" v-if="form.personalIncome">元</div>
                 </van-field>
               </section>
-              <section>
+              <section v-if="!condition2">
                 <van-cell
                   title="月固定收入状况："
                   :is-link="isView"
@@ -304,8 +304,43 @@ export default {
       loading: false, // loading
       dLoading: false, //按钮禁用状态
       projectId: "", //项目id
-      ruleData: {}
+      ruleData: {},
+      condition1: true,
+      condition2: false,
+      condition3: false,
     };
+  },
+  watch: {
+    "form.occupationalStatus"(val) {
+      if (val == 6) {
+        //待业
+        this.condition1 = false;
+      } else {
+        this.condition1 = true;
+        if (val == 1 || val == 2) {
+          this.condition2 = true;
+          this.condition3 = false;
+        }
+        if (val == 3 || val == 4) {
+          this.condition2 = true;
+          this.condition3 = true;
+        }
+        if (
+          val == 5 ||
+          val == 6 ||
+          val == 7 ||
+          val == 8 ||
+          val == 9 ||
+          val == 10 ||
+          val == 11 ||
+          val == 12 ||
+          val == 13
+        ) {
+          this.condition2 = false;
+          this.condition3 = false;
+        }
+      }
+    }
   },
   components: {
     ViewPage,
@@ -432,6 +467,7 @@ export default {
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
       this.form.provCityZonCode = code;
+      this.form.wbtProvCityZonCode = code;
       this.addressShow = false;
     },
     // 保存
