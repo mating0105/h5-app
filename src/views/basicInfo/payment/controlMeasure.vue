@@ -81,6 +81,7 @@ export default {
       },
       gradeManual: '',
       riskCondition: '',
+      gpsNum: '',
       gpsNumDesc: '',
       isFoucusList: '',
       wthrDtd: ''
@@ -95,15 +96,9 @@ export default {
 
         this.gradeManual = this.returnText('GradeManual',proj.customer.gradeManual);
         this.riskCondition = this.returnText('risk_condition',proj.riskMeasure.riskCondition);
-        this.isFoucusList = proj.riskMeasure.isFoucusList==0?'否':'是';
+        this.isFoucusList = proj.riskMeasure?(proj.riskMeasure.isFoucusList == '0' ? '否' : '是'):'';
         this.wthrDtd = proj.wthrDtd==0?'否':'是';
-        // this.windControl = {
-        //   gradeManual: proj.customer && proj.customer.gradeManual, //手动评分
-        //   riskCondition: proj.riskMeasure &&  proj.riskMeasure.riskCondition, //风控条件
-        //   gpsNum: proj.riskMeasure && proj.riskMeasure.gpsNum, //gps数量
-        //   wthrDtd: proj.wthrDtd, //是否上门
-        //   isFoucusList: proj.riskMeasure && proj.riskMeasure.isFoucusList
-        // };
+        this.gpsNum = proj.riskMeasure.gpsNum;
         this.findGpsData({mobile: proj.clientManager.mobile, thiefRescue: proj.thiefRescue == 2?'N':'Y'});
       }).catch(err => {
         setTimeout(()=>{
@@ -139,13 +134,10 @@ export default {
         let arr = data.records;
         let list = [];
         arr.forEach(t => {
-          list.push({
-            label: t.cmsPackage.packageprod,
-            value: t.cmsPackage.id
-          });
+          if(t.cmsPackage.id == this.gpsNum) {
+            this.gpsNumDesc = t.cmsPackage.packageprod
+          }
         });
-        this.dicList.gpsList = list;
-        this.gpsNumDesc = this.returnText('gpsList',this.data.projProjectInfo.riskMeasure.gpsNum);
       });
     }
   },
