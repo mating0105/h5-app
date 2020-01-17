@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-31 18:31:52
+ * @LastEditTime : 2020-01-17 11:11:03
  -->
 
 <template>
@@ -49,13 +49,13 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="judgeNumber(details.intentionPrice)"
+            :value="keepDecimal(details.intentionPrice,2,'元')"
             title="意向贷款金额:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="judgeNumber(details.loanAmt)"
+            :value="keepDecimal(details.loanAmt,2,'元')"
             title="贷款金额:"
           />
         </van-col>
@@ -106,7 +106,7 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="item.evaluatingPrice"
+            :value="keepDecimal(item.evaluatingPrice,2,'元')"
             title="评估价:"
           />
         </van-col>
@@ -455,12 +455,6 @@ export default {
     this.queryDetails();
   },
   methods: {
-    judgeNumber(num) {
-      if(num === null) {
-        num = '';
-      }
-      return `${num} 元`;
-    },
     packageDealBlur() {
       this.errorMsg.differenceCarprice = this.returnMsg(
         "differenceCarprice",
