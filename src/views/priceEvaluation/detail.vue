@@ -22,7 +22,7 @@
             </van-cell>
             <van-cell v-if="showMore" title="发动机号:" :border="false" :value="carData.engineNum"/>
             <van-cell v-if="showMore" title="备注:" :value="carData.remark"/>
-            <van-field class="label_plus" v-model="carData.evaluatingPrice" :disabled="!edit" :border="false" required clearable input-align="right"
+            <van-field class="label_plus" v-model="carData.evaluatingPriceDot" :disabled="!edit" :border="false" required clearable input-align="right"
                        label="评估价："
                        @blur="checkAssessmentCar"
                        :error-message="isError ? '贷款金额不能高于评估价7成！' : ''"
@@ -48,7 +48,7 @@
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box" v-if="edit">
-            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPrice || Boolean(isError)"
+            <van-button class="xh-btn" size="large" :disabled="!carData.evaluatingPriceDot || Boolean(isError)"
                         @click="save"
             >保存
             </van-button>
@@ -167,7 +167,7 @@
        */
       async save () {
         try {
-          if (!this.carData.evaluatingPrice) {
+          if (!this.carData.evaluatingPriceDot) {
             this.$toast('车辆评估价未填');
             return
           }
@@ -186,19 +186,19 @@
         }
       },
       async checkAssessmentCar () {
-        this.priceFloat(this.carData, 'evaluatingPrice')
+        this.priceFloat(this.carData, 'evaluatingPriceDot')
         // try {
         //   let params = {
         //     id: this.carData.id,
-        //     salePrice: '',
-        //     evaluatingPrice: ''
+        //     salePriceDto: '',
+        //     evaluatingPriceDot: ''
         //   }
         //   if (this.carData.carNature === 'old_car') {
-        //     params.evaluatingPrice = this.carData.evaluatingPrice
+        //     params.evaluatingPriceDot = this.carData.evaluatingPriceDot
         //   } else {
-        //     params.salePrice = this.carData.salePrice
+        //     params.salePriceDto = this.carData.salePriceDto
         //   }
-        //   if(!params.evaluatingPrice && params.evaluatingPrice !== 0) {
+        //   if(!params.evaluatingPriceDot && params.evaluatingPriceDot !== 0) {
         //     return
         //   }
         //   const {data} = await checkAssessmentCar(params)

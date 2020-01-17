@@ -39,7 +39,7 @@
                     <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
                     <van-cell title="车辆品牌型号:" :border="false" :value="nameToString(item.brndNm, item.carSeries, item.carModel)"/>
                     <van-cell v-if="item.carNature === 'old_car'" title="车架号:" :border="false" :value="item.chassisNumber"/>
-                    <van-cell title="销售价:" v-if="item.carNature === 'new_car'" :border="false" :value="item.salePrice">
+                    <van-cell title="销售价:" v-if="item.carNature === 'new_car'" :border="false" :value="item.salePriceDto">
                         <div slot="right-icon" class="xh-cell-right">元</div>
                     </van-cell>
                     <template v-else-if="item.carNature === 'old_car'">
@@ -564,7 +564,7 @@
 
         carInfos.forEach(item => {
           if (item.carNature === 'new_car') {
-            price += item.salePrice
+            price += item.salePriceDto
           }
         })
 

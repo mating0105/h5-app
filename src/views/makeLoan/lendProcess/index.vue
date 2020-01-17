@@ -13,8 +13,8 @@
                             <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false"/>
                             <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false"/>
                             <van-cell title="制单人员：" :border="false" :value="userName"/>
-                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"
-                                      @click="showPopupType('payType')" :border="false"/>
+<!--                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
+<!--                                      @click="showPopupType('payType')" :border="false"/>-->
                         </div>
                     </Card>
                     <div v-if="dealState"><!-- 已办显示 -->

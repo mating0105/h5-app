@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 16:07:43
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-31 18:31:52
+ * @LastEditTime : 2020-01-17 13:55:09
  -->
 
 <template>
@@ -49,13 +49,13 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="judgeNumber(details.intentionPrice)"
+            :value="keepDecimal(details.intentionPrice,2,'元')"
             title="意向贷款金额:"
           />
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="judgeNumber(details.loanAmt)"
+            :value="keepDecimal(details.loanAmt,2,'元')"
             title="贷款金额:"
           />
         </van-col>
@@ -106,7 +106,7 @@
         </van-col>
         <van-col span="24">
           <van-cell
-            :value="item.evaluatingPrice"
+            :value="keepDecimal(item.evaluatingPrice,2,'元')"
             title="评估价:"
           />
         </van-col>
@@ -114,7 +114,7 @@
           <van-field
             :border="false"
             :error-message="errorMsg.actualInvoicedPrice[index]"
-            @blur.prevent="ruleMessge($event,index)"
+            @blur.prevent="actualInvoicedPriceBlur($event,item,index)"
             input-align="right"
             label="实际开票价:"
             label-width="120"
@@ -256,7 +256,7 @@
             <van-field
               :border="false"
               :error-message="errorMsg.packageDeal"
-              @blur.prevent="ruleMessge($event,null,packageDealBlur)"
+              @blur.prevent="packageDealBlur($event)"
               @input="inputValue"
               input-align="right"
               label="套票成交价"
@@ -455,13 +455,13 @@ export default {
     this.queryDetails();
   },
   methods: {
-    judgeNumber(num) {
-      if(num === null) {
-        num = '';
-      }
-      return `${num} 元`;
+    actualInvoicedPriceBlur(event, row, index) {
+      row.actualInvoicedPrice = this.keepDecimal(event.target.value);
+      this.ruleMessge(event, index);
     },
-    packageDealBlur() {
+    packageDealBlur(event) {
+      this.details.packageDeal = this.keepDecimal(event.target.value);
+      this.ruleMessge(event, null);
       this.errorMsg.differenceCarprice = this.returnMsg(
         "differenceCarprice",
         this.details.differenceCarprice

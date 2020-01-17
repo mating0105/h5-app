@@ -32,7 +32,7 @@
                                 <div>{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</div>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer v-if="item.yn != 1 || !item.evaluatingPrice">
+                        <template v-slot:footer v-if="item.yn != 1 || !item.evaluatingPriceDot">
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
                                         plain
@@ -41,7 +41,7 @@
                                         class="xh-radius"
                                         style="border-radius: 6px;"
                                         @click.stop="startForm(item)"
-                                >{{item.evaluatingPrice?'重新评估':'立即评估'}}
+                                >{{item.evaluatingPriceDot?'重新评估':'立即评估'}}
                                 </van-button>
                             </div>
                         </template>

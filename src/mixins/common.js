@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 17:21:56
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-30 10:14:31
+ * @LastEditTime : 2020-01-17 13:55:00
  */
 
 export default {
@@ -15,11 +15,24 @@ export default {
      * @description: 保留几位小数
      * @param {any} value  任何数
      * @param {number} num 需要保留几位小数
+     * @param {string} company 单位
      */
-    keepDecimal(val, num = 2) {
+    keepDecimal(val, num = 2, company) {
       let number = val * 1;
-      if (val === undefined || val === null || val instanceof Object || isNaN(number)) {
+      if (
+        val === "" ||
+        val === undefined ||
+        val === null ||
+        val instanceof Object ||
+        isNaN(number)
+      ) {
+        if (company) {
+          return ` ${company}`;
+        }
         return "";
+      }
+      if (company) {
+        return `${number.toFixed(num)} ${company}`;
       }
       return number.toFixed(num);
     },
@@ -64,14 +77,14 @@ export default {
      * @param obj
      * @param value
      */
-    priceFloat (obj, value) {
-      if(obj[value] || obj[value] == '0') {
-        obj[value] = this.returnFloat(obj[value])
+    priceFloat(obj, value) {
+      if (obj[value] || obj[value] == "0") {
+        obj[value] = this.returnFloat(obj[value]);
       } else {
-        obj[value] = obj[value]
+        obj[value] = obj[value];
       }
     },
-    returnFloat (value) {
+    returnFloat(value) {
       value = Math.round(parseFloat(value) * 100) / 100;
       let xsd = value.toString().split(".");
       if (xsd.length === 1) {
