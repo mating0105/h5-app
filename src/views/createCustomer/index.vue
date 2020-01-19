@@ -5,7 +5,7 @@
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('src')">
           <div v-if="!src">
             <van-icon name="plus" style="margin-top:30px;" />
-            <p>身份证正面</p>
+            <p>身份证人像面</p>
           </div>
           <div v-else>
             <img :src="src" alt style="width:100%;" />
@@ -14,7 +14,7 @@
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('srcBack')">
           <div v-if="!srcBack">
             <van-icon name="plus" style="margin-top:30px;" />
-            <p>身份证反面</p>
+            <p>身份证国徽面</p>
           </div>
           <div v-else>
             <img :src="srcBack" alt style="width:100%;" />
