@@ -78,7 +78,7 @@
 
     .xh-image-list {
         overflow: hidden;
-        padding-bottom: 20px;
+        padding-bottom: 25px;
 
         & > :nth-child(4) .xh-image-sm {
             position: absolute;
@@ -107,7 +107,7 @@
             /*-webkit-backdrop-filter: blur(5px);*/
             /*backdrop-filter: blur(5px);*/
             position: absolute;
-            bottom: -20px;
+            bottom: -25px;
             left: 5px;
             right: 5px;
             white-space: nowrap;

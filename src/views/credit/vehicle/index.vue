@@ -40,10 +40,16 @@
                 <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
                 <van-cell title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
                 <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
+                           :error-message="errorMsg.roadHaul"
+                           name="roadHaul"
+                           @blur.prevent="ruleMessge"
                            placeholder="请输入">
                     <div slot="button">公里</div>
                 </van-field>
                 <van-field v-model="carFrom.engineNum" :border="false" clearable input-align="right" label="发动机号："
+                           :error-message="errorMsg.engineNum"
+                           @blur.prevent="ruleMessge"
+                           name="engineNum"
                            placeholder="请输入"/>
             </template>
             <van-field v-model="carFrom.remark" :border="false" clearable input-align="right" label="备注："
@@ -170,6 +176,8 @@
           carSpecifications: '',//车辆规格
           brndNm: '',//车辆品牌
           salePriceDto: '',//车辆价格
+          engineNum: '',//发动机号
+          roadHaul: '',//行驶里程
         }
       }
     },
@@ -353,6 +361,12 @@
        * 保存车辆
        */
       saveCar () {
+        if(this.carFrom.carNature === 'old_car') {
+          if(!this.verifyImage()) {
+            Toast.fail("二手车照片必传");
+            return;
+          }
+        }
         this.loading = true
         this.verifyForm().then((res) => {
           if(res) {
@@ -367,14 +381,10 @@
             this.loading = false
           }
         })
-        // if (!this.verifyForm()) {
-        //   return
-        // }
-        // this.$store.dispatch('credit/setCarData', {
-        //   data: this.carFrom, index: this.$route.query.index
-        // })
-        // this.$router.go(-1)
-
+      },
+      verifyImage() {
+        let len = this.dataList.length
+        return len === this.dataList.filter(item => item.fileList && item.fileList.length > 0).length
       },
       /**
        * 初始化数据
