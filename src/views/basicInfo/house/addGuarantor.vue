@@ -371,8 +371,8 @@ export default {
     // 省市区选择
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
-      this.errorMsg.provCityZon = "";
       this.form.provCityZonCode = code;
+      this.errorMsg.provCityZon = "";
       this.addressShow = false;
     },
     // 保存
