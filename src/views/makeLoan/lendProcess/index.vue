@@ -484,7 +484,7 @@
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
-        if (val.title === "GPS 安装信息") {
+        if (val.title === "GPS安装信息") {
           if (!this.projectForm.gpsInfo) {
             this.$notify({
               type: "danger",
