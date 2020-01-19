@@ -499,7 +499,7 @@
           </section>
           <!-- </div> -->
           <section>
-            <van-cell title="银行费率:" :value="projProjectInfo.bankNewRate">
+            <van-cell title="银行费率:" :value="this.numFilter(projProjectInfo.bankNewRate)">
               <div
                 slot="right-icon"
                 style="line-height: inherit;"
@@ -508,7 +508,7 @@
             </van-cell>
           </section>
           <section>
-            <van-cell title="担保费率:" :value="projProjectInfo.guaranteeRate">
+            <van-cell title="担保费率:" :value="this.numFilter(projProjectInfo.guaranteeRate)">
               <div
                 slot="right-icon"
                 style="line-height: inherit;"
@@ -517,7 +517,7 @@
             </van-cell>
           </section>
           <section>
-            <van-cell title="返利费率:" :value="projProjectInfo.rebateStandard">
+            <van-cell title="返利费率:" :value="this.numFilter(projProjectInfo.rebateStandard)">
               <div
                 slot="right-icon"
                 style="line-height: inherit;"

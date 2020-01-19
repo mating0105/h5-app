@@ -183,11 +183,12 @@
                 v-model="formData.localResidence"
                 clearable
                 type="number"
+                :required="isView"
                 :disabled="!isView"
                 label="本地居住年限："
                 label-width="120px"
                 input-align="right"
-              :placeholder="isView?'请填写':''"
+                :placeholder="isView?'请填写':''"
               >
                 <div slot="button" v-if="formData.localResidence">年</div>
               </van-field>
