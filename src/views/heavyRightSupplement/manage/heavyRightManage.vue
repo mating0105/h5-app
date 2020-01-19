@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-19 18:20:19
+ * @LastEditTime : 2020-01-19 19:32:27
  -->
 
 <template>
@@ -100,10 +100,6 @@ export default {
         {
           title: "费用信息",
           path: "/costDetail"
-        },
-        {
-          title: "相关文档",
-          path: "/proDocument"
         },
         {
           title: "风控措施",
