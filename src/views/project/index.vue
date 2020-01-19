@@ -193,13 +193,13 @@
                 :loading="dLoading"
               >提 交</van-button>
             </div>
-            <div class="xh-submit">
+            <!-- <div class="xh-submit">
               <van-button
                 size="large"
                 class="xh-bg-main"
                 @click="submitCeShi"
               >测试跳转待办按钮</van-button>
-            </div>
+            </div> -->
           </div>
         </div>
       </van-tab>

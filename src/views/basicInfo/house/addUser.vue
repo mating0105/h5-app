@@ -220,12 +220,26 @@ export default {
   },
   watch: {
     "formData.isHasHouse"(value) {
-      this.initError(value);
+      if (value == 0) {
+        this.errorMsg = {
+          isHasHouse: "" //是否有房产
+        };
+      } else {
+        this.errorMsg = {
+          isHasHouse: "", //是否有房产
+          ownerProperty: "", //产权所有人
+          houseType: "", //房产性质
+          houseZon: "", //房产区域
+          provCityZon: "", //房产所在地
+          specificAddress: "", //详细地址
+          houseArea: "" //房产面积(m²)
+        };
+      }
     }
   },
   methods: {
     initError(bool) {
-      if (Boolean(bool) && bool !== "0") {
+      if (bool == "1") {
         this.errorMsg = {
           isHasHouse: "", //是否有房产
           ownerProperty: "", //产权所有人
@@ -388,9 +402,8 @@ export default {
     console.log(this.isView);
     if (this.params.id) {
       this.loadData();
-    } else {
-      this.rulesForm("customer/cuPersonalHouse");
     }
+    this.rulesForm("customer/cuPersonalHouse");
   }
 };
 </script>
