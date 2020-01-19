@@ -497,6 +497,7 @@
             this.$bridge.callHandler("loadUrl", url, data => {
               this.onLoad();
             });
+            // location.href = url
           }
         } else {
           let queryData = {
