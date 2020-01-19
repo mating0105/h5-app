@@ -344,7 +344,8 @@
   import { getDocumentByType } from '@/api/document'
   import { getValue } from '@/utils/session'
   import { Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify, ActionSheet } from 'vant';
-  import { loanInfoDetail, getProjectInfo, updateLoanInfo, getPeople, submitProcess, fieldRules } from '@/api/makeLoan.js'
+  import { loanInfoDetail, getProjectInfo, updateLoanInfo, getPeople, submitProcess, fieldRules } from '@/api/makeLoan.js';
+  import api from "@/api/contractUpload";
   import formValidator from '@/mixins/formValidator'
 
   const Components = [Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify, ActionSheet]
@@ -478,27 +479,37 @@
         ],
         accout: '',
         phone: '',
+        projectInfo: {},
+        gpsInfo: null,
+
       };
     },
     methods: {
+      getListDetails() {
+        this.loading = true;
+        api.getListDetails({ id: this.id }).then(res => {
+          res.code === 200 ? (this.loading = false) : "";
+          this.gpsInfo = res.data.gpsInfo[0];
+          this.projectInfo = res.data.projectInfo;
+        });
+      },
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
         if (val.title === "GPS安装信息") {
-          // if (!this.projectForm.gpsInfo) {
+          if (!this.gpsInfo) {
             this.$notify({
               type: "danger",
               message: "未安装 GPS!"
             });
-          //   return false;
-          // } else {
-          //   let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
-          //   //通知移动端加载gps安装页面
-          this.$bridge.callHandler("loadUrl", 'http://apk.wwvas.com:10004/#/orderDetail?id=undefined&showTitle=false&externalid=XM202001194683&externalcustnum=undefined&externalvehicleid=202001194685&username=undefined&xhphonenum=undefined&type=xh_h5', data => {
-            this.onLoad();
-          });
-          // location.href = url
-          // }
+            return false;
+          } else {
+            let url = `${this.$prefixurl}orderDetail?id=${this.gpsInfo.orderId}&showTitle=false&externalid=${this.projectInfo.projectNo}&externalcustnum=${this.projectInfo.customNum}&externalvehicleid=${this.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+            //通知移动端加载gps安装页面
+            this.$bridge.callHandler("loadUrl", url, data => {
+              this.onLoad();
+            });
+          }
         } else {
           let queryData = {
             customerId: this.projectForm.projectInfo.customerId,
@@ -991,12 +1002,13 @@
       this.businessKey = Number(this.params.info.businesskey);
       this.dealState = this.params.dealState == 1 ? false : true;
       this.userName = Cookies.get('name');
+      this.accout = Cookies.get("loginName");
+      this.phone = Cookies.get("phone");
+      this.getListDetails();
       this.getDictionaryData();
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
       }
-      this.accout = Cookies.get("loginName");
-      this.phone = Cookies.get("phone");
     }
   }
 </script>
