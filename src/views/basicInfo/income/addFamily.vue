@@ -522,6 +522,9 @@ export default {
           );
           this.formData.profit = this.numFilter(this.formData.profit);
           this.formData.personalIncome = this.numFilter(this.formData.personalIncome);
+          this.formData.turnover = this.numFilter(this.formData.turnover);
+          this.formData.registerCapital = this.numFilter(this.formData.registerCapital);
+          this.formData.totalShares = this.numFilter(this.formData.totalShares);
           this.loading = false;
         } catch {
           this.loading = false;
