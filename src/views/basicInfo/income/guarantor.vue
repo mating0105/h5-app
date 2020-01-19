@@ -29,7 +29,7 @@
                 <van-cell title="单位名称：" :value="i.companyName" />
               </section>
               <section>
-                <van-cell title="月固定收入：" :value="i.personalIncome" />
+                <van-cell title="月固定收入：" :value="numFilter(i.personalIncome)" />
               </section>
             </div>
             <span slot="right">

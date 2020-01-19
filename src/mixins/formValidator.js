@@ -56,8 +56,9 @@ export default {
       fieldRulesNew({ urls, obj })
         .then(res => {
           if (res.code === 200) {
-            let { message } = res.data;
-            this.errorMsg[rows.field] = message;
+            let { message, flag } = res.data;
+            if(!flag)
+              this.errorMsg[rows.field] = message;
           }
         })
         .catch(err => {

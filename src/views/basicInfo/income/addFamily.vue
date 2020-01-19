@@ -174,6 +174,7 @@
                 input-align="right"
                 clearable
                 type="number"
+                @blur.prevent="priceFloat(formData, 'profit')"
                 :placeholder="isView?'请填写':''"
               >
                 <div slot="button" v-if="formData.profit">%</div>
@@ -216,7 +217,7 @@
                 input-align="right"
                 clearable
                 :placeholder="isView?'请填写':''"
-                @blur.prevent="ruleMessge"
+                @blur.prevent="priceFloat(formData, 'totalShares');ruleMessge($event)"
                 :error-message="errorMsg.totalShares"
                 error-message-align="right"
               >
@@ -510,6 +511,17 @@ export default {
             "income_prove",
             this.formData.incomeEvidence
           );
+          //  
+          this.formData.sharesConstituteDesc = this.returnText(
+            "Shares",
+            this.formData.sharesConstitute
+          );
+          this.formData.fieldNatureDesc = this.returnText(
+            "site_Properties",
+            this.formData.fieldNature
+          );
+          this.formData.profit = this.numFilter(this.formData.profit);
+          this.formData.personalIncome = this.numFilter(this.formData.personalIncome);
           this.loading = false;
         } catch {
           this.loading = false;

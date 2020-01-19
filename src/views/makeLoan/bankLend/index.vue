@@ -274,7 +274,7 @@ export default {
         }
     },
     //----------导航----------------
-    goPage(item){
+    goPage(val){
         let queryData={
             customerId:this.projectForm.projectInfo.customerId,
             customerNum:this.projectForm.projectInfo.customerNum,

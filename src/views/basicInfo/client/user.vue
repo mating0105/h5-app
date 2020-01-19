@@ -440,7 +440,7 @@ export default {
       params: {}, // 传过来的参数集合
       rules: {}, //验证 方法
       errorMsg: {
-        rProvCityZonId: "",
+        rProvCityZonId: '',
         pProvCityZonId: "",
         customerName: "",
         marriage: "",
@@ -605,6 +605,11 @@ export default {
       }
       if (num !== 0) {
         return;
+      }
+      // 居住年限不能小于年龄
+      if(this.formData.localResidence > this.subData.age) {
+        this.$notify({ type: 'danger', message: '居住年限不能大于年龄' });
+        return
       }
       this.subLoading = true;
       setClientSave(this.subData)

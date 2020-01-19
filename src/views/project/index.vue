@@ -193,11 +193,11 @@
                 :loading="dLoading"
               >提 交</van-button>
               <!-- 测试 -->
-              <van-button
+              <!-- <van-button
                 size="large"
                 class="xh-bg-main"
                 @click="submitCeShi"
-              >测试跳转待办按钮</van-button>
+              >测试跳转待办按钮</van-button> -->
             </div>
           </div>
         </div>
@@ -268,7 +268,6 @@ import Card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import ApprovalRecord from "@/views/basicInfo/approvalRecord";
 import creditInfoTable from "@/views/credit/viewCompoents/creditInfoTable";
-import controlMeasure from "@/views/basicInfo/payment/controlMeasure";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 
@@ -297,7 +296,6 @@ export default {
     Card,
     ApprovalRecord,
     creditInfoTable,
-    controlMeasure,
     radio,
     radioItem
   },
@@ -670,7 +668,7 @@ export default {
 
 
         if(data.projectInfo.clientManager) {
-          this.findGpsData(data.projectInfo.clientManager.loginName);
+          this.findGpsData({mobile: data.projectInfo.clientManager.mobile, thiefRescue: data.projectInfo.thiefRescue == 2?'N':'Y'});
         }
         this.getAcceptPersonl();
       });
@@ -866,6 +864,7 @@ export default {
         citys.forEach(t => {});
       });
     },
+    // 获取GPS套餐
     findGpsData(val) {
       getGPSData(val).then(res => {
         let { data } = res;
