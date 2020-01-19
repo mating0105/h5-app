@@ -211,7 +211,7 @@ export default {
           this.$prefixurl +
           `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
         //通知移动端加载gps安装页面
-        this.$bridge.callHandler("loadUrl", url, data => {
+        this.$bridge.callHandler("newPage", url, data => {
           this.onLoad();
         });
         // window.location.href = url;
