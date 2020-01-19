@@ -1,14 +1,18 @@
 // 相关文档
 <template>
-    <Document></Document>
+    <ViewPage>
+        <Document></Document>
+    </ViewPage>
 </template>
 <script>
-import Vue from "vue";
-import Document from "@/views/relatedDocs/relatedDocs";
+  import Vue from "vue";
+  import Document from "@/views/relatedDocs/relatedDocs";
+  import ViewPage from '@/layout/components/ViewPage';
 
-export default {
-    components:{
-        Document,
+  export default {
+    components: {
+      Document,
+      ViewPage
     }
-}
+  }
 </script>
