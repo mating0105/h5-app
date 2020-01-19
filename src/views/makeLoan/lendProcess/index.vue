@@ -476,22 +476,40 @@
           {name: "相机扫描识别", value: "scan"},
           {name: "相册导入识别", value: "album"}
         ],
+        accout: '',
+        phone: '',
       };
     },
     methods: {
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
-        let queryData = {
-          customerId: this.projectForm.projectInfo.customerId,
-          customerNum: this.projectForm.projectInfo.customerNum,
-          projectId: this.projectForm.projectInfo.projectId,
-          remark: this.params.info.remark,
-          lpCertificateNum: this.projectForm.projectInfo.certificateNum,
-          isView: 1,//  0:修改  1：查看
-          projectNo: this.projectForm.projectInfo.projectNo,
+        if (val.title === "GPS 安装信息") {
+          if (!this.projectForm.gpsInfo) {
+            this.$notify({
+              type: "danger",
+              message: "未安装 GPS!"
+            });
+            return false;
+          } else {
+            let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+            //通知移动端加载gps安装页面
+            this.$bridge.callHandler("loadUrl", url, data => {
+              this.onLoad();
+            });
+          }
+        } else {
+          let queryData = {
+            customerId: this.projectForm.projectInfo.customerId,
+            customerNum: this.projectForm.projectInfo.customerNum,
+            projectId: this.projectForm.projectInfo.projectId,
+            remark: this.params.info.remark,
+            lpCertificateNum: this.projectForm.projectInfo.certificateNum,
+            isView: 1,//  0:修改  1：查看
+            projectNo: this.projectForm.projectInfo.projectNo,
+          }
+          this.$router.push({path: val.url, query: queryData});
         }
-        this.$router.push({path: val.url, query: queryData});
       },
       //返回按钮
       backFn () {
@@ -976,7 +994,8 @@
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
       }
-
+      this.accout = Cookies.get("loginName");
+      this.phone = Cookies.get("phone");
     }
   }
 </script>

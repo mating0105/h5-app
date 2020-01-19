@@ -196,6 +196,7 @@ export default {
   },
   methods: {
     meunList(row) {
+      console.log(row)
       this.params.dealState = "3";
       if (row.url == "/paymentProjectInfo") {
         this.$router.push({

@@ -111,13 +111,17 @@ export default {
         }
       ],
       projectInfo: {},
-      gpsInfo: null
+      gpsInfo: null,
+      accout: '',
+      phone: '',
     };
   },
   props: {},
   mounted() {
     this.judgeNow();
     this.getListDetails();
+    this.accout = Cookies.get("loginName");
+    this.phone = Cookies.get("phone");
   },
   methods: {
     // 获取 userInfo

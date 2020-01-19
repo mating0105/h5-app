@@ -104,7 +104,7 @@ export default {
         setTimeout(()=>{
           this.$router.go(-1);
         },1000)
-      });;
+      });
     },
     // 获取其他字典接口
     getDict() {
