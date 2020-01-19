@@ -13,8 +13,8 @@
                             <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false"/>
                             <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false"/>
                             <van-cell title="制单人员：" :border="false" :value="userName"/>
-<!--                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
-<!--                                      @click="showPopupType('payType')" :border="false"/>-->
+                            <!--                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
+                            <!--                                      @click="showPopupType('payType')" :border="false"/>-->
                         </div>
                     </Card>
                     <div v-if="dealState"><!-- 已办显示 -->
@@ -476,22 +476,41 @@
           {name: "相机扫描识别", value: "scan"},
           {name: "相册导入识别", value: "album"}
         ],
+        accout: '',
+        phone: '',
       };
     },
     methods: {
       // ---------------------导航------------------------------
       //导航右上角的按钮
       goPage (val) {
-        let queryData = {
-          customerId: this.projectForm.projectInfo.customerId,
-          customerNum: this.projectForm.projectInfo.customerNum,
-          projectId: this.projectForm.projectInfo.projectId,
-          remark: this.params.info.remark,
-          lpCertificateNum: this.projectForm.projectInfo.certificateNum,
-          isView: 1,//  0:修改  1：查看
-          projectNo: this.projectForm.projectInfo.projectNo,
+        if (val.title === "GPS安装信息") {
+          // if (!this.projectForm.gpsInfo) {
+            this.$notify({
+              type: "danger",
+              message: "未安装 GPS!"
+            });
+          //   return false;
+          // } else {
+          //   let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+          //   //通知移动端加载gps安装页面
+          this.$bridge.callHandler("loadUrl", 'http://apk.wwvas.com:10004/#/orderDetail?id=undefined&showTitle=false&externalid=XM202001194683&externalcustnum=undefined&externalvehicleid=202001194685&username=undefined&xhphonenum=undefined&type=xh_h5', data => {
+            this.onLoad();
+          });
+          // location.href = url
+          // }
+        } else {
+          let queryData = {
+            customerId: this.projectForm.projectInfo.customerId,
+            customerNum: this.projectForm.projectInfo.customerNum,
+            projectId: this.projectForm.projectInfo.projectId,
+            remark: this.params.info.remark,
+            lpCertificateNum: this.projectForm.projectInfo.certificateNum,
+            isView: 1,//  0:修改  1：查看
+            projectNo: this.projectForm.projectInfo.projectNo,
+          }
+          this.$router.push({path: val.url, query: queryData});
         }
-        this.$router.push({path: val.url, query: queryData});
       },
       //返回按钮
       backFn () {
@@ -976,7 +995,8 @@
       if (!this.dealState) {
         this.rulesForm("order-bankloan-zd");
       }
-
+      this.accout = Cookies.get("loginName");
+      this.phone = Cookies.get("phone");
     }
   }
 </script>

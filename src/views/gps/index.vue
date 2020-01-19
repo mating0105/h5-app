@@ -281,10 +281,10 @@ export default {
     }
   },
   mounted() {
-    // this.accout = Cookies.get("loginName");
-    // this.phone = Cookies.get("phone");
-    this.accout = '15708144458';
-    this.phone = '18283874007'
+    this.accout = Cookies.get("loginName");
+    this.phone = Cookies.get("phone");
+    // this.accout = '15708144458';
+    // this.phone = '18283874007'
     this.onLoad();
   }
 };
