@@ -486,10 +486,10 @@
       goPage (val) {
         if (val.title === "GPS安装信息") {
           // if (!this.projectForm.gpsInfo) {
-          //   this.$notify({
-          //     type: "danger",
-          //     message: "未安装 GPS!"
-          //   });
+            this.$notify({
+              type: "danger",
+              message: "未安装 GPS!"
+            });
           //   return false;
           // } else {
           //   let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
