@@ -476,6 +476,14 @@ export default {
           pProvCityZonId: ""
         }
       }
+    },
+    'formData.childrenSituation'(val) {
+      if(val == 0) {
+        delete this.errorMsg.schoolSituation;
+      } else {
+        this.errorMsg.schoolSituation = '';
+      }
+      console.log(this.errorMsg);
     }
   },
   methods: {
@@ -572,7 +580,11 @@ export default {
         case "子女情况":
           this.formData.childrenSituationDesc = rows.label;
           this.formData.childrenSituation = rows.value;
-          this.errorMsg.childrenSituation = '';
+          if(rows.value == 0) {
+            this.errorMsg.schoolSituation = '';
+          } else {
+            this.errorMsg.childrenSituation = '';
+          }
           break;
         case "子女上学情况":
           this.formData.schoolSituationDesc = rows.label;
@@ -645,6 +657,7 @@ export default {
     // 保存
     custSubmit() {
       let num = 0;
+      console.log(this.errorMsg);
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.formData[item]);
         if (this.errorMsg[item]) {

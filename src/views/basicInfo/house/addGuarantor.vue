@@ -372,6 +372,7 @@ export default {
     addressOnConfirm(code, name) {
       this.form.provCityZon = name;
       this.form.provCityZonCode = code;
+      this.form.wbtProvCityZonCode = code;
       this.errorMsg.provCityZon = "";
       this.addressShow = false;
     },
