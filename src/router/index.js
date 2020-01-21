@@ -318,6 +318,12 @@ export const constantRoutes = [
     component: () => import('@/views/heavyRightSupplement/index'),
     meta: {title: '重权补录', icon: 'dashboard'}
   },
+  {
+    path: '/help',
+    name: 'Help',
+    component: () => import('@/views/help/index'),
+    meta: {title: '流程说明', icon: 'dashboard'}
+  },
   { 
     path: '/heavyRightManage/:id/:customerNum/:customerId',
     name: 'HeavyRightManage',
