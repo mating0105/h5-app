@@ -19,6 +19,8 @@ function lgoinInAgain() {
   Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
 }
 
+const loginAgainFn = debounce(lgoinInAgain, 500)
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -64,7 +66,8 @@ const responseFulfilled = response => {
 const responseRejected = error => {
   if(error.response.status === 401) {
     // debounce(lgoinInAgain, 500)
-    Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+    loginAgainFn()
+    // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
   console.log('err' + error) // for debug
