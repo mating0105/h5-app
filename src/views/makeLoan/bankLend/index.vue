@@ -290,18 +290,20 @@
       //----------导航----------------
       goPage (val) {
         if (val.title === "GPS安装信息") {
-          if (!this.projectForm.gpsInfo) {
+          let gpsInfo = this.projectForm.gpsInfo[0];
+          if (!gpsInfo || !gpsInfo.orderId) {
             this.$notify({
               type: "danger",
               message: "未安装 GPS!"
             });
             return false;
           } else {
-            let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+            let url = `${this.$prefixurl}orderDetail?id=${gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.projectForm.projectInfo.clientManager.name}&xhphonenum=${this.projectForm.projectInfo.clientManager.mobile}&type=xh_h5`;
             //通知移动端加载gps安装页面
-            this.$bridge.callHandler("loadUrl", url, data => {
+            Bridge.callHandler("loadUrl", url, data => {
               this.onLoad();
             });
+            // location.href = url
           }
         } else {
           let queryData = {

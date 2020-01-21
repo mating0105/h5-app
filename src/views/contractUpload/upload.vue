@@ -106,7 +106,7 @@ export default {
     },
     goPage(item) {
       if (item.title === "GPS 安装信息") {
-        if (!this.gpsInfo) {
+        if (!this.gpsInfo || !this.gpsInfo.orderId) {
           this.$notify({
             type: "danger",
             message: "未安装 GPS!"
