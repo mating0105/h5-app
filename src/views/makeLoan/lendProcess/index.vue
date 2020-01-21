@@ -346,6 +346,7 @@
   import { Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify, ActionSheet } from 'vant';
   import { loanInfoDetail, getProjectInfo, updateLoanInfo, getPeople, submitProcess, fieldRules } from '@/api/makeLoan.js'
   import formValidator from '@/mixins/formValidator'
+  import Bridge from '@/utils/JSbridge'
 
   const Components = [Tab, Tabs, Row, Col, Cell, CellGroup, Popup, Picker, Button, Field, Checkbox, Notify, ActionSheet]
 
@@ -485,20 +486,21 @@
       //导航右上角的按钮
       goPage (val) {
         if (val.title === "GPS安装信息") {
-          // if (!this.projectForm.gpsInfo) {
+          let gpsInfo = this.projectForm.gpsInfo[0];
+          if (!gpsInfo) {
             this.$notify({
               type: "danger",
               message: "未安装 GPS!"
             });
-          //   return false;
-          // } else {
-          //   let url = `${this.$prefixurl}orderDetail?id=${this.projectForm.gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
-          //   //通知移动端加载gps安装页面
-          this.$bridge.callHandler("loadUrl", 'http://apk.wwvas.com:10004/#/orderDetail?id=undefined&showTitle=false&externalid=XM202001194683&externalcustnum=undefined&externalvehicleid=202001194685&username=undefined&xhphonenum=undefined&type=xh_h5', data => {
-            this.onLoad();
-          });
-          // location.href = url
-          // }
+            return false;
+          } else {
+            let url = `${this.$prefixurl}orderDetail?id=${gpsInfo.orderId}&showTitle=false&externalid=${this.projectForm.projectInfo.projectNo}&externalcustnum=${this.projectForm.projectInfo.customNum}&externalvehicleid=${this.projectForm.projectInfo.cars[0].id}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+            //   //通知移动端加载gps安装页面
+            Bridge.callHandler("loadUrl", url, data => {
+              this.onLoad();
+            });
+            // location.href = url
+          }
         } else {
           let queryData = {
             customerId: this.projectForm.projectInfo.customerId,
