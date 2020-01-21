@@ -188,17 +188,10 @@
               name="spsNm"
               v-model="formData.spsNm"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶姓名："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsNm"
-              error-message-align="right"
-              :right-icon="isView?'photograph':''"
-              @click-right-icon="OCRScan"
-              class="xh-right-icon"
             />
           </section>
           <section>
@@ -206,14 +199,10 @@
               name="spsCrdtNo"
               v-model="formData.spsCrdtNo"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶证件号码："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCrdtNo"
-              error-message-align="right"
             />
           </section>
           <section>
@@ -221,14 +210,10 @@
               name="spsCtcTel"
               v-model="formData.spsCtcTel"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶联系电话："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCtcTel"
-              error-message-align="right"
             />
           </section>
           <section>

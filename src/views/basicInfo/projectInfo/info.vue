@@ -1783,13 +1783,14 @@ export default {
     // 提交数据
     postProject(dataList) {
       let num = 0;
+      
+      console.log(this.errorMsg);
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.projProjectInfo[item]);
         if (this.errorMsg[item]) {
           num++;
         }
       }
-      console.log(this.errorMsg);
       if (num !== 0) {
         return;
       }
