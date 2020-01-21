@@ -403,6 +403,12 @@
       discern () {
         this.$bridge.callHandler('vinOCR', '', (res) => {
           this.carFrom.chassisNumber = res.VIN || ''
+          this.ruleMessge({
+            target: {
+              name: 'chassisNumber',
+              value: this.carFrom.chassisNumber
+            }
+          })
         })
       },
       changeNature (val) {
