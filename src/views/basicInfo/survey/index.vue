@@ -87,7 +87,6 @@
               </van-row>
               <van-field
                 v-model="ruleForm.houseReport"
-                :required="isView"
                 label="借款人信息及房产报告："
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
@@ -103,7 +102,6 @@
               />
               <van-field
                 v-model="ruleForm.responseReport"
-                :required="isView"
                 label="借款人收入负债报告："
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
@@ -119,7 +117,6 @@
               />
               <van-field
                 v-model="ruleForm.gnrHsptyAndIncmRpt"
-                :required="isView"
                 label="担保人房产及收入报告："
                 :placeholder="isView?'自动生成,无需填写':''"
                 label-width="100px"
@@ -152,7 +149,6 @@
             />
             <van-field
               v-model="ruleForm.infoDetail"
-              :required="isView"
               label="差资料明细："
               :placeholder="isView?'请填写':''"
               type="textarea"
@@ -168,7 +164,6 @@
             />
             <van-cell
               title="实际调查地址："
-              :required="isView"
               :is-link="isView"
               v-model="ruleForm.actSurvyAdr"
               :border="false"
@@ -186,7 +181,6 @@
             />
             <van-cell
               title="上户地："
-              :required="isView"
               :is-link="isView"
               v-model="ruleForm.upAccLnd"
               :border="false"
@@ -197,7 +191,6 @@
             />
             <van-cell
               title="提供人："
-              :required="bankWaterFlag"
               :is-link="isView"
               :value="ruleForm.providerDesc"
               :border="false"
@@ -206,7 +199,6 @@
             />
             <van-cell
               title="姓名："
-              :required="bankWaterFlag"
               :is-link="isView"
               :value="ruleForm.providerName"
               :border="false"
@@ -215,7 +207,6 @@
             />
             <van-field
               v-model="ruleForm.providerPhone"
-              :required="bankWaterFlag"
               label="手机号："
               input-align="right"
               :disabled="true"
@@ -223,7 +214,6 @@
             />
             <van-field
               v-model="ruleForm.providerIdCard"
-              :required="bankWaterFlag"
               label="身份证号："
               input-align="right"
               :disabled="true"
@@ -234,7 +224,6 @@
               clearable
               :border="false"
               type="number"
-              :required="bankWaterFlag"
               input-align="right"
               label="流水卡号："
               :disabled="!isView"
@@ -245,7 +234,6 @@
             />
             <van-cell
               title="流水开始日期："
-              :required="bankWaterFlag"
               :is-link="isView"
               :border="false"
               :disabled="!isView"
@@ -257,7 +245,6 @@
             />
             <van-cell
               title="流水截止日期："
-              :required="bankWaterFlag"
               :is-link="isView"
               :border="false"
               :disabled="!isView"
@@ -272,7 +259,6 @@
               v-model="ruleForm.paymentBank"
               clearable
               :border="false"
-              :required="bankWaterFlag"
               input-align="right"
               label-width="110px"
               label="还款卡银行："
@@ -285,7 +271,6 @@
               type="number"
               :border="false"
               label-width="110px"
-              :required="bankWaterFlag"
               input-align="right"
               label="还款卡卡号："
               :disabled="!isView"
@@ -428,9 +413,9 @@ export default {
         responseReport: "",
         gnrHsptyAndIncmRpt: "",
         inveInfo: "",
-        infoDetail: "",
-        actSurvyAdr: "",
-        upAccLnd: ""
+        // infoDetail: "",
+        // actSurvyAdr: "",
+        // upAccLnd: ""
         // jrnlCardno: '',
         // providerPhone: '',
         // debitCardAccountName: '',

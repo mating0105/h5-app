@@ -31,7 +31,6 @@
           <section>
             <van-cell
               title="单位性质："
-              :required="isView"
               :is-link="isView"
               :value="formData.unitCharDesc"
               label-class="labelClass"
@@ -43,7 +42,6 @@
           <section>
             <van-cell
               title="行业领域："
-              :required="isView"
               :is-link="isView"
               :value="formData.idyDmnDesc"
               label-class="labelClass"
@@ -111,7 +109,6 @@
               name="workingYears"
               v-model="formData.workingYears"
               :disabled="!isView"
-              :required="isView"
               type="number"
               clearable
               label="从业年限："
@@ -265,7 +262,6 @@
         <section v-if="formData.occupationalStatusDesc != '待业' ">
           <van-cell
             title="收入佐证："
-            :required="isView"
             :is-link="isView"
             :value="formData.incomeEvidenceDesc"
             label-class="labelClass"
@@ -395,12 +391,12 @@ export default {
       errorMsg: {
         incomePeople: "",
         occupationalStatus: "",
-        unitChar: "",
-        idyDmn: "",
+        // unitChar: "",
+        // idyDmn: "",
         companyName: "",
-        workingYears: "",
+        // workingYears: "",
         personalIncome: "",
-        incomeEvidence: "",
+        // incomeEvidence: "",
         provCityZon: "",
         companyTel: ""
       },
@@ -423,11 +419,11 @@ export default {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
-          unitChar: "",
-          idyDmn: "",
+          // unitChar: "",
+          // idyDmn: "",
           companyName: "",
-          workingYears: "",
-          incomeEvidence: "",
+          // workingYears: "",
+          // incomeEvidence: "",
           provCityZon: "",
           companyTel: ""
           // employeesNumber:"",
@@ -438,11 +434,11 @@ export default {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
-          unitChar: "",
-          idyDmn: "",
+          // unitChar: "",
+          // idyDmn: "",
           companyName: "",
-          workingYears: "",
-          incomeEvidence: "",
+          // workingYears: "",
+          // incomeEvidence: "",
           provCityZon: "",
           companyTel: "",
           // employeesNumber:"",
@@ -455,12 +451,12 @@ export default {
         this.errorMsg = {
           incomePeople: "",
           occupationalStatus: "",
-          unitChar: "",
-          idyDmn: "",
+          // unitChar: "",
+          // idyDmn: "",
           companyName: "",
-          workingYears: "",
+          // workingYears: "",
           personalIncome: "",
-          incomeEvidence: "",
+          // incomeEvidence: "",
           provCityZon: "",
           companyTel: ""
         };
