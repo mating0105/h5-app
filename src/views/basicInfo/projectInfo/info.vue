@@ -31,7 +31,7 @@
             </section>
             <section>
               <van-cell
-                :title="'单位性质:'+(isView?'*':'')"
+                title="单位性质:"
                 :is-link="isView"
                 :value="projProjectInfo.unitCharName"
                 @click="!isView?'':loadList('unit_Property','单位性质', 'unitChar')"
@@ -42,7 +42,7 @@
             </section>
             <section>
               <van-cell
-                :title="'文化程度:'+(isView?'*':'')"
+                title="文化程度:"
                 :is-link="isView"
                 :value="projProjectInfo.levelEducationName"
                 @click="!isView?'':loadList('DegreeOfEducation','文化程度', 'levelEducation')"
@@ -128,7 +128,7 @@
             </section>
             <section>
               <van-cell
-                :title="'单位性质:'+(isView?'*':'')"
+                title="单位性质:"
                 :is-link="isView"
                 :value="projProjectInfo.spsUnitCharName"
                 @click="!isView?'':loadList('unit_Property','配偶单位性质', 'spsUnitChar')"
@@ -140,7 +140,7 @@
             </section>
             <section>
               <van-cell
-                :title="'文化程度:'+(isView?'*':'')"
+                title="文化程度:"
                 :is-link="isView"
                 :value="projProjectInfo.spsCltrDgrName"
                 @click="!isView?'':loadList('DegreeOfEducation','配偶文化程度', 'spsCltrDgr')"
@@ -188,7 +188,6 @@
           <section>
             <van-cell
               title="反担保状况:"
-              :required="isView"
               :is-link="isView"
               :value="projProjectInfo.counterGuaranteeStatusName"
               @click="!isView?'':loadList('counter_Guarantee_Status','反担保状况', 'counterGuaranteeStatus')"
@@ -222,7 +221,6 @@
           <section>
             <van-cell
               title="预调查地址:"
-              :required="isView"
               :border="false"
               :is-link="isView"
               :value="projProjectInfo.wbtProvCityZonName"
@@ -236,7 +234,6 @@
           <section>
             <van-field
               v-model="projProjectInfo.addressDetail"
-              :required="isView"
               clearable
               name="addressDetail"
               :disabled="!isView"
@@ -544,7 +541,7 @@
               :disabled="!isView"
               label="加融金额:"
               input-align="right"
-              :required="isView?projProjectInfo.thiefRescue == 0:false"
+              :required="isView"
               :placeholder="isView?'请填写(含GPS加融费用)':''"
               :error-message="errorMsg.rentingAmtGps"
               @blur.prevent="priceFloat(projProjectInfo, 'rentingAmtGps');ruleMessge($event)"
@@ -684,8 +681,6 @@ export default {
     // 婚姻状况
     "projProjectInfo.marriage"(newValue, oldValue) {
       var arr = [
-        "spsCltrDgr",
-        "spsUnitChar",
         "spsNm",
         "spsCtcTel",
         "spsCrdtNo"
@@ -815,10 +810,10 @@ export default {
       },
       errorMsg: {
         loanPlatfomrId: "",
-        wbtProvCityZonCode: "",
+        // wbtProvCityZonCode: "",
         productId: "",
         thiefRescue: "",
-        counterGuaranteeStatus: "",
+        // counterGuaranteeStatus: "",
         bsnSrc: "",
         rbrinsPltfrmNmId: "",
         loanAmt: "",
@@ -826,14 +821,15 @@ export default {
         cars: "",
         loanTerm: "",
         productCategoryId: "",
-        addressDetail: "",
+        // addressDetail: "",
         wthrBl: "",
         marriage: "",
         businessModel: "",
-        unitChar: "",
-        levelEducation: "",
+        // unitChar: "",
+        // levelEducation: "",
         contactPhone: "",
-        carDealersId: ""
+        carDealersId: "",
+        rentingAmtGps: ""
       },
       carNature: "", //车辆性质
       carType: "", //车辆类型
@@ -1450,6 +1446,7 @@ export default {
             // sngldayPrd: this.custData.type === 'NEWOBL' ? utils.formatDate.format(new Date(), 'yyyyMMdd') : this.returnVal(row.sngldayPrd),
             businessModel: this.returnVal(row.businessModelId),
             rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
+            // rbrinsPltfrmNmId: row.rbrinsPltfrmNmId?row.rbrinsPltfrmNmId:190109469838, // 盗抢险购买平台
             loanTerm: this.returnVal(row.loanTerm),
             loanAmt: this.numFilter(row.loanAmt),
             isQuickadjust: "0",
@@ -1511,10 +1508,11 @@ export default {
               "labelName"
             ),
             isAccessCarName: this.returnText("is_Access_Car", row.isAccessCar),
-            counterGuaranteeStatusName: this.returnText(
+            counterGuaranteeStatusName: row.counterGuaranteeStatus?this.returnText(
               "counter_Guarantee_Status",
               row.counterGuaranteeStatus
-            ),
+            ):'无需担保',
+            counterGuaranteeStatus: row.counterGuaranteeStatus?row.counterGuaranteeStatus:'0',
             wthrBlName: this.returnText("yes_no", row.wthrBl),
             onHouseTypeName: this.returnText("ON_HOUSE_TYPE", row.onHouseType),
             isTandzeroName: this.returnText("yes_no", row.isTandzero),
@@ -1563,6 +1561,8 @@ export default {
                 this.platform
               )
             );
+            // this.projProjectInfo.rbrinsPltfrmNmName = this.platform[0].rbrinsPltfrmNm; // 盗抢险购买平台
+            // this.projProjectInfo.rbrinsPltfrmNmId = this.platform[0].id // 盗抢险购买平台
           }
         } else {
           this.$notify({ type: "danger", message: res.msg });

@@ -21,7 +21,6 @@
               name="ownerProperty"
               v-model="formData.ownerProperty"
               :disabled="!isView"
-              :required="isView"
               label="产权所有人："
               input-align="right"
               label-width="100px"
@@ -35,7 +34,6 @@
             <van-cell
               name="houseType"
               title="房产性质："
-              :required="isView"
               :is-link="isView"
               :value="formData.houseTypeDesc"
               label-class="labelClass"
@@ -48,7 +46,6 @@
             <van-cell
               name="houseZon"
               title="房产区域："
-              :required="isView"
               :is-link="isView"
               :value="formData.houseZonDesc"
               label-class="labelClass"
@@ -89,7 +86,6 @@
             <van-field
               name="houseArea"
               v-model="formData.houseArea"
-              :required="isView"
               :disabled="!isView"
               label="房产面积："
               input-align="right"
@@ -203,12 +199,12 @@ export default {
       columns: [], //待选择列表
       errorMsg: {
         isHasHouse: "", //是否有房产
-        ownerProperty: "", //产权所有人
-        houseType: "", //房产性质
-        houseZon: "", //房产区域
+        // ownerProperty: "", //产权所有人
+        // houseType: "", //房产性质
+        // houseZon: "", //房产区域
         provCityZon: "", //房产所在地
         specificAddress: "", //详细地址
-        houseArea: "" //房产面积(m²)
+        // houseArea: "" //房产面积(m²)
       },
       params: {},
       selectShow: false, //下拉选择器显示
