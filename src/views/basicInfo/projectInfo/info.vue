@@ -1445,8 +1445,8 @@ export default {
             addressDetail: this.returnVal(row.addressDetail),
             // sngldayPrd: this.custData.type === 'NEWOBL' ? utils.formatDate.format(new Date(), 'yyyyMMdd') : this.returnVal(row.sngldayPrd),
             businessModel: this.returnVal(row.businessModelId),
-            rbrinsPltfrmNmName: row.rbrinsPltfrmNmName?this.returnVal(row.rbrinsPltfrmNmName):'', // 盗抢险购买平台
-            rbrinsPltfrmNmId: row.rbrinsPltfrmNmId?row.rbrinsPltfrmNmId:190109469838, // 盗抢险购买平台
+            rbrinsPltfrmNmName: this.returnVal(row.rbrinsPltfrmNmName), // 盗抢险购买平台
+            // rbrinsPltfrmNmId: row.rbrinsPltfrmNmId?row.rbrinsPltfrmNmId:190109469838, // 盗抢险购买平台
             loanTerm: this.returnVal(row.loanTerm),
             loanAmt: this.numFilter(row.loanAmt),
             isQuickadjust: "0",
