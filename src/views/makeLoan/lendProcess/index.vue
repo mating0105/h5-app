@@ -487,7 +487,7 @@
       goPage (val) {
         if (val.title === "GPS安装信息") {
           let gpsInfo = this.projectForm.gpsInfo[0];
-          if (!gpsInfo) {
+          if (!gpsInfo || !gpsInfo.orderId) {
             this.$notify({
               type: "danger",
               message: "未安装 GPS!"
