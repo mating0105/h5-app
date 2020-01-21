@@ -5,6 +5,9 @@
  * @LastEditors  : shenah
  * @LastEditTime : 2020-01-17 13:55:00
  */
+import { Notify } from 'vant';
+import Vue from 'vue';
+Vue.use(Notify)
 
 export default {
   data() {
@@ -85,6 +88,14 @@ export default {
       }
     },
     returnFloat(value) {
+      let reg = /(^[\-0-9][0-9]*(.[0-9]+)?)$/
+      if(!reg.test(value)) {
+        this.$notify({
+          type: "danger",
+          message: "请输入数字"
+        });
+        return ''
+      }
       value = Math.round(parseFloat(value) * 100) / 100;
       let xsd = value.toString().split(".");
       if (xsd.length === 1) {
