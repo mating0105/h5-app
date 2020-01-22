@@ -64,7 +64,9 @@
                             <van-cell :border='false' title="实际放款时间：" value-class='rightClass' required
                                       :value="bankLoanInfo.factLoanDate?dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''"
                                       @blur.prevent="ruleMessge"
-                                      @click="showPopupTime('actualLendTime')" is-link/>
+                                      label-class='labelClassNew'
+                                      @click="showPopupTime('actualLendTime')" is-link
+                                      :label="errorMsg.factLoanDate"/>
                         </div>
                     </div>
                 </Card>
@@ -216,7 +218,7 @@
           accountBank: '',
           advanceInstitutionDate: null,
           factLoanAmt: '',
-          factLoanDate: ''
+          factLoanDate: null
         },//放款信息
         commentsDesc: '',//意见描述
         FinanceCashier: '',
@@ -433,6 +435,7 @@
           if (data.code == 200) {
             this.bankLoanInfo = data.data.bankLoanInfo;
             this.bankLoanInfo.advanceInstitutionDate = data.data.bankLoanInfo.advanceInstitutionDate ? data.data.bankLoanInfo.advanceInstitutionDate : new Date().getTime();
+            this.bankLoanInfo.factLoanDate= data.data.bankLoanInfo.factLoanDate ? data.data.bankLoanInfo.factLoanDate : null;
             this.getProjectInfo(data.data.borrowerInfo.projectId);
           }
         } catch (err) {
@@ -502,7 +505,7 @@
               num++;
             }
           } else if (this.approvalConclusionDesc == '通过') {
-            if (item !== 'factLoanAmt') {
+            if (item !== 'factLoanAmt'&&item !=='factLoanDate') {
               this.errorMsg[item] = this.returnMsg(item, this.bankLoanInfo[item]);
               if (this.errorMsg[item] !== '') {
                 num++;
@@ -713,5 +716,11 @@
 
     #bankLend .van-cell__right-icon {
         color: #323233;
+    }
+    .van-cell__title .labelClassNew{
+        color: #ee0a24;
+        text-align: right;
+        position: relative;
+        left: calc(100% + 1.33333rem);
     }
 </style>
