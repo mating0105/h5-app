@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-22 09:46:45
+ * @LastEditTime : 2020-01-22 09:57:15
  -->
 
 <template>
@@ -139,7 +139,7 @@ export default {
         if (!(this.gpsInfo && this.gpsInfo.orderId)) {
           this.$notify({
             type: "danger",
-            message: "未安装 GPS!"
+            message: "未安装GPS，请安装后再试!"
           });
           return false;
         } else {
