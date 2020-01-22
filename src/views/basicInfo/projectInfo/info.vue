@@ -755,14 +755,6 @@ export default {
       }
     }
   },
-  // activated(){
-  //   let datas = JSON.parse(sessionStorage.getItem('pro'));
-  //   console.log(datas);
-  //   if(datas) {
-  //     this.projProjectInfo = datas;
-  //     this.newCar(this.$store.state.credit.carData);
-  //   }
-  // },
   data() {
     return {
       actions: [
@@ -787,8 +779,8 @@ export default {
       productTypeName: [], // 产品名字
       platformList: [], // 盗抢险购买平台
       isRule: true, // 验证是否通过 默认通过true
-      bankGuaranteeRate: "",
-      bankRate: "",
+      bankGuaranteeRate: "",  // 银行费率+担保费率
+      bankRate: "", // 银行费率
       businessList: [], //业务来源
       selectName: "",
       fieldName: "", // 选择字段名
@@ -818,8 +810,7 @@ export default {
         // unitChar: "",
         // levelEducation: "",
         contactPhone: "",
-        carDealersId: "",
-        rentingAmtGps: ""
+        carDealersId: ""
       },
       carNature: "", //车辆性质
       carType: "", //车辆类型
