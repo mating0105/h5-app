@@ -9,15 +9,47 @@
 
 <template>
   <div class="related-docs">
-    <div v-if="dataList.length">
-      <card :key="index" class="xh-top-10" v-for="(item, index) in dataList">
+    <!-- 分组的照片 -->
+    <card
+      :key="index"
+      class="xh-top-10"
+      v-for="(item, index) in groupObj"
+    >
+      <template v-slot:header>
+        <section>{{ item.title }}</section>
+      </template>
+      <card
+        :key="i"
+        class="xh-top-10"
+        v-for="(one, i) in item.fileList"
+      >
         <template v-slot:header>
-          <section>{{ item.declare }}</section>
+          <section>{{ one.declare }}</section>
         </template>
-        <imageList :dataList="[item]" :view="!item.deletable"></imageList>
+        <imageList
+          :dataList="[one]"
+          :view="!one.deletable"
+        ></imageList>
       </card>
-    </div>
-    <nothing @nothingChange="nothingChange" v-else></nothing>
+    </card>
+    <!-- 没有分组的照片 -->
+    <card
+      :key="index"
+      class="xh-top-10"
+      v-for="(item, index) in noGroupList"
+    >
+      <template v-slot:header>
+        <section>{{ item.declare }}</section>
+      </template>
+      <imageList
+        :dataList="[item]"
+        :view="!item.deletable"
+      ></imageList>
+    </card>
+    <nothing
+      @nothingChange="nothingChange"
+      v-if="noGroupList.length===0 && JSON.stringify(groupObj) === '{}'"
+    ></nothing>
   </div>
 </template>
 
@@ -45,7 +77,12 @@ export default {
   },
   data() {
     return {
-      dataList: [], // 展示的列表
+      group: {
+        // 分组的类型
+        _0101_0102: "身份证照片"
+      },
+      groupObj: {}, // 分组的列表
+      noGroupList: [], // 没有分组的列表
       params: {} // 请求的参数
     };
   },
@@ -157,7 +194,40 @@ export default {
           map.set(documentType, one);
         }
       });
-      this.dataList = [...map.values()];
+      this.handleGroup([...map.values()]);
+      // 先把身份证分出来(最后再来改写代码把)
+    },
+    handleGroup(list) {
+      let group = {};
+      let flag = false;
+      for (let key in this.group) {
+        let title = this.group[key];
+        for (let index = 0; index < list.length; index += 1) {
+          let one = list[index];
+          if (key.indexOf(one.documentType) > -1) {
+            flag = true;
+            if (!group[key]) {
+              group[key] = {
+                title,
+                fileList: []
+              };
+            }
+            group[key].fileList.push(one);
+            list.splice(index, 1);
+            index--;
+          }
+        }
+      }
+      // 这里剩下的就是其他照片了(没有分类的照片)
+      if (flag) {
+        group.other = {
+          title: "其他",
+          fileList: list
+        };
+      } else {
+        this.noGroupList = list;
+      }
+      this.groupObj = group;
     }
   }
 };
