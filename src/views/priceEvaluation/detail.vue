@@ -35,7 +35,7 @@
             <template v-slot:header>
                 车辆照片
             </template>
-            <imageList :dataList="dataList" :view="true"></imageList>
+            <imageList :dataList="dataList" :view="!edit"></imageList>
         </Card>
 
         <!--        <Card style="margin-top: 1rem;" v-if="edit">-->
@@ -135,10 +135,11 @@
           data.forEach(item => {
             item.declare = declare;
           })
+          let deletable = documentType === '6666' && this.edit
           this.dataList.push({
             declare: declare,//图片描述
             isRequire: true,//*是否必须
-            deletable: false,//是否可以操作-上传和删除
+            deletable: deletable,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.customerNum,
             customerId: this.$route.query.customerId,
@@ -155,8 +156,9 @@
       async initImage () {
         try {
           await this.getDocumentByType('7777')//发动机细节
-          this.getDocumentByType('8888')//车辆内饰
-          this.getDocumentByType('9999')//车辆外观
+          await this.getDocumentByType('8888')//车辆内饰
+          await this.getDocumentByType('9999')//车辆外观
+          this.getDocumentByType('6666')//二手车评估报告
         } catch (e) {
           console.log(e)
         }

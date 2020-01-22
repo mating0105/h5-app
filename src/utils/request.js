@@ -6,6 +6,21 @@ import { Notify } from 'vant';
 
 Vue.use(Notify);
 
+// 防抖
+function debounce(fn, wait) {
+  let timeout = null;
+  return function() {
+    if(timeout !== null)   clearTimeout(timeout);
+    timeout = setTimeout(fn, wait);
+  }
+}
+// 处理函数
+function lgoinInAgain() {
+  Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+}
+
+const loginAgainFn = debounce(lgoinInAgain, 500)
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -50,7 +65,9 @@ const responseFulfilled = response => {
 
 const responseRejected = error => {
   if(error.response.status === 401) {
-    Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+    // debounce(lgoinInAgain, 500)
+    loginAgainFn()
+    // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
   console.log('err' + error) // for debug

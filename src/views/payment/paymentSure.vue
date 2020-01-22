@@ -214,7 +214,7 @@ export default {
         this.$bridge.callHandler("loadUrl", url, data => {
           this.onLoad();
         });
-        window.location.href = url;
+        // window.location.href = url;
       } else {
         this.$router.push({
           path: row.url,

@@ -65,7 +65,6 @@
             <section>
               <van-cell
                 title="文化程度："
-                :required="isView"
                 :is-link="isView"
                 :value="formData.levelEducationDesc"
                 label-class="labelClass"
@@ -77,7 +76,6 @@
             <section>
               <van-cell
                 title="单位性质："
-                :required="isView"
                 :is-link="isView"
                 :value="formData.unitCharDesc"
                 label-class="labelClass"
@@ -91,7 +89,6 @@
                 name="primarySchool"
                 v-model="formData.primarySchool"
                 clearable
-                :required="isView"
                 :disabled="!isView"
                 label="曾就读小学："
                 input-align="right"
@@ -105,7 +102,6 @@
             <section>
               <van-cell
                 title="户籍地址："
-                :required="isView"
                 :is-link="isView"
                 :value="formData.pProvCityZon"
                 label-class="labelClass"
@@ -148,7 +144,6 @@
             <section>
               <van-cell
                 title="子女情况："
-                :required="isView"
                 :is-link="isView"
                 :value="formData.childrenSituationDesc"
                 label-class="labelClass"
@@ -160,7 +155,6 @@
             <section v-if="formData.childrenSituationDesc != '无' ">
               <van-cell
                 title="子女上学情况："
-                :required="isView"
                 :is-link="isView"
                 :value="formData.schoolSituationDesc"
                 label-class="labelClass"
@@ -174,7 +168,6 @@
                 name="localResidence"
                 v-model="formData.localResidence"
                 clearable
-                :required="isView"
                 :disabled="!isView"
                 type="number"
                 label="本地居住年限："
@@ -195,17 +188,10 @@
               name="spsNm"
               v-model="formData.spsNm"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶姓名："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsNm"
-              error-message-align="right"
-              :right-icon="isView?'photograph':''"
-              @click-right-icon="OCRScan"
-              class="xh-right-icon"
             />
           </section>
           <section>
@@ -213,14 +199,10 @@
               name="spsCrdtNo"
               v-model="formData.spsCrdtNo"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶证件号码："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCrdtNo"
-              error-message-align="right"
             />
           </section>
           <section>
@@ -228,20 +210,15 @@
               name="spsCtcTel"
               v-model="formData.spsCtcTel"
               clearable
-              :required="isView"
-              :disabled="!isView"
+              disabled
               label="配偶联系电话："
               input-align="right"
               :placeholder="isView?'请填写':''"
-              @blur.prevent="ruleMessge"
-              :error-message="errorMsg.spsCtcTel"
-              error-message-align="right"
             />
           </section>
           <section>
             <van-cell
               title="配偶文化程度："
-              :required="isView"
               :is-link="isView"
               :value="formData.spsCltrDgrDesc"
               label-class="labelClass"
@@ -253,7 +230,6 @@
           <section>
             <van-cell
               title="配偶单位性质："
-              :required="isView"
               :is-link="isView"
               label-class="labelClass"
               @blur.prevent="ruleMessge"
@@ -367,8 +343,8 @@ export default {
   watch: {
     "formData.marriage"(newValue, oldValue) {
       var arr = [
-        "spsCltrDgr",
-        "spsUnitChar",
+        // "spsCltrDgr",
+        // "spsUnitChar",
         "spsNm",
         "spsCtcTel",
         "spsCrdtNo"
@@ -441,14 +417,14 @@ export default {
       rules: {}, //验证 方法
       errorMsg: {
         rProvCityZonId: '',
-        pProvCityZonId: "",
+        // pProvCityZonId: "",
         customerName: "",
         marriage: "",
-        childrenSituation: "",
-        localResidence: "",
-        primarySchool: "",
-        levelEducation: "",
-        unitChar: "",
+        // childrenSituation: "",
+        // localResidence: "",
+        // primarySchool: "",
+        // levelEducation: "",
+        // unitChar: "",
         contactPhone: "",
         certificateNum: "",
         spsRsdncDtlAdr: ""
@@ -606,10 +582,12 @@ export default {
       if (num !== 0) {
         return;
       }
-      // 居住年限不能小于年龄
-      if(this.formData.localResidence > this.subData.age) {
-        this.$notify({ type: 'danger', message: '居住年限不能大于年龄' });
-        return
+      if(this.formData.localResidence) {
+        // 居住年限不能小于年龄
+        if(this.formData.localResidence > this.subData.age) {
+          this.$notify({ type: 'danger', message: '居住年限不能大于年龄' });
+          return
+        }
       }
       this.subLoading = true;
       setClientSave(this.subData)
