@@ -29,7 +29,7 @@
                 v-model="formData.certificateNum"
                 clearable
                 disabled
-                label="证件号码："
+                label="身份证号："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
@@ -169,6 +169,7 @@
                 v-model="formData.localResidence"
                 clearable
                 :disabled="!isView"
+                label-width="140px"
                 type="number"
                 label="本地居住年限："
                 input-align="right"
@@ -187,33 +188,45 @@
             <van-field
               name="spsNm"
               v-model="formData.spsNm"
+              :required="isView"
               clearable
-              disabled
+              :disabled="!isView"
               label="配偶姓名："
               input-align="right"
               :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsNm"
+                error-message-align="right"
             />
           </section>
           <section>
             <van-field
               name="spsCrdtNo"
               v-model="formData.spsCrdtNo"
+              :required="isView"
               clearable
-              disabled
-              label="配偶证件号码："
+              :disabled="!isView"
+              label="配偶身份证号："
               input-align="right"
               :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsCrdtNo"
+                error-message-align="right"
             />
           </section>
           <section>
             <van-field
               name="spsCtcTel"
               v-model="formData.spsCtcTel"
+              :required="isView"
               clearable
-              disabled
+              :disabled="!isView"
               label="配偶联系电话："
               input-align="right"
               :placeholder="isView?'请填写':''"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.spsCtcTel"
+                error-message-align="right"
             />
           </section>
           <section>

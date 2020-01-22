@@ -140,6 +140,7 @@ const actions = {
       "GradeManual", //手动评级
       "risk_condition", //风控条件
       "WW_GPS_IS_DONE",//gps状态
+      "BANK_TYPE_JYR",//银行
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

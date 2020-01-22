@@ -541,7 +541,7 @@
               :disabled="!isView"
               label="加融金额:"
               input-align="right"
-              :required="isView"
+              :required="projProjectInfo.thiefRescue == 0?true:false"
               :placeholder="isView?'请填写(含GPS加融费用)':''"
               :error-message="errorMsg.rentingAmtGps"
               @blur.prevent="priceFloat(projProjectInfo, 'rentingAmtGps');ruleMessge($event)"
@@ -716,33 +716,15 @@ export default {
     },
     // 获取放款平台name 和 产品类别
     "projProjectInfo.loanPlatfomrs"(val) {
-      console.log(val);
-      if (Array.isArray(val) && val.length > 0 && this.isView) {
-        if (val[1] != "") {
-          let ids = val[1];
-          // this.platformId = ids;
-          // this.platform.forEach(t => {
-          //   if (t.children) {
-          //     t.children.forEach(f => {
-          //       if (f.value == ids) {
-          //         this.bankRate = f.intrt;
-          //         this.projProjectInfo.bankNewRate = f.intrt;
-          //         this.projProjectInfo.dsbrPltfrmNm = f.label;
-          //         this.projProjectInfo.loanPlatfomrId = f.value;
-          //       }
-          //     });
-          //   }
-          // });
-
-          this.productTypeList({
-            type: 3,
-            carType: this.carType,
-            carNature: this.carNature,
-            companyId: this.projProjectInfo.companyId,
-            businessMode: this.projProjectInfo.businessModel,
-            platformId: ids
-          });
-        }
+      if (val) {
+        this.productTypeList({
+          type: 3,
+          carType: this.carType,
+          carNature: this.carNature,
+          companyId: this.projProjectInfo.companyId,
+          businessMode: this.projProjectInfo.businessModel,
+          platformId: val
+        });
       }
     },
     // 获取产品list
@@ -762,6 +744,14 @@ export default {
           type: 5,
           productId: val
         });
+      }
+    },
+    // 
+    "projProjectInfo.thiefRescue"(val) {
+      if(val == 0) {
+        Vue.delete(this.errorMsg, "thiefRescue");
+      } else {
+        this.$set(this.errorMsg, "thiefRescue", "");
       }
     }
   },
@@ -804,7 +794,7 @@ export default {
       fieldName: "", // 选择字段名
       // 初始化数据
       projProjectInfo: {
-        loanPlatfomrs: [],
+        loanPlatfomrs: '',
         wbtProvCityId: [],
         cars: []
       },
@@ -812,7 +802,7 @@ export default {
         loanPlatfomrId: "",
         // wbtProvCityZonCode: "",
         productId: "",
-        thiefRescue: "",
+        // thiefRescue: "",
         // counterGuaranteeStatus: "",
         bsnSrc: "",
         rbrinsPltfrmNmId: "",
@@ -956,12 +946,10 @@ export default {
     returnPlatform(val, list) {
       console.log(val, list);
       let name;
-      list.forEach(e => {
-        e.children.forEach(i => {
-          if (i.id == val) {
-            name = i.dsbrPltfrmNm;
-          }
-        });
+      list.forEach(i => {
+        if (i.value == val) {
+          name = i.dsbrPltfrmNm;
+        }
       });
       return name;
     },
@@ -1063,9 +1051,9 @@ export default {
           if (this.platform.length == 0) {
             return;
           }
-          this.valueKey = "orgName";
-          this.valueId = "id";
-          this.fieldName = "isRoot";
+          this.valueKey = "dsbrPltfrmNm";
+          this.valueId = "value";
+          this.fieldName = "loanPlatfomrId";
           this.options = this.platform;
           this.show3 = true;
           break;
@@ -1212,27 +1200,18 @@ export default {
             arr2.forEach(t => {
               this.projProjectInfo[t] = "";
             });
-            // 其他
-            if (this.fieldName == "isRoot") {
-              this.valueKey = "dsbrPltfrmNm";
-              this.valueId = "id";
-              this.fieldName = "loanPlatfomrId";
-              this.options = row.children;
-              return;
-            } else {
-              this.bankRate = row.intrt;
-              this.projProjectInfo.bankNewRate = row.intrt;
-              this.projProjectInfo.dsbrPltfrmNm = row.dsbrPltfrmNm;
-              this.projProjectInfo.loanPlatfomrId = row.id;
-              this.productTypeList({
-                type: 3,
-                carType: this.carType,
-                carNature: this.carNature,
-                companyId: this.projProjectInfo.companyId,
-                businessMode: this.projProjectInfo.businessModelId,
-                platformId: row.id
-              });
-            }
+            this.bankRate = row.intrt;
+            this.projProjectInfo.bankNewRate = row.intrt;
+            this.projProjectInfo.dsbrPltfrmNm = row.dsbrPltfrmNm;
+            this.projProjectInfo.loanPlatfomrId = row.value;
+            this.productTypeList({
+              type: 3,
+              carType: this.carType,
+              carNature: this.carNature,
+              companyId: this.projProjectInfo.companyId,
+              businessMode: this.projProjectInfo.businessModelId,
+              platformId: row.id
+            });
             break;
           case "产品类别":
             // 初始数据
@@ -1302,14 +1281,6 @@ export default {
           break;
       }
       return val;
-    },
-    // 放款平台转换
-    loanPlatfomrsReturn(t, f) {
-      let ar = [];
-      if (t && f) {
-        ar = [t, f];
-      }
-      return ar;
     },
     // 获取报单数据
     loanData() {
@@ -1395,12 +1366,6 @@ export default {
               companyId: row.companyId
             });
           }
-          let loanPlatfomrs = this.returnVal(row.loanPlatId, "number")
-            ? this.loanPlatfomrsReturn(
-                this.returnVal(loanPlatfomr.blngInstid, "number"),
-                this.returnVal(row.loanPlatId, "number")
-              )
-            : [];
 
           this.projProjectInfo = {
             loanPlatfomr: loanPlatfomr,
@@ -1436,7 +1401,7 @@ export default {
             rbrinsPltfrmNmId: this.returnVal(row.rbrinsPltfrmNmId, "number"),
             productCategoryId: this.returnVal(row.productCategoryId),
             loanPlatfomrId: this.returnVal(row.loanPlatId),
-            loanPlatfomrs: loanPlatfomrs,
+            loanPlatfomrs: row.loanPlatId,
             companyName: this.returnVal(row.companyName),
             officeName: this.returnVal(row.officeName),
             counterGuaranteeStatus: this.returnVal(row.counterGuaranteeStatus),
@@ -1551,7 +1516,23 @@ export default {
       };
       getLoanPlatformTree(obj).then(res => {
         if (res.code == 200) {
-          this.platform = res.data;
+          console.log(this.platform)
+          let datas = [];
+          let list = res.data;
+          list.forEach(t => {
+            if(t.children) {
+              t.children.forEach(i => {
+                datas.push({
+                  value: i.id,
+                  dsbrPltfrmNm: i.dsbrPltfrmNm,
+                  bankCode: i.bankCode,
+                  intrt: i.intrt
+                });
+              });
+            }
+          });
+          this.platform = datas;
+
           if (this.projProjectInfo.loanPlatfomrId) {
             this.$set(
               this.projProjectInfo,
@@ -1561,8 +1542,6 @@ export default {
                 this.platform
               )
             );
-            // this.projProjectInfo.rbrinsPltfrmNmName = this.platform[0].rbrinsPltfrmNm; // 盗抢险购买平台
-            // this.projProjectInfo.rbrinsPltfrmNmId = this.platform[0].id // 盗抢险购买平台
           }
         } else {
           this.$notify({ type: "danger", message: res.msg });

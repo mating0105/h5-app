@@ -599,7 +599,8 @@ export default {
               message: res.msg
             });
             this.dLoading = false;
-            this.$bridge.callHandler("jumpToTaskTab", "", res => {});
+            // this.$bridge.callHandler("jumpToTaskTab", "", res => {});
+            this.$router.go(-1);
           })
           .catch(() => {
             this.dLoading = false;

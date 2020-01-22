@@ -453,7 +453,6 @@ export default {
           levelEducation: "",
           marriage: "",
           relationCus: "",
-          schoolSituation: "",
           unitChar: "",
           rProvCityZonId: "",
           pProvCityZonId: ""
@@ -471,7 +470,6 @@ export default {
           levelEducation: "",
           marriage: "",
           relationCus: "",
-          schoolSituation: "",
           rProvCityZonId: "",
           pProvCityZonId: ""
         }
@@ -479,9 +477,9 @@ export default {
     },
     'formData.childrenSituation'(val) {
       if(val == 0) {
-        delete this.errorMsg.schoolSituation;
+        Vue.delete(this.errorMsg, "schoolSituation");
       } else {
-        this.errorMsg.schoolSituation = '';
+        this.$set(this.errorMsg, "schoolSituation", "");
       }
       console.log(this.errorMsg);
     }

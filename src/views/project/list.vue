@@ -62,7 +62,7 @@
           size="large"
           class="xh-bg-main"
           @click="addClint"
-          :loading="loading"
+          :loading="btnLoading"
         >新建报单</van-button>
       </div>
     </div>
@@ -92,6 +92,7 @@ export default {
     return {
       list: [],
       loading: false,
+      btnLoading:false,
       error: false,
       finished: false,
       params: {
