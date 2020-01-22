@@ -253,7 +253,7 @@ export default {
         default:
           break;
       }
-      通知移动端加载gps安装页面
+      // 通知移动端加载gps安装页面
       this.$bridge.callHandler("loadUrl", url, data => {
         this.onLoad();
       });
