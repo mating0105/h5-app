@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-22 15:54:52
+ * @LastEditTime : 2020-01-22 16:02:23
  -->
 
 <template>
@@ -237,6 +237,16 @@ export default {
       ],
       numLetterList: [
         // 数字加字母
+        { name: "1", id: 28 },
+        { name: "2", id: 29 },
+        { name: "3", id: 30 },
+        { name: "4", id: 31 },
+        { name: "5", id: 32 },
+        { name: "6", id: 33 },
+        { name: "7", id: 34 },
+        { name: "8", id: 35 },
+        { name: "9", id: 36 },
+        { name: "0", id: 37 },
         { name: "Q", id: 38 },
         { name: "W", id: 39 },
         { name: "E", id: 40 },
@@ -263,16 +273,6 @@ export default {
         { name: "B", id: 61 },
         { name: "N", id: 62 },
         { name: "M", id: 63 },
-        { name: "1", id: 28 },
-        { name: "2", id: 29 },
-        { name: "3", id: 30 },
-        { name: "4", id: 31 },
-        { name: "5", id: 32 },
-        { name: "6", id: 33 },
-        { name: "7", id: 34 },
-        { name: "8", id: 35 },
-        { name: "9", id: 36 },
-        { name: "0", id: 37 },
         { name: "←", id: 99 }
       ], // 键盘字母与数字字典
       first: "", // 汉字
