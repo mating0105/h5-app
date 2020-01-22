@@ -541,7 +541,7 @@
               :disabled="!isView"
               label="加融金额:"
               input-align="right"
-              :required="isView"
+              :required="projProjectInfo.thiefRescue == 0?true:false"
               :placeholder="isView?'请填写(含GPS加融费用)':''"
               :error-message="errorMsg.rentingAmtGps"
               @blur.prevent="priceFloat(projProjectInfo, 'rentingAmtGps');ruleMessge($event)"
@@ -745,6 +745,14 @@ export default {
           productId: val
         });
       }
+    },
+    // 
+    "projProjectInfo.thiefRescue"(val) {
+      if(val == 0) {
+        Vue.delete(this.errorMsg, "thiefRescue");
+      } else {
+        this.$set(this.errorMsg, "thiefRescue", "");
+      }
     }
   },
   // activated(){
@@ -794,7 +802,7 @@ export default {
         loanPlatfomrId: "",
         // wbtProvCityZonCode: "",
         productId: "",
-        thiefRescue: "",
+        // thiefRescue: "",
         // counterGuaranteeStatus: "",
         bsnSrc: "",
         rbrinsPltfrmNmId: "",
@@ -938,12 +946,10 @@ export default {
     returnPlatform(val, list) {
       console.log(val, list);
       let name;
-      list.forEach(e => {
-        e.children.forEach(i => {
-          if (i.id == val) {
-            name = i.dsbrPltfrmNm;
-          }
-        });
+      list.forEach(i => {
+        if (i.value == val) {
+          name = i.dsbrPltfrmNm;
+        }
       });
       return name;
     },
