@@ -166,6 +166,7 @@ export default {
       api.submitRemark({projectId:this.routeData.projectId, remark:this.remark}).then(res => {
         if(res.msg === 'OK'){
           Notify({ type: 'success', message: '操作成功' });
+          this.$router.go(-1);
         }else{
           Notify({ type: 'danger', message: '操作失败, 请重试!' });
         }

@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-26 09:28:55
+ * @LastEditTime : 2020-01-22 16:02:23
  -->
 
 <template>
@@ -12,10 +12,11 @@
     <showList
       :arr="cacheNumArr"
       :first="cacheFirst"
+      :isNew="false"
+      :second="cacheSecond"
       @click="clickShowKeyboard"
       @scanChange="scanChange"
       isScan
-      :isNew="false"
       v-if="isEdit"
     ></showList>
     <div v-else>{{value}}</div>
@@ -28,12 +29,22 @@
       >
         <div class="pop-content">
           <div class="operate-btn">
-            <div @click.stop="closeKeyboard" class="cancel">取消</div>
+            <div
+              @click.stop="closeKeyboard"
+              class="cancel"
+            >取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div @click.stop="sub" class="ok">确定</div>
+            <div
+              @click.stop="sub"
+              class="ok"
+            >确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList :arr="numArr" :first="first"></showList>
+            <showList
+              :arr="numArr"
+              :first="first"
+              :second="second"
+            ></showList>
           </div>
           <div class="plate_chinese_box">
             <!-- 点击对应的汉字，进行输入 -->
@@ -47,26 +58,77 @@
         </div>
       </van-popup>
     </div>
-    <!-- 英文 数字 键盘 -->
+    <!-- 英文 键盘 -->
     <div class="allBoard">
-      <van-popup position="bottom" v-model="showAllBoard">
+      <van-popup
+        position="bottom"
+        v-model="showLetter"
+      >
         <div class="pop-content">
           <div class="operate-btn">
-            <div @click.stop="closeKeyboard" class="cancel">取消</div>
+            <div
+              @click.stop="closeKeyboard"
+              class="cancel"
+            >取消</div>
             <div class="pop-title">选择车牌号</div>
-            <div @click.stop="sub" class="ok">确定</div>
+            <div
+              @click.stop="sub"
+              class="ok"
+            >确定</div>
           </div>
           <div class="show-list-wrap">
-            <showList :arr="numArr" :first="first"></showList>
+            <showList
+              :arr="numArr"
+              :first="first"
+              :second="second"
+            ></showList>
           </div>
 
           <div class="plate_number_box">
             <!-- 点击对应的字母或数字，进行输入 -->
             <van-button
               :key="item.id"
-              @click="checkEnglish_num(index)"
+              @click="checkLetter(index)"
               size="small"
-              v-for="(item, index) in enNumber"
+              v-for="(item, index) in letterList"
+            >{{item.name}}</van-button>
+          </div>
+        </div>
+      </van-popup>
+    </div>
+    <!-- 数字键盘 -->
+    <div class="allBoard">
+      <van-popup
+        position="bottom"
+        v-model="showNumber"
+      >
+        <div class="pop-content">
+          <div class="operate-btn">
+            <div
+              @click.stop="closeKeyboard"
+              class="cancel"
+            >取消</div>
+            <div class="pop-title">选择车牌号</div>
+            <div
+              @click.stop="sub"
+              class="ok"
+            >确定</div>
+          </div>
+          <div class="show-list-wrap">
+            <showList
+              :arr="numArr"
+              :first="first"
+              :second="second"
+            ></showList>
+          </div>
+
+          <div class="plate_number_box">
+            <!-- 点击对应的字母或数字，进行输入 -->
+            <van-button
+              :key="item.id"
+              @click="checkNum(index)"
+              size="small"
+              v-for="(item, index) in numLetterList"
             >{{item.name}}</van-button>
           </div>
         </div>
@@ -95,18 +157,20 @@ export default {
     type: {
       type: String
     },
-    isEdit:{
-       type: Boolean,
-       default:true
-    },
+    isEdit: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
-      cacheFirst: "", // 缓存数据
+      cacheFirst: "", // 缓存中文
+      cacheSecond: "", // 缓存字母
       cacheNumArr: [], // 缓存数组
       showKeyboard: true, //车牌号输入框是否聚焦
       showChinese: false, //是否显示汉字键盘
-      showAllBoard: false, //是否显示英文数字键盘
+      showLetter: false, //是否显示英文键盘
+      showNumber: false, //是否显示数字键盘
       chList: [
         { name: "京", id: 1 },
         { name: "津", id: 2 },
@@ -141,7 +205,38 @@ export default {
         { name: "新", id: 31 },
         { name: "←", id: 99 }
       ], // 车牌号中文字典
-      enNumber: [
+      letterList: [
+        // 字母
+        { name: "Q", id: 38 },
+        { name: "W", id: 39 },
+        { name: "E", id: 40 },
+        { name: "R", id: 41 },
+        { name: "T", id: 42 },
+        { name: "Y", id: 43 },
+        { name: "U", id: 44 },
+        { name: "I", id: 45 },
+        { name: "O", id: 46 },
+        { name: "P", id: 47 },
+        { name: "A", id: 48 },
+        { name: "S", id: 49 },
+        { name: "D", id: 50 },
+        { name: "F", id: 51 },
+        { name: "G", id: 52 },
+        { name: "H", id: 53 },
+        { name: "J", id: 54 },
+        { name: "K", id: 55 },
+        { name: "L", id: 56 },
+        { name: "Z", id: 57 },
+        { name: "X", id: 58 },
+        { name: "C", id: 59 },
+        { name: "V", id: 60 },
+        { name: "B", id: 61 },
+        { name: "N", id: 62 },
+        { name: "M", id: 63 },
+        { name: "←", id: 99 }
+      ],
+      numLetterList: [
+        // 数字加字母
         { name: "1", id: 28 },
         { name: "2", id: 29 },
         { name: "3", id: 30 },
@@ -180,7 +275,8 @@ export default {
         { name: "M", id: 63 },
         { name: "←", id: 99 }
       ], // 键盘字母与数字字典
-      first: "", // 首字母
+      first: "", // 汉字
+      second: "", // 字母
       numArr: [] // 车牌号剩下
     };
   },
@@ -199,15 +295,18 @@ export default {
   methods: {
     judgeCarNum(num, flag) {
       if (num) {
-        const [first, ...numArr] = num.substr(0, 8).split("");
+        const [first, second, ...numArr] = num.substr(0, 8).split("");
         this.first = first;
+        this.second = second;
         this.numArr = numArr;
         if (flag) {
           this.cacheFirst = first;
+          this.cacheSecond = second;
           this.cacheNumArr = numArr;
         }
       } else {
         this.first = "";
+        this.second = "";
         this.numArr = [];
       }
     },
@@ -216,9 +315,14 @@ export default {
       this.judgeCarNum(this.value);
       if (!this.first) {
         this.showChinese = true;
+      } else if (!this.second && this.numArr.length === 0) {
+        this.showChinese = false;
+        this.showLetter = true;
+        this.showNumber = false;
       } else {
         this.showChinese = false;
-        this.showAllBoard = true;
+        this.showLetter = false;
+        this.showNumber = true;
       }
     },
     // 选择车牌号前面的汉字
@@ -230,24 +334,48 @@ export default {
         // 把选中的字赋值给第一个格，并且切换键盘
         this.first = this.chList[index].name;
         this.showChinese = false;
-        this.showAllBoard = true;
+        this.showLetter = true;
       }
     },
-    // 选择车牌号后面的数字和字母
-    checkEnglish_num(index) {
+    // 选择车牌号字母
+    checkLetter(index) {
       // 如果点击删除键，删除 numArr 的最后一个值
-      if (this.enNumber[index].id == 99) {
-        this.numArr.pop();
-        // 如果 numArr 里面被删的没有值了，切换键盘
-        if (this.numArr.length == 0) {
+      if (this.letterList[index].id == 99) {
+        if (this.second !== "") {
+          this.second = "";
+          this.showChinese = false;
+          this.showLetter = true;
+          this.showNumber = false;
+        } else {
+          this.first = "";
           this.showChinese = true;
-          this.showAllBoard = false;
+          this.showLetter = false;
+          this.showNumber = false;
+        }
+      } else {
+        this.second = this.letterList[index].name;
+        this.showChinese = false;
+        this.showLetter = false;
+        this.showNumber = true;
+      }
+    },
+    // 选择车牌号后面的数字
+    checkNum(index) {
+      // 如果点击删除键，删除 numArr 的最后一个值
+      if (this.numLetterList[index].id == 99) {
+        if (this.numArr.length) {
+          this.numArr.pop();
+        } else {
+          this.second = "";
+          this.showChinese = false;
+          this.showLetter = true;
+          this.showNumber = false;
         }
       } else {
         // 把选中的值 push 到 numArr 内
-        this.numArr.push(this.enNumber[index].name);
+        this.numArr.push(this.numLetterList[index].name);
         // 如果 numArr 中的值超过 7 个（车牌号的最大位数），删除最后一个
-        if (this.numArr.length > 7) {
+        if (this.numArr.length > 6) {
           this.numArr.pop();
         }
       }
@@ -266,10 +394,12 @@ export default {
     },
     sub() {
       const first = this.first;
+      const second = this.second;
       const numArr = this.numArr;
-      const combinate = `${first}${numArr.join("")}`;
+      const combinate = `${first}${second}${numArr.join("")}`;
       if (combinate.length === 7 || combinate.length === 8) {
         this.cacheFirst = first;
+        this.cacheSecond = second;
         this.cacheNumArr = numArr;
         this.$emit("input", combinate);
         this.$emit("licensePlateNumChange", {
@@ -283,9 +413,11 @@ export default {
     },
     clear() {
       this.first = "";
+      this.second = "";
       this.numArr = [];
       this.showChinese = false;
-      this.showAllBoard = false;
+      this.showLetter = false;
+      this.showNumber = false;
     },
     // 关闭虚拟键盘
     closeKeyboard() {
