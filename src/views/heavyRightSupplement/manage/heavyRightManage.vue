@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-18 15:36:08
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-19 19:32:27
+ * @LastEditTime : 2020-01-22 09:45:43
  -->
 
 <template>
@@ -136,7 +136,7 @@ export default {
     //----------导航----------------
     goPage(item) {
       if (item.title === "GPS 安装信息") {
-        if (!this.gpsInfo) {
+        if (!(this.gpsInfo && this.gpsInfo.orderId)) {
           this.$notify({
             type: "danger",
             message: "未安装 GPS!"
