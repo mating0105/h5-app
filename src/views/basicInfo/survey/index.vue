@@ -255,7 +255,7 @@
               :label="errorMsg.jrnlDateEnd"
             />
 
-            <van-field
+            <!-- <van-field
               v-model="ruleForm.paymentBank"
               clearable
               :border="false"
@@ -264,6 +264,13 @@
               label="还款卡银行："
               :disabled="!isView"
               :placeholder="isView?'请填写':''"
+            /> -->
+             <van-cell
+              title="还款卡银行："
+              :is-link="isView"
+              :value="ruleForm.paymentBank"
+              :border="false"
+              @click.native="!isView?'':loadList('还款卡银行','BANK_TYPE_JYR')"
             />
             <van-field
               v-model="ruleForm.paymentCarNum"
@@ -616,6 +623,9 @@ export default {
           this.ruleForm.providerName = rows.label;
           this.ruleForm.providerIdCard = rows.certificateNum;
           this.ruleForm.providerPhone = rows.contactPhone;
+          break;
+        case "还款卡银行":
+          this.ruleForm.paymentBank = rows.label;
           break;
       }
       this.selectShow = false;

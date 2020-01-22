@@ -100,8 +100,8 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      accout: "",//用户账号
-      phone:'',//用户手机号
+      accout: "", //用户账号
+      phone: "", //用户手机号
       isLoading: false
     };
   },
@@ -152,15 +152,11 @@ export default {
                   break;
                 case "5":
                   t.gpsname = "保险待出单";
-                  t.pgslist = [];
+                  t.pgslist = ["查看详情"];
                   break;
                 case "6":
-                  t.gpsname = "订单完成";
-                  if (t.insurance == "1") {
-                    // t.pgslist = ["查看电子保单"];
-                  } else {
-                    t.pgslist = [];
-                  }
+                  t.gpsname = "安装完成";
+                  t.pgslist = ["查看详情"];
                   break;
                 case "0":
                   t.gpsname = "订单作废";
@@ -251,13 +247,16 @@ export default {
         case "查看电子保单":
           url = this.$prefixurl + `elePolicy?id=${item.orderId}` + commonData;
           break;
+        case "查看详情":
+          url = `${this.$prefixurl}orderDetail?id=${item.orderId}&showTitle=false&externalid=${item.projectNo}&externalcustnum=${item.customNum}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+          break;
         default:
           break;
       }
-      //通知移动端加载gps安装页面
+      通知移动端加载gps安装页面
       this.$bridge.callHandler("loadUrl", url, data => {
         this.onLoad();
-      })
+      });
       // window.location.href = url;
     },
     rightFn(item) {
@@ -278,13 +277,13 @@ export default {
       setTimeout(() => {
         Toast.success("刷新成功");
       }, 500);
-    }
+    },
   },
   mounted() {
     this.accout = Cookies.get("loginName");
     this.phone = Cookies.get("phone");
-    // this.accout = '15708144458';
-    // this.phone = '18283874007'
+    // this.accout = '0170';
+    // this.phone = '13200000002'
     this.onLoad();
   }
 };

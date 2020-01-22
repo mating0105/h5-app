@@ -82,7 +82,7 @@
             :error-message="errorMsg.carValue"
             error-message-align="right"
           >
-            <div slot="button" v-if="formData.carValue">万元</div>
+            <div slot="button" v-if="formData.carValue">元</div>
           </van-field>
         </section>
 

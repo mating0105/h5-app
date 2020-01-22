@@ -121,7 +121,9 @@ export default {
         this.carsList = res.data;
         this.carsList.forEach(t => {
           t.buyTypeDesc = this.returnText('Purchase_method', t.buyType);
+          t.carModel = t.carModel.split(" ").splice(1,4).join(' ');
         });
+        
         this.loading = false;
       }).catch(()=> {
         this.loading = false;

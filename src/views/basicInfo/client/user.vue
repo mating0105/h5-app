@@ -29,7 +29,7 @@
                 v-model="formData.certificateNum"
                 clearable
                 disabled
-                label="证件号码："
+                label="身份证号："
                 input-align="right"
                 :placeholder="isView?'请填写':''"
                 @blur.prevent="ruleMessge"
@@ -169,6 +169,7 @@
                 v-model="formData.localResidence"
                 clearable
                 :disabled="!isView"
+                label-width="140px"
                 type="number"
                 label="本地居住年限："
                 input-align="right"
@@ -200,7 +201,7 @@
               v-model="formData.spsCrdtNo"
               clearable
               disabled
-              label="配偶证件号码："
+              label="配偶身份证号："
               input-align="right"
               :placeholder="isView?'请填写':''"
             />

@@ -70,6 +70,12 @@ const responseRejected = error => {
     // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
+  if(error.response.status === 504) {
+    // debounce(lgoinInAgain, 500)
+    loginAgainFn()
+    // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+    return
+  }
   console.log('err' + error) // for debug
   Notify({ type: 'danger', message: error + '' });
   return Promise.reject(error)
