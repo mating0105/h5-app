@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 15:14:37
  * @LastEditors  : shenah
- * @LastEditTime : 2019-12-26 09:35:07
+ * @LastEditTime : 2020-01-22 15:22:38
  -->
 
 <template>
@@ -13,13 +13,13 @@
       class="show-list"
     >
       <li>{{first}}</li>
+      <li>{{second}}</li>
       <li>{{arr[0]}}</li>
       <li>{{arr[1]}}</li>
       <li>{{arr[2]}}</li>
       <li>{{arr[3]}}</li>
       <li>{{arr[4]}}</li>
-      <li>{{arr[5]}}</li>
-      <li v-if="isNew || arr[6]">{{arr[6]}}</li>
+      <li v-if="isNew || arr[5]">{{arr[5]}}</li>
     </div>
     <van-icon
       @click.stop="orcScan"
@@ -42,11 +42,14 @@ export default {
   name: "showList",
   components: {},
   props: {
-    isNew:{
+    isNew: {
       type: Boolean,
       default: true
     },
     first: {
+      type: String
+    },
+    second: {
       type: String
     },
     arr: {
