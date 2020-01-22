@@ -586,7 +586,9 @@
         </div>
         <div v-show="stepIndex==3" style="margin-top:10px;">
           <Card style="margin-top:15px;">
-            <template v-slot:header>意见描述</template>
+            <template v-slot:header>
+                <van-cell required style="color:#C4252A" title="意见描述"></van-cell>
+            </template>
             <div>
               <van-field
                 :disabled="dealState"
