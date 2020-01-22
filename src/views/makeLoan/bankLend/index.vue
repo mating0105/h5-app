@@ -61,9 +61,12 @@
                                        :error-message="errorMsg.factLoanAmt">
                                 <div slot="button">元</div>
                             </van-field>
-                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass'
+                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass' required
                                       :value="bankLoanInfo.factLoanDate?dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''"
-                                      @click="showPopupTime('actualLendTime')" is-link/>
+                                      @blur.prevent="ruleMessge"
+                                      label-class='labelClassNew'
+                                      @click="showPopupTime('actualLendTime')" is-link
+                                      :label="errorMsg.factLoanDate"/>
                         </div>
                     </div>
                 </Card>
@@ -77,10 +80,10 @@
                 <!-- 意见描述 -->
                 <Card style="margin-top:15px;">
                     <template v-slot:header>
-                        意见描述
+                        <van-cell required style="color:#C4252A" title="意见描述"></van-cell>
                     </template>
                     <div>
-                        <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言"
+                        <van-field :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言"
                                    show-word-limit @blur.prevent="verifyComments" :error-message='errMsg'/>
                     </div>
                 </Card>
@@ -215,7 +218,7 @@
           accountBank: '',
           advanceInstitutionDate: null,
           factLoanAmt: '',
-          factLoanDate: ''
+          factLoanDate: null
         },//放款信息
         commentsDesc: '',//意见描述
         FinanceCashier: '',
@@ -261,6 +264,7 @@
         ruleData: [],
         errorMsg: {
           factLoanAmt: '',//实际放款金额
+          factLoanDate:'',//实际放款时间
           advanceInstitutionDate: '',//录机时间
           repaymentBankCardNo: '',//主借人还款卡号
         },
@@ -409,6 +413,7 @@
             break;
           case 'actualLendTime':
             this.bankLoanInfo.factLoanDate = (new Date(this.currentDate)).getTime();
+            this.errorMsg.factLoanDate = '';
             break;
         }
       },
@@ -430,6 +435,7 @@
           if (data.code == 200) {
             this.bankLoanInfo = data.data.bankLoanInfo;
             this.bankLoanInfo.advanceInstitutionDate = data.data.bankLoanInfo.advanceInstitutionDate ? data.data.bankLoanInfo.advanceInstitutionDate : new Date().getTime();
+            this.bankLoanInfo.factLoanDate= data.data.bankLoanInfo.factLoanDate ? data.data.bankLoanInfo.factLoanDate : null;
             this.getProjectInfo(data.data.borrowerInfo.projectId);
           }
         } catch (err) {
@@ -499,7 +505,7 @@
               num++;
             }
           } else if (this.approvalConclusionDesc == '通过') {
-            if (item !== 'factLoanAmt') {
+            if (item !== 'factLoanAmt'&&item !=='factLoanDate') {
               this.errorMsg[item] = this.returnMsg(item, this.bankLoanInfo[item]);
               if (this.errorMsg[item] !== '') {
                 num++;
@@ -710,5 +716,11 @@
 
     #bankLend .van-cell__right-icon {
         color: #323233;
+    }
+    .van-cell__title .labelClassNew{
+        color: #ee0a24;
+        text-align: right;
+        position: relative;
+        left: calc(100% + 1.33333rem);
     }
 </style>
