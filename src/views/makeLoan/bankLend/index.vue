@@ -61,8 +61,9 @@
                                        :error-message="errorMsg.factLoanAmt">
                                 <div slot="button">元</div>
                             </van-field>
-                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass'
+                            <van-cell :border='false' title="实际放款时间：" value-class='rightClass' required
                                       :value="bankLoanInfo.factLoanDate?dayjs(bankLoanInfo.factLoanDate).format('YYYY-MM-DD HH:mm'):''"
+                                      @blur.prevent="ruleMessge"
                                       @click="showPopupTime('actualLendTime')" is-link/>
                         </div>
                     </div>
@@ -77,10 +78,10 @@
                 <!-- 意见描述 -->
                 <Card style="margin-top:15px;">
                     <template v-slot:header>
-                        意见描述
+                        <van-cell required style="color:#C4252A" title="意见描述"></van-cell>
                     </template>
                     <div>
-                        <van-field required :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言"
+                        <van-field :border="false" v-model="commentsDesc" rows="2" autosize type="textarea" maxlength="200" placeholder="请输入留言"
                                    show-word-limit @blur.prevent="verifyComments" :error-message='errMsg'/>
                     </div>
                 </Card>
@@ -261,6 +262,7 @@
         ruleData: [],
         errorMsg: {
           factLoanAmt: '',//实际放款金额
+          factLoanDate:'',//实际放款时间
           advanceInstitutionDate: '',//录机时间
           repaymentBankCardNo: '',//主借人还款卡号
         },
@@ -409,6 +411,7 @@
             break;
           case 'actualLendTime':
             this.bankLoanInfo.factLoanDate = (new Date(this.currentDate)).getTime();
+            this.errorMsg.factLoanDate = '';
             break;
         }
       },
