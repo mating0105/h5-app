@@ -30,7 +30,7 @@
               </van-col>
               <van-col span="24" class="xh-top-10">
                 <van-col span="6" class="xh-main xh-title">车辆型号：</van-col>
-                <van-col span="18" class="xh-text-right">{{item.carModel}}</van-col>
+                <van-col span="18" class="xh-text-right">{{item.carModelDesc}}</van-col>
               </van-col>
             </van-col>
             <span slot="right">
@@ -121,7 +121,7 @@ export default {
         this.carsList = res.data;
         this.carsList.forEach(t => {
           t.buyTypeDesc = this.returnText('Purchase_method', t.buyType);
-          t.carModel = t.carModel.split(" ").splice(1,4).join(' ');
+          t.carModelDesc = t.carModel.split(" ").splice(1,4).join(' ');
         });
         
         this.loading = false;
