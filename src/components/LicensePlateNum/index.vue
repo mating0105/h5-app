@@ -3,7 +3,7 @@
  * @Author: shenah
  * @Date: 2019-12-19 13:55:28
  * @LastEditors  : shenah
- * @LastEditTime : 2020-01-22 15:40:25
+ * @LastEditTime : 2020-01-22 15:54:52
  -->
 
 <template>
@@ -90,7 +90,7 @@
               :key="item.id"
               @click="checkLetter(index)"
               size="small"
-              v-for="(item, index) in letter"
+              v-for="(item, index) in letterList"
             >{{item.name}}</van-button>
           </div>
         </div>
@@ -128,7 +128,7 @@
               :key="item.id"
               @click="checkNum(index)"
               size="small"
-              v-for="(item, index) in enNumber"
+              v-for="(item, index) in numLetterList"
             >{{item.name}}</van-button>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default {
         { name: "新", id: 31 },
         { name: "←", id: 99 }
       ], // 车牌号中文字典
-      letter: [
+      letterList: [
         // 字母
         { name: "Q", id: 38 },
         { name: "W", id: 39 },
@@ -235,8 +235,34 @@ export default {
         { name: "M", id: 63 },
         { name: "←", id: 99 }
       ],
-      enNumber: [
-        // 数字
+      numLetterList: [
+        // 数字加字母
+        { name: "Q", id: 38 },
+        { name: "W", id: 39 },
+        { name: "E", id: 40 },
+        { name: "R", id: 41 },
+        { name: "T", id: 42 },
+        { name: "Y", id: 43 },
+        { name: "U", id: 44 },
+        { name: "I", id: 45 },
+        { name: "O", id: 46 },
+        { name: "P", id: 47 },
+        { name: "A", id: 48 },
+        { name: "S", id: 49 },
+        { name: "D", id: 50 },
+        { name: "F", id: 51 },
+        { name: "G", id: 52 },
+        { name: "H", id: 53 },
+        { name: "J", id: 54 },
+        { name: "K", id: 55 },
+        { name: "L", id: 56 },
+        { name: "Z", id: 57 },
+        { name: "X", id: 58 },
+        { name: "C", id: 59 },
+        { name: "V", id: 60 },
+        { name: "B", id: 61 },
+        { name: "N", id: 62 },
+        { name: "M", id: 63 },
         { name: "1", id: 28 },
         { name: "2", id: 29 },
         { name: "3", id: 30 },
@@ -314,7 +340,7 @@ export default {
     // 选择车牌号字母
     checkLetter(index) {
       // 如果点击删除键，删除 numArr 的最后一个值
-      if (this.letter[index].id == 99) {
+      if (this.letterList[index].id == 99) {
         if (this.second !== "") {
           this.second = "";
           this.showChinese = false;
@@ -327,7 +353,7 @@ export default {
           this.showNumber = false;
         }
       } else {
-        this.second = this.letter[index].name;
+        this.second = this.letterList[index].name;
         this.showChinese = false;
         this.showLetter = false;
         this.showNumber = true;
@@ -336,7 +362,7 @@ export default {
     // 选择车牌号后面的数字
     checkNum(index) {
       // 如果点击删除键，删除 numArr 的最后一个值
-      if (this.enNumber[index].id == 99) {
+      if (this.numLetterList[index].id == 99) {
         if (this.numArr.length) {
           this.numArr.pop();
         } else {
@@ -347,7 +373,7 @@ export default {
         }
       } else {
         // 把选中的值 push 到 numArr 内
-        this.numArr.push(this.enNumber[index].name);
+        this.numArr.push(this.numLetterList[index].name);
         // 如果 numArr 中的值超过 7 个（车牌号的最大位数），删除最后一个
         if (this.numArr.length > 6) {
           this.numArr.pop();
