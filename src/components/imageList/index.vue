@@ -25,7 +25,7 @@
             </div>
         </div>
         <transition name="page-move">
-            <imageUpload :visible.sync="showImageUpload" v-if="showImageUpload" :dataList="dataList"></imageUpload>
+            <imageUpload :visible.sync="showImageUpload" v-if="showImageUpload" :dataList="dataList" :isGroup="isGroup"></imageUpload>
         </transition>
     </div>
 </template>
@@ -41,7 +41,8 @@
     name: "imageList",
     props: {
       dataList: Array,
-      view: Boolean
+      view: Boolean,
+      isGroup: Boolean,
     },
     components: {
       imageUpload

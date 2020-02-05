@@ -19,7 +19,7 @@
                         <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
                     </div>
                 </div>
-                <imageList :dataList="item.dataList"></imageList>
+                <imageList :dataList="item.dataList" :isGroup="true"></imageList>
             </div>
         </Card>
 
@@ -122,7 +122,8 @@
         changeUserList: [],
         showUser: false,
         taskData: {},
-        whiteList: []
+        whiteList: [],
+        isIdCard: ['0101', '0102', '0105', '0106', '0120', '0117', '0109', '0110', '0113', '0114']//身份证分类
       }
     },
     computed: {
@@ -169,7 +170,8 @@
             customerNum: this.$route.query.customerNum,
             customerId: this.$route.query.customerId,
             kind: '1',
-            fileList: []
+            fileList: [],
+            title: this.isIdCard.includes(documentType) ? '身份证': '其他'
           }
           obj.dataList.push(beanData)
           const {data} = await getDocumentByType(params)

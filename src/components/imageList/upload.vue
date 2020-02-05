@@ -1,6 +1,16 @@
 <template>
     <ViewPage class="xh-page" :backFn="backFn" title="全部照片" :loading="loading">
-        <Card>
+        <template v-if="isGroup">
+            <Card v-for="(arr, key) in list" :key="key">
+                <template v-slot:header>
+                    {{key}}
+                </template>
+                <div style="padding: 10px;">
+                    <imageItem :data="item" :loading.sync="loading" :key="index" v-for="(item, index) in arr"></imageItem>
+                </div>
+            </Card>
+        </template>
+        <Card v-else>
             <template v-slot:header>
                 照片
             </template>
@@ -15,6 +25,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import imageItem from './item'
+  import _ from 'lodash'
 
   export default {
     name: "imageUpload",
@@ -25,17 +36,26 @@
     },
     data() {
       return {
-        loading: false
+        loading: false,
+        list: []
       }
     },
     props: {
       visible: {},
-      dataList: Array
+      dataList: Array,
+      isGroup: Boolean,
     },
     methods: {
       backFn () {
         this.$emit('update:visible', false)
       },
+    },
+    mounted () {
+      if(this.isGroup) {
+        this.list = _.groupBy(this.dataList, item => {
+          return item.title
+        })
+      }
     }
   }
 </script>
