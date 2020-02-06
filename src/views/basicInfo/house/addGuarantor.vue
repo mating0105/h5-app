@@ -54,7 +54,7 @@
                 :error-message="errorMsg.propertyValue"
                 error-message-align="right"
               >
-                <div slot="button" v-if="form.propertyValue">万元</div>
+                <div slot="button" v-if="form.propertyValue">元</div>
               </van-field>
             </section>
             <section>

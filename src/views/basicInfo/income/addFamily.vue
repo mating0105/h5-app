@@ -150,7 +150,7 @@
                 @blur.prevent="priceFloat(formData, 'turnover')"
                 :placeholder="isView?'请填写':''"
               >
-                <div slot="button" v-if="formData.turnover">万元</div>
+                <div slot="button" v-if="formData.turnover">元</div>
               </van-field>
             </section>
             <section>
@@ -201,7 +201,7 @@
                 :error-message="errorMsg.registerCapital"
                 error-message-align="right"
               >
-                <div slot="button" v-if="formData.registerCapital">万元</div>
+                <div slot="button" v-if="formData.registerCapital">元</div>
               </van-field>
             </section>
             <section>
