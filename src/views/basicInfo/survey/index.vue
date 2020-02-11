@@ -584,26 +584,32 @@ export default {
         case "首付款是否为自有资金":
           this.ruleForm.paymentOwnCapital = rows.value;
           this.ruleForm.paymentOwnCapitalDesc = rows.label;
+          this.errorMsg.paymentOwnCapital = "";
           break;
         case "是否清楚车价":
           this.ruleForm.clearCarPrice = rows.value;
           this.ruleForm.clearCarPriceDesc = rows.label;
+          this.errorMsg.clearCarPrice = "";
           break;
         case "是否有驾驶证":
           this.ruleForm.driveLicence = rows.value;
           this.ruleForm.driveLicenceDesc = rows.label;
+          this.errorMsg.driveLicence = "";
           break;
         case "调查中是否有陪同":
           this.ruleForm.accompany = rows.value;
           this.ruleForm.accompanyDesc = rows.label;
+          this.errorMsg.accompany = "";
           break;
         case "是否人车匹配":
           this.ruleForm.match = rows.value;
           this.ruleForm.matchDesc = rows.label;
+          this.errorMsg.match = "";
           break;
         case "是否涉及消费返利":
           this.ruleForm.involveConsumeRebate = rows.value;
           this.ruleForm.involveConsumeRebateDesc = rows.label;
+          this.errorMsg.involveConsumeRebate = "";
           break;
         case "购车用途":
           this.ruleForm.carUse = rows.value;
