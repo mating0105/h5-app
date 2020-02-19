@@ -37,6 +37,18 @@ export function getList(params) {
 }
 
 /**
+ * 获取征信按钮列表
+ * @param params
+ */
+export function getButtonList(params) {
+  return request({
+    url: '/manage/buttonConfig/getButtonByServer?serverName=credit-list',
+    method: 'get',
+    params
+  })
+}
+
+/**
  * 保存征信信息
  * @param params
  */

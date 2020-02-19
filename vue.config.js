@@ -55,26 +55,32 @@ module.exports = {
       },
       '/document': {
         target: `http://172.16.10.4:8085`,
+        // target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
       '/group1': {
         target: `http://172.16.10.4:8085`
+        // target: `http://119.3.165.2:8085`,
       },
       '/customer': {
         target: `http://172.16.10.4:8085`,
+        // target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
       '/product': {
         target: `http://172.16.10.4:8085`,
+        // target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
       //https://user.test.wwvas.net/userauth/oauth/token
       '/userauth': {
         target: `https://user.test.wwvas.net`,
+        // target: `https://user.wwvas.net`,
         changeOrigin: true
       },
       '/admin': {
-        target: `http://dev.wwvas.com:10000`,
+        // target: `http://dev.wwvas.com:10000`,
+        target: `http://www.wwvas.com`,
         changeOrigin: true
       }
       // '/api': {

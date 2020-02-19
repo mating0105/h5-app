@@ -2,17 +2,17 @@
     <ViewPage :loading="loading">
         <template v-slot:head>
             <van-tabs v-model="active">
-                <van-tab title="征信信息"></van-tab>
                 <van-tab title="基本信息"></van-tab>
+                <van-tab title="征信信息"></van-tab>
                 <van-tab title="相关文档"></van-tab>
                 <van-tab title="审批记录"></van-tab>
             </van-tabs>
         </template>
-        <template v-if="active === 0">
+        <template v-if="active === 1">
             <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
             <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
         </template>
-        <template v-else-if="active === 1">
+        <template v-else-if="active === 0">
             <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
         </template>
         <template v-else-if="active === 2">

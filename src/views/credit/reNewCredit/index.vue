@@ -10,6 +10,20 @@
             <van-cell title="征信对象类型:" required :border="false" value="借款人"/>
             <van-cell title="银行：" label-class='labelClass' :label="errorMsg.investigateBankName" :disabled="!edit" :border="false" required :is-link="edit"
                       :value="dataList.investigateBankName" @click="showPickerFn"/>
+            <van-field
+                name="bankCardNum"
+                :disabled="!edit"
+                label="银行卡号："
+                :placeholder="!edit?'':'请输入'"
+                label-width="110"
+                input-align="right"
+                clearable
+                :border="false"
+                v-model="form.bankCardNum"
+                @blur.prevent="ruleMessge"
+                :error-message="errorMsg.bankCardNum"
+                :right-icon="!edit ? '' : 'scan'"
+                @click-right-icon="IdcardLoading('bankCodeOCR')"/>
             <van-field class="label_plus"
                        name="intentionPrice"
                        @blur.prevent="ruleMessge"
@@ -23,7 +37,7 @@
                        :autosize='autosize' class="zh-textarea"/>
         </Card>
 
-        <Card style="margin-top: 1rem;">
+        <!-- <Card style="margin-top: 1rem;">
             <template v-slot:header>
                 {{dataList.carInfos.length === 0 ? '新增': ''}}车辆信息
                 <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0 && edit">
@@ -67,8 +81,7 @@
                     </div>
                 </van-swipe-cell>
             </div>
-        </Card>
-
+        </Card> -->
 
         <Card style="margin-top: 1rem;">
             <template v-slot:header>
@@ -82,6 +95,7 @@
                     <van-cell title="客户名称:" required :border="false" :value="item.creditPersonName"/>
                     <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum"/>
                     <van-cell title="电话号码:" required :border="false" :value="item.telephone"/>
+                    <van-cell title="银行卡号:" :border="false" :value="item.bankCardNum"/>
                     <van-cell title="征信对象类型:" required :value="returnText(item.creditObjectType, 'credit_object_type')"/>
                     <div slot="right" style="height: 100%">
                         <van-button
@@ -174,7 +188,8 @@
         perInfoList: [], //客户下面的其他客户数据
         errorMsg: { //必填list
           investigateBankName: '',
-          intentionPrice: ''
+          intentionPrice: '',
+          bankCardNum: ''
         },
         edit: false,
         query: {},
@@ -580,6 +595,17 @@
             this.errorMsg.intentionPrice = '贷款金额不能超过销售价的8.8成'
           }
         }
+      },
+      IdcardLoading(name) {
+        this.$bridge.callHandler(name, '', (res) => {
+          this.dataList.bankCardNum = res.BANK_NUM || ''
+          this.ruleMessge({
+            target: {
+              name: 'bankCardNum',
+              value: this.dataList.bankCardNum
+            }
+          })
+        })
       }
     },
     mounted () {

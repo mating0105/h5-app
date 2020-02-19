@@ -9,6 +9,7 @@
             <van-cell title="电话号码:" :border="false" :value="form.telephone"/>
             <van-cell title="征信对象类型:" :border="false" value="借款人"/>
             <van-cell title="银行：" :border="false" :is-link="edit" v-model="dataList.investigateBankName"/>
+            <van-cell title="银行卡号：" :border="false" :is-link="edit" v-model="dataList.bankCardNum"/>
             <van-field class="label_plus" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" clearable input-align="right"
                        label="意向贷款金额："
                        placeholder="请输入">
@@ -16,7 +17,7 @@
             </van-field>
         </Card>
 
-        <Card style="margin-top: 1rem;" v-if="dataList.carInfos && dataList.carInfos.length">
+        <!-- <Card style="margin-top: 1rem;" v-if="dataList.carInfos && dataList.carInfos.length">
             <template v-slot:header>
                 车辆信息
             </template>
@@ -43,7 +44,7 @@
                     <van-cell title="备注:" :value="item.remark"/>
                 </div>
             </div>
-        </Card>
+        </Card> -->
 
 
         <Card style="margin-top: 1rem;" v-if="perInfoList.length">
@@ -59,6 +60,22 @@
                 </div>
             </div>
         </Card>
+
+        <Card>
+            <template v-slot:header>
+                征信查询照片
+            </template>
+            <div v-for="(item, index) in users" :key="index">
+                <div class="xh-image-box">
+                    <div class="xh-box-item">
+                        <svg-icon icon-class="user"/>
+                        <span>{{item.creditPersonName}}</span>
+                        <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
+                    </div>
+                </div>
+                <imageList :dataList="item.dataList"></imageList>
+            </div>
+        </Card>
     </div>
 </template>
 
@@ -66,6 +83,8 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
+  import { getDocumentByType } from '@/api/document'
+  import imageList from '@/components/imageList'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog]
@@ -77,7 +96,8 @@
     name: "basicInfo",
     components: {
       ViewPage,
-      Card
+      Card,
+      imageList
     },
     props: {
       perInfoList: Array,
@@ -86,13 +106,39 @@
     },
     data () {
       return {
-        edit: false
+        edit: false,
+        users: [],
+        obj: {
+          joiDebtorSpouse: ['6684', '6672', '6678', '6689'],//共债人配偶
+          borrowerSpouse: ['6680', '6668', '6674', '6686'],//借款人配偶
+          security: ['6681', '6669', '6675', '6687'],//担保人
+          borrower: ['6679', '6667', '6673', '6685'],//借款人
+          joiDebtor: ['6683', '6671', '6677', '6688'],//共债人
+        },
+        whiteList: ['6689', '6686', '6687', '6685', '6688'],
+        surDtlList: []
+      }
+    },
+    watch: {
+      dataList(val) {
+        if(val) {
+          this.initData()
+        }
       }
     },
     computed: {
       // 所有字典
       wordbook () {
         return this.$store.state.user.wordbook
+      },
+      documentType () {
+        let obj = {}
+        if (this.wordbook.document_type && this.wordbook.document_type.length) {
+          this.wordbook.document_type.forEach(item => {
+            obj[item.value] = item
+          })
+        }
+        return obj
       }
     },
     methods: {
@@ -110,11 +156,84 @@
       },
       nameToString () {
         return [...arguments].map(item => item).join(' ')
-      }
+      },
+      initData() {
+        if(this.dataList && this.dataList.surDtlList) {
+          this.surDtlList = _.cloneDeep(this.dataList.surDtlList)
+          this.surDtlList.forEach(item => {
+            item.dataList = []
+            const arr = this.obj[item.creditObjectType]
+            arr.forEach(i => {
+              this.getDocumentByType(i, item)
+            })
+          })
+          this.users = this.surDtlList.reverse()
+        }
+      },
+      /**
+       * 获取文档
+       */
+      async getDocumentByType (documentType, obj) {
+        try {
+          const customerNum = obj.perInfo ? obj.perInfo.customerNum : ''
+          const params = {
+            customerNum,
+            documentType: documentType
+          }
+          const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
+
+          const isRequire = !this.whiteList.includes(documentType)
+          const beanData = {
+            declare: declare,//图片描述
+            isRequire: isRequire,//*是否必须
+            deletable: true,//是否可以操作-上传和删除
+            documentType: documentType,
+            customerNum,
+            customerId: obj.customerId,
+            kind: '1',
+            fileList: []
+          }
+          obj.dataList.push(beanData)
+          const {data} = await getDocumentByType(params)
+          data.forEach(item => {
+            item.declare = declare;
+          })
+          beanData.fileList = data
+        } catch (e) {
+          console.log(e)
+        }
+      },
+    },
+    mounted() {
+      this.initData()
     }
   }
 </script>
 
-<style>
+<style scoped lang="scss">
+
+    .xh-image-box {
+        padding: 0 1rem 0 1rem;
+
+        &:first-child {
+            padding-top: 1rem;
+        }
+
+        .xh-box-item {
+            margin-bottom: .5rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            span {
+                display: inline-block;
+            }
+
+            span:nth-of-type(1) {
+                margin: 0 .5rem;
+            }
+        }
+    }
 
 </style>
