@@ -11,6 +11,8 @@
         <template v-if="active === 1">
             <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
             <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+            <!-- 百融 -->
+            <creditQueryInfo title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -37,6 +39,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import creditInfoTable from '../viewCompoents/creditInfoTable'
+  import creditQueryInfo from '../viewCompoents/creditQueryInfo'
   import basicInfo from '../viewCompoents/basicInfo'
   import basicInfoCredit from '../reNewCredit/basicInfo'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
@@ -57,6 +60,7 @@
       ViewPage,
       Card,
       creditInfoTable,
+      creditQueryInfo,
       basicInfo,
       basicInfoCredit,
       relatedDocs,
