@@ -1,12 +1,12 @@
 <template>
-    <ViewPage :loading="loading">
+    <ViewPage :loading="loading" :backFn="backFn">
         <Card>
             <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
                       :is-link="isdetail == 0?true:false" title="车辆类别："
                       :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
                       @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell label-class='labelClass' :label="errorMsg.carNature" title="车辆性质：" :border="false" required>
-                <radio v-model="carFrom.carNature" @change="changeNature">
+                <radio v-model="carFrom.carNature" @change="changeNature" :disabled="addUsedCar">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('car_nature')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
@@ -103,13 +103,14 @@
   import brand from '@/components/carBrand/brand'
   import Vue from 'vue';
   import { getDocumentByType } from '@/api/document'
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker } from 'vant';
+  import { saveUsedCar, deleteDocuments } from '@/api/priceEvaluation'
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker, Dialog } from 'vant';
   import MapSheet from "@/components/provinces/index";
   import dayjs from 'dayjs'
   import _ from 'lodash'
   import formValidator from '@/mixins/formValidator'
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker]
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, ActionSheet, DatetimePicker, Dialog]
   Components.forEach(item => {
     Vue.use(item)
   })
@@ -178,7 +179,8 @@
           salePriceDto: '',//车辆价格
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
-        }
+        },
+        addUsedCar: false
       }
     },
     computed: {
@@ -226,7 +228,7 @@
       async getDocumentByType (documentType) {
         try {
           const params = {
-            customerNum: this.$route.query.customerNum,
+            customerNum: this.$route.query.customerNum || '',
             documentType: documentType
           }
           const {data} = await getDocumentByType(params)
@@ -239,8 +241,8 @@
             isRequire: true,//*是否必须
             deletable: true,//是否可以操作-上传和删除
             documentType: documentType,
-            customerNum: this.$route.query.customerNum,
-            customerId: this.$route.query.customerId,
+            customerNum: this.$route.query.customerNum || '0',
+            customerId: this.$route.query.customerId || '0',
             kind: '1',
             fileList: data
           })
@@ -340,15 +342,15 @@
       async verifyForm () {
         let num = 0;
         for (let item in this.errorMsg) {
-          if(this.errorMsg.hasOwnProperty(item)) {
+          if (this.errorMsg.hasOwnProperty(item)) {
             this.errorMsg[item] = this.returnMsg(item, this.carFrom[item]);
           }
         }
         return new Promise((resolve) => {
           setTimeout(() => {
             for (let item in this.errorMsg) {
-              if(this.errorMsg.hasOwnProperty(item)) {
-                if(this.errorMsg[item]) {
+              if (this.errorMsg.hasOwnProperty(item)) {
+                if (this.errorMsg[item]) {
                   num++;
                 }
               }
@@ -361,28 +363,53 @@
        * 保存车辆
        */
       saveCar () {
-        if(this.carFrom.carNature === 'old_car') {
-          if(!this.verifyImage()) {
+        if (this.carFrom.carNature === 'old_car') {
+          if (!this.verifyImage()) {
             Toast.fail("二手车照片必传");
             return;
           }
         }
         this.loading = true
-        this.verifyForm().then((res) => {
-          if(res) {
-            this.$store.dispatch('credit/setCarData', {
-              data: this.carFrom, index: this.$route.query.index
-            })
+        this.verifyForm().then(async (res) => {
+          try {
+            if (res) {
+              if(this.addUsedCar) {
+                const arr = this.dataList.map(item => item.fileList);
+                const documentIds = _.flatten(arr).map(item => item.documentId).join(",")
+                const {data} = await saveUsedCar({...this.carFrom, documentIds})
+                if(data) {
+                  this.loading = false
+                  Dialog.confirm({
+                    title: '注意',
+                    message: '评估列表已存在该车，是否查看该车车辆信息？'
+                  }).then(() => {
+                    this.$router.push({path: '/priceEvaluationDetail', query: {edit: true, ...data}})
+                  }).catch(() => {
+                    // on cancel
+                  });
+                  return
+                }
+
+                Notify({ type: 'success', message: '保存成功' });
+              } else {
+                this.$store.dispatch('credit/setCarData', {
+                  data: this.carFrom, index: this.$route.query.index
+                })
+              }
+              this.loading = false
+              this.$nextTick(() => {
+                this.$router.go(-1)
+              })
+            } else {
+              this.loading = false
+            }
+          }catch (e) {
             this.loading = false
-            this.$nextTick(() => {
-              this.$router.go(-1)
-            })
-          } else {
-            this.loading = false
+            console.log(e)
           }
         })
       },
-      verifyImage() {
+      verifyImage () {
         let len = this.dataList.length
         return len === this.dataList.filter(item => item.fileList && item.fileList.length > 0).length
       },
@@ -420,6 +447,22 @@
           // this.errorMsg.chassisNumber = ''
           Vue.set(this.errorMsg, 'chassisNumber', '')
         }
+      },
+      initUsedCar () {
+        this.carFrom.carNature = 'old_car'
+        this.changeNature('old_car')
+      },
+      async backFn() {
+        if(this.addUsedCar) {
+          const arr = this.dataList.map(item => item.fileList);
+          const documentIds = _.flatten(arr).map(item => item.documentId).join(",")
+          if(documentIds.length) {
+            await deleteDocuments({
+              documentIds
+            })
+          }
+        }
+        this.$router.back(-1)
       }
     },
     mounted () {
@@ -427,6 +470,8 @@
       if (this.$route.query) {
         this.initData()
       }
+      this.addUsedCar = Boolean(this.$route.query.addUsedCar) && this.$route.query.addUsedCar !== 'false'
+      this.initUsedCar()
       // this.rulesForm("order-credit-car-xh");//新车
       // this.loading = true
     }

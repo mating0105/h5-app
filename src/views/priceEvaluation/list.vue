@@ -22,7 +22,7 @@
                     <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
-                                <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
+                                <van-cell :title="item.chassisNumber" :value="returnText(item.status)" icon="notes-o"></van-cell>
                             </section>
                         </template>
                         <van-row style="min-height: 10rem">
@@ -31,17 +31,63 @@
                                 <div style="white-space:nowrap;">品牌型号：</div>
                                 <div>{{nameToString(item.brndNm, item.carSeries, item.carModel)}}</div>
                             </van-col>
+                            <van-col span="24" class="xh-top-10">车牌所在地：{{ item.carLicenseLocation }}</van-col>
+                            <van-col span="24" class="xh-top-10">首次上牌日期：{{ item.plateDate }}</van-col>
+                            <van-col span="24" class="xh-top-10">行驶里程：{{ item.roadHaul }}公里</van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.status === '3'">
+                            <span class="xh-primary-tag">
+                               二手车评估中
+                            </span>
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-else-if="item.status === '4'">
+                            <span class="xh-success-tag">
+                               二手车评估价{{item.evaluatingPriceDot}}元
+                            </span>
+                            </van-col>
                         </van-row>
-                        <template v-slot:footer v-if="item.yn != 1 || !item.evaluatingPriceDot">
+                        <template v-slot:footer>
+<!--                        <template v-slot:footer v-if="item.yn != 1">-->
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
+                                        v-if="item.status === '1'"
                                         plain
                                         size="small"
                                         type="danger"
                                         class="xh-radius"
                                         style="border-radius: 6px;"
                                         @click.stop="startForm(item)"
-                                >{{item.evaluatingPriceDot?'重新评估':'立即评估'}}
+                                >发起二手车评估
+                                </van-button>
+                                <van-button
+                                        v-else-if="item.status === '2'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item)"
+                                >重新发起二手车评估
+                                </van-button>
+
+                                <van-button
+                                        v-if="item.status === '3'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item, {isReply: true, edit: false})"
+                                >立即评估
+                                </van-button>
+                                <van-button
+                                        v-else-if="item.status === '4'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item, {isReply: true, edit: false})"
+                                >重新评估
                                 </van-button>
                             </div>
                         </template>
@@ -49,6 +95,17 @@
                 </div>
             </van-list>
         </van-pull-refresh>
+        <div class="xh-fixed-submit">
+            <div class="xh-submit">
+                <van-button
+                        icon="plus"
+                        size="large"
+                        class="xh-bg-main"
+                        @click="addVehicle"
+                >新增二手车
+                </van-button>
+            </div>
+        </div>
     </ViewPage>
 </template>
 
@@ -86,6 +143,7 @@
           pageSize: 10,
           searchKey: ''
         },
+        isReply: false
       };
     },
     computed: {
@@ -105,7 +163,7 @@
       // 字典转换
       returnText (val) {
         let name;
-        this.wordbook.cu_credit_status.forEach(e => {
+        this.wordbook.Used_car_evaluation.forEach(e => {
           if (e.value === val) {
             name = e.label;
           }
@@ -138,12 +196,16 @@
         this.onLoad()
       },
       // 取消搜索
-      onCancel() {
+      onCancel () {
         this.params.searchKey = '';
         this.onSearch();
       },
       startFormFn (item) {
-        this.startForm(item, {edit: false})
+        let query = {}
+        if(item.status === '3' || item.status === '4') {
+          query = {isReply: true, isReplyView: true}
+        }
+        this.startForm(item, {edit: false, ...query})
       },
       // 详情
       startForm (item, query = {}) {
@@ -165,9 +227,20 @@
         setTimeout(() => {
           Toast.success('刷新成功');
         }, 500);
+      },
+      addVehicle() {
+        this.$router.push({
+          path: '/vehicle',
+          query: {
+            addUsedCar: true
+          }
+        })
       }
     },
     mounted () {
+      // if(this.$route.name === 'priceEvaluationReplyList') {
+      //   this.isReply = true
+      // }
       this.onLoad();
     }
   };

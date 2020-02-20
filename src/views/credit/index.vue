@@ -20,7 +20,7 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item, {edit: false}, '/bankQuery')" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
                                 <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -217,7 +217,7 @@
           break;
           case '2': this.startFormFn(item, {edit: true, bigData: true})
           break;
-          case '3': this.startFormFn(item, {edit: true}, '/rbDetail')
+          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbDetail')
           break;
         }
       

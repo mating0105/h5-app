@@ -74,7 +74,7 @@ module.exports = {
       },
       //https://user.test.wwvas.net/userauth/oauth/token
       '/userauth': {
-        target: `https://user.test.wwvas.net`,
+        target: `https://172.16.10.5`,
         // target: `https://user.wwvas.net`,
         changeOrigin: true
       },

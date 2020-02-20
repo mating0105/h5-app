@@ -80,8 +80,9 @@
           const {data} = await uploadsDocument(params)
           data.forEach(item => {
             item.documentRoute = item.fileUrl
-            item.url = item.fileUrl,
-              item.declare = this.data.declare
+            item.url = item.fileUrl
+            item.declare = this.data.declare
+            item.declare = this.data.declare
           })
           this.data.fileList.splice(index, 0, ...data)
           for (let i = 0; i < data.length; i++) {

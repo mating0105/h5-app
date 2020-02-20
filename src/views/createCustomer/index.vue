@@ -53,7 +53,20 @@
             :error-message="errorMsg.certificateNum"
           />
         </van-cell-group>
-        <van-cell-group :border="false"  v-show="params.credit">
+        <van-cell-group :border="false" v-show="params.credit">
+             <van-field
+                  name="bankCardNum"
+                  label="银行卡号："
+                  placeholder="请输入"
+                  input-align="right"
+                  clearable
+                  v-model="customerData.bankCardNum"
+                  @blur.prevent="ruleMessge"
+                  :error-message="errorMsg.bankCardNum"
+                  right-icon="scan"
+                  @click-right-icon="IdcardLoading('bankCodeOCR')"/>
+        </van-cell-group>
+        <van-cell-group :border="false" v-show="params.credit">
           <van-cell
           class="cell-except"
             title="征信对象类型"
@@ -264,7 +277,8 @@ export default {
         signOrg: "", //身份证签发机关
         startDate: "", //起始日
         endDate: "", //截止日
-        contactPhone: "" //手机号码
+        contactPhone: "", //手机号码
+        bankCardNum: "", //银行卡号
       },
       show1: false,
       show2: false,
@@ -579,6 +593,17 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
+    },
+    IdcardLoading(name) {
+      this.$bridge.callHandler(name, '', (res) => {
+        this.customerData.bankCardNum = res.BANK_NUM || ''
+        this.ruleMessge({
+          target: {
+            name: 'bankCardNum',
+            value: this.customerData.bankCardNum
+          }
+        })
+      })
     }
   },
   mounted() {
@@ -595,7 +620,8 @@ export default {
         startDate: "", //起始日
         endDate: "", //截止日
         contactPhone: "", //手机号
-        creditObjectType: "" //征信对象类型
+        creditObjectType: "", //征信对象类型
+        bankCardNum: "", //银行卡号
       };
     } else {
       //新建客户

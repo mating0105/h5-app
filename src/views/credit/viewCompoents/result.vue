@@ -1,7 +1,7 @@
 <template>
     <Card>
         <template v-slot:header>
-            {{isBank ? '银行': '大数据'}}征信结果
+            {{creditName||''}}征信结果
         </template>
         <div class="xh-electronic-box" v-for="(item, index) in dataList" :key="index">
             <div>
@@ -21,8 +21,8 @@
             </div>
             <div class="xh-contract-status">
                 <div @click="showPopup(item)">
-                    <span v-if="item[type] === 'pass'" class="xh-contract-true">{{isBank ? '银行': '大数据'}}征信通过</span>
-                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">{{isBank ? '银行': '大数据'}}征信未通过</span>
+                    <span v-if="item[type] === 'pass'" class="xh-contract-true">{{creditName||''}}征信通过</span>
+                    <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">{{creditName||''}}征信未通过</span>
                     <span v-else>请选择征信结果</span>
                     <van-icon class="xh-contract-icon" name="arrow"/>
                 </div>
@@ -60,7 +60,9 @@
     },
     props: {
       isBank: Boolean,
+      rbCredit: Boolean,
       dataList: Array,
+      creditName: String
     },
     computed: {
       wordbook () {
@@ -70,7 +72,13 @@
         return this.$store.state.user.wordbook.credit_result || []
       },
       type () {
-        return this.isBank ? 'creditResult' : 'bigDataResult'
+        if (this.isBank) {
+          return 'creditResult'
+        } else if (this.rbCredit) {
+          return 'personalGuaResult'
+        } else {
+          return 'bigDataResult'
+        }
       }
     },
     methods: {
