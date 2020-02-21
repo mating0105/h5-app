@@ -37,8 +37,51 @@
         </div>
         <div v-show="params.dealState == '1'">
           <van-cell-group :border="true" class="xh-conclusion">
+            <van-cell
+              title="风控意见"
+              :value="data.projPayInfo.riskConclusion?data.projPayInfo.riskConclusion == 1?'通过':'不通过':''"
+            />
+          </van-cell-group>
+          <van-cell-group :border="true" class="xh-conclusion">
             <van-cell title="审批结论" :value="conclusion" is-link @click="chooseConclusion" />
           </van-cell-group>
+          <card v-if="showAdvances">
+            <template slot="header">资方垫款信息</template>
+            <van-cell-group :border="false">
+              <van-cell
+                title="垫款资方"
+                required
+                is-link
+                :value="datalist.advancesAssetName"
+                @click="loadType('垫款资方', 'managename')"
+                label-class="labelClass"
+              />
+            </van-cell-group>
+            <van-cell-group :border="false">
+              <van-field
+                v-model="datalist.loanAmt"
+                clearable
+                label="垫款金额"
+                input-align="right"
+                placeholder="请输入"
+              />
+            </van-cell-group>
+            <van-cell-group :border="false">
+              <van-cell
+                title="垫款时间"
+                required
+                is-link
+                :value="datalist.advancesTime"
+                @click="showPopupTime"
+                label-class="labelClass"
+                @blur.prevent="ruleMessge"
+              />
+            </van-cell-group>
+            <van-cell-group :border="false">
+              <van-cell title="垫款凭证" />
+            </van-cell-group>
+            <imageList :dataList="dataImg"></imageList>
+          </card>
           <card>
             <template v-slot:header>意见描述</template>
             <section>
@@ -82,6 +125,18 @@
         />
       </div>
     </van-action-sheet>
+
+    <van-action-sheet get-container="#app" v-model="show2" class="xh-list">
+      <div class="xh-list-body">
+        <van-datetime-picker
+          title="请选择"
+          type="datetime"
+          v-model="currentDate"
+          @confirm="confirmTime"
+          @cancel="cancelTime"
+        />
+      </div>
+    </van-action-sheet>
   </ViewPage>
 </template>
 <script>
@@ -96,14 +151,23 @@ import {
   CellGroup,
   ActionSheet,
   Picker,
-  Field
+  Field,
+  DatetimePicker
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import ViewPage from "@/layout/components/ViewPage";
 import Approval from "@/views/basicInfo/approvalRecord/index";
 import Cookies from "js-cookie";
-import { getPaymentDetail, getDic, submitGo } from "@/api/payment";
+import {
+  getPaymentDetail,
+  getDic,
+  submitGo,
+  managementList
+} from "@/api/payment";
+import imageList from "@/components/imageList";
+import { getDocumentByType } from "@/api/document";
+import { format } from "@/utils/format";
 import { mapState } from "vuex";
 const Components = [
   Button,
@@ -115,7 +179,8 @@ const Components = [
   CellGroup,
   ActionSheet,
   Picker,
-  Field
+  Field,
+  DatetimePicker
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -125,7 +190,8 @@ export default {
     redCard,
     ViewPage,
     card,
-    Approval
+    Approval,
+    imageList
   },
   data() {
     return {
@@ -167,9 +233,11 @@ export default {
         }
       ],
       show: false,
+      show2: false,
+      currentDate: "",
       options: [
         {
-          name: "同意",
+          name: "已垫款",
           value: "01"
         },
         {
@@ -184,19 +252,33 @@ export default {
       conclusion: "", //审批结论
       message: "", //意见描述
       conclusionCode: "",
+      time: "", //垫款时间
       loading: false,
       accout: "",
-      phone:'',
+      phone: "",
+      showAdvances: false, //资方垫款信息是否显示
+      datalist: {},
+      dataImg: [],
+      manageList: [] //资方数组
     };
   },
   computed: {
-    ...mapState({
-      token: state => state.user.token
-    })
+    wordbook() {
+      return this.$store.state.user.wordbook;
+    },
+    documentType() {
+      let obj = {};
+      if (this.wordbook.document_type && this.wordbook.document_type.length) {
+        this.wordbook.document_type.forEach(item => {
+          obj[item.value] = item;
+        });
+      }
+      return obj;
+    }
   },
   methods: {
     meunList(row) {
-      console.log(row)
+      console.log(row);
       this.params.dealState = "3";
       if (row.url == "/paymentProjectInfo") {
         this.$router.push({
@@ -233,72 +315,175 @@ export default {
       })
         .then(res => {
           this.data = res.data;
-          if (this.data.projGpsInstals[0].gpsnum > 0 && this.data.projGpsInstals[0].gpsIsDone != '-1') {
-            
-          }else{
+          if (
+            this.data.projGpsInstals[0].gpsnum > 0 &&
+            this.data.projGpsInstals[0].gpsIsDone != "-1"
+          ) {
+          } else {
             this.meunRow.splice(4, 1);
           }
+          this.datalist.loanAmt = this.numFilter(
+            this.data.projProjectInfo.loanAmt
+          );
+          this.message = this.data.projPayInfo.riskDescription;
           this.loading = false;
         })
         .catch(e => {
           this.loading = false;
         });
     },
+    //加载垫款资方
+    loadManagement() {
+      managementList().then(res => {
+        this.manageList = res.data;
+      });
+    },
+    //上拉菜单选择
+    loadType(title, field) {
+      this.show = true;
+      switch (title) {
+        case "垫款资方":
+          let list = [];
+          this.manageList.forEach(e => {
+            list.push({
+              name: e.advancesAssetName,
+              value: e.id,
+              type: "垫款资方"
+            });
+          });
+          this.options = list;
+          break;
+      }
+    },
     chooseConclusion() {
       this.show = true;
     },
     confirm(value) {
       console.log(value);
-      this.conclusion = value.name;
-      this.conclusionCode = value.value;
+      if (value.type == "垫款资方") {
+        this.datalist.advancesAssetName = value.name;
+        this.datalist.advancesAssetId = value.value;
+        console.log('advancesAssetId',this.datalist.advancesAssetId);
+      } else {
+        this.conclusion = value.name;
+        this.conclusionCode = value.value;
+        if (this.conclusionCode == "01") {
+          this.showAdvances = true;
+        } else {
+          this.showAdvances = false;
+        }
+      }
       this.show = false;
     },
     cancel() {
       this.show = false;
     },
+    showPopupTime() {
+      this.show2 = true;
+    },
+    confirmTime(value) {
+      this.time = Date.parse(new Date(value));
+      var time = format(value, "yyyyMMdd hh:mm");
+      this.datalist.advancesTime = time;
+      this.show2 = false;
+    },
+    cancelTime() {
+      this.show2 = false;
+    },
     //提交流程
     submit() {
-      let businessKey = this.params.info.businesskey;
-      let data = {
-        businessKey: businessKey,
-        commentsDesc: this.message,
-        conclusionCode: this.conclusionCode
-      };
-      if (this.conclusionCode) {
-        if (this.conclusionCode == "02") {
-          if (!this.message) {
-            this.$notify({ type: "danger", message: "请输入意见描述" });
+      if (this.dataImg.length<1 && this.conclusionCode == "01") {
+        this.$notify({ type: "danger", message: "请上传垫款资料" });
+      } else {
+        if (this.conclusion) {
+          let businessKey = this.params.info.businesskey;
+          let data = {
+            wfComment: {
+              businessKey: businessKey,
+              commentsDesc: this.message,
+              conclusionCode: this.conclusionCode
+            },
+            projPayInfo: {
+              advancesAssetId: this.datalist.advancesAssetId,
+              advancesAssetName: this.datalist.advancesAssetName,
+              advancesMoney: this.datalist.loanAmt,
+              advancesTime: this.time
+            }
+          };
+          if (this.conclusionCode) {
+            if (this.conclusionCode == "02") {
+              if (!this.message) {
+                this.$notify({ type: "danger", message: "请输入意见描述" });
+              } else {
+                this.loading = true;
+                submitGo(data)
+                  .then(res => {
+                    this.loading = false;
+                    this.$notify({ type: "success", message: "流程提交成功" });
+                    this.$router.go(-1);
+                  })
+                  .catch(e => {
+                    this.loading = false;
+                  });
+              }
+            } else {
+              this.loading = true;
+              if (this.message == "") {
+                data.commentsDesc = "同意";
+              }
+              submitGo(data)
+                .then(res => {
+                  this.loading = false;
+                  this.$notify({ type: "success", message: "流程提交成功" });
+                  this.$router.go(-1);
+                })
+                .catch(e => {
+                  this.loading = false;
+                });
+            }
           } else {
-            this.loading = true;
-            submitGo(data)
-              .then(res => {
-                this.loading = false;
-                this.$notify({ type: "success", message: "流程提交成功" });
-                this.$router.go(-1);
-              })
-              .catch(e => {
-                this.loading = false;
-              });
+            this.$notify({ type: "danger", message: "请选择审批结论" });
           }
         } else {
-          this.loading = true;
-          if (this.message == "") {
-            data.commentsDesc = "同意";
-          }
-          submitGo(data)
-            .then(res => {
-              this.loading = false;
-              this.$notify({ type: "success", message: "流程提交成功" });
-              this.$router.go(-1);
-            })
-            .catch(e => {
-              this.loading = false;
-            });
+          this.$notify({
+            type: "danger",
+            message: "请通知风控审批官给予风控意见"
+          });
         }
-      } else {
-        this.$notify({ type: "danger", message: "请选择审批结论" });
       }
-    }
+    },
+    //加载垫款图片
+    loadImg() {
+      this.getDocumentByType("0001");
+    },
+    async getDocumentByType(documentType) {
+      try {
+        const params = {
+          customerNum: this.params.info.customerNum,
+          documentType: documentType
+        };
+        const { data } = await getDocumentByType(params);
+        const declare = this.documentType[documentType]
+          ? this.documentType[documentType].label
+          : "图片描述";
+        data.forEach(item => {
+          item.declare = declare;
+        });
+        this.dataImg.push({
+          declare: declare, //图片描述
+          isRequire: true, //*是否必须
+          deletable: true, //是否可以操作-上传和删除
+          documentType: documentType,
+          customerNum: this.params.info.customerNum,
+          customerId: this.params.info.customerId,
+          kind: "1",
+          fileList: data
+        });
+        console.log(this.dataImg,22222)
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
   mounted() {
     this.params = {
@@ -310,6 +495,8 @@ export default {
     this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
     this.loadData(); //加载详情数据
+    this.loadManagement(); //加载资方
+    this.loadImg();
   }
 };
 </script>
@@ -345,5 +532,9 @@ export default {
 .xh-conclusion {
   margin: 10px;
   border: 1px solid #ddd;
+}
+.xh-conclusion span {
+  color: #c4252a;
+  font-weight: bold;
 }
 </style>

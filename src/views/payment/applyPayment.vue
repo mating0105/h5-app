@@ -345,6 +345,11 @@
               <imageList :dataList="dataList"></imageList>
             </card>
             <card>
+              <van-row style="padding:10px;">
+                <van-checkbox v-model="notice">通知风控审批走款</van-checkbox>
+              </van-row>
+            </card>
+            <card>
               <template v-slot:header>意见描述</template>
               <section>
                 <van-cell-group :border="false">
@@ -488,6 +493,7 @@ export default {
         info: {}
       }, //上个页面传过来的参数
       loading: false,
+      notice:false,//是否通知风控走款
       selectName: "",
       dicList: [], //字典获取
       valueKey: "label",
@@ -821,12 +827,17 @@ export default {
           if (this.message == "") {
             this.message = "同意";
           }
-          let data = {
-            businessKey: this.paymentDetail.projPayInfo.id,
-            conclusionCode: "01",
-            commentsDesc: this.message,
-            nextUser: row.id
-          };
+        let data = {
+            wfComment :{
+              businessKey: this.paymentDetail.projPayInfo.id,
+              conclusionCode: "01",
+              commentsDesc: this.message,
+              nextUser: row.id,
+              isSendMsg:this.notice?'1':'0'
+            },
+            projPayInfo:{
+            }
+          }
           submitProcess(data)
             .then(res => {
               this.loading = false;

@@ -77,3 +77,28 @@ export function gpsList(params) {
         data: params
     })
 }
+// 审批官走款审批列表
+export function approveList(params) {
+    return request({
+        url: '/order/captureExpends/risklist',
+        method: 'get',
+        data: params
+    })
+}
+// 审批官风控意见提交
+export function approveSubmit(params) {
+    return request({
+        url: '/order/captureExpends/risksave',
+        method: 'post',
+        data: params
+    })
+}
+// 加载资方
+export function managementList(params) {
+    return request({
+        url: '/cooperation/advancesasset/list',
+        method: 'get',
+        data: params
+    })
+}
+
