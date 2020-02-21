@@ -298,20 +298,20 @@
             </van-cell>
             <!-- <van-cell title="发动机号:" :border="false" :value="item.engineNum" /> -->
             <van-cell-group :border="false">
-                  <van-field
-                    v-model="item.engineNum"
-                    clearable
-                    name="colligateCharges"
-                    error-message-align="right"
-                    label="发动机号"
-                    input-align="right"
-                    placeholder="请输入"
-                  />
-                </van-cell-group>
+              <van-field
+                v-model="item.engineNum"
+                clearable
+                name="colligateCharges"
+                error-message-align="right"
+                label="发动机号"
+                input-align="right"
+                placeholder="请输入"
+              />
+            </van-cell-group>
             <van-cell-group :border="false">
               <van-cell title="二手车照片:" />
             </van-cell-group>
-            <imageList :dataList="dataImg"></imageList>
+            <imageList :dataList="dataImg" :view="true"></imageList>
           </template>
           <van-cell title="备注:" :value="item.remark" />
           <div slot="right" style="height: 100%">
@@ -342,9 +342,10 @@
       <template v-slot:header>车辆评估信息</template>
       <van-row class="xh-project">
         <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars[0].evaluatingPrice" />
-        <van-cell title="评估报告:" :border="false" >
-          <van-button type="default" @click="showPicReport">查看</van-button>
-        </van-cell>
+        <van-cell-group :border="false">
+          <van-cell title="评估报告:" />
+        </van-cell-group>
+        <imageList :dataList="dataImg2" :view="true"></imageList>
       </van-row>
     </Card>
 
@@ -553,8 +554,13 @@
 
     <Card class="xh-top-10">
       <van-row class="xh-project" style="padding:10px;">
-        <van-col :span="16"><van-checkbox v-model="assesstment">完善调查信息</van-checkbox></van-col>
-        <van-col :span="8" style="text-align:right" @click="conpleteInfo">{{projProjectInfo.perfectMsg}}<van-icon name="arrow" /></van-col>
+        <van-col :span="16">
+          <van-checkbox v-model="assesstment">完善调查信息</van-checkbox>
+        </van-col>
+        <van-col :span="8" style="text-align:right" @click="conpleteInfo">
+          {{projProjectInfo.perfectMsg}}
+          <van-icon name="arrow" />
+        </van-col>
       </van-row>
     </Card>
     <!-- 意见 -->
@@ -666,7 +672,7 @@ const Components = [
   Picker,
   Icon,
   SwipeCell,
-  Checkbox, 
+  Checkbox,
   CheckboxGroup
 ];
 
@@ -839,11 +845,12 @@ export default {
       platformId: "", //
       isView: false,
       oldCarList: {}, //新增二手车信息
-      assesstment:false,//是否完善信息
-      dataImg:[],//二手车照片
-      message:'',
-      userlist:false,//是否有下一节点人
-      processedBy:'',
+      assesstment: false, //是否完善信息
+      dataImg: [], //二手车照片
+      dataImg2: [], //评估报告
+      message: "",
+      userlist: false, //是否有下一节点人
+      processedBy: ""
     };
   },
   methods: {
@@ -885,8 +892,15 @@ export default {
       });
     },
     //加载二手车照片
-    loadImg() {
-      this.getDocumentByType("0306");
+    async loadImg() {
+      try {
+        await this.getDocumentByType("7777"); //发动机细节
+        await this.getDocumentByType("8888"); //车辆内饰
+        await this.getDocumentByType("9999"); //车辆外观
+        await this.getDocumentByType("6666"); //二手车评估报告
+      } catch (e) {
+        console.log(e);
+      }
     },
     async getDocumentByType(documentType) {
       try {
@@ -901,22 +915,35 @@ export default {
         data.forEach(item => {
           item.declare = declare;
         });
-        this.dataImg.push({
-          declare: declare, //图片描述
-          isRequire: false, //*是否必须
-          deletable: false, //是否可以操作-上传和删除
-          documentType: documentType,
-          customerNum: this.projProjectInfo.customerNum,
-          customerId: this.projProjectInfo.customerId,
-          kind: "1",
-          fileList: data
-        });
+        if (documentType !== "6666") {
+          this.dataImg.push({
+            declare: declare, //图片描述
+            isRequire: false, //*是否必须
+            deletable: false, //是否可以操作-上传和删除
+            documentType: documentType,
+            customerNum: this.projProjectInfo.customerNum,
+            customerId: this.projProjectInfo.customerId,
+            kind: "1",
+            fileList: data
+          });
+        } else {
+          this.dataImg2.push({
+            declare: declare, //图片描述
+            isRequire: false, //*是否必须
+            deletable: false, //是否可以操作-上传和删除
+            documentType: documentType,
+            customerNum: this.projProjectInfo.customerNum,
+            customerId: this.projProjectInfo.customerId,
+            kind: "1",
+            fileList: data
+          });
+        }
       } catch (e) {
         console.log(e);
       }
     },
     //查看评估报告
-    showPicReport(){},
+    showPicReport() {},
     //二手车重选
     reChooseCar(rows, inx) {
       deleteCar({
@@ -930,7 +957,6 @@ export default {
           }
         });
       });
-     
     },
     // 车辆删除
     removeCar(rows, inx) {
@@ -1185,164 +1211,164 @@ export default {
           this.options = this.platformList;
           this.show3 = true;
           break;
-          case "下一节点处理人":
-            this.show3 = true;
-            break;
+        case "下一节点处理人":
+          this.show3 = true;
+          break;
         default:
           break;
       }
     },
     // 字典选择确认
     confirm(row) {
-      if(this.userlist){
+      if (this.userlist) {
         this.processedBy = row.id;
         this.postProcess();
-      }else{
-      if (this.isWordbook) {
-        this.projProjectInfo[this.fieldName] = row.value;
-        this.projProjectInfo[this.fieldName + "Name"] = row.label;
-        this.errorMsg[this.fieldName] = "";
-        if (this.selectName == "业务来源") {
-          this.getCustomer();
-        }
       } else {
-        this.projProjectInfo[this.fieldName] = row[this.valueId];
-        this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
-        this.errorMsg[this.fieldName] = "";
-        switch (this.selectName) {
-          case "业务来源":
-            if (this.fieldName == "bsnSrc") {
-              this.valueKey = "label";
-              this.isWordbook = true;
-              this.fieldName = "isAccessCar";
-              this.options = this.wordbook.is_Access_Car;
-              return;
-            }
-            break;
-          case "业务模式":
-            // 初始数据
-            let arr = [
-              "loanTerm",
-              "dsbrPltfrmNm",
-              "loanPlatfomrId",
-              "productCategoryIdName",
-              "productCategoryId",
-              "productIdName",
-              "productId",
-              "thiefRescueName",
-              "thiefRescue",
-              "loanRegion",
-              "guaranteeRate",
-              "rebateStandard"
-            ];
-            arr.forEach(t => {
-              this.projProjectInfo[t] = "";
-            });
-            // 其他
-            this.productTypeList({
-              type: 2,
-              carType: this.carType,
-              carNature: this.carNature,
-              companyId: this.projProjectInfo.companyId,
-              businessMode: this.projProjectInfo.businessModel
-            });
-            break;
-          case "贷款期限":
-            // 初始数据
-            let arr3 = [
-              "dsbrPltfrmNm",
-              "loanPlatfomrId",
-              "productCategoryIdName",
-              "productCategoryId",
-              "productIdName",
-              "productId",
-              "thiefRescueName",
-              "thiefRescue",
-              "loanRegion",
-              "bankNewRate",
-              "guaranteeRate",
-              "rebateStandard"
-            ];
-            arr3.forEach(t => {
-              this.projProjectInfo[t] = "";
-            });
-            this.loanPlatformTree(row.value);
-            break;
-          case "放款平台":
-            // 初始数据
-            let arr2 = [
-              "productCategoryIdName",
-              "productCategoryId",
-              "productIdName",
-              "productId",
-              "thiefRescueName",
-              "thiefRescue",
-              "loanRegion",
-              "guaranteeRate",
-              "rebateStandard"
-            ];
-            arr2.forEach(t => {
-              this.projProjectInfo[t] = "";
-            });
-            this.bankRate = row.intrt;
-            this.projProjectInfo.bankNewRate = row.intrt;
-            this.projProjectInfo.dsbrPltfrmNm = row.dsbrPltfrmNm;
-            this.projProjectInfo.loanPlatfomrId = row.value;
-            this.productTypeList({
-              type: 3,
-              carType: this.carType,
-              carNature: this.carNature,
-              companyId: this.projProjectInfo.companyId,
-              businessMode: this.projProjectInfo.businessModelId,
-              platformId: row.id
-            });
-            break;
-          case "产品类别":
-            // 初始数据
-            let arr1 = [
-              "productIdName",
-              "productId",
-              "thiefRescueName",
-              "thiefRescue",
-              "loanRegion",
-              "guaranteeRate",
-              "rebateStandard"
-            ];
-            arr1.forEach(t => {
-              this.projProjectInfo[t] = "";
-            });
-            // 其他
-            this.productTypeList({
-              type: 4,
-              companyId: this.projProjectInfo.companyId,
-              productCategoryId: row.id
-            });
-            break;
-          case "产品名称":
-            // 初始数据
-            let arr4 = [
-              "thiefRescue",
-              "loanRegion",
-              "guaranteeRate",
-              "rebateStandard"
-            ];
-            arr4.forEach(t => {
-              this.projProjectInfo[t] = "";
-            });
-            this.productTypeList({
-              type: 5,
-              productId: row.productId
-            });
-            break;
-          case "盗抢险购买平台":
-            this.projProjectInfo.rbrinsPltfrmNmName = row.rbrinsPltfrmNm;
-            this.projProjectInfo.rbrinsPltfrmNmId = row.id;
-            break;
+        if (this.isWordbook) {
+          this.projProjectInfo[this.fieldName] = row.value;
+          this.projProjectInfo[this.fieldName + "Name"] = row.label;
+          this.errorMsg[this.fieldName] = "";
+          if (this.selectName == "业务来源") {
+            this.getCustomer();
+          }
+        } else {
+          this.projProjectInfo[this.fieldName] = row[this.valueId];
+          this.projProjectInfo[this.fieldName + "Name"] = row[this.valueKey];
+          this.errorMsg[this.fieldName] = "";
+          switch (this.selectName) {
+            case "业务来源":
+              if (this.fieldName == "bsnSrc") {
+                this.valueKey = "label";
+                this.isWordbook = true;
+                this.fieldName = "isAccessCar";
+                this.options = this.wordbook.is_Access_Car;
+                return;
+              }
+              break;
+            case "业务模式":
+              // 初始数据
+              let arr = [
+                "loanTerm",
+                "dsbrPltfrmNm",
+                "loanPlatfomrId",
+                "productCategoryIdName",
+                "productCategoryId",
+                "productIdName",
+                "productId",
+                "thiefRescueName",
+                "thiefRescue",
+                "loanRegion",
+                "guaranteeRate",
+                "rebateStandard"
+              ];
+              arr.forEach(t => {
+                this.projProjectInfo[t] = "";
+              });
+              // 其他
+              this.productTypeList({
+                type: 2,
+                carType: this.carType,
+                carNature: this.carNature,
+                companyId: this.projProjectInfo.companyId,
+                businessMode: this.projProjectInfo.businessModel
+              });
+              break;
+            case "贷款期限":
+              // 初始数据
+              let arr3 = [
+                "dsbrPltfrmNm",
+                "loanPlatfomrId",
+                "productCategoryIdName",
+                "productCategoryId",
+                "productIdName",
+                "productId",
+                "thiefRescueName",
+                "thiefRescue",
+                "loanRegion",
+                "bankNewRate",
+                "guaranteeRate",
+                "rebateStandard"
+              ];
+              arr3.forEach(t => {
+                this.projProjectInfo[t] = "";
+              });
+              this.loanPlatformTree(row.value);
+              break;
+            case "放款平台":
+              // 初始数据
+              let arr2 = [
+                "productCategoryIdName",
+                "productCategoryId",
+                "productIdName",
+                "productId",
+                "thiefRescueName",
+                "thiefRescue",
+                "loanRegion",
+                "guaranteeRate",
+                "rebateStandard"
+              ];
+              arr2.forEach(t => {
+                this.projProjectInfo[t] = "";
+              });
+              this.bankRate = row.intrt;
+              this.projProjectInfo.bankNewRate = row.intrt;
+              this.projProjectInfo.dsbrPltfrmNm = row.dsbrPltfrmNm;
+              this.projProjectInfo.loanPlatfomrId = row.value;
+              this.productTypeList({
+                type: 3,
+                carType: this.carType,
+                carNature: this.carNature,
+                companyId: this.projProjectInfo.companyId,
+                businessMode: this.projProjectInfo.businessModelId,
+                platformId: row.id
+              });
+              break;
+            case "产品类别":
+              // 初始数据
+              let arr1 = [
+                "productIdName",
+                "productId",
+                "thiefRescueName",
+                "thiefRescue",
+                "loanRegion",
+                "guaranteeRate",
+                "rebateStandard"
+              ];
+              arr1.forEach(t => {
+                this.projProjectInfo[t] = "";
+              });
+              // 其他
+              this.productTypeList({
+                type: 4,
+                companyId: this.projProjectInfo.companyId,
+                productCategoryId: row.id
+              });
+              break;
+            case "产品名称":
+              // 初始数据
+              let arr4 = [
+                "thiefRescue",
+                "loanRegion",
+                "guaranteeRate",
+                "rebateStandard"
+              ];
+              arr4.forEach(t => {
+                this.projProjectInfo[t] = "";
+              });
+              this.productTypeList({
+                type: 5,
+                productId: row.productId
+              });
+              break;
+            case "盗抢险购买平台":
+              this.projProjectInfo.rbrinsPltfrmNmName = row.rbrinsPltfrmNm;
+              this.projProjectInfo.rbrinsPltfrmNmId = row.id;
+              break;
 
-          default:
-            break;
+            default:
+              break;
+          }
         }
-      }
       }
       this.show3 = false;
     },
@@ -1580,7 +1606,7 @@ export default {
               "name"
             )
           };
-          if(row.cars[0].carNature == 'old_car'){
+          if (row.cars[0].carNature == "old_car") {
             this.loadImg();
           }
           setTimeout(() => {
@@ -1716,13 +1742,13 @@ export default {
       if (this.isRule) {
         let yanzheng = true;
         for (let i = 0; i < this.projProjectInfo.cars.length; i++) {
-          if(this.projProjectInfo.cars[i].carNature == 'new_car'){
+          if (this.projProjectInfo.cars[i].carNature == "new_car") {
             if (!this.projProjectInfo.cars[i].salePrice) {
               yanzheng = false;
-               this.$notify({
-                  type: "danger",
-                  message: "请填写车辆价格"
-                });
+              this.$notify({
+                type: "danger",
+                message: "请填写车辆价格"
+              });
               break;
             }
           }
@@ -1847,12 +1873,12 @@ export default {
           dataList.loanPlatfomr = {};
           dataList.loanPlatfomr.id = formList.loanPlatfomrId;
           dataList.loanPlatfomr.dsbrPltfrmNm = formList.dsbrPltfrmNm;
-          if(this.projProjectInfo.cars.length < 1){
+          if (this.projProjectInfo.cars.length < 1) {
             this.$notify({
               type: "danger",
               message: "请添加车辆"
             });
-          }else{
+          } else {
             this.postProject(dataList);
           }
         } else {
@@ -1891,15 +1917,15 @@ export default {
         this.message = "同意";
       }
       let obj = {
-        wfBizComments:{
+        wfBizComments: {
           conclusionCode: "01",
           businessKey: this.params.projectId,
           commentsDesc: this.message
         },
-        isPerfectMsg:this.assesstment?'1':'0',
-        projCarInfo:{
-          id:this.projProjectInfo.cars[0].id,
-          engineNum:this.projProjectInfo.cars[0].engineNum,
+        isPerfectMsg: this.assesstment ? "1" : "0",
+        projCarInfo: {
+          id: this.projProjectInfo.cars[0].id,
+          engineNum: this.projProjectInfo.cars[0].engineNum
         }
       };
       setProjectTask(obj)
@@ -1907,7 +1933,7 @@ export default {
           let objArr = [];
           let { data } = res;
           this.userlist = true;
-          this.loadType('下一节点处理人', 'nextpeople');
+          this.loadType("下一节点处理人", "nextpeople");
           data.list.forEach(t => {
             objArr.push({
               ...t,
@@ -1925,11 +1951,11 @@ export default {
     // 提交流程
     postProcess() {
       let obj = {
-          conclusionCode: "01",
-          businessKey: this.params.projectId,
-          commentsDesc: this.message,
-          processedBy:this.processedBy
-      }
+        conclusionCode: "01",
+        businessKey: this.params.projectId,
+        commentsDesc: this.message,
+        processedBy: this.processedBy
+      };
       setProjectProcess(obj)
         .then(res => {
           this.$notify({
@@ -1943,7 +1969,6 @@ export default {
         .catch(() => {
           this.dLoading = false;
         });
-      
     },
     OCRScan() {
       this.show4 = true;
@@ -1956,12 +1981,12 @@ export default {
       });
     },
     //点击完善信息
-    conpleteInfo(){
-      let query = {...this.params,newPro:true}
+    conpleteInfo() {
+      let query = { ...this.params, newPro: true };
       this.$router.push({
-          path: "/xhProject",
-          query
-        });
+        path: "/xhProject",
+        query
+      });
     }
   },
   mounted() {
@@ -1973,7 +1998,7 @@ export default {
     this.isView = this.params.isView == 0;
     let datas = JSON.parse(sessionStorage.getItem("pro"));
     // if (!datas) {
-      this.loanData();
+    this.loanData();
     // }
     this.rulesForm("order-project-xh");
   }

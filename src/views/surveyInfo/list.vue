@@ -153,7 +153,8 @@ export default {
             customerNum: rows.customerNum,
             projectNo: rows.projectNo,
             projectId: rows.projectId,
-            isView: 1
+            isView: 1,
+            newPro:true,//是否是完善资料
           }
       });
     },
