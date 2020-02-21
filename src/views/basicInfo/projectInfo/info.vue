@@ -921,8 +921,7 @@ export default {
             isRequire: false, //*是否必须
             deletable: false, //是否可以操作-上传和删除
             documentType: documentType,
-            customerNum: this.projProjectInfo.customerNum,
-            customerId: this.projProjectInfo.customerId,
+            id:this.projProjectInfo.cars[0].assessId,
             kind: "1",
             fileList: data
           });

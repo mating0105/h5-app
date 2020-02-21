@@ -914,7 +914,7 @@ export default {
             this.completionList.findIndex(item => item.value === "04"),
             1
           );
-          this.params.isView = 1;
+          this.params.isView = 0;
           break;
         case "WF_PROJ_APPR_01_T52":
           this.loadData();
