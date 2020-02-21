@@ -99,9 +99,10 @@
             id: this.$route.query.id
           }
           const res = await getCreditInfo(params)
-          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
-          this.requestParams.customerId = this.dataList.customerId
-          this.recordParams.businesskey = this.dataList.id
+          const dataList = res.data.cuCreditRegister
+          this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = dataList.customerId
+          this.recordParams.businesskey = dataList.id
           this.loading = false
 
           res.data.cuCreditRegister.surDtlList.forEach(e => {
