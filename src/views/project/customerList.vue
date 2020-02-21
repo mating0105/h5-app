@@ -214,7 +214,7 @@ export default {
           let { data } = res;
           let projectInfo = data.projectInfo;
           this.$router.push({
-            path: "/xhProject",
+            path: "/projectInfo",
             query: {
               customerName: projectInfo.customerName, //客户姓名
               contactPhone: projectInfo.contactPhone, //客户身份证
