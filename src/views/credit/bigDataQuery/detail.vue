@@ -12,7 +12,7 @@
             <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
             <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             <!-- 百融 -->
-            <creditQueryInfo title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <!-- <creditQueryInfo title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo> -->
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -99,9 +99,10 @@
             id: this.$route.query.id
           }
           const res = await getCreditInfo(params)
-          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
-          this.requestParams.customerId = this.dataList.customerId
-          this.recordParams.businesskey = this.dataList.id
+          const dataList = res.data.cuCreditRegister
+          this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = dataList.customerId
+          this.recordParams.businesskey = dataList.id
           this.loading = false
 
           res.data.cuCreditRegister.surDtlList.forEach(e => {

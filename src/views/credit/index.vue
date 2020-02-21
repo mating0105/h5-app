@@ -52,7 +52,7 @@
                             </span>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer v-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
+                        <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
                                 <span v-for="(i, index) in buttonList" style="margin-left: 0.3rem" :key='index'>
                                   <van-button
@@ -65,26 +65,28 @@
                                         @click.stop="startForm(item, i)"
                                     >{{i.buttonName}}
                                   </van-button>
-                                  <van-button
-                                        v-else-if="item.status === '01' || item.status === '-1'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startForm(item, i)"
-                                 >{{i.buttonName}}
-                                </van-button>
-                                  <van-button
-                                        v-else-if="item.status === '04' || item.status === '03'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startFormAgain(item)"
-                                 >重新发起征信
-                                </van-button>
+                                  <template v-else-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
+                                      <van-button
+                                              v-if="item.status === '01' || item.status === '-1'"
+                                              plain
+                                              size="small"
+                                              type="danger"
+                                              class="xh-radius"
+                                              style="border-radius: 6px;"
+                                              @click.stop="startForm(item, i)"
+                                        >{{i.buttonName}}
+                                        </van-button>
+                                        <van-button
+                                                  v-else-if="item.status === '04' || item.status === '03'"
+                                                  plain
+                                                  size="small"
+                                                  type="danger"
+                                                  class="xh-radius"
+                                                  style="border-radius: 6px;"
+                                                  @click.stop="startFormAgain(item)"
+                                          >重新发起征信
+                                        </van-button>
+                                  </template>
                                 </span>
                             </div>
                         </template>
