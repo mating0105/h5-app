@@ -35,3 +35,37 @@ export function checkAssessmentCar(params) {
     params
   })
 }
+
+/**
+ * 保存二手车信息
+ * @param params
+ */
+export function saveUsedCar(params) {
+  return request({
+    url: '/order/usedCar/newUserCar',
+    method: 'post',
+    data: params
+  })
+}
+
+// app获取图片
+export const deleteDocuments = params => request({
+  method: 'post',
+  url: '/order/usedCar/delUserCarDocument',
+  data: params
+})
+
+
+//发起二手车评估
+export const startUserCar = params => request({
+  method: 'post',
+  url: '/order/usedCar/startUserCar',
+  data: params
+})
+
+//发起二手车评估
+export const presentUserCar = params => request({
+  method: 'post',
+  url: '/order/usedCar/presentUserCar',
+  data: params
+})

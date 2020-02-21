@@ -47,7 +47,7 @@ export const constantRoutes = [
     path: '/priceEvaluationList',
     name: 'priceEvaluationList',
     component: () => import('@/views/priceEvaluation/list'),
-    meta: {title: '车价评估'}
+    meta: {title: '二手车评估'}
   },
 
   {
@@ -73,7 +73,14 @@ export const constantRoutes = [
     path: '/bigDataQueryDetail',
     name: 'bigDataQueryDetail',
     component: () => import('@/views/credit/bigDataQuery/detail'),
-    meta: {title: '基本资料'}
+    meta: {title: '大数据征信查询详情'}
+  },
+
+  {
+    path: '/rbDetail',
+    name: 'rbDetail',
+    component: () => import('@/views/credit/bigDataQuery/detail'),
+    meta: {title: '人保征信查询详情'}
   },
 
   {
@@ -87,7 +94,7 @@ export const constantRoutes = [
     path: '/bankQuery',
     name: 'bankQuery',
     component: () => import('@/views/credit/bankQuery'),
-    meta: {title: '基本资料'}
+    meta: {title: '银行征信查询'}
   },
 
   {

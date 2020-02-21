@@ -20,7 +20,7 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item, {edit: false}, '/bankQuery')" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
                                 <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -54,17 +54,28 @@
                         </van-row>
                         <template v-slot:footer v-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
                             <div style="text-align:right; min-height: 2rem">
-                                <van-button
-                                        v-if="item.status === '01' || item.status === '-1'"
+                                <span v-for="(i, index) in buttonList" style="margin-left: 0.3rem" :key='index'>
+                                  <van-button
+                                        v-if="i.buttonId !== '1'"
                                         plain
                                         size="small"
                                         type="danger"
                                         class="xh-radius"
                                         style="border-radius: 6px;"
-                                        @click.stop="startForm(item)"
-                                >发起征信
+                                        @click.stop="startForm(item, i)"
+                                    >{{i.buttonName}}
+                                  </van-button>
+                                  <van-button
+                                        v-else-if="item.status === '01' || item.status === '-1'"
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        class="xh-radius"
+                                        style="border-radius: 6px;"
+                                        @click.stop="startForm(item, i)"
+                                 >{{i.buttonName}}
                                 </van-button>
-                                <van-button
+                                  <van-button
                                         v-else-if="item.status === '04' || item.status === '03'"
                                         plain
                                         size="small"
@@ -72,8 +83,9 @@
                                         class="xh-radius"
                                         style="border-radius: 6px;"
                                         @click.stop="startFormAgain(item)"
-                                >重新发起征信
+                                 >重新发起征信
                                 </van-button>
+                                </span>
                             </div>
                         </template>
                     </Card>
@@ -96,7 +108,7 @@
 
 <script>
   import Vue from "vue";
-  import { getList, checkedReregisterMob } from "@/api/credit";
+  import { getList, getButtonList, checkedReregisterMob } from "@/api/credit";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -130,6 +142,7 @@
           searchKey: '',
           status: ''
         },
+        buttonList: []
       };
     },
     computed: {
@@ -190,20 +203,30 @@
         this.params.status = '';
         this.onSearch();
       },
-      startFormFn (item) {
-        this.$router.push({path: '/bigDataQueryDetail', query: {edit: false, lpCertificateNum: item.lpCertificateNum, id: item.id}})
-        // this.startForm(item, {edit: false})
+      startFormFn (item, query = {edit: false}, path = '/bigDataQueryDetail') {
+        this.$router.push({path, query: {lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
       },
       // 发起报单
-      startForm (item, query = {}) {
-        removeValue("credit");
-        this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
+      startForm (item, type, query = {}) {
+        const goPageCredit  = () => {
+          removeValue("credit");
+          this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
+        }
+        switch (type.buttonId) {
+          case '1': goPageCredit()
+          break;
+          case '2': this.startFormFn(item, {edit: true, bigData: true})
+          break;
+          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbDetail')
+          break;
+        }
+      
       },
       // 重新发起
       async startFormAgain (item) {
         try {
           await checkedReregisterMob({lpCertificateNum: item.lpCertificateNum})
-          this.startForm(item, {again: true})
+          this.startForm(item, {buttonId: '1'} ,{again: true})
         } catch (e) {
           console.log(e)
         }
@@ -230,10 +253,19 @@
         setTimeout(() => {
           Toast.success('刷新成功');
         }, 500);
+      },
+      async getButtonList() {
+        try {
+          const {data} = await getButtonList()
+          this.buttonList = data
+        }catch (e) {
+          console.log(e)
+        }
       }
     },
     mounted () {
       this.onLoad();
+      this.getButtonList();
     }
   };
 </script>

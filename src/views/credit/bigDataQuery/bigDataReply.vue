@@ -1,9 +1,9 @@
 <template>
     <ViewPage :loading="loading">
-        <result :dataList="surDtlList" :isBank="isBank" v-if="surDtlList"></result>
+        <result :dataList="surDtlList" :isBank="isBank" :rbCredit="rbCredit" v-if="surDtlList" :creditName="nameFormatter()"></result>
         <Card style="margin-top: 1rem">
             <template v-slot:header>
-                {{isBank ? '银行' : '大数据'}}征信报告照片
+                {{nameFormatter()}}征信报告照片
             </template>
             <div v-for="(item, index) in users" :key="index">
                 <div class="xh-image-box">
@@ -61,6 +61,13 @@
     borrower: ['0207'],//借款人
     joiDebtor: ['0209'],//共债人
   }
+  const rb = {
+    joiDebtorSpouse: ['6699'],//共债人配偶
+    borrowerSpouse: ['6696'],//借款人配偶
+    security: ['6697'],//担保人
+    borrower: ['6695'],//借款人
+    joiDebtor: ['6698'],//共债人
+  }
 
   export default {
     name: "creditNextStep",
@@ -84,6 +91,8 @@
         surDtlList: null,
         isBank: false,
         remarks: '',
+        bigData: false,
+        rbCredit: false,
       }
     },
     computed: {
@@ -100,7 +109,13 @@
         return obj
       },
       type () {
-        return this.isBank ? 'creditResult' : 'bigDataResult'
+        if (this.isBank) {
+          return 'creditResult'
+        } else if (this.rbCredit) {
+          return 'personalGuaResult'
+        } else {
+          return 'bigDataResult'
+        }
       }
     },
     methods: {
@@ -155,6 +170,8 @@
           const users = _.cloneDeep(form.surDtlList)
           if (this.isBank) {
             this.obj = bank
+          } else if (this.rbCredit) {
+            this.obj = rb
           } else {
             this.obj = bigData
           }
@@ -199,7 +216,7 @@
       },
       async submit () {
         try {
-          if(!this.checkResult()) {
+          if (!this.checkResult()) {
             Toast.fail('未选择征信结果!')
             return
           }
@@ -218,14 +235,18 @@
               this.submitBank()
             }
           } else {
+            let url = '/order/creditInfo/updateCreditResult'
+            if (this.rbCredit) {
+              url = '/order/creditInfo/updatePersonalGuarantee'
+            }
             this.loading = true
-            await reply(this.form.surDtlList)
+            await reply(url, this.form.surDtlList)
             this.loading = false
             this.$nextTick(() => {
               Toast.success('提交成功')
             })
             this.$nextTick(() => {
-              this.$router.push('/bigDataQueryList')
+              this.$router.push('/creditList')
             })
           }
         } catch (e) {
@@ -248,12 +269,25 @@
           this.loading = false
           console.log(e)
         }
+      },
+      nameFormatter () {
+        let name = '';
+        if (this.isBank) {
+          name = '银行'
+        } else if (this.bigData) {
+          name = '大数据'
+        } else if (this.rbCredit) {
+          name = '人保'
+        }
+        return name
       }
     },
     mounted () {
       this.getCreditInfo()
       // this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isBank = Boolean(this.$route.query.isBank)
+      this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
+      this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
     }
   }
 </script>

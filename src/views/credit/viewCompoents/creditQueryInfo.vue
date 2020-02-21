@@ -1,0 +1,239 @@
+<template>
+    <Card>
+        <template v-slot:header>
+            {{title}} 
+            <span class="typeDesc" v-if="typeDesc">{{typeDesc}}</span>
+            <div class="credit-arrow-wrap" @click="isSpread = !isSpread">
+              <van-icon v-if="isSpread" class="credit-arrow" name="arrow-up"/>
+              <van-icon v-else class="credit-arrow" name="arrow-down"/>
+            </div>
+        </template>
+        <!-- <div v-for="(item, index) in dataList" :key="index" class="xh-table-border">
+            <van-cell title="客户姓名:" :border="false" :value="item.creditPersonName"/>
+            <van-cell title="征信结果:" :border="false" :class="[item[type] === 'pass' ? 'xh-pass': item[type] === 'not_pass' ? 'xh-no-pass': '']"
+                      :value="item[type] === 'pass' ? '通过' : item[type] === 'not_pass' ? '不通过' : '暂未查询'"/>
+            <van-cell title="对象类型:" :border="false" :value="returnText(item.creditObjectType, 'credit_object_type')"/>
+            <van-cell title="身份证号:" :border="false" :value="item.cpCertificateNum"/>
+            <van-cell title="电话号码:" :border="false" :value="item.telephone"/>
+            <van-cell title="征信时间:" :border="false" :value="item.investigateDate"/>
+            <van-cell title="原因:" :value="item.telephone"/>
+        </div> -->
+        <div v-show="isSpread" class="xh-table-border">
+          <section>
+            <van-cell class="credit-info-title" :border="false"><span class="text">主借人信息</span></van-cell>
+            <div class="credit-info-detail">
+              <van-cell title="客户姓名:" :border="false" value="张三"/>
+              <van-cell title="证件号码:" :border="false" value="张三"/>
+              <van-cell title="手机号码:" :border="false" value="张三"/>
+              <van-cell title="银行卡号:" :border="false" value="张三"/>
+              <van-cell title="相关文档:" :border="false">
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                >查看</van-button>
+              </van-cell>
+              <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前信息查询报告:" :border="false">
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                  @click="lookUpResult('贷前信息查询报告')"
+                >查看报告</van-button>
+              </van-cell>
+              <div class="credit-info-solid"></div>
+              <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前风险策略报告:" :border="false">
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                  @click="lookUpResult('贷前风险策略报告')"
+                >查看报告</van-button>
+              </van-cell>
+            </div>
+          </section>
+          <section>
+            <van-cell class="credit-info-title" :border="false"><span class="text">配偶信息</span></van-cell>
+            <div class="credit-info-detail">
+              <van-cell title="姓名:" :border="false" value="张三"/>
+              <van-cell title="证件号码:" :border="false" value="张三"/>
+              <van-cell title="手机号码:" :border="false" value="张三"/>
+              <van-cell title="银行卡号:" :border="false" value="张三"/>
+              <van-cell title="征信对象关系:" :border="false" value="张三"/>
+              <van-cell title="相关文档:" :border="false">
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                >查看</van-button>
+              </van-cell>
+              <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前信息查询报告:" :border="false">
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                  @click="lookUpResult('贷前信息查询报告')"
+                >查看报告</van-button>
+              </van-cell>
+              <div class="credit-info-solid"></div>
+              <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前风险策略报告:" :border="false" >
+                <van-button
+                  slot="right-icon"
+                  size="mini"
+                  style="line-height: inherit;"
+                  @click="lookUpResult('贷前风险策略报告')"
+                >查看报告</van-button>
+              </van-cell>
+            </div>
+          </section>
+        </div>
+        <van-image-preview v-model="showImg" :images="images">
+          <template v-slot:index>{{ imgTitle }}</template>
+        </van-image-preview>
+    </Card>
+</template>
+
+<script>
+
+  import Card from '@/components/card'
+  import Vue from 'vue';
+  import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
+
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview]
+  Components.forEach(item => {
+    Vue.use(item)
+  })
+
+  export default {
+    name: "creditQueryInfo",
+    components: {
+      Card
+    },
+    props: {
+      title: String,
+      dataList: {
+        default () {
+          return []
+        }
+      },
+      type: String
+    },
+    data(){
+      return {
+        isSpread:true,
+        qaueryResult:0,
+        showImg:false,
+        images:[]
+      }
+    },
+    computed: {
+      // 所有字典
+      wordbook () {
+        return this.$store.state.user.wordbook
+      },
+      typeDesc() {
+        switch (this.qaueryResult) {
+          case 0:
+            return '拒绝'
+            break;
+          case 1:
+            return '查询'
+            break;
+          case 2:
+            return '复议'
+            break;
+          case 3:
+            return '通过'
+            break;
+          default:
+            return '其他'
+            break;
+        }
+      }
+    },
+    methods: {
+      // 字典转换
+      returnText (val, key) {
+        let name = '';
+        if (this.wordbook[key]) {
+          this.wordbook[key].forEach(e => {
+            if (e.value === val) {
+              name = e.label;
+            }
+          });
+        }
+        return name;
+      },
+      lookUpResult(text){
+        this.imgTitle = text
+        this.showImg = true
+        this.images = [
+          'https://img.yzcdn.cn/1.jpg'
+        ]
+      }
+    }
+  }
+</script>
+
+<style>
+
+    .xh-pass .van-cell__value {
+        color: #3ECE73;
+    }
+
+    .xh-no-pass .van-cell__value {
+        color: #C4252A;
+    }
+    .typeDesc{
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 2px;
+        color: #fff;
+        background-color: #C4252A;
+    }
+    .credit-arrow-wrap{
+      float: right;
+    }
+    .van-icon.credit-arrow{
+      font-size: 20px;
+      color: #ccc;
+    }
+    .credit-info-title .text{
+      color: #C4252A;
+    }
+    .credit-info-title .text:before{
+      content: '.';
+      display: inline-block;
+      height: 20px;
+      width: 5px;
+      background-color: #C4252A;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    .credit-info-title.van-cell{
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .credit-info-detail{
+      padding: 0 20px;
+    }
+    .credit-info-detail .van-cell{
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .credit-info-solid{
+      border-bottom: 0.08333rem solid #ebeeef;
+    }
+    .credit-result .van-cell__title{
+      font-weight: bold;
+    }
+</style>

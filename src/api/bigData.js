@@ -13,12 +13,13 @@ export function getList(params) {
 }
 
 /**
- * 回复
+ * 大数据和人保回复
+ * @param url
  * @param params
  */
-export function reply(params) {
+export function reply(url, params) {
   return request({
-    url: '/order/creditInfo/updateCreditResult',
+    url,
     method: 'post',
     data: params
   })

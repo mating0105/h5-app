@@ -163,11 +163,11 @@
         this.onSearch();
       },
       startFormFn (item) {
-        this.startForm(item, {edit: false})
+        this.startForm(item, {edit: false, bigData: true})
       },
       // 详情
       startForm (item, query = {}) {
-        this.$router.push({path: '/bigDataQueryDetail', query: {edit: true, lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
+        this.$router.push({path: '/bigDataQueryDetail', query: {edit: true, bigData: true, lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
       },
       nameToString () {
         return [...arguments].map(item => item).join('')
