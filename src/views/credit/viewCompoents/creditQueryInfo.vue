@@ -19,18 +19,19 @@
             <van-cell title="原因:" :value="item.telephone"/>
         </div> -->
         <div v-show="isSpread" class="xh-table-border">
-          <section>
-            <van-cell class="credit-info-title" :border="false"><span class="text">主借人信息</span></van-cell>
+          <section v-for="(item, index) in copyDataList" :key="index" class="xh-table-border">
+            <van-cell class="credit-info-title" :border="false"><span class="text">{{item.creditObjectType | filterInfo}}</span></van-cell>
             <div class="credit-info-detail">
-              <van-cell title="客户姓名:" :border="false" value="张三"/>
-              <van-cell title="证件号码:" :border="false" value="张三"/>
-              <van-cell title="手机号码:" :border="false" value="张三"/>
-              <van-cell title="银行卡号:" :border="false" value="张三"/>
+              <van-cell title="客户姓名:" :border="false" :value="item.creditPersonName"/>
+              <van-cell title="证件号码:" :border="false" :value="item.cpCertificateNum"/>
+              <van-cell title="手机号码:" :border="false" :value="item.telephone"/>
+              <!-- <van-cell title="银行卡号:" :border="false" value="张三"/> -->
               <van-cell title="相关文档:" :border="false">
                 <van-button
                   slot="right-icon"
                   size="mini"
                   style="line-height: inherit;"
+                  @click="lookDocs"
                 >查看</van-button>
               </van-cell>
               <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" value="通过"/>
@@ -47,44 +48,6 @@
               <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" value="通过"/>
               <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
               <van-cell class="credit-result" title="贷前风险策略报告:" :border="false">
-                <van-button
-                  slot="right-icon"
-                  size="mini"
-                  style="line-height: inherit;"
-                  @click="lookUpResult('贷前风险策略报告')"
-                >查看报告</van-button>
-              </van-cell>
-            </div>
-          </section>
-          <section>
-            <van-cell class="credit-info-title" :border="false"><span class="text">配偶信息</span></van-cell>
-            <div class="credit-info-detail">
-              <van-cell title="姓名:" :border="false" value="张三"/>
-              <van-cell title="证件号码:" :border="false" value="张三"/>
-              <van-cell title="手机号码:" :border="false" value="张三"/>
-              <van-cell title="银行卡号:" :border="false" value="张三"/>
-              <van-cell title="征信对象关系:" :border="false" value="张三"/>
-              <van-cell title="相关文档:" :border="false">
-                <van-button
-                  slot="right-icon"
-                  size="mini"
-                  style="line-height: inherit;"
-                >查看</van-button>
-              </van-cell>
-              <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="贷前信息查询报告:" :border="false">
-                <van-button
-                  slot="right-icon"
-                  size="mini"
-                  style="line-height: inherit;"
-                  @click="lookUpResult('贷前信息查询报告')"
-                >查看报告</van-button>
-              </van-cell>
-              <div class="credit-info-solid"></div>
-              <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="贷前风险策略报告:" :border="false" >
                 <van-button
                   slot="right-icon"
                   size="mini"
@@ -129,10 +92,12 @@
     },
     data(){
       return {
+        copyDataList:this.dataList,
         isSpread:true,
         qaueryResult:0,
         showImg:false,
         images:[]
+
       }
     },
     computed: {
@@ -160,6 +125,29 @@
         }
       }
     },
+    filters:{
+      filterInfo(info){
+        switch (info) {
+          case 'borrower':
+            return '借款人信息'
+            break;
+          case 'borrowerSpouse':
+            return '借款人配偶信息'
+            break;
+          case 'joiDebtor':
+            return '共债人信息'
+            break;
+          case 'joiDebtorSpouse':
+            return '共债人配偶信息'
+            break;
+          case 'security':
+            return '担保人信息'
+            break;
+          default:
+            break;
+        }
+      }
+    },
     methods: {
       // 字典转换
       returnText (val, key) {
@@ -179,6 +167,9 @@
         this.images = [
           'https://img.yzcdn.cn/1.jpg'
         ]
+      },
+      lookDocs(){
+        this.$emit('lookDocs')
       }
     }
   }

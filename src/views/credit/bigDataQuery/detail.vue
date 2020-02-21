@@ -12,7 +12,7 @@
             <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
             <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             <!-- 百融 -->
-            <creditQueryInfo title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
         </template>
         <template v-else-if="active === 0">
             <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
@@ -120,6 +120,9 @@
           path: '/bigDataReply',
           query: this.$route.query
         })
+      },
+      lookDocs(){
+        this.active = 2
       }
     },
     mounted () {
