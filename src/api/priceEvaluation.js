@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getList(params) {
   return request({
-    url: '/order/creditInfo/queryCreaditCarList',
+    url: '/order/usedCar/queryCreaditCarList',
     method: 'get',
     params
   })

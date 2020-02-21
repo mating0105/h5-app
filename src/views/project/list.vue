@@ -172,7 +172,8 @@ export default {
         id: rows.id
       }).then(res => {
         this.$router.push({
-          path: "/xhProject",
+          // path: "/xhProject",
+          path:'/projectInfo',
           query: {
             customerName: rows.customerName, //客户姓名
             contactPhone: rows.contactPhone, //客户身份证

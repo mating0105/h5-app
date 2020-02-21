@@ -249,119 +249,102 @@
       </van-row>
     </Card>
     <!-- 车辆信息 -->
-    <Card class="xh-top-10" :bodyPadding="true">
+    <Card style="margin-top: 1rem;">
       <template v-slot:header>
-        <section class="xh-plus">
-          车辆信息
-          <!-- <van-cell
-            title=""
-          >
-            <van-icon
-              slot="right-icon"
-              name="plus"
-              style="line-height: inherit;"
-              @click="pullCars"
-              v-if="isView"
-            />
-          </van-cell>-->
-        </section>
+        车辆信息
+        <span v-if="projProjectInfo.cars.length > 0 ">(请侧滑进行编辑或删除)</span>
+        <div class="card-icon" @click="addVehicle" v-if="projProjectInfo.cars.length === 0 ">
+          <van-icon name="add-o" />
+        </div>
       </template>
-      <van-row class="xh-row xh-swipe-button">
-        <van-col
-          span="24"
-          class="xh-row-col"
-          style="padding: 0;"
-          v-for="(i,index) in projProjectInfo.cars"
-          :key="index"
-        >
-          <!-- <van-swipe-cell :right-width="130" :disabled="!isView"> -->
-          <section>
-            <van-cell
-              title="车辆类别:"
-              :value="returnText('car_type',i.carType)+' '+returnText('car_type2',i.carType2)"
-            />
-          </section>
-          <section>
-            <van-cell title="车辆性质:" :value="returnText('car_nature',i.carNature)" />
-          </section>
-          <section>
-            <van-cell
-              title="车辆规格:"
-              :border="false"
-              :value="returnText('vehicle_specifications',i.carSpecifications)"
-            />
-          </section>
-          <section>
-            <van-cell title="车辆来源:" :value="returnText('CAR_SOURCE',i.carSource)" />
-          </section>
-          <section>
-            <van-cell title="车辆品牌:" :value="i.automarke.brndNm" />
-          </section>
-          <section>
-            <van-cell title="车系:" :value="i.automarke.carSeries" />
-          </section>
-          <section>
-            <van-cell title="车辆型号:" :value="i.automarke.carModel" />
-          </section>
-          <section>
-            <van-cell title="销售价:" :value="numFilter(i.salePrice)">
-              <div slot="right-icon" style="line-height: inherit;" v-if="i.salePrice">元</div>
+      <div>
+        <van-swipe-cell v-for="(item, index) in projProjectInfo.cars" :key="index">
+          <van-cell
+            title="车辆类别:"
+            :border="false"
+            :value="nameToString(returnText('car_type' ,item.carType), returnText('car_type2',item.carType2))"
+          />
+          <van-cell title="车辆性质:" :border="false" :value="returnText('car_nature',item.carNature)" />
+          <van-cell
+            title="车辆规格:"
+            :border="false"
+            :value="returnText('vehicle_specifications',item.carSpecifications)"
+          />
+          <van-cell title="车辆来源:" :border="false" :value="returnText('CAR_SOURCE',item.carSource)" />
+          <van-cell
+            title="车辆品牌型号:"
+            :border="false"
+            :value="nameToString(item.brndNm, item.carSeries, item.carModel)"
+          />
+          <van-cell
+            v-if="item.carNature === 'old_car'"
+            title="车架号:"
+            :border="false"
+            :value="item.chassisNumber"
+          />
+          <van-cell
+            title="销售价:"
+            v-if="item.carNature === 'new_car'"
+            :border="false"
+            :value="item.salePrice"
+          >
+            <div slot="right-icon" class="xh-cell-right">元</div>
+          </van-cell>
+          <template v-else-if="item.carNature === 'old_car'">
+            <van-cell title="车牌所在地:" :border="false" :value="item.carLicenseLocation" />
+            <van-cell title="首次上牌日:" :border="false" :value="item.plateDate" />
+            <van-cell title="行驶里程:" :border="false" :value="item.roadHaul">
+              <div slot="right-icon" class="xh-cell-right">公里</div>
             </van-cell>
-          </section>
-          <!-- 二手车的车牌号，车牌所在地，上牌日期 -->
-          <div v-if="i.carNature == 'old_car'">
-            <section>
-              <van-cell title="发动机号:" :value="i.engineNum" />
-            </section>
-            <section>
-              <van-cell title="车架号:" :value="i.chassisNumber" />
-            </section>
-            <section>
-              <van-cell title="车牌所在地:" :value="i.carLicenseLocation" />
-            </section>
-            <section>
-              <van-cell title="行驶里程:" :value="i.roadHaul">
-                <div slot="right-icon" style="line-height: inherit;" v-if="i.roadHaul">公里</div>
-              </van-cell>
-            </section>
-            <section>
-              <van-cell title="上牌日期:" :value="i.plateDate" />
-            </section>
+            <!-- <van-cell title="发动机号:" :border="false" :value="item.engineNum" /> -->
+            <van-cell-group :border="false">
+                  <van-field
+                    v-model="item.engineNum"
+                    clearable
+                    name="colligateCharges"
+                    error-message-align="right"
+                    label="发动机号"
+                    input-align="right"
+                    placeholder="请输入"
+                  />
+                </van-cell-group>
+            <van-cell-group :border="false">
+              <van-cell title="二手车照片:" />
+            </van-cell-group>
+            <imageList :dataList="dataImg"></imageList>
+          </template>
+          <van-cell title="备注:" :value="item.remark" />
+          <div slot="right" style="height: 100%">
+            <van-button
+              type="warning"
+              style="height:100%;border-radius: 0;"
+              @click="editCar(item, index)"
+              v-if="item.carNature === 'new_car'"
+            >修改</van-button>
+            <van-button
+              type="warning"
+              style="height:100%;border-radius: 0;"
+              @click="reChooseCar(item, index)"
+              v-if="item.carNature === 'old_car'"
+            >重选</van-button>
+            <van-button
+              type="danger"
+              style="height:100%;border-radius: 0;"
+              @click="removeCar(item,index)"
+            >删除</van-button>
           </div>
-          <!-- 二手车是否已评估 isAses 评估后显示-->
-          <div v-if="i.isAses == '1'">
-            <section>
-              <van-cell title="评估价:" :value="numFilter(i.estimateOriginalPrice)">
-                <div slot="right-icon" style="line-height: inherit;">元</div>
-              </van-cell>
-            </section>
-            <section>
-              <van-cell title="最高送审金额:" :value="numFilter(i.hgstAmt)">
-                <div slot="right-icon" style="line-height: inherit;" v-if="i.hgstAmt">元</div>
-              </van-cell>
-            </section>
-            <section>
-              <van-cell title="评估公司:" :value="i.asesInstNm" />
-            </section>
-          </div>
-          <section>
-            <van-cell title="备注：" :value="i.remark" />
-          </section>
-          <!-- <span slot="right" v-if="projProjectInfo.isAses == '1' ? false : true">
-              <van-button
-                type="warning"
-                style="height:100%;border-radius: 0;"
-                :disabled="i.isCreditAdd == '1'?true:false"
-                @click.native="carsEdit(i,index)"
-              >修改</van-button>
-              <van-button
-                type="danger"
-                style="height:100%;border-radius: 0;"
-                @click.native="carsDel(i,index)"
-              >删除</van-button>
-            </span>
-          </van-swipe-cell>-->
-        </van-col>
+        </van-swipe-cell>
+      </div>
+    </Card>
+
+    <!-- 车辆评估信息 -->
+    <Card class="xh-top-10" v-if="carNature == 'old_car'">
+      <template v-slot:header>车辆评估信息</template>
+      <van-row class="xh-project">
+        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars[0].evaluatingPrice" />
+        <van-cell title="评估报告:" :border="false" >
+          <van-button type="default" @click="showPicReport">查看</van-button>
+        </van-cell>
       </van-row>
     </Card>
 
@@ -568,6 +551,32 @@
       </van-row>
     </Card>
 
+    <Card class="xh-top-10">
+      <van-row class="xh-project" style="padding:10px;">
+        <van-col :span="16"><van-checkbox v-model="assesstment">完善调查信息</van-checkbox></van-col>
+        <van-col :span="8" style="text-align:right" @click="conpleteInfo">{{projProjectInfo.perfectMsg}}<van-icon name="arrow" /></van-col>
+      </van-row>
+    </Card>
+    <!-- 意见 -->
+    <Card style="margin: 10px;">
+      <template v-slot:header>意见描述</template>
+      <section>
+        <van-cell-group :border="false">
+          <van-field
+            v-model="message"
+            rows="2"
+            autosize
+            label-width="0"
+            :border="false"
+            type="textarea"
+            maxlength="200"
+            placeholder="请输入"
+            show-word-limit
+          />
+        </van-cell-group>
+      </section>
+    </Card>
+
     <!-- 提交按钮 -->
     <div class="xh-submit" style="padding: 20px 10px;" v-if="isView">
       <van-button
@@ -576,7 +585,7 @@
         @click="submitProject"
         :loading="dLoading"
         :disabled="dLoading"
-      >保 存</van-button>
+      >提 交</van-button>
     </div>
 
     <!-- 弹出选项 -->
@@ -616,7 +625,9 @@ import {
   getAllTpBuyPlatform,
   setProjectInfo,
   setNewCar,
-  deleteCar
+  deleteCar,
+  setProjectTask,
+  setProjectProcess
 } from "@/api/project";
 // 校验
 import formValidator from "@/mixins/formValidator";
@@ -638,7 +649,9 @@ import {
   Picker,
   Icon,
   SwipeCell,
-  Toast
+  Toast,
+  Checkbox,
+  CheckboxGroup
 } from "vant";
 const Components = [
   Dialog,
@@ -652,21 +665,25 @@ const Components = [
   Area,
   Picker,
   Icon,
-  SwipeCell
+  SwipeCell,
+  Checkbox, 
+  CheckboxGroup
 ];
 
 Components.forEach(item => {
   Vue.use(item);
 });
 import { mapState } from "vuex";
-
+import imageList from "@/components/imageList";
+import { getDocumentByType } from "@/api/document";
 export default {
   mixins: [formValidator],
   name: "projectInfo",
   components: {
     redCard,
     Card,
-    Provinces
+    Provinces,
+    imageList
   },
   computed: {
     bankTotal() {
@@ -675,16 +692,21 @@ export default {
     // 所有字典
     ...mapState({
       wordbook: state => state.user.wordbook
-    })
+    }),
+    documentType() {
+      let obj = {};
+      if (this.wordbook.document_type && this.wordbook.document_type.length) {
+        this.wordbook.document_type.forEach(item => {
+          obj[item.value] = item;
+        });
+      }
+      return obj;
+    }
   },
   watch: {
     // 婚姻状况
     "projProjectInfo.marriage"(newValue, oldValue) {
-      var arr = [
-        "spsNm",
-        "spsCtcTel",
-        "spsCrdtNo"
-      ];
+      var arr = ["spsNm", "spsCtcTel", "spsCrdtNo"];
       if (newValue == "2" || newValue == "4") {
         arr.forEach((item, index) => {
           this.$set(this.errorMsg, item, "");
@@ -709,7 +731,6 @@ export default {
     },
     // 查询放款平台
     "projProjectInfo.loanTerm"(val) {
-      console.log("jhgjh", val);
       if (val && this.projProjectInfo.businessModel) {
         this.loanPlatformTree(val);
       }
@@ -746,9 +767,9 @@ export default {
         });
       }
     },
-    // 
+    //
     "projProjectInfo.thiefRescue"(val) {
-      if(val == 0) {
+      if (val == 0) {
         Vue.delete(this.errorMsg, "thiefRescue");
       } else {
         this.$set(this.errorMsg, "thiefRescue", "");
@@ -779,14 +800,14 @@ export default {
       productTypeName: [], // 产品名字
       platformList: [], // 盗抢险购买平台
       isRule: true, // 验证是否通过 默认通过true
-      bankGuaranteeRate: "",  // 银行费率+担保费率
+      bankGuaranteeRate: "", // 银行费率+担保费率
       bankRate: "", // 银行费率
       businessList: [], //业务来源
       selectName: "",
       fieldName: "", // 选择字段名
       // 初始化数据
       projProjectInfo: {
-        loanPlatfomrs: '',
+        loanPlatfomrs: "",
         wbtProvCityId: [],
         cars: []
       },
@@ -816,21 +837,36 @@ export default {
       carType: "", //车辆类型
       carType2: "", //车辆类型2
       platformId: "", //
-      isView: false
+      isView: false,
+      oldCarList: {}, //新增二手车信息
+      assesstment:false,//是否完善信息
+      dataImg:[],//二手车照片
+      message:'',
+      userlist:false,//是否有下一节点人
+      processedBy:'',
     };
   },
   methods: {
-    pullCars() {
+    //新增车辆
+    addVehicle() {
+      // if (!this.edit) {
+      //   return
+      // }
       const query = {
         customerId: this.params.customerId,
-        customerNum: this.params.customerNum
+        customerNum: this.params.customerNum,
+        projectId: this.params.projectId
       };
-      this.$store.dispatch("credit/removeCarData");
-      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
-      this.$router.push({ path: "/vehicle", query });
+      this.$router.push({
+        path: "/addVehicle",
+        query
+      });
+    },
+    nameToString() {
+      return [...arguments].map(item => item).join(" ");
     },
     // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
-    carsEdit(rows, inx) {
+    editCar(rows, inx) {
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum,
@@ -841,14 +877,63 @@ export default {
         index: inx,
         ...rows
       };
+      query.projectId = this.params.projectId;
       sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
       this.$router.push({
-        path: "/vehicle",
+        path: "/addVehicle",
         query
       });
     },
+    //加载二手车照片
+    loadImg() {
+      this.getDocumentByType("0306");
+    },
+    async getDocumentByType(documentType) {
+      try {
+        const params = {
+          customerNum: this.projProjectInfo.customerNum,
+          documentType: documentType
+        };
+        const { data } = await getDocumentByType(params);
+        const declare = this.documentType[documentType]
+          ? this.documentType[documentType].label
+          : "图片描述";
+        data.forEach(item => {
+          item.declare = declare;
+        });
+        this.dataImg.push({
+          declare: declare, //图片描述
+          isRequire: false, //*是否必须
+          deletable: false, //是否可以操作-上传和删除
+          documentType: documentType,
+          customerNum: this.projProjectInfo.customerNum,
+          customerId: this.projProjectInfo.customerId,
+          kind: "1",
+          fileList: data
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    //查看评估报告
+    showPicReport(){},
+    //二手车重选
+    reChooseCar(rows, inx) {
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        this.$router.push({
+          path: "/priceEvaluationChoose",
+          query: {
+            type: 1,
+            projectId: this.params.projectId
+          }
+        });
+      });
+     
+    },
     // 车辆删除
-    carsDel(rows, inx) {
+    removeCar(rows, inx) {
       deleteCar({
         id: rows.id
       }).then(res => {
@@ -856,7 +941,9 @@ export default {
           type: "success",
           message: res.msg
         });
-        this.projProjectInfo.cars.splice(inx, 1);
+        // this.projProjectInfo.cars.splice(inx, 1);
+        // this.loanData();
+        location.reload();
       });
     },
     // 新增 - 编辑车辆
@@ -1098,13 +1185,19 @@ export default {
           this.options = this.platformList;
           this.show3 = true;
           break;
-
+          case "下一节点处理人":
+            this.show3 = true;
+            break;
         default:
           break;
       }
     },
     // 字典选择确认
     confirm(row) {
+      if(this.userlist){
+        this.processedBy = row.id;
+        this.postProcess();
+      }else{
       if (this.isWordbook) {
         this.projProjectInfo[this.fieldName] = row.value;
         this.projProjectInfo[this.fieldName + "Name"] = row.label;
@@ -1250,6 +1343,7 @@ export default {
             break;
         }
       }
+      }
       this.show3 = false;
     },
     // 字典选择取消
@@ -1357,7 +1451,6 @@ export default {
               companyId: row.companyId
             });
           }
-
           this.projProjectInfo = {
             loanPlatfomr: loanPlatfomr,
             carDealer: carDealer,
@@ -1441,6 +1534,7 @@ export default {
             isChange: row.isChange,
             isChangeProj: row.isChangeProj,
             ruleFlag: ruleFlag,
+            perfectMsg: row.perfectMsg,
             // 字典转换 --------------
             unitCharName: this.returnText("unit_Property", customer.unitChar),
             levelEducationName: this.returnText(
@@ -1464,11 +1558,15 @@ export default {
               "labelName"
             ),
             isAccessCarName: this.returnText("is_Access_Car", row.isAccessCar),
-            counterGuaranteeStatusName: row.counterGuaranteeStatus?this.returnText(
-              "counter_Guarantee_Status",
-              row.counterGuaranteeStatus
-            ):'无需担保',
-            counterGuaranteeStatus: row.counterGuaranteeStatus?row.counterGuaranteeStatus:'0',
+            counterGuaranteeStatusName: row.counterGuaranteeStatus
+              ? this.returnText(
+                  "counter_Guarantee_Status",
+                  row.counterGuaranteeStatus
+                )
+              : "无需担保",
+            counterGuaranteeStatus: row.counterGuaranteeStatus
+              ? row.counterGuaranteeStatus
+              : "0",
             wthrBlName: this.returnText("yes_no", row.wthrBl),
             onHouseTypeName: this.returnText("ON_HOUSE_TYPE", row.onHouseType),
             isTandzeroName: this.returnText("yes_no", row.isTandzero),
@@ -1482,7 +1580,9 @@ export default {
               "name"
             )
           };
-
+          if(row.cars[0].carNature == 'old_car'){
+            this.loadImg();
+          }
           setTimeout(() => {
             // 处理产品破数据
             this.changeRows(row);
@@ -1507,11 +1607,11 @@ export default {
       };
       getLoanPlatformTree(obj).then(res => {
         if (res.code == 200) {
-          console.log(this.platform)
+          console.log(this.platform);
           let datas = [];
           let list = res.data;
           list.forEach(t => {
-            if(t.children) {
+            if (t.children) {
               t.children.forEach(i => {
                 datas.push({
                   value: i.id,
@@ -1616,9 +1716,15 @@ export default {
       if (this.isRule) {
         let yanzheng = true;
         for (let i = 0; i < this.projProjectInfo.cars.length; i++) {
-          if (!this.projProjectInfo.cars[i].salePrice) {
-            yanzheng = false;
-            break;
+          if(this.projProjectInfo.cars[i].carNature == 'new_car'){
+            if (!this.projProjectInfo.cars[i].salePrice) {
+              yanzheng = false;
+               this.$notify({
+                  type: "danger",
+                  message: "请填写车辆价格"
+                });
+              break;
+            }
           }
         }
         if (yanzheng) {
@@ -1741,11 +1847,18 @@ export default {
           dataList.loanPlatfomr = {};
           dataList.loanPlatfomr.id = formList.loanPlatfomrId;
           dataList.loanPlatfomr.dsbrPltfrmNm = formList.dsbrPltfrmNm;
-          this.postProject(dataList);
+          if(this.projProjectInfo.cars.length < 1){
+            this.$notify({
+              type: "danger",
+              message: "请添加车辆"
+            });
+          }else{
+            this.postProject(dataList);
+          }
         } else {
           this.$notify({
             type: "danger",
-            message: "有车辆价格未填"
+            message: "请检查信息的完整"
           });
         }
       }
@@ -1753,7 +1866,6 @@ export default {
     // 提交数据
     postProject(dataList) {
       let num = 0;
-      
       console.log(this.errorMsg);
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.projProjectInfo[item]);
@@ -1767,13 +1879,71 @@ export default {
       this.dLoading = true;
       setProjectInfo(dataList)
         .then(res => {
-          this.$notify({ type: "success", message: res.msg });
+          this.createTask();
+        })
+        .catch(() => {
           this.dLoading = false;
+        });
+    },
+    // 提交流程
+    createTask() {
+      if (this.message == "") {
+        this.message = "同意";
+      }
+      let obj = {
+        wfBizComments:{
+          conclusionCode: "01",
+          businessKey: this.params.projectId,
+          commentsDesc: this.message
+        },
+        isPerfectMsg:this.assesstment?'1':'0',
+        projCarInfo:{
+          id:this.projProjectInfo.cars[0].id,
+          engineNum:this.projProjectInfo.cars[0].engineNum,
+        }
+      };
+      setProjectTask(obj)
+        .then(res => {
+          let objArr = [];
+          let { data } = res;
+          this.userlist = true;
+          this.loadType('下一节点处理人', 'nextpeople');
+          data.list.forEach(t => {
+            objArr.push({
+              ...t,
+              label: t.companyName + "-" + t.name
+            });
+          });
+          this.options = objArr;
+          console.log(this.options);
+          this.dLoading = false;
+        })
+        .catch(() => {
+          this.dLoading = false;
+        });
+    },
+    // 提交流程
+    postProcess() {
+      let obj = {
+          conclusionCode: "01",
+          businessKey: this.params.projectId,
+          commentsDesc: this.message,
+          processedBy:this.processedBy
+      }
+      setProjectProcess(obj)
+        .then(res => {
+          this.$notify({
+            type: "success",
+            message: res.msg
+          });
+          this.dLoading = false;
+          // this.$bridge.callHandler("jumpToTaskTab", "", res => {});
           this.$router.go(-1);
         })
         .catch(() => {
           this.dLoading = false;
         });
+      
     },
     OCRScan() {
       this.show4 = true;
@@ -1784,6 +1954,14 @@ export default {
         this.projProjectInfo.spsCrdtNo = res.ID_NUM || "";
         this.show4 = false;
       });
+    },
+    //点击完善信息
+    conpleteInfo(){
+      let query = {...this.params,newPro:true}
+      this.$router.push({
+          path: "/xhProject",
+          query
+        });
     }
   },
   mounted() {
@@ -1794,9 +1972,9 @@ export default {
     }
     this.isView = this.params.isView == 0;
     let datas = JSON.parse(sessionStorage.getItem("pro"));
-    if (!datas) {
+    // if (!datas) {
       this.loanData();
-    }
+    // }
     this.rulesForm("order-project-xh");
   }
 };

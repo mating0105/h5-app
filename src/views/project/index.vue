@@ -928,6 +928,9 @@ export default {
       this.params.dealState = this.params.isView == 0 ? 1 : 3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
+      if(this.params.newPro){
+        this.meunRow.splice(0,1);
+      }
     }
     if (this.isView) {
       this.getIsSaveObj();
