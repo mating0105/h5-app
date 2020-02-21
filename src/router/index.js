@@ -47,7 +47,7 @@ export const constantRoutes = [
     path: '/priceEvaluationList',
     name: 'priceEvaluationList',
     component: () => import('@/views/priceEvaluation/list'),
-    meta: {title: '车价评估'}
+    meta: {title: '二手车评估'}
   },
 
   {
@@ -56,7 +56,12 @@ export const constantRoutes = [
     component: () => import('@/views/priceEvaluation/detail'),
     meta: {title: '评估详情'}
   },
-
+  {
+    path: '/priceEvaluationChoose',
+    name: 'priceEvaluationChoose',
+    component: () => import('@/views/priceEvaluation/listChoose'),
+    meta: {title: '新增二手车'}
+  },
   {
     path: '/bigDataQueryList',
     name: 'bigDataQueryList',
@@ -104,7 +109,12 @@ export const constantRoutes = [
     component: () => import('@/views/credit/vehicle'),
     meta: {title: '新增车辆'},
   },
-
+  {
+    path: '/addVehicle',
+    name: 'addVehicle',
+    component: () => import('@/views/credit/vehicle/addVehicle'),
+    meta: {title: '新增车辆'},
+  },
   {
     path: '/xhProject',
     name: 'Project',
@@ -242,9 +252,21 @@ export const constantRoutes = [
     meta: {title: '缴费走款', icon: 'dashboard'}
   },
   {
+    path: '/walkApprovalList',
+    name: 'WalkApprovalList',
+    component: () => import('@/views/payment/walkApprovalList'),
+    meta: {title: '走款审批', icon: 'dashboard'}
+  },
+  {
     path: '/paymentSure',
     name: 'PaymentSure',
     component: () => import('@/views/payment/paymentSure'),
+    meta: {title: '走款确认', icon: 'dashboard'}
+  },
+  {
+    path: '/paymentSure2',
+    name: 'PaymentSure2',
+    component: () => import('@/views/payment/paymentSure2'),
     meta: {title: '走款确认', icon: 'dashboard'}
   },
   {
@@ -363,6 +385,12 @@ export const constantRoutes = [
     name: 'userAgreement',
     component: () => import('@/views/userAgreement/index'),
     //meta: {title: '用户协议', icon: 'dashboard'},
+  },
+  {
+    path: '/surveyList',
+    name: 'SurveyList',
+    component: () => import('@/views/surveyInfo/list'),
+    meta: {title: '调查信息', icon: 'dashboard'}
   },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}

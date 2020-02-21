@@ -15,7 +15,8 @@
             <creditQueryInfo @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
         </template>
         <template v-else-if="active === 0">
-            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
+            <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
+            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
         </template>
         <template v-else-if="active === 2">
             <relatedDocs :requestParams="requestParams"></relatedDocs>
@@ -40,10 +41,12 @@
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import creditQueryInfo from '../viewCompoents/creditQueryInfo'
   import basicInfo from '../viewCompoents/basicInfo'
+  import basicInfoCredit from '../reNewCredit/basicInfo'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
   import { getCreditInfo } from '@/api/credit'
+  import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs]
@@ -59,6 +62,7 @@
       creditInfoTable,
       creditQueryInfo,
       basicInfo,
+      basicInfoCredit,
       relatedDocs,
       approvalRecord
     },
@@ -81,7 +85,9 @@
         },
         recordParams: {
           businesskey: '', businesstype: '07'
-        }
+        },
+        bigData: false,
+        rbCredit: false
       }
     },
     methods: {
@@ -93,20 +99,21 @@
             id: this.$route.query.id
           }
           const res = await getCreditInfo(params)
-          this.dataList = res.data.cuCreditRegister;
-          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
-          this.requestParams.customerId = this.dataList.customerId
-          this.recordParams.businesskey = this.dataList.id
+          const dataList = res.data.cuCreditRegister
+          this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = dataList.customerId
+          this.recordParams.businesskey = dataList.id
           this.loading = false
 
-          this.dataList.surDtlList.forEach(e => {
+          res.data.cuCreditRegister.surDtlList.forEach(e => {
+            e.dataList = []
             if (e.creditObjectType === 'borrower') {
               this.form = e;
             } else {
               this.perInfoList.push(e);
             }
           })
-
+          this.dataList = res.data.cuCreditRegister;
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -116,9 +123,12 @@
        * 下一步
        **/
       async nextStep () {
-        this.$router.push({
-          path: '/bigDataReply',
-          query: this.$route.query
+        Bus.$emit('creditSave');
+        Bus.$on('creditSaveSuccess', query => {
+          this.$router.push({
+            path: '/bigDataReply',
+            query: this.$route.query
+          })
         })
       },
       lookDocs(){
@@ -128,6 +138,8 @@
     mounted () {
       this.getCreditInfo()
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+      this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
+      this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
     }
   }
 </script>

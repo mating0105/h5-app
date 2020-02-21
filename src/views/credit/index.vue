@@ -20,7 +20,7 @@
                     @load="onLoad"
             >
                 <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item)" style="margin:1rem 1rem 0 1rem;">
+                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item, {edit: false}, '/bankQuery')" style="margin:1rem 1rem 0 1rem;">
                         <template v-slot:header>
                             <section class="xh-plus">
                                 <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
@@ -52,7 +52,7 @@
                             </span>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer v-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
+                        <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
                                 <span v-for="(i, index) in buttonList" style="margin-left: 0.3rem" :key='index'>
                                   <van-button
@@ -65,26 +65,28 @@
                                         @click.stop="startForm(item, i)"
                                     >{{i.buttonName}}
                                   </van-button>
-                                  <van-button
-                                        v-else-if="item.status === '01' || item.status === '-1'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startForm(item, i)"
-                                 >{{i.buttonName}}
-                                </van-button>
-                                  <van-button
-                                        v-else-if="item.status === '04' || item.status === '03'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startFormAgain(item)"
-                                 >重新发起征信
-                                </van-button>
+                                  <template v-else-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
+                                      <van-button
+                                              v-if="item.status === '01' || item.status === '-1'"
+                                              plain
+                                              size="small"
+                                              type="danger"
+                                              class="xh-radius"
+                                              style="border-radius: 6px;"
+                                              @click.stop="startForm(item, i)"
+                                        >{{i.buttonName}}
+                                        </van-button>
+                                        <van-button
+                                                  v-else-if="item.status === '04' || item.status === '03'"
+                                                  plain
+                                                  size="small"
+                                                  type="danger"
+                                                  class="xh-radius"
+                                                  style="border-radius: 6px;"
+                                                  @click.stop="startFormAgain(item)"
+                                          >重新发起征信
+                                        </van-button>
+                                  </template>
                                 </span>
                             </div>
                         </template>
@@ -217,7 +219,7 @@
           break;
           case '2': this.startFormFn(item, {edit: true, bigData: true})
           break;
-          case '3': this.startFormFn(item, {edit: true}, '/rbDetail')
+          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbDetail')
           break;
         }
       

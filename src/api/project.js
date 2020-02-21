@@ -185,3 +185,13 @@ export function getGPSData(params) {
   })
 }
 
+// 项目信息增加车辆
+export function addCar(params) {
+  return request({
+    url: '/order/project/saveCar',
+    method: 'post',
+    params
+  })
+}
+
+

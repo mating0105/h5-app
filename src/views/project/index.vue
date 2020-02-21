@@ -32,7 +32,7 @@
                 </div>
               </template>
             </red-card>
-            <van-row class="xh-page-body">
+            <van-row class="xh-page-body" style="padding:0.5rem;">
               <van-col
                 span="6"
                 class="xh-meun"
@@ -928,6 +928,80 @@ export default {
       this.params.dealState = this.params.isView == 0 ? 1 : 3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
+      if(this.params.newPro){
+        this.meunRow = [
+        {
+          name: "客户及配偶",
+          key: 1,
+          icon: "icon-spouse.png",
+          url: "/clientIndex",
+          show: 0
+        },
+        {
+          name: "紧急联系人",
+          key: 2,
+          icon: "icon-contact.png",
+          url: "/contactPerson",
+          show: 0
+        },
+        {
+          name: "新增房产信息",
+          key: 3,
+          icon: "icon-house.png",
+          url: "/houseUser",
+          show: 0
+        },
+        {
+          name: "家庭收入",
+          key: 4,
+          icon: "icon-income.png",
+          url: "/incomeFamily",
+          show: 0
+        },
+        {
+          name: "名下车辆",
+          key: 5,
+          icon: "icon-carinfo.png",
+          url: "/vehicleList",
+          show: 0
+        },
+        {
+          name: "担保人信息",
+          key: 6,
+          icon: "icon-guarantor.png",
+          url: "/guarantor",
+          show: 0
+        },
+        {
+          name: "担保人房产",
+          key: 7,
+          icon: "icon-guarantor.png",
+          url: "/houseGuarantor",
+          show: 0
+        },
+        {
+          name: "担保人收入信息",
+          key: 8,
+          icon: "icon-guarantorhouse.png",
+          url: "/incomeGuarantor",
+          show: 0
+        },
+        {
+          name: "调查结论",
+          key: 9,
+          icon: "icon-findings.png",
+          url: "/survey",
+          show: 0
+        },
+        {
+          name: "相关文档",
+          key: 10,
+          icon: "icon-filed.png",
+          url: "/proDocument",
+          show: 0
+        }
+        ];
+      }
     }
     if (this.isView) {
       this.getIsSaveObj();

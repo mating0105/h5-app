@@ -13,7 +13,8 @@
             <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
         </template>
         <template v-else-if="active === 0">
-            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList"></basicInfo>
+            <basicInfoCredit :dataList="dataList" :edit="false" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
+<!--            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :edit="edit" :showImage="false"></basicInfo>-->
         </template>
         <template v-else-if="active === 2">
             <relatedDocs :requestParams="requestParams"></relatedDocs>
@@ -43,6 +44,7 @@
   import Card from '@/components/card'
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import basicInfo from '../viewCompoents/basicInfo'
+  import basicInfoCredit from '../reNewCredit/basicInfo'
   import backspace from '../viewCompoents/backspace'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
@@ -65,7 +67,8 @@
       basicInfo,
       backspace,
       relatedDocs,
-      approvalRecord
+      approvalRecord,
+      basicInfoCredit
     },
     data () {
       return {
@@ -100,21 +103,21 @@
             id: this.query.id
           }
           const res = await getCreditInfo(params)
-          this.dataList = res.data.cuCreditRegister;
-          this.requestParams.customerNum = this.dataList.perInfo ? this.dataList.perInfo.customerNum : ''
-          this.requestParams.customerId = this.dataList.customerId
-          this.recordParams.businesskey = this.dataList.id
-          // this.recordParams.businesstype = this.dataList.id
+          const dataList = res.data.cuCreditRegister
+          this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
+          this.requestParams.customerId = dataList.customerId
+          this.recordParams.businesskey = dataList.id
           this.loading = false
 
-          this.dataList.surDtlList.forEach(e => {
+          res.data.cuCreditRegister.surDtlList.forEach(e => {
+            e.dataList = []
             if (e.creditObjectType === 'borrower') {
               this.form = e;
             } else {
               this.perInfoList.push(e);
             }
           })
-
+          this.dataList = res.data.cuCreditRegister;
         } catch (e) {
           this.loading = false
           console.log(e)
