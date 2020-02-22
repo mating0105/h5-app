@@ -101,7 +101,7 @@ export const constantRoutes = [
     path: '/projectList',
     name: 'ProjectList',
     component: () => import('@/views/project/list'),
-    meta: {title: '项目报单', icon: 'dashboard', keepAlive: true}
+    meta: {title: '项目报单', icon: 'dashboard'}
   },
   {
     path: '/vehicle',

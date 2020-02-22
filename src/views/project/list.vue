@@ -237,6 +237,7 @@ export default {
   },
   mounted() {
     this.onLoad();
+    sessionStorage.removeItem("pro");
   }
 };
 </script>

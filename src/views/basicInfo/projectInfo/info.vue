@@ -681,6 +681,7 @@ Components.forEach(item => {
 });
 import { mapState } from "vuex";
 import imageList from "@/components/imageList";
+import { getValue, setValue, removeValue } from '@/utils/session'
 import { getDocumentByType } from "@/api/document";
 export default {
   mixins: [formValidator],
@@ -859,6 +860,7 @@ export default {
       // if (!this.edit) {
       //   return
       // }
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum,
@@ -872,7 +874,7 @@ export default {
     nameToString() {
       return [...arguments].map(item => item).join(" ");
     },
-    // 车辆编辑 ------------------------------------------------ 没有 --------------------------------------
+    // 车辆编辑 
     editCar(rows, inx) {
       const query = {
         customerId: this.params.customerId,
@@ -891,6 +893,32 @@ export default {
         query
       });
     },
+    //二手车重选
+    reChooseCar(rows, inx) {
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
+        this.$router.push({
+          path: "/priceEvaluationChoose",
+          query: {
+            type: 1,
+            projectId: this.params.projectId
+          }
+        });
+      });
+    },
+    // 车辆删除
+    removeCar(rows, inx) {
+      this.loading = true;
+      deleteCar({
+        id: rows.id
+      }).then(res => {
+        this.projProjectInfo.cars.splice(inx, 1);
+        this.loading = false;
+        // location.reload();
+      });
+    },
     //加载二手车照片
     async loadImg() {
       try {
@@ -905,7 +933,7 @@ export default {
     async getDocumentByType(documentType) {
       try {
         const params = {
-          customerNum: this.projProjectInfo.customerNum,
+          customerNum: this.projProjectInfo.cars[0].assessId,
           documentType: documentType
         };
         const { data } = await getDocumentByType(params);
@@ -921,7 +949,7 @@ export default {
             isRequire: false, //*是否必须
             deletable: false, //是否可以操作-上传和删除
             documentType: documentType,
-            id:this.projProjectInfo.cars[0].assessId,
+            customerNum:this.projProjectInfo.cars[0].assessId,
             kind: "1",
             fileList: data
           });
@@ -940,93 +968,6 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    },
-    //查看评估报告
-    showPicReport() {},
-    //二手车重选
-    reChooseCar(rows, inx) {
-      deleteCar({
-        id: rows.id
-      }).then(res => {
-        this.$router.push({
-          path: "/priceEvaluationChoose",
-          query: {
-            type: 1,
-            projectId: this.params.projectId
-          }
-        });
-      });
-    },
-    // 车辆删除
-    removeCar(rows, inx) {
-      deleteCar({
-        id: rows.id
-      }).then(res => {
-        this.$notify({
-          type: "success",
-          message: res.msg
-        });
-        // this.projProjectInfo.cars.splice(inx, 1);
-        // this.loanData();
-        location.reload();
-      });
-    },
-    // 新增 - 编辑车辆
-    newCar(data) {
-      let rows = {
-        carType: data.carType,
-        carType2: data.carType2,
-        carNature: data.carNature, // new_car 新车 ----- 1 二手车
-        carSource: data.carSource,
-        carSeries: data.carSeriesId,
-        carSpecifications: data.carSpecifications,
-        automarke: {
-          carModelId: data.carModelId,
-          brndNmId: data.carBrandId,
-          id: "",
-          carSeriesId: data.carSeriesId,
-          delFlag: "0"
-        },
-        salePrice: data.salePrice,
-        remark: data.remark,
-        delFlag: "0",
-        proj: {
-          id: this.params.projectId
-        },
-        ruleFlag: "Y",
-        carLoanPart: data.carLoanPart, //车辆贷款部分
-        anchoredTransportCompany: data.anchoredTransportCompany, // 挂靠运输公司
-        estimateOriginalPrice: data.estimateOriginalPrice, //评估价
-        hgstAmt: data.hgstAmt, //最高送审金额
-        asesInstNm: data.asesInstNm,
-        assessId: data.assessId
-      };
-      if (data.id) {
-        rows.id = data.id;
-      }
-      // if(data.ruleFlag == 'Y'){
-      //   rows.id = this.params.projCarId;
-      // }
-      setNewCar(rows)
-        .then(res => {
-          this.projProjectInfo.cars = res.data;
-          sessionStorage.removeItem("pro");
-          let cars = this.projProjectInfo.cars;
-          if (Array.isArray(cars) && cars.length > 0) {
-            this.carType = cars[0].carType + "-" + cars[0].carType2;
-            this.carNature = cars[0].carNature;
-            this.$store.dispatch("credit/removeCarData");
-            this.productTypeList({
-              type: 1,
-              carType: cars[0].carType + "-" + cars[0].carType2,
-              carNature: cars[0].carNature,
-              companyId: this.projProjectInfo.companyId
-            });
-          }
-        })
-        .catch(() => {
-          sessionStorage.removeItem("pro");
-        });
     },
     // 字典转换
     returnText(n, val, list, ids, field) {
@@ -1996,9 +1937,11 @@ export default {
     }
     this.isView = this.params.isView == 0;
     let datas = JSON.parse(sessionStorage.getItem("pro"));
-    // if (!datas) {
-    this.loanData();
-    // }
+    if (!datas) {
+      this.loanData();
+    }else{
+      this.projProjectInfo = datas;
+    }
     this.rulesForm("order-project-xh");
   }
 };
