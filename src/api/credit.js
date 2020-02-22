@@ -119,3 +119,28 @@ export function checkedReregisterMob(params) {
     data: params
   })
 }
+
+
+
+/**
+ * 百融征信查询
+ * @param params
+ */
+export function creditQueryOf100(params) {
+  return request({
+    url: '/order/credit100/cuCreditRegisterFormMob',
+    method: 'get',
+    params
+  })
+}
+/**
+ * 百融征信保存
+ * @param params
+ */
+export function creditSaveOf100(params) {
+  return request({
+    url: '/order/credit100/creditRegisterInput',
+    method: 'post',
+    data: params
+  })
+}

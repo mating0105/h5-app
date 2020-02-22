@@ -2,7 +2,7 @@
     <Card>
         <template v-slot:header>
             {{title}} 
-            <span class="typeDesc" v-if="typeDesc">{{typeDesc}}</span>
+            <!-- <span class="typeDesc" v-if="typeDesc">{{typeDesc}}</span> -->
             <div class="credit-arrow-wrap" @click="isSpread = !isSpread">
               <van-icon v-if="isSpread" class="credit-arrow" name="arrow-up"/>
               <van-icon v-else class="credit-arrow" name="arrow-down"/>
@@ -34,25 +34,25 @@
                   @click="lookDocs"
                 >查看</van-button>
               </van-cell>
-              <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前信息验证结果:" :border="false" :value="item.credit100VerificationResult|filterCResult"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" :value="item.credit100VerificationQuerydate|filterTime"/>
               <van-cell class="credit-result" title="贷前信息查询报告:" :border="false">
                 <van-button
                   slot="right-icon"
                   size="mini"
                   style="line-height: inherit;"
-                  @click="lookUpResult('贷前信息查询报告')"
+                  @click="lookUpResult(item.credit100VerificationReport,'贷前信息查询报告')"
                 >查看报告</van-button>
               </van-cell>
               <div class="credit-info-solid"></div>
-              <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" value="通过"/>
-              <van-cell class="credit-result" title="查询时间:" :border="false" value="通过"/>
+              <van-cell class="credit-result" title="贷前风险策略结果:" :border="false" :value="item.credit100StrategyResult|filterCResult"/>
+              <van-cell class="credit-result" title="查询时间:" :border="false" :value="item.credit100StrategyQuerydate|filterTime"/>
               <van-cell class="credit-result" title="贷前风险策略报告:" :border="false">
                 <van-button
                   slot="right-icon"
                   size="mini"
                   style="line-height: inherit;"
-                  @click="lookUpResult('贷前风险策略报告')"
+                  @click="lookUpResult(item.credit100StrategyReport,'贷前风险策略报告')"
                 >查看报告</van-button>
               </van-cell>
             </div>
@@ -70,7 +70,7 @@
   import Vue from 'vue';
   import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
-
+  import { format } from "@/utils/format";
   const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview]
   Components.forEach(item => {
     Vue.use(item)
@@ -146,6 +146,27 @@
           default:
             break;
         }
+      },
+        // Accept - 通过，Reject - 拒绝，Review - 复议
+      filterCResult(result){
+        switch (result) {
+          case 'Accept':
+            return '通过'
+            break;
+          case 'Reject':
+            return '拒绝'
+            break;
+          case 'Review':
+            return '复议'
+            break;
+        
+          default:
+            break;
+        }
+      },
+      filterTime(time){
+        return format(new Date(time),'yyyy MM dd hh:mm')
+        
       }
     },
     methods: {
@@ -161,12 +182,11 @@
         }
         return name;
       },
-      lookUpResult(text){
+      lookUpResult(url,text){
+        this.images = []
         this.imgTitle = text
+        this.images = ['data:image/jpeg/jpg/png;base64,'+url]
         this.showImg = true
-        this.images = [
-          'https://img.yzcdn.cn/1.jpg'
-        ]
       },
       lookDocs(){
         this.$emit('lookDocs')

@@ -82,7 +82,13 @@ module.exports = {
         // target: `http://dev.wwvas.com:10000`,
         target: `http://www.wwvas.com`,
         changeOrigin: true
+      },
+      // 百融
+      '/order': {
+        target: `192.168.50.102:8103`,
+        changeOrigin: true
       }
+      
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,

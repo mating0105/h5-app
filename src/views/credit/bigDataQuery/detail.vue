@@ -9,10 +9,12 @@
             </van-tabs>
         </template>
         <template v-if="active === 1">
-            <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
-            <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             <!-- 百融 -->
-            <creditQueryInfo @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE" @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <div v-else>
+              <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+              <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+            </div>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -26,12 +28,18 @@
         </template>
 
         <!-- 提交按钮 -->
-        <div class="xh-submit-box" v-if="edit">
+        <div class="xh-submit-box" v-if="edit && !TYPE">
             <van-button size="large" @click="nextStep"
                         class="xh-btn"
             >征信回复
             </van-button>
         </div>
+        <div class="xh-submit-box" v-if="active === 0 && TYPE">
+          <van-button size="large" @click="triggerQuery"
+                      class="xh-btn"
+          >发起征信查询</van-button>
+        </div>
+        
     </ViewPage>
 </template>
 
@@ -45,7 +53,7 @@
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
-  import { getCreditInfo } from '@/api/credit'
+  import { getCreditInfo,creditQueryOf100 } from '@/api/credit'
   import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -68,6 +76,8 @@
     },
     data () {
       return {
+        TYPE:'bairong',
+        reRegister:null, //30天以内不能再次查询
         active: 0,
         dataList: {
           investigateBank: '',
@@ -98,7 +108,17 @@
             lpCertificateNum: this.$route.query.lpCertificateNum,
             id: this.$route.query.id
           }
-          const res = await getCreditInfo(params)
+          // 暂未处理具体是哪种操作
+          // const res =  this.TYPE ? await creditQueryOf100(params) : await getCreditInfo(params)
+          let res
+          if(this.TYPE){
+          　res = await creditQueryOf100(params)
+            this.reRegister = res.data.cuCreditRegister.reRegister
+            console.log(res.data)
+          }else{
+            res = await getCreditInfo(params)
+          }
+          
           const dataList = res.data.cuCreditRegister
           this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
           this.requestParams.customerId = dataList.customerId
@@ -130,6 +150,14 @@
             query: this.$route.query
           })
         })
+      },
+      async triggerQuery () {
+        if(this.reRegister != true){
+          Toast('30天后才能重新查询')
+          // return
+        }
+        Bus.$emit('creditSave',this.TYPE);
+        this.active = 1
       },
       lookDocs(){
         this.active = 2

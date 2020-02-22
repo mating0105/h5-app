@@ -143,7 +143,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask,creditSaveOf100 } from '@/api/credit'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
   import formValidator from '@/mixins/formValidator'
@@ -296,7 +296,7 @@
       /**
        * 下一步
        **/
-      async nextStep () {
+      async nextStep (TYPE) {
         try {
           this.checkPrice()
           if (!this.verifyForm()) {
@@ -304,7 +304,13 @@
           }
           this.loading = true
           this.dataList.surDtlList = [this.form, ...this.perInfoList]
-          const {data} = await saveCreditInfo(this.dataList)
+          if(TYPE){
+              // 在这里区分调用接口
+            const {data1} = await creditSaveOf100(this.dataList)
+            console.log(data1)
+          }else{
+            const {data} = await saveCreditInfo(this.dataList)
+          }
 
           const query = {
             customerId: data.customerId,
@@ -556,8 +562,8 @@
       }
     },
     mounted () {
-      Bus.$on('creditSave', () => {
-        this.nextStep()
+      Bus.$on('creditSave', (TYPE) => {      
+        this.nextStep(TYPE)
       })
       this.rulesForm("order-credit-xh");//新车
     },
