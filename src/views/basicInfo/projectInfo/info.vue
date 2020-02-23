@@ -252,13 +252,13 @@
     <Card style="margin-top: 1rem;">
       <template v-slot:header>
         车辆信息
-        <span v-if="projProjectInfo.cars.length > 0 ">(请侧滑进行编辑或删除)</span>
+        <span v-if="projProjectInfo.cars.length > 0 && isView">(请侧滑进行编辑或删除)</span>
         <div class="card-icon" @click="addVehicle" v-if="projProjectInfo.cars.length === 0 ">
           <van-icon name="add-o" />
         </div>
       </template>
       <div>
-        <van-swipe-cell v-for="(item, index) in projProjectInfo.cars" :key="index">
+        <van-swipe-cell v-for="(item, index) in projProjectInfo.cars" :key="index" :disabled="!isView">
           <van-cell
             title="车辆类别:"
             :border="false"
@@ -551,8 +551,7 @@
         </van-col>
       </van-row>
     </Card>
-
-    <Card class="xh-top-10">
+    <Card class="xh-top-10" v-if="isView && !params.activityId">
       <van-row class="xh-project" style="padding:10px;">
         <van-col :span="16">
           <van-checkbox v-model="assesstment">完善调查信息</van-checkbox>
@@ -564,7 +563,7 @@
       </van-row>
     </Card>
     <!-- 意见 -->
-    <Card style="margin: 10px;">
+    <Card style="margin: 10px;" v-if="isView && !params.activityId">
       <template v-slot:header>意见描述</template>
       <section>
         <van-cell-group :border="false">
@@ -584,7 +583,7 @@
     </Card>
 
     <!-- 提交按钮 -->
-    <div class="xh-submit" style="padding: 20px 10px;" v-if="isView">
+    <div class="xh-submit" style="padding: 20px 10px;" v-if="isView && !params.activityId">
       <van-button
         size="large"
         class="xh-bg-main"
@@ -1063,9 +1062,14 @@ export default {
     loadType(title, field) {
       this.selectName = title;
       this.isWordbook = false;
+      this.show2 = false;
       switch (title) {
         case "业务来源":
           if (this.businessList.length == 0) {
+            this.$notify({
+              type: "danger",
+              message: "没有业务来源"
+            });
             return;
           }
           this.valueKey = "labelName";
@@ -1076,6 +1080,10 @@ export default {
           break;
         case "车商":
           if (this.customerList.length == 0) {
+            this.$notify({
+              type: "danger",
+              message: "没有对应车商"
+            });
             return;
           }
           this.valueKey = "carDealersName";
@@ -1202,6 +1210,7 @@ export default {
                 this.isWordbook = true;
                 this.fieldName = "isAccessCar";
                 this.options = this.wordbook.is_Access_Car;
+                this.projProjectInfo.carDealersIdName = '';
                 return;
               }
               break;
@@ -1901,7 +1910,6 @@ export default {
             });
           });
           this.options = objArr;
-          console.log(this.options);
           this.dLoading = false;
         })
         .catch(() => {
