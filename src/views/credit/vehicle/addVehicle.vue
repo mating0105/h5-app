@@ -481,11 +481,15 @@ export default {
       this.carFrom.projectId = this.params.projectId;
       addCar(this.carFrom).then(res => {
         this.loading = false;
+        let prolist = JSON.parse(sessionStorage.getItem('pro'));
+        prolist.cars = res.data;
+        sessionStorage.setItem('pro',JSON.stringify(prolist));
         this.$notify({
           type: "success",
           message: res.msg
         });
         this.$nextTick(() => {
+         
           this.$router.go(-1);
         });
       });
