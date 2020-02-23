@@ -4,16 +4,16 @@
             <template v-slot:header>
                 车辆信息
             </template>
-            <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
-                      :is-link="isdetail == 0?true:false" title="车辆类别："
-                      :disabled="!edit"
-                      :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
-                      @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell label-class='labelClass' :label="errorMsg.carNature" title="车辆性质：" :border="false" required>
                 <radio v-model="carFrom.carNature" :disabled="true">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('car_nature')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
+            <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
+                      :is-link="isdetail == 0?true:false" title="车辆类别："
+                      :disabled="!edit"
+                      :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
+                      @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell label-class='labelClass' :label="errorMsg.carSource" :disabled="!edit" title="车辆来源：" :border="false" required>
                 <radio v-model="carFrom.carSource" :disabled="!edit">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('CAR_SOURCE')" :key="index">{{item.label}}</radio-item>
@@ -25,10 +25,11 @@
             <van-cell title="车辆品牌型号:" :disabled="!edit" :border="false" :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
             <van-cell title="车架号:" :disabled="!edit" :border="false" :value="carFrom.chassisNumber"/>
             <template>
-                <van-cell title="车牌所在地：" :disabled="!edit" :border="false" @click="show2Fn" :value="carFrom.carLicenseLocation"/>
-                <van-cell title=" 首次上牌日：" :disabled="!edit" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
+                <van-cell label-class='labelClass' :label="errorMsg.carLicenseLocation" title="车牌所在地：" :disabled="!edit" :border="false" @click="show2Fn" required :value="carFrom.carLicenseLocation"/>
+                <van-cell label-class='labelClass' :label="errorMsg.plateDate" title=" 首次上牌日：" :disabled="!edit" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
                 <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
                            :disabled="!edit"
+                           required
                            :error-message="errorMsg.roadHaul"
                            name="roadHaul"
                            @blur.prevent="ruleMessge"
@@ -176,6 +177,7 @@
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
           plateDate: '',//首次上牌日
+          carLicenseLocation: '',//车牌所在地
         },
         isNum: '',
         isVal: '',
@@ -378,6 +380,7 @@
         this.show2 = false
         this.carFrom.carLicenseLocation = name
         this.carFrom.areaCode = code
+        this.errorMsg.carLicenseLocation = ''
       },
       changeDate (value) {
         this.carFrom.plateDate = dayjs(this.currentDate).format('YYYY-MM-DD')

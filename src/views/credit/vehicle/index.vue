@@ -1,15 +1,15 @@
 <template>
     <ViewPage :loading="loading" :backFn="backFn">
         <Card>
-            <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
-                      :is-link="isdetail == 0?true:false" title="车辆类别："
-                      :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
-                      @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell label-class='labelClass' :label="errorMsg.carNature" title="车辆性质：" :border="false" required>
                 <radio v-model="carFrom.carNature" @change="changeNature" :disabled="addUsedCar">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('car_nature')" :key="index">{{item.label}}</radio-item>
                 </radio>
             </van-cell>
+            <van-cell label-class='labelClass' :label="errorMsg.carType" :required="isdetail == 0?true:false" :border="false"
+                      :is-link="isdetail == 0?true:false" title="车辆类别："
+                      :value="returnText(carFrom.carType, 'car_type') + ' ' + returnText(carFrom.carType2, 'car_type2')"
+                      @click="loadList(9, '车辆类别', carFrom.carType)"/>
             <van-cell label-class='labelClass' :label="errorMsg.carSource" title="车辆来源：" :border="false" required>
                 <radio v-model="carFrom.carSource">
                     <radio-item :label="item.value" v-for="(item,index) in getTypeList('CAR_SOURCE')" :key="index">{{item.label}}</radio-item>
@@ -37,7 +37,7 @@
                 <div slot="button">元</div>
             </van-field>
             <template v-else-if="carFrom.carNature === 'old_car'">
-                <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
+                <van-cell label-class='labelClass' :label="errorMsg.carLicenseLocation" title="车牌所在地：" :border="false" @click="show2 = true" is-link required :value="carFrom.carLicenseLocation"/>
                 <van-cell label-class='labelClass' :label="errorMsg.plateDate" title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" required @click="showDateFn"/>
                 <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
                            required
@@ -181,6 +181,7 @@
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
           plateDate: '',//首次上牌日
+          carLicenseLocation: '',//车牌所在地
         },
         addUsedCar: false,
         imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
@@ -327,6 +328,7 @@
         this.show2 = false
         this.carFrom.carLicenseLocation = name
         this.carFrom.areaCode = code
+        this.errorMsg.carLicenseLocation = ''
       },
       changeDate (value) {
         this.carFrom.plateDate = dayjs(this.currentDate).format('YYYY-MM-DD')
@@ -456,12 +458,14 @@
           delete this.errorMsg.chassisNumber
           delete this.errorMsg.plateDate
           delete this.errorMsg.roadHaul
+          delete this.errorMsg.carLicenseLocation
         } else {
           this.rulesForm("order-credit-old-car-xh")
           // this.errorMsg.chassisNumber = ''
           Vue.set(this.errorMsg, 'chassisNumber', '')
           Vue.set(this.errorMsg, 'plateDate', '')
           Vue.set(this.errorMsg, 'roadHaul', '')
+          Vue.set(this.errorMsg, 'carLicenseLocation', '')
         }
       },
       initUsedCar () {

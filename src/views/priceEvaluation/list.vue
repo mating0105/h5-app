@@ -34,7 +34,7 @@
                             <van-col span="24" class="xh-top-10">车牌所在地：{{ item.carLicenseLocation }}</van-col>
                             <van-col span="24" class="xh-top-10">首次上牌日期：{{ item.plateDate }}</van-col>
                             <van-col span="24" class="xh-top-10">行驶里程：{{ item.roadHaul }}公里</van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.status === '3'">
+                            <van-col span="24" class="xh-top-10" v-if="item.status === '2' || item.status === '3'">
                             <span class="xh-primary-tag">
                                二手车评估中
                             </span>
@@ -45,8 +45,8 @@
                             </span>
                             </van-col>
                         </van-row>
-                        <template v-slot:footer>
-<!--                        <template v-slot:footer v-if="item.yn != 1">-->
+<!--                        <template v-slot:footer>-->
+                        <template v-slot:footer v-if="item.yn != 1">
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
                                         v-if="item.status === '1'"
