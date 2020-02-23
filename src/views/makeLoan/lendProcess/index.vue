@@ -606,7 +606,7 @@
               />
             </div>
           </Card>
-          <Card style="margin-top:15px;">
+          <!-- <Card style="margin-top:15px;">
             <template v-slot:header>
               <div class="notice">
                 <p>通知业务员补充资料</p>
@@ -619,7 +619,7 @@
                 >{{projectForm.projectInfo.clientManager.name}}</van-checkbox>
               </div>
             </template>
-          </Card>
+          </Card> -->
           <van-button
             round
             type="danger"

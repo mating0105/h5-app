@@ -1105,14 +1105,31 @@ export default {
           this.show3 = true;
           break;
         case "业务模式":
-          if (this.businessModellist.length == 0) {
+          let cars = this.projProjectInfo.cars;
+          if (Array.isArray(cars) && cars.length > 0) {
+            this.carType = cars[0].carType + "-" + cars[0].carType2;
+            this.carNature = cars[0].carNature;
+            this.productTypeList({
+              type: 1,
+              carType: cars[0].carType + "-" + cars[0].carType2,
+              carNature: cars[0].carNature,
+              companyId: this.projProjectInfo.companyId
+            });
+            if (this.businessModellist.length == 0) {
+              return;
+            }
+            this.valueKey = "businessModeDesc";
+            this.valueId = "businessMode";
+            this.fieldName = "businessModel";
+            this.options = this.businessModellist;
+            this.show3 = true;
+          }else{
+            this.$notify({
+              type: "danger",
+              message: "请先添加车辆"
+            });
             return;
           }
-          this.valueKey = "businessModeDesc";
-          this.valueId = "businessMode";
-          this.fieldName = "businessModel";
-          this.options = this.businessModellist;
-          this.show3 = true;
           break;
         case "产品类别":
           if (this.productTypeRows.length == 0) {
@@ -1925,6 +1942,7 @@ export default {
     },
     //点击完善信息
     conpleteInfo() {
+      sessionStorage.setItem("pro", JSON.stringify(this.projProjectInfo));
       let query = { ...this.params, newPro: true };
       this.$router.push({
         path: "/xhProject",
