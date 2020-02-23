@@ -914,7 +914,10 @@ export default {
       deleteCar({
         id: rows.id
       }).then(res => {
+        console.log(inx);
+        console.log(this.projProjectInfo.cars)
         this.projProjectInfo.cars.splice(inx, 1);
+        console.log(this.projProjectInfo.cars)
         this.loading = false;
         // location.reload();
       });

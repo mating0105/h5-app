@@ -2,7 +2,6 @@ const state = {
   carData: null,
   index: -1,
   customerData: null,
-  getoldcar:{}
 }
 
 const mutations = {
@@ -24,9 +23,6 @@ const mutations = {
     else
     state.index = -1
   },
-  SET_OLDCAR_DATA (state, data) {
-    state.getoldcar = data;
-  },
 }
 
 const actions = {
@@ -43,9 +39,6 @@ const actions = {
   },
   removeCustomerData({commit}) {
     commit('SET_CUSTOMER_DATA', null, -1)
-  },
-  getOldCar ({commit}, data) {
-    commit('SET_OLDCAR_DATA', data)
   },
 }
 

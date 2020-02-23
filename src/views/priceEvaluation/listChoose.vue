@@ -217,6 +217,9 @@ export default {
           type: "success",
           message: res.msg
         });
+        let prolist = JSON.parse(sessionStorage.getItem('pro'));
+        prolist.cars = res.data;
+        sessionStorage.setItem('pro',JSON.stringify(prolist));
         this.$nextTick(() => {
           if (this.$route.query.type == 1) {
             this.$router.go(-1);
