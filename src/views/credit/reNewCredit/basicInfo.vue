@@ -170,7 +170,8 @@
       hiddenHandle: {
         default: false,
         type: Boolean
-      }
+      },
+      recordParams: Object
     },
     data () {
       return {
@@ -193,9 +194,6 @@
           investigateBankName: '',
           intentionPrice: '',
           bankCardNum: ''
-        },
-        recordParams: {
-          businessKey: '', businessType: '07'
         }
       }
     },
@@ -296,7 +294,7 @@
       /**
        * 下一步
        **/
-      async nextStep () {
+      async nextStep (creditTypeFlag) {
         try {
           this.checkPrice()
           if (!this.verifyForm()) {
@@ -304,6 +302,9 @@
           }
           this.loading = true
           this.dataList.surDtlList = [this.form, ...this.perInfoList]
+          if(creditTypeFlag) {
+            this.dataList.creditTypeFlag = creditTypeFlag
+          }
           const {data} = await saveCreditInfo(this.dataList)
 
           const query = {
@@ -557,8 +558,8 @@
     },
     mounted () {
       Bus.$off('creditSave')
-      Bus.$on('creditSave', () => {
-        this.nextStep()
+      Bus.$on('creditSave', (creditTypeFlag) => {
+        this.nextStep(creditTypeFlag)
       })
       this.rulesForm("order-credit-xh");//新车
     },

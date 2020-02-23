@@ -41,6 +41,9 @@
         perInfoList: [], //客户下面的其他客户数据
         edit: false,
         query: {},
+        recordParams: {
+          businessKey: '', businessType: '07'
+        }
       }
     },
     computed: {

@@ -20,7 +20,10 @@
                 </div>
             </div>
             <div class="xh-contract-status">
-                <div @click="showPopup(item)">
+                <div v-if="creditRequire && !item[creditRequire]">
+                    <span style="display: inline-block; margin-right: 0.5rem">不查询{{setStatus(item)}</span>
+                </div>
+                <div v-else @click="showPopup(item)">
                     <span v-if="item[type] === 'pass'" class="xh-contract-true">{{creditName||''}}征信通过</span>
                     <span v-else-if="item[type] === 'not_pass'" class="xh-contract-false">{{creditName||''}}征信未通过</span>
                     <span v-else>请选择征信结果</span>
@@ -79,6 +82,15 @@
         } else {
           return 'bigDataResult'
         }
+      },
+      creditRequire() {
+        if (this.isBank) {
+          return false
+        } else if (this.rbCredit) {
+          return 'canPersonalCreditResult'
+        } else {
+          return 'canBigDataResult'
+        }
       }
     },
     methods: {
@@ -114,6 +126,11 @@
       onSelect (item, index) {
         this.currentData[this.type] = item.value
         this.show = false
+      },
+      setStatus(item) {
+        if(item[this.type]) {
+          item[this.type] === 'not_search'
+        }
       }
     }
   }
