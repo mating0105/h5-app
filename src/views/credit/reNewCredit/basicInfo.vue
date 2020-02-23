@@ -556,6 +556,7 @@
       }
     },
     mounted () {
+      Bus.$off('creditSave')
       Bus.$on('creditSave', () => {
         this.nextStep()
       })

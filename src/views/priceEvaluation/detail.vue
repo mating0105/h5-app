@@ -187,7 +187,8 @@
         selectName: '',
         isdetail: 0,
         isReply: false,
-        isReplyView: false
+        isReplyView: false,
+        imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
       }
     },
     computed: {
@@ -255,9 +256,12 @@
        **/
       async initImage () {
         try {
-          await this.getDocumentByType('7777', this.dataList)//发动机细节
-          await this.getDocumentByType('8888', this.dataList)//车辆内饰
-          await this.getDocumentByType('9999', this.dataList)//车辆外观
+          this.imageTypeList.forEach(item => {
+            this.getDocumentByType(item)
+          })
+          // await this.getDocumentByType('7777', this.dataList)//发动机细节
+          // await this.getDocumentByType('8888', this.dataList)//车辆内饰
+          // await this.getDocumentByType('9999', this.dataList)//车辆外观
           if(this.isReply) {
             this.getDocumentByType('6666', this.dataListReply)//二手车评估报告
           }

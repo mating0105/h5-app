@@ -166,6 +166,7 @@
        * 下一步
        **/
       async nextStep () {
+        Bus.$off('creditSaveSuccess')
         Bus.$emit('creditSave');
         Bus.$on('creditSaveSuccess', query => {
           this.$router.push({
