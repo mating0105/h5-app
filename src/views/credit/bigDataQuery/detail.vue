@@ -114,9 +114,52 @@
             }
           })
           this.dataList = res.data.cuCreditRegister;
+          this.initCustomerData()
         } catch (e) {
           this.loading = false
           console.log(e)
+        }
+      },
+      initCustomerData () {
+        let customerData = this.$store.state.credit.customerData
+        if (customerData) {
+          const index = this.$store.state.credit.index
+          customerData = this.enFormatter(customerData)
+          if (index === -1) {
+            this.perInfoList.push(customerData)
+            this.dataList.surDtlList.push(customerData)
+          } else {
+            const perInfo = this.perInfoList[index]
+            if (perInfo) {
+              for (let key in customerData) {
+                if (customerData.hasOwnProperty(key)) {
+                  perInfo[key] = customerData[key] || perInfo[key]
+                }
+              }
+            }
+          }
+          this.$store.dispatch('credit/removeCustomerData')
+        }
+      },
+      enFormatter (beanData) {
+        return {
+          "sex": beanData.sex, //性别
+          "creditPersonName": beanData.customerName,//客户姓名
+          "cpCertificateNum": beanData.certificateNum,//身份证号码
+          "age": beanData.age,//年龄
+          "creditObjectType": beanData.creditObjectType,//征信对象类型
+          "perInfo": {
+            "nationName": beanData.nationName,//民族
+            "nation": beanData.nation,//民族
+            "birthday": beanData.birthday,//出生日期
+            "signOrg": beanData.signOrg//身份证签发机关
+          },
+          "familyAddress": beanData.familyAddress,//身份证住址
+          "startDate": beanData.startDate,//起始日
+          "endDate": beanData.endDate,//截止日
+          "telephone": beanData.contactPhone,//手机号码
+          "bankCardNum": beanData.bankCardNum, //银行卡号
+          dataList: []
         }
       },
       /**
