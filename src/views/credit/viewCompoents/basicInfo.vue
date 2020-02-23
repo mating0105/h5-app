@@ -93,18 +93,18 @@
   })
 
   const bigData = {
-    joiDebtorSpouse: ['6694', '6672', '6678', '6689'],//共债人配偶
-    borrowerSpouse: ['6691', '6668', '6674', '6686'],//借款人配偶
-    security: ['6692', '6669', '6675', '6687'],//担保人
-    borrower: ['6690', '6667', '6673', '6685'],//借款人
-    joiDebtor: ['6693', '6671', '6677', '6688'],//共债人
+    joiDebtorSpouse: ['0113', '6694', '6672', '6678', '6689'],//共债人配偶
+    borrowerSpouse: ['0105', '6691', '6668', '6674', '6686'],//借款人配偶
+    security: ['0117', '6692', '6669', '6675', '6687'],//担保人
+    borrower: ['0101', '6690', '6667', '6673', '6685'],//借款人
+    joiDebtor: ['0109', '6693', '6671', '6677', '6688'],//共债人
   }
   const rb = {
-    joiDebtorSpouse: ['6684', '6672', '6678', '6689'],//共债人配偶
-    borrowerSpouse: ['6680', '6668', '6674', '6686'],//借款人配偶
-    security: ['6681', '6669', '6675', '6687'],//担保人
-    borrower: ['6679', '6667', '6673', '6685'],//借款人
-    joiDebtor: ['6683', '6671', '6677', '6688'],//共债人
+    joiDebtorSpouse: ['0113', '6684', '6672', '6678', '6689'],//共债人配偶
+    borrowerSpouse: ['0105', '6680', '6668', '6674', '6686'],//借款人配偶
+    security: ['0117', '6681', '6669', '6675', '6687'],//担保人
+    borrower: ['0101', '6679', '6667', '6673', '6685'],//借款人
+    joiDebtor: ['0109', '6683', '6671', '6677', '6688'],//共债人
   }
 
   export default {
@@ -136,7 +136,7 @@
           borrower: ['6679', '6667', '6673', '6685'],//借款人
           joiDebtor: ['6683', '6671', '6677', '6688'],//共债人
         },
-        whiteList: ['6689', '6686', '6687', '6685', '6688', '6691', '6692', '6693', '6694', '6680', '6681', '6683', '6684'],
+        whiteList: ['6679', '0113', '0105', '0117', '0101', '0109', '6690'],
         surDtlList: []
       }
     },
@@ -214,7 +214,7 @@
           }
           const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
 
-          const isRequire = !this.whiteList.includes(documentType)
+          const isRequire = this.whiteList.includes(documentType)
           const beanData = {
             declare: declare,//图片描述
             isRequire: isRequire,//*是否必须
