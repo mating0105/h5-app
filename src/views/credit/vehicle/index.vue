@@ -180,7 +180,8 @@
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
         },
-        addUsedCar: false
+        addUsedCar: false,
+        imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
       }
     },
     computed: {
@@ -252,9 +253,13 @@
       },
       async initImage () {
         try {
-          await this.getDocumentByType('7777')//发动机细节
-          this.getDocumentByType('8888')//车辆内饰
-          this.getDocumentByType('9999')//车辆外观
+          this.imageTypeList.forEach(item => {
+            this.getDocumentByType(item)
+          })
+          //6700 车架号
+          // await this.getDocumentByType('7777')//发动机细节
+          // this.getDocumentByType('8888')//车辆内饰
+          // this.getDocumentByType('9999')//车辆外观
         } catch (e) {
           console.log(e)
         }
