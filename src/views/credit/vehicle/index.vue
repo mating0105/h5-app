@@ -38,8 +38,9 @@
             </van-field>
             <template v-else-if="carFrom.carNature === 'old_car'">
                 <van-cell title="车牌所在地：" :border="false" @click="show2 = true" is-link :value="carFrom.carLicenseLocation"/>
-                <van-cell title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
+                <van-cell label-class='labelClass' :label="errorMsg.plateDate" title=" 首次上牌日：" :border="false" is-link :value="carFrom.plateDate" required @click="showDateFn"/>
                 <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
+                           required
                            :error-message="errorMsg.roadHaul"
                            name="roadHaul"
                            @blur.prevent="ruleMessge"
@@ -179,6 +180,7 @@
           salePriceDto: '',//车辆价格
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
+          plateDate: '',//首次上牌日
         },
         addUsedCar: false,
         imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
@@ -239,7 +241,7 @@
           })
           this.dataList.push({
             declare: declare,//图片描述
-            isRequire: true,//*是否必须
+            isRequire: false,//*是否必须
             deletable: true,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.customerNum || '0',
@@ -328,6 +330,7 @@
       },
       changeDate (value) {
         this.carFrom.plateDate = dayjs(this.currentDate).format('YYYY-MM-DD')
+        this.errorMsg.plateDate = ''
       },
       confirm (value) {
         this.showDate = false
@@ -368,12 +371,12 @@
        * 保存车辆
        */
       saveCar () {
-        if (this.carFrom.carNature === 'old_car') {
-          if (!this.verifyImage()) {
-            Toast.fail("二手车照片必传");
-            return;
-          }
-        }
+        // if (this.carFrom.carNature === 'old_car') {
+        //   if (!this.verifyImage()) {
+        //     Toast.fail("二手车照片必传");
+        //     return;
+        //   }
+        // }
         this.loading = true
         this.verifyForm().then(async (res) => {
           try {
@@ -427,7 +430,11 @@
             this.carFrom[key] = this.$route.query[key] || this.carFrom[key]
           }
         }
-        this.changeNature(this.carFrom.carNature)
+        if(this.addUsedCar) {
+          this.initUsedCar()
+        } else {
+          this.changeNature(this.carFrom.carNature)
+        }
       },
       /**
        * 识别
@@ -447,10 +454,14 @@
         if (val === 'new_car') {
           this.rulesForm("order-credit-car-xh")
           delete this.errorMsg.chassisNumber
+          delete this.errorMsg.plateDate
+          delete this.errorMsg.roadHaul
         } else {
           this.rulesForm("order-credit-old-car-xh")
           // this.errorMsg.chassisNumber = ''
           Vue.set(this.errorMsg, 'chassisNumber', '')
+          Vue.set(this.errorMsg, 'plateDate', '')
+          Vue.set(this.errorMsg, 'roadHaul', '')
         }
       },
       initUsedCar () {
@@ -472,11 +483,10 @@
     },
     mounted () {
       this.initImage()
+      this.addUsedCar = Boolean(this.$route.query.addUsedCar) && this.$route.query.addUsedCar !== 'false'
       if (this.$route.query) {
         this.initData()
       }
-      this.addUsedCar = Boolean(this.$route.query.addUsedCar) && this.$route.query.addUsedCar !== 'false'
-      this.initUsedCar()
       // this.rulesForm("order-credit-car-xh");//新车
       // this.loading = true
     }

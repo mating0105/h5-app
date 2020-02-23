@@ -175,6 +175,7 @@
           brndNm: '',//车辆品牌
           engineNum: '',//发动机号
           roadHaul: '',//行驶里程
+          plateDate: '',//首次上牌日
         },
         isNum: '',
         isVal: '',
@@ -239,7 +240,7 @@
           let deletable = documentType === '6666' || this.edit
           arr.push({
             declare: declare,//图片描述
-            isRequire: true,//*是否必须
+            isRequire: documentType === '6666',//*是否必须
             deletable: deletable,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.id,
@@ -257,7 +258,7 @@
       async initImage () {
         try {
           this.imageTypeList.forEach(item => {
-            this.getDocumentByType(item)
+            this.getDocumentByType(item, this.dataList)
           })
           // await this.getDocumentByType('7777', this.dataList)//发动机细节
           // await this.getDocumentByType('8888', this.dataList)//车辆内饰
@@ -380,6 +381,7 @@
       },
       changeDate (value) {
         this.carFrom.plateDate = dayjs(this.currentDate).format('YYYY-MM-DD')
+        this.errorMsg.plateDate = ''
       },
       confirm (value) {
         this.showDate = false
