@@ -207,7 +207,7 @@
        */
       async getDocumentByType (documentType, obj, dataList) {
         try {
-          const customerNum = obj.perInfo ? obj.perInfo.customerNum : ''
+          const customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
           const params = {
             customerNum,
             documentType: documentType

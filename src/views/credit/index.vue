@@ -51,6 +51,16 @@
                                大数据征信未通过
                             </span>
                             </van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.personalGuaResult === 'pass'">
+                            <span class="xh-success-tag">
+                               人保征信通过
+                            </span>
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-else-if="item.personalGuaResult === 'not_pass'">
+                            <span class="xh-danger-tag">
+                               人保征信未通过
+                            </span>
+                            </van-col>
                         </van-row>
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
