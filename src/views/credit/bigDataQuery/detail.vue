@@ -167,7 +167,11 @@
        **/
       async nextStep () {
         Bus.$off('creditSaveSuccess')
-        Bus.$emit('creditSave');
+        let creditTypeFlag = 1
+        if (this.rbCredit) {
+          creditTypeFlag = 2
+        }
+        Bus.$emit('creditSave', creditTypeFlag);
         Bus.$on('creditSaveSuccess', query => {
           this.$router.push({
             path: '/bigDataReply',
