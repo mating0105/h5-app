@@ -21,7 +21,7 @@
             </div>
             <div class="xh-contract-status">
                 <div v-if="creditRequire && !item[creditRequire]">
-                    <span style="display: inline-block; margin-right: 0.5rem">不查询{{setStatus(item)}</span>
+                    <span style="display: inline-block; margin-right: 0.5rem">不查询{{setStatus(item)}}</span>
                 </div>
                 <div v-else @click="showPopup(item)">
                     <span v-if="item[type] === 'pass'" class="xh-contract-true">{{creditName||''}}征信通过</span>
