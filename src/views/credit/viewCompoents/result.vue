@@ -21,7 +21,7 @@
             </div>
             <div class="xh-contract-status">
                 <div v-if="creditRequire && !item[creditRequire]">
-                    <span style="display: inline-block; margin-right: 0.5rem">不查询{{setStatus(item)}}</span>
+                    <span style="display: inline-block; margin-right: 0.5rem">不查询</span>
                 </div>
                 <div v-else @click="showPopup(item)">
                     <span v-if="item[type] === 'pass'" class="xh-contract-true">{{creditName||''}}征信通过</span>
@@ -64,7 +64,7 @@
     props: {
       dataList: Array,
       creditName: String,
-      creditRequire: Boolean,
+      creditRequire: String,
       type: String
     },
     computed: {
@@ -109,11 +109,16 @@
         this.currentData[this.type] = item.value
         this.show = false
       },
-      setStatus(item) {
-        if(item[this.type]) {
-          item[this.type] === 'not_search'
-        }
+      init() {
+        this.dataList.forEach(item => {
+          if(this.creditRequire && !item[this.creditRequire]) {
+            item[this.type] = 'not_search1'
+          }
+        })
       }
+    },
+    mounted () {
+      this.init()
     }
   }
 </script>

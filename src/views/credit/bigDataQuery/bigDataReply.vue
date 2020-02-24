@@ -44,6 +44,7 @@
   import { getDocumentByType } from '@/api/document'
   import { getCreditInfo } from '@/api/credit'
   import { reply, bankReply } from '@/api/bigData'
+  import { removeValue } from '@/utils/session'
   import _ from 'lodash'
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Dialog)
@@ -176,7 +177,7 @@
           }
           const {data} = await getCreditInfo(params)
           const form = data.cuCreditRegister
-          form.surDtlList = data.cuCreditRegister.surDtlList.reverse()
+          form.surDtlList = data.cuCreditRegister.surDtlList
           const users = _.cloneDeep(form.surDtlList)
           if (this.isBank) {
             this.obj = bank
@@ -293,6 +294,7 @@
       }
     },
     mounted () {
+      removeValue("credit");
       this.getCreditInfo()
       // this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isBank = Boolean(this.$route.query.isBank)

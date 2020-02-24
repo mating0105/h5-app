@@ -220,8 +220,8 @@
       },
       // 发起报单
       startForm (item, type, query = {}) {
+        removeValue("credit");
         const goPageCredit  = () => {
-          removeValue("credit");
           this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
         }
         switch (type.buttonId) {

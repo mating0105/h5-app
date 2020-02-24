@@ -52,6 +52,7 @@
   import basicInfoCredit from '../reNewCredit/basicInfo'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
+  import { getValue, setValue, removeValue } from '@/utils/session'
   import Vue from 'vue';
   import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
   import Bus from '@/utils/bus';
@@ -122,21 +123,28 @@
             lpCertificateNum: this.$route.query.lpCertificateNum,
             id: this.$route.query.id
           }
-          let res
-          if(this.TYPE){
-          　res = await creditQueryOf100(params)
-            this.reRegister = res.data.cuCreditRegister.reRegister
-          }else{
-            res = await getCreditInfo(params)
+          let res;
+          let dataList;
+          if (getValue("credit")) {
+            dataList = JSON.parse(getValue("credit"))
+            if(this.TYPE)
+                this.reRegister = dataList.reRegister
+          } else {
+            if(this.TYPE){
+              res = await creditQueryOf100(params)
+              this.reRegister = res.data.cuCreditRegister.reRegister
+            }else{
+              res = await getCreditInfo(params)
+            }
+            dataList = res.data.cuCreditRegister
           }
-          
-          const dataList = res.data.cuCreditRegister
+
           this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
           this.requestParams.customerId = dataList.customerId
           this.recordParams.businesskey = dataList.id
           this.loading = false
 
-          res.data.cuCreditRegister.surDtlList.forEach(e => {
+          dataList.surDtlList.forEach(e => {
             e.dataList = []
             if (e.creditObjectType === 'borrower') {
               this.form = e;
@@ -144,7 +152,7 @@
               this.perInfoList.push(e);
             }
           })
-          this.dataList = res.data.cuCreditRegister;
+          this.dataList = dataList;
           this.initCustomerData()
         } catch (e) {
           this.loading = false
@@ -190,7 +198,8 @@
           "endDate": beanData.endDate,//截止日
           "telephone": beanData.contactPhone,//手机号码
           "bankCardNum": beanData.bankCardNum, //银行卡号
-          dataList: []
+          dataList: [],
+          canDel: true
         }
       },
       /**
