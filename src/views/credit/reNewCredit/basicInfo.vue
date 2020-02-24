@@ -369,7 +369,7 @@ export default {
         }
         this.loading = true;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
-        const { data } = TYPE
+        const { data } = TYPE === 'bairong'
           ? await creditSaveOf100(this.dataList)
           : await saveCreditInfo(this.dataList);
           

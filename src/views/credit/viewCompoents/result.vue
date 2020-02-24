@@ -62,10 +62,10 @@
       }
     },
     props: {
-      isBank: Boolean,
-      rbCredit: Boolean,
       dataList: Array,
-      creditName: String
+      creditName: String,
+      creditRequire: Boolean,
+      type: String
     },
     computed: {
       wordbook () {
@@ -73,24 +73,6 @@
       },
       credit_result () {
         return this.$store.state.user.wordbook.credit_result || []
-      },
-      type () {
-        if (this.isBank) {
-          return 'creditResult'
-        } else if (this.rbCredit) {
-          return 'personalGuaResult'
-        } else {
-          return 'bigDataResult'
-        }
-      },
-      creditRequire() {
-        if (this.isBank) {
-          return false
-        } else if (this.rbCredit) {
-          return 'canPersonalCreditResult'
-        } else {
-          return 'canBigDataResult'
-        }
       }
     },
     methods: {

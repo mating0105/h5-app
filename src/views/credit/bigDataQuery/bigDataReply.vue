@@ -1,6 +1,6 @@
 <template>
     <ViewPage :loading="loading">
-        <result :dataList="surDtlList" :isBank="isBank" :rbCredit="rbCredit" v-if="surDtlList" :creditName="nameFormatter()"></result>
+        <result :dataList="surDtlList" v-if="surDtlList" :creditName="nameFormatter()" :type="type" :creditRequire="creditRequire"></result>
         <Card style="margin-top: 1rem">
             <template v-slot:header>
                 {{nameFormatter()}}征信报告照片
@@ -116,6 +116,15 @@
         } else {
           return 'bigDataResult'
         }
+      },
+      creditRequire() {
+        if (this.isBank) {
+          return false
+        } else if (this.rbCredit) {
+          return 'canPersonalCreditResult'
+        } else {
+          return 'canBigDataResult'
+        }
       }
     },
     methods: {
@@ -143,9 +152,10 @@
           data.forEach(item => {
             item.declare = declare;
           })
+          const require = this.creditRequire && obj[this.creditRequire]
           obj.dataList.push({
             declare: declare,//图片描述
-            isRequire: true,//*是否必须
+            isRequire: require,//*是否必须
             deletable: true,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: customerNum,
