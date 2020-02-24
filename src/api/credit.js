@@ -144,3 +144,14 @@ export function creditSaveOf100(params) {
     data: params
   })
 }
+/**
+ * 征信按钮
+ * @param params
+ */
+export function getButtonOfCredit(params) {
+  return request({
+    url: '/manage/buttonConfig/getButtonByServer?serverName=big-data-credit',
+    method: 'get',
+    params
+  })
+}

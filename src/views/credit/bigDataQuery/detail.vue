@@ -53,7 +53,7 @@
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
-  import { getCreditInfo,creditQueryOf100 } from '@/api/credit'
+  import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
   import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -76,8 +76,8 @@
     },
     data () {
       return {
-        TYPE:'bairong',
-        reRegister:null, //30天以内不能再次查询
+        TYPE:'',
+        reRegister:null, //百融征信查询，30天以内不能再次查询
         active: 0,
         dataList: {
           investigateBank: '',
@@ -101,6 +101,20 @@
       }
     },
     methods: {
+      async getButtonOfCredit() {
+        try {
+          const {data} = await getButtonOfCredit()
+          // 征信回复：:5/百融征信查询：6
+          this.buttonId = data[0].buttonId
+          if(this.buttonId){
+            this.TYPE = this.buttonId == 6 ? 'bairong' : ''
+          }else{
+            this.TYPE =  ''
+          }
+        }catch (e) {
+          console.log(e)
+        }
+      },
       async getCreditInfo () {
         try {
           this.loading = true
@@ -108,13 +122,10 @@
             lpCertificateNum: this.$route.query.lpCertificateNum,
             id: this.$route.query.id
           }
-          // 暂未处理具体是哪种操作
-          // const res =  this.TYPE ? await creditQueryOf100(params) : await getCreditInfo(params)
           let res
           if(this.TYPE){
           　res = await creditQueryOf100(params)
             this.reRegister = res.data.cuCreditRegister.reRegister
-            console.log(res.data)
           }else{
             res = await getCreditInfo(params)
           }
@@ -154,17 +165,25 @@
       async triggerQuery () {
         if(this.reRegister != true){
           Toast('30天后才能重新查询')
-          // return
+          return
         }
         Bus.$emit('creditSave',this.TYPE);
         this.active = 1
+        const params = {
+          lpCertificateNum: this.$route.query.lpCertificateNum,
+          id: this.$route.query.id
+        }
+      　const res = await creditQueryOf100(params)
+        this.reRegister = res.data.cuCreditRegister.reRegister
       },
       lookDocs(){
         this.active = 2
       }
     },
+    created(){
+    },
     mounted () {
-      this.getCreditInfo()
+      this.getButtonOfCredit().then(() => this.getCreditInfo() )
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'

@@ -8,16 +8,6 @@
               <van-icon v-else class="credit-arrow" name="arrow-down"/>
             </div>
         </template>
-        <!-- <div v-for="(item, index) in dataList" :key="index" class="xh-table-border">
-            <van-cell title="客户姓名:" :border="false" :value="item.creditPersonName"/>
-            <van-cell title="征信结果:" :border="false" :class="[item[type] === 'pass' ? 'xh-pass': item[type] === 'not_pass' ? 'xh-no-pass': '']"
-                      :value="item[type] === 'pass' ? '通过' : item[type] === 'not_pass' ? '不通过' : '暂未查询'"/>
-            <van-cell title="对象类型:" :border="false" :value="returnText(item.creditObjectType, 'credit_object_type')"/>
-            <van-cell title="身份证号:" :border="false" :value="item.cpCertificateNum"/>
-            <van-cell title="电话号码:" :border="false" :value="item.telephone"/>
-            <van-cell title="征信时间:" :border="false" :value="item.investigateDate"/>
-            <van-cell title="原因:" :value="item.telephone"/>
-        </div> -->
         <div v-show="isSpread" class="xh-table-border">
           <section v-for="(item, index) in copyDataList" :key="index" class="xh-table-border">
             <van-cell class="credit-info-title" :border="false"><span class="text">{{item.creditObjectType | filterInfo}}</span></van-cell>
@@ -165,7 +155,7 @@
         }
       },
       filterTime(time){
-        return format(new Date(time),'yyyy MM dd hh:mm')
+        return time ? format(new Date(time),'yyyy MM dd hh:mm:ss') : ''
         
       }
     },
