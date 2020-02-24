@@ -120,7 +120,7 @@
       },
       creditRequire() {
         if (this.isBank) {
-          return 'canCreditResult'
+          return false
         } else if (this.rbCredit) {
           return 'canPersonalCreditResult'
         } else {
