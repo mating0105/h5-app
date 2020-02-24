@@ -551,7 +551,7 @@
         </van-col>
       </van-row>
     </Card>
-    <Card class="xh-top-10" v-if="isView && !params.activityId">
+    <Card class="xh-top-10" v-if="isView">
       <van-row class="xh-project" style="padding:10px;">
         <van-col :span="16">
           <van-checkbox v-model="assesstment">完善调查信息</van-checkbox>
@@ -563,7 +563,7 @@
       </van-row>
     </Card>
     <!-- 意见 -->
-    <Card style="margin: 10px;" v-if="isView && !params.activityId">
+    <Card style="margin: 10px;" v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'">
       <template v-slot:header>意见描述</template>
       <section>
         <van-cell-group :border="false">
@@ -583,7 +583,7 @@
     </Card>
 
     <!-- 提交按钮 -->
-    <div class="xh-submit" style="padding: 20px 10px;" v-if="isView && !params.activityId">
+    <div class="xh-submit" style="padding: 20px 10px;" v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'">
       <van-button
         size="large"
         class="xh-bg-main"
@@ -1361,7 +1361,7 @@ export default {
         overlay: true
       });
       getProjectInfo({
-        id: this.params.projectId
+        id: this.params.projectId?this.params.projectId:this.params.businesskey
       })
         .then(res => {
           const { code, data, msg } = res;
@@ -1878,7 +1878,7 @@ export default {
       let obj = {
         wfBizComments: {
           conclusionCode: "01",
-          businessKey: this.params.projectId,
+          businessKey: this.params.projectId?this.params.projectId:this.params.businesskey,
           commentsDesc: this.message
         },
         isPerfectMsg: this.assesstment ? "1" : "0",
@@ -1955,11 +1955,14 @@ export default {
       this.params = this.$route.query;
     }
     this.isView = this.params.isView == 0;
-    if(!this.params.activityId || this.params.activityId == 'WF_PROJ_APPR_01_T01'){
-      this.isView = true;
-    }else{
-      this.isView = false;
+    if(this.$route.query.dealState){
+      if(this.params.isView){
+        this.isView = this.$route.query.dealState == 1 && this.isView && this.params.activityId == 'WF_PROJ_APPR_01_T01';
+      }else{
+        this.isView = this.$route.query.dealState == 1  && this.params.activityId == 'WF_PROJ_APPR_01_T01';
+      }
     }
+    console.log(this.isView)
     let datas = JSON.parse(sessionStorage.getItem("pro"));
     if (!datas) {
       this.loanData();

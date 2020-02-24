@@ -685,6 +685,7 @@ export default {
   created() {
     this.params = this.$route.query;
     this.isView = this.params.isView == 0 ? true : false;
+    console.log(this.isView);
     this.loadClient();
     this.rulesForm("order/viceProj");
   }
