@@ -45,7 +45,7 @@
                             </span>
                             </van-col>
                         </van-row>
-<!--                        <template v-slot:footer>-->
+<!--                                                <template v-slot:footer>-->
                         <template v-slot:footer v-if="item.yn != 1">
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
@@ -59,7 +59,7 @@
                                 >发起二手车评估
                                 </van-button>
                                 <van-button
-                                        v-else-if="item.status === '2'"
+                                        v-else-if="item.status === '4' && isSendRole"
                                         plain
                                         size="small"
                                         type="danger"
@@ -79,16 +79,16 @@
                                         @click.stop="startForm(item, {isReply: true, edit: false})"
                                 >立即评估
                                 </van-button>
-                                <van-button
-                                        v-else-if="item.status === '4'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startForm(item, {isReply: true, edit: false})"
-                                >重新评估
-                                </van-button>
+<!--                                <van-button-->
+<!--                                        v-else-if="item.status === '4'"-->
+<!--                                        plain-->
+<!--                                        size="small"-->
+<!--                                        type="danger"-->
+<!--                                        class="xh-radius"-->
+<!--                                        style="border-radius: 6px;"-->
+<!--                                        @click.stop="startForm(item, {isReply: true, edit: false})"-->
+<!--                                >重新评估-->
+<!--                                </van-button>-->
                             </div>
                         </template>
                     </Card>
@@ -111,7 +111,7 @@
 
 <script>
   import Vue from "vue";
-  import { getList } from "@/api/priceEvaluation";
+  import { getList, getUserInfoByTo } from "@/api/priceEvaluation";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -143,14 +143,24 @@
           pageSize: 10,
           searchKey: ''
         },
-        isReply: false
+        isReply: false,
+        roleInfoList: []
       };
     },
     computed: {
       // 所有字典
       ...mapState({
         wordbook: state => state.user.wordbook,
-      })
+      }),
+      isSendRole () {
+        let flag = true
+        let list = ['CustomerAttache', 'CustomerManager']
+        this.roleInfoList.filter(item => {
+            return list.includes(item.enname)
+        })
+        flag = this.roleInfoList.length > 0
+        return flag
+      }
     },
     watch: {
       error (value) {
@@ -162,9 +172,9 @@
     methods: {
       // 字典转换
       returnText (val) {
-        let name;
+        let name = '';
         this.wordbook.Used_car_evaluation.forEach(e => {
-          if (e.value === val) {
+          if (e.value === val && val !== '1') {
             name = e.label;
           }
         });
@@ -202,7 +212,7 @@
       },
       startFormFn (item) {
         let query = {}
-        if(item.status === '3' || item.status === '4') {
+        if (item.status === '3' || item.status === '4') {
           query = {isReply: true, isReplyView: true}
         }
         this.startForm(item, {edit: false, ...query})
@@ -228,13 +238,22 @@
           Toast.success('刷新成功');
         }, 500);
       },
-      addVehicle() {
+      addVehicle () {
         this.$router.push({
           path: '/vehicle',
           query: {
             addUsedCar: true
           }
         })
+      },
+      //获取用户信息
+      async getUserInfoByTo () {
+        try {
+          const {data} = await getUserInfoByTo()
+          this.roleInfoList = data.roleInfoList
+        } catch (e) {
+          console.log(e)
+        }
       }
     },
     mounted () {
@@ -242,6 +261,7 @@
       //   this.isReply = true
       // }
       this.onLoad();
+      this.getUserInfoByTo();
     }
   };
 </script>

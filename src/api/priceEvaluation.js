@@ -69,3 +69,13 @@ export const presentUserCar = params => request({
   url: '/order/usedCar/presentUserCar',
   data: params
 })
+
+
+
+//获取用户信息
+export const getUserInfoByTo = () => request({
+  method: 'get',
+  url: '/user/getUserInfoByTo'
+})
+
+
