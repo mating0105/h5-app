@@ -5,7 +5,7 @@
       get-container="#app"
       round
       position="bottom"
-      close-on-click-overlay="false"
+      :close-on-click-overlay="false"
       v-model="showMap"
     >
       <div class="van-picker xh-address">

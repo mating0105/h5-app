@@ -56,7 +56,9 @@
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
+                  <van-cell title="贷款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                    <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="贷款期数" :value="paymentDetail.projProjectInfo.proPat.loanCount" />
@@ -68,10 +70,10 @@
                   <van-cell title="公司利率" :value="paymentDetail.projProjectInfo.bankNewRate" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="客户利率" :value="paymentDetail.projProjectInfo.customerRate" />
+                  <van-cell title="客户利率" :value="this.numFilter(paymentDetail.projProjectInfo.customerRate)" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="担保费率" :value="paymentDetail.projProjectInfo.guaranteeRate" />
+                  <van-cell title="担保费率" :value="this.numFilter(paymentDetail.projProjectInfo.guaranteeRate)" />
                 </van-cell-group>
               </van-row>
             </card>
@@ -80,9 +82,11 @@
               <van-row>
                 <van-cell-group :border="false">
                   <van-cell
-                    title="担保费(元)"
+                    title="担保费"
                     :value="paymentDetail.projBudgetList.warrantCharges?paymentDetail.projBudgetList.warrantCharges:'0'"
-                  />
+                  >
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -91,12 +95,14 @@
                     clearable
                     name="estimateCharges"
                     error-message-align="right"
-                    label="评估费(元)"
+                    label="评估费"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'estimateCharges');ruleMessge($event)"
                     :error-message="errorMsg.estimateCharges"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -108,9 +114,11 @@
                     label="调查费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
                     :error-message="errorMsg.investigateCharges"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -122,9 +130,11 @@
                     label="GPS费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
                     :error-message="errorMsg.gpsCharges"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -136,9 +146,11 @@
                     label="综合服务费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
                     :error-message="errorMsg.colligateCharges"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -150,9 +162,11 @@
                     label="公证费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
                     :error-message="errorMsg.notarialFees"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -164,9 +178,11 @@
                     label="异地上户费(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
                     :error-message="errorMsg.allopatryCharges"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -178,9 +194,11 @@
                     label="上户保证金(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
                     :error-message="errorMsg.doolBail"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -192,9 +210,11 @@
                     label="履约保证金(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
                     :error-message="errorMsg.agreeBail"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-field
@@ -206,9 +226,11 @@
                     label="实收车商(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
                     :error-message="errorMsg.collectCarDealer"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
               </van-row>
             </card>
@@ -228,19 +250,23 @@
                     label="打折金额(元)"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="ruleMessge"
+                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
                     :error-message="errorMsg.dcnAmt"
-                  />
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="实收金额(元)" :value="actincmAmt" />
+                  <van-cell title="实收金额(元)" :value="this.numFilter(actincmAmt)" >
+                     <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
                     title="缴费时间"
                     required
                     is-link
-                    v-model="paymentDetail.projBudgetList.pyfDt"
+                    v-model="paymentDetail.projBudgetList.pyfDtDesc"
                     @click="showPopupTime('pyfDt')"
                     label-class="labelClass"
                     @blur.prevent="ruleMessge"
@@ -267,13 +293,19 @@
               <template slot="header">走款信息</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-cell title="银行贷款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
+                  <van-cell title="银行贷款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                     <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="送审金额(元)" :value="paymentDetail.projProjectInfo.sendLoanAmt" />
+                  <van-cell title="送审金额" :value="paymentDetail.projProjectInfo.sendLoanAmt" >
+                     <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="应走款金额(元)" :value="paymentDetail.projProjectInfo.loanAmt" />
+                  <van-cell title="应走款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                     <div slot="right-icon" class="xh-cell-right">元</div>
+                  </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
@@ -292,7 +324,7 @@
                     title="走款时间"
                     required
                     is-link
-                    :value="paymentDetail.projPayInfo.payTime"
+                    :value="paymentDetail.projPayInfo.payTimeDesc"
                     @click="showPopupTime('payTime')"
                     label-class="labelClass"
                     @blur.prevent="ruleMessge"
@@ -564,7 +596,7 @@ export default {
       ).toFixed(2);
     },
     actincmAmt() {
-      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0; //打折金额
+      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0.00; //打折金额
       return (parseFloat(this.totalCharges) - dcnAmt).toFixed(2);
     },
     wordbook() {
@@ -882,11 +914,14 @@ export default {
     // },
     confirmTime(value) {
       var time = format(value, "yyyyMMdd hh:mm");
+      var time2 = format(value, "yyyy-MM-dd hh:mm");
       switch (this.timeType) {
         case "pyfDt":
+          this.paymentDetail.projBudgetList.pyfDtDesc = time2;
           this.paymentDetail.projBudgetList.pyfDt = time;
           break;
         case "payTime":
+          this.paymentDetail.projBudgetList.payTimeDesc = time2;
           this.paymentDetail.projPayInfo.payTime = time;
           break;
       }

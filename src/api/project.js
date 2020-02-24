@@ -179,6 +179,7 @@ export function setProcessStop(params) {
 }
 // 获取GPS套餐
 export function getGPSData(params) {
+  console.log('接口',params)
   return serviceOther({
     url: `/admin/cmsPackcust/page/mobile/${ params.mobile }?page=1&limit=1000&insuranceflag=${ params.thiefRescue }`,
     method: 'get'

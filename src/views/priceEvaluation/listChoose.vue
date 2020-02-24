@@ -118,7 +118,7 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         searchKey: "",
-        status: 4
+        status: 4,
       }
     };
   },
@@ -148,6 +148,7 @@ export default {
     },
     onLoad() {
       this.loading = !this.isLoading;
+      this.params.projectId = this.$route.query.projectId;
       getList(this.params)
         .then(res => {
           const { code, data, msg } = res;

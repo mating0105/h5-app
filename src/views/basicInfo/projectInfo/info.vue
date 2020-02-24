@@ -286,7 +286,7 @@
             title="销售价:"
             v-if="item.carNature === 'new_car'"
             :border="false"
-            :value="item.salePrice"
+            :value="numFilter(item.salePrice)"
           >
             <div slot="right-icon" class="xh-cell-right">元</div>
           </van-cell>
@@ -850,7 +850,9 @@ export default {
       dataImg2: [], //评估报告
       message: "",
       userlist: false, //是否有下一节点人
-      processedBy: ""
+      processedBy: "",
+      imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723'],//二手车照片类型
+
     };
   },
   methods: {
@@ -924,52 +926,39 @@ export default {
     //加载二手车照片
     async loadImg() {
       try {
-        await this.getDocumentByType("7777"); //发动机细节
-        await this.getDocumentByType("8888"); //车辆内饰
-        await this.getDocumentByType("9999"); //车辆外观
-        await this.getDocumentByType("6666"); //二手车评估报告
+        this.imageTypeList.forEach(item => {
+            this.getDocumentByType(item, this.dataImg)
+            this.getDocumentByType('6666', this.dataImg2)//二手车评估报告
+        })
       } catch (e) {
         console.log(e);
       }
     },
-    async getDocumentByType(documentType) {
-      try {
-        const params = {
-          customerNum: this.projProjectInfo.cars[0].assessId,
-          documentType: documentType
-        };
-        const { data } = await getDocumentByType(params);
-        const declare = this.documentType[documentType]
-          ? this.documentType[documentType].label
-          : "图片描述";
-        data.forEach(item => {
-          item.declare = declare;
-        });
-        if (documentType !== "6666") {
-          this.dataImg.push({
-            declare: declare, //图片描述
-            isRequire: false, //*是否必须
-            deletable: false, //是否可以操作-上传和删除
+    async getDocumentByType (documentType, arr) {
+        try {
+          const params = {
+            customerNum: this.projProjectInfo.cars[0].assessId,
+            documentType: documentType
+          }
+          const {data} = await getDocumentByType(params)
+          const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
+          data.forEach(item => {
+            item.declare = declare;
+          })
+          let deletable = documentType === '6666' || this.isView
+          arr.push({
+            declare: declare,//图片描述
+            isRequire: documentType === '6666',//*是否必须
+            deletable: deletable,//是否可以操作-上传和删除
             documentType: documentType,
-            customerNum:this.projProjectInfo.cars[0].assessId,
-            kind: "1",
+            customerNum: this.projProjectInfo.cars[0].assessId,
+            customerId: this.projProjectInfo.cars[0].assessId,
+            kind: '1',
             fileList: data
-          });
-        } else {
-          this.dataImg2.push({
-            declare: declare, //图片描述
-            isRequire: false, //*是否必须
-            deletable: false, //是否可以操作-上传和删除
-            documentType: documentType,
-            customerNum: this.projProjectInfo.customerNum,
-            customerId: this.projProjectInfo.customerId,
-            kind: "1",
-            fileList: data
-          });
+          })
+        } catch (e) {
+          console.log(e)
         }
-      } catch (e) {
-        console.log(e);
-      }
     },
     // 字典转换
     returnText(n, val, list, ids, field) {
@@ -1576,6 +1565,7 @@ export default {
             )
           };
           if (row.cars[0].carNature == "old_car") {
+            console.log(1111);
             this.loadImg();
           }
           setTimeout(() => {
@@ -1970,6 +1960,10 @@ export default {
       this.loanData();
     }else{
       this.projProjectInfo = datas;
+      if (datas.cars[0].carNature == "old_car") {
+        console.log(2222);
+        this.loadImg();
+      }
     }
     this.rulesForm("order-project-xh");
   }
