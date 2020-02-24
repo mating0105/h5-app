@@ -136,6 +136,8 @@
                     @change="onChange"
             />
         </van-popup>
+        <!-- 身份证识别/银行卡识别 -->
+        <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern"/>
     </div>
 </template>
 
@@ -194,7 +196,12 @@
           investigateBankName: '',
           intentionPrice: '',
           bankCardNum: ''
-        }
+        },
+        showScan: false,
+        scanActions: [
+          {name: "相机扫描识别", value: "scan"},
+          {name: "相册导入识别", value: "album"}
+        ],
       }
     },
     computed: {
@@ -544,16 +551,29 @@
           }
         }
       },
-      IdcardLoading(name) {
-        this.$bridge.callHandler(name, '', (res) => {
+      // IdcardLoading(name) {
+      //   this.$bridge.callHandler(name, '', (res) => {
+      //     this.dataList.bankCardNum = res.BANK_NUM || ''
+      //     this.ruleMessge({
+      //       target: {
+      //         name: 'bankCardNum',
+      //         value: this.dataList.bankCardNum
+      //       }
+      //     })
+      //   })
+      // },
+      /**
+       * 识别
+       */
+      IdcardLoading () {
+        this.showScan = true;
+      },
+      //银行卡
+      discern (e) {
+        this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
           this.dataList.bankCardNum = res.BANK_NUM || ''
-          this.ruleMessge({
-            target: {
-              name: 'bankCardNum',
-              value: this.dataList.bankCardNum
-            }
-          })
         })
+        this.showScan = false;
       }
     },
     mounted () {

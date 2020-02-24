@@ -211,6 +211,8 @@
         />
       </div>
     </van-action-sheet>
+      <!-- 身份证识别/银行卡识别 -->
+      <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern"/>
   </ViewPage>
 </template>
 <script>
@@ -312,7 +314,12 @@ export default {
         endDate: "", //截止日
         contactPhone: "" ,//手机号
       },
-      sign: "" //标识点击正反面照片查看
+      sign: "", //标识点击正反面照片查看
+      showScan: false,
+      scanActions: [
+        {name: "相机扫描识别", value: "scan"},
+        {name: "相册导入识别", value: "album"}
+      ],
     };
   },
   computed: {
@@ -594,16 +601,29 @@ export default {
         }
       }
     },
-    IdcardLoading(name) {
-      this.$bridge.callHandler(name, '', (res) => {
+    // IdcardLoading(name) {
+    //   this.$bridge.callHandler(name, '', (res) => {
+    //     this.customerData.bankCardNum = res.BANK_NUM || ''
+    //     this.ruleMessge({
+    //       target: {
+    //         name: 'bankCardNum',
+    //         value: this.customerData.bankCardNum
+    //       }
+    //     })
+    //   })
+    // },
+    /**
+     * 识别
+     */
+    IdcardLoading () {
+      this.showScan = true;
+    },
+    //银行卡
+    discern (e) {
+      this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
         this.customerData.bankCardNum = res.BANK_NUM || ''
-        this.ruleMessge({
-          target: {
-            name: 'bankCardNum',
-            value: this.customerData.bankCardNum
-          }
-        })
       })
+      this.showScan = false;
     }
   },
   mounted() {
