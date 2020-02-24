@@ -114,7 +114,7 @@ export default {
             pathData:{
                 //待办路径
                 dealwith:[
-                    {name:'客户经理待办',path:'/xhProject',params:newParams},
+                    {name:'客户经理待办',path:'/projectInfo',params:newParams},
                     {name:'内勤待办',path:'/xhProject',params:newParams},
                     {name:'审批官待办',path:'/xhProject',params:newParams},
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},

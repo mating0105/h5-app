@@ -1955,13 +1955,17 @@ export default {
       this.params = this.$route.query;
     }
     this.isView = this.params.isView == 0;
+    if(!this.params.activityId || this.params.activityId == 'WF_PROJ_APPR_01_T01'){
+      this.isView = true;
+    }else{
+      this.isView = false;
+    }
     let datas = JSON.parse(sessionStorage.getItem("pro"));
     if (!datas) {
       this.loanData();
     }else{
       this.projProjectInfo = datas;
       if (datas.cars[0].carNature == "old_car") {
-        console.log(2222);
         this.loadImg();
       }
     }

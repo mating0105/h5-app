@@ -511,10 +511,15 @@ export default {
         this.message = "同意";
       }
       let obj = {
-        conclusionCode: "01",
-        businessKey: this.params.projectId,
-        commentsDesc: this.message
+        wfBizComments: {
+          conclusionCode: "01",
+          businessKey: this.params.projectId,
+          commentsDesc: this.message
+        },
+        isPerfectMsg: '',
+        projCarInfo: {}
       };
+
       setProjectTask(obj)
         .then(res => {
           let objArr = [];
