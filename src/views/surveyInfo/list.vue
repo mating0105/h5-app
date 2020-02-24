@@ -1,13 +1,9 @@
 <template>
-  <ViewPage
-    :goPage="rightFn"
-    :backFn="closeNativeWebView"
-    :scroll="true"
-  >
+  <ViewPage :goPage="rightFn" :backFn="closeNativeWebView" :scroll="true">
     <template v-slot:head>
       <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh" >
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
         style="min-height: 80vh"
         v-model="loading"
@@ -146,26 +142,33 @@ export default {
       this.$router.push({
         path: "/xhProject",
         query: {
-            customerName: rows.customerName, //客户姓名
-            contactPhone: rows.certificateNum, //客户身份证
-            certificateNum: rows.contactPhone, //客户手机号码
-            customerId: rows.customerId,
-            customerNum: rows.customerNum,
-            projectNo: rows.projectNo,
-            projectId: rows.projectId,
-            isView: 1,
-            newPro:true,//是否是完善资料
-          }
+          customerName: rows.customerName, //客户姓名
+          contactPhone: rows.certificateNum, //客户身份证
+          certificateNum: rows.contactPhone, //客户手机号码
+          customerId: rows.customerId,
+          customerNum: rows.customerNum,
+          projectNo: rows.projectNo,
+          projectId: rows.projectId,
+          isView: 0,
+          newPro: true //是否是完善资料
+        }
       });
     },
     //查看详情
     showDetail(rows) {
       this.$router.push({
-        // path: "/paymentSure",
-        // query: {
-        //   info: JSON.stringify(rows),
-        //   dealState: "3"
-        // }
+        path: "/xhProject",
+        query: {
+          customerName: rows.customerName, //客户姓名
+          contactPhone: rows.certificateNum, //客户身份证
+          certificateNum: rows.contactPhone, //客户手机号码
+          customerId: rows.customerId,
+          customerNum: rows.customerNum,
+          projectNo: rows.projectNo,
+          projectId: rows.projectId,
+          isView: 1,
+          newPro: true //是否是完善资料
+        }
       });
     },
     rightFn(item) {

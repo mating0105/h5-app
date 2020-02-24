@@ -111,7 +111,7 @@
                       input-align="right"
                       placeholder="请输入"
                       @blur.prevent="()=>{ }"
-                    /> -->
+                    />-->
                     <van-cell
                       title="GPS数量(台)"
                       required
@@ -141,7 +141,7 @@
             </van-row>
 
             <!-- 意见 -->
-            <Card style="margin: 10px 0;">
+            <Card style="margin: 10px 0;" v-if="!params.newPro">
               <template v-slot:header>意见描述</template>
               <section>
                 <van-cell-group :border="false">
@@ -160,38 +160,40 @@
               </section>
             </Card>
             <!-- 有终止的提交按钮 -->
-            <div class="xh-submit" v-if="isActive">
-              <van-row>
-                <van-col :span="4">
-                  <van-button
-                    size="large"
-                    type="default"
-                    :disabled="dLoading"
-                    :loading="dLoading"
-                    style="color: #000;"
-                    @click="submitStop"
-                  >终止</van-button>
-                </van-col>
-                <van-col :span="20">
-                  <van-button
-                    size="large"
-                    class="xh-bg-main"
-                    @click="submitTask"
-                    :loading="dLoading"
-                    :disabled="dLoading"
-                  >提 交</van-button>
-                </van-col>
-              </van-row>
-            </div>
-            <!-- 提交按钮 -->
-            <div class="xh-submit" v-else>
-              <van-button
-                size="large"
-                class="xh-bg-main"
-                @click="submitTask"
-                :disabled="dLoading"
-                :loading="dLoading"
-              >提 交</van-button>
+            <div v-if="!params.newPro">
+              <div class="xh-submit" v-if="isActive">
+                <van-row>
+                  <van-col :span="4">
+                    <van-button
+                      size="large"
+                      type="default"
+                      :disabled="dLoading"
+                      :loading="dLoading"
+                      style="color: #000;"
+                      @click="submitStop"
+                    >终止</van-button>
+                  </van-col>
+                  <van-col :span="20">
+                    <van-button
+                      size="large"
+                      class="xh-bg-main"
+                      @click="submitTask"
+                      :loading="dLoading"
+                      :disabled="dLoading"
+                    >提 交</van-button>
+                  </van-col>
+                </van-row>
+              </div>
+              <!-- 提交按钮 -->
+              <div class="xh-submit" v-else>
+                <van-button
+                  size="large"
+                  class="xh-bg-main"
+                  @click="submitTask"
+                  :disabled="dLoading"
+                  :loading="dLoading"
+                >提 交</van-button>
+              </div>
             </div>
             <!-- <div class="xh-submit">
               <van-button
@@ -199,7 +201,7 @@
                 class="xh-bg-main"
                 @click="submitCeShi"
               >测试跳转待办按钮</van-button>
-            </div> -->
+            </div>-->
           </div>
         </div>
       </van-tab>
@@ -516,7 +518,7 @@ export default {
           businessKey: this.params.projectId,
           commentsDesc: this.message
         },
-        isPerfectMsg: '',
+        isPerfectMsg: "",
         projCarInfo: {}
       };
 
@@ -665,17 +667,25 @@ export default {
         let { data } = res;
         this.windControl = {
           projId: data.projectInfo.projectId, //项目id
-          gradeManual: data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
-          riskCondition: data.projectInfo.riskMeasure &&  data.projectInfo.riskMeasure.riskCondition, //风控条件
-          gpsNum: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
+          gradeManual:
+            data.projectInfo.customer && data.projectInfo.customer.gradeManual, //手动评分
+          riskCondition:
+            data.projectInfo.riskMeasure &&
+            data.projectInfo.riskMeasure.riskCondition, //风控条件
+          gpsNum:
+            data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
           wthrDtd: data.projectInfo.wthrDtd, //是否上门
-          isFoucusList: data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.isFoucusList
+          isFoucusList:
+            data.projectInfo.riskMeasure &&
+            data.projectInfo.riskMeasure.isFoucusList
         }; //是否关注名单
         // 转换文字
 
-
-        if(data.projectInfo.clientManager) {
-          this.findGpsData({mobile: data.projectInfo.clientManager.mobile, thiefRescue: data.projectInfo.thiefRescue == 2?'N':'Y'});
+        if (data.projectInfo.clientManager) {
+          this.findGpsData({
+            mobile: data.projectInfo.clientManager.mobile,
+            thiefRescue: data.projectInfo.thiefRescue == 2 ? "N" : "Y"
+          });
         }
         this.getAcceptPersonl();
       });
@@ -933,78 +943,78 @@ export default {
       this.params.dealState = this.params.isView == 0 ? 1 : 3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
-      if(this.params.newPro){
+      if (this.params.newPro) {
         this.meunRow = [
-        {
-          name: "客户及配偶",
-          key: 1,
-          icon: "icon-spouse.png",
-          url: "/clientIndex",
-          show: 0
-        },
-        {
-          name: "紧急联系人",
-          key: 2,
-          icon: "icon-contact.png",
-          url: "/contactPerson",
-          show: 0
-        },
-        {
-          name: "新增房产信息",
-          key: 3,
-          icon: "icon-house.png",
-          url: "/houseUser",
-          show: 0
-        },
-        {
-          name: "家庭收入",
-          key: 4,
-          icon: "icon-income.png",
-          url: "/incomeFamily",
-          show: 0
-        },
-        {
-          name: "名下车辆",
-          key: 5,
-          icon: "icon-carinfo.png",
-          url: "/vehicleList",
-          show: 0
-        },
-        {
-          name: "担保人信息",
-          key: 6,
-          icon: "icon-guarantor.png",
-          url: "/guarantor",
-          show: 0
-        },
-        {
-          name: "担保人房产",
-          key: 7,
-          icon: "icon-guarantor.png",
-          url: "/houseGuarantor",
-          show: 0
-        },
-        {
-          name: "担保人收入信息",
-          key: 8,
-          icon: "icon-guarantorhouse.png",
-          url: "/incomeGuarantor",
-          show: 0
-        },
-        {
-          name: "调查结论",
-          key: 9,
-          icon: "icon-findings.png",
-          url: "/survey",
-          show: 0
-        },
-        {
-          name: "相关文档",
-          key: 10,
-          icon: "icon-filed.png",
-          url: "/proDocument",
-          show: 0
-        }
+          {
+            name: "客户及配偶",
+            key: 1,
+            icon: "icon-spouse.png",
+            url: "/clientIndex",
+            show: 0
+          },
+          {
+            name: "紧急联系人",
+            key: 2,
+            icon: "icon-contact.png",
+            url: "/contactPerson",
+            show: 0
+          },
+          {
+            name: "新增房产信息",
+            key: 3,
+            icon: "icon-house.png",
+            url: "/houseUser",
+            show: 0
+          },
+          {
+            name: "家庭收入",
+            key: 4,
+            icon: "icon-income.png",
+            url: "/incomeFamily",
+            show: 0
+          },
+          {
+            name: "名下车辆",
+            key: 5,
+            icon: "icon-carinfo.png",
+            url: "/vehicleList",
+            show: 0
+          },
+          {
+            name: "担保人信息",
+            key: 6,
+            icon: "icon-guarantor.png",
+            url: "/guarantor",
+            show: 0
+          },
+          {
+            name: "担保人房产",
+            key: 7,
+            icon: "icon-guarantor.png",
+            url: "/houseGuarantor",
+            show: 0
+          },
+          {
+            name: "担保人收入信息",
+            key: 8,
+            icon: "icon-guarantorhouse.png",
+            url: "/incomeGuarantor",
+            show: 0
+          },
+          {
+            name: "调查结论",
+            key: 9,
+            icon: "icon-findings.png",
+            url: "/survey",
+            show: 0
+          },
+          {
+            name: "相关文档",
+            key: 10,
+            icon: "icon-filed.png",
+            url: "/proDocument",
+            show: 0
+          }
         ];
       }
     }
