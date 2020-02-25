@@ -45,8 +45,8 @@
                             </span>
                             </van-col>
                         </van-row>
-<!--                                                <template v-slot:footer>-->
-                        <template v-slot:footer v-if="item.yn != 1">
+                             <template v-slot:footer>
+<!--                        <template v-slot:footer v-if="item.yn != 1">-->
                             <div style="text-align:right; min-height: 2rem">
                                 <van-button
                                         v-if="item.status === '1'"

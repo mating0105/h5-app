@@ -464,8 +464,7 @@ export default {
           Toast.fail("不能添加借款人!");
           return;
         }
-
-        if (getValue("credit")) {
+        if (getValue("credit") && !this.$route.query.index) {
           let creditObj = JSON.parse(getValue("credit"))
           const arr = _.filter(creditObj.surDtlList, item => item.cpCertificateNum === this.customerData.certificateNum)
           if(arr.length > 0) {
