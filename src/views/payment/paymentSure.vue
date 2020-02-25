@@ -198,7 +198,12 @@ export default {
       activeName: "project",
       params: {}, //上个页面接收的数据
       data: {
-        projProjectInfo: {}
+        projProjectInfo: {
+          
+        },
+        projPayInfo:{
+          riskConclusion:''
+        }
       },
       meunRow: [
         {
