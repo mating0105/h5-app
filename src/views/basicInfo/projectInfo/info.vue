@@ -343,7 +343,9 @@
     <Card class="xh-top-10" v-if="carNature == 'old_car'">
       <template v-slot:header>车辆评估信息</template>
       <van-row class="xh-project">
-        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>0?(projProjectInfo.cars[0].evaluatingPrice).toFixed(2):''" />
+        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>0?(projProjectInfo.cars[0].evaluatingPrice).toFixed(2):''" >
+           <div slot="right-icon" class="xh-cell-right">元</div>
+        </van-cell>
         <van-cell-group :border="false">
           <van-cell title="评估报告:" />
         </van-cell-group>
@@ -1914,7 +1916,6 @@ export default {
           let objArr = [];
           let { data } = res;
           this.userlist = true;
-          this.loadType("下一节点处理人", "nextpeople");
           data.list.forEach(t => {
             objArr.push({
               ...t,
@@ -1922,6 +1923,7 @@ export default {
             });
           });
           this.options = objArr;
+          this.loadType("下一节点处理人", "nextpeople");
           this.dLoading = false;
         })
         .catch(() => {
