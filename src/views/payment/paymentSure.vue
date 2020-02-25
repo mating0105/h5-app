@@ -42,7 +42,7 @@
               :value="data.projPayInfo.riskConclusion?data.projPayInfo.riskConclusion == 1?'通过':'不通过':''"
             />
           </van-cell-group>
-          <van-cell-group :border="true" class="xh-conclusion">
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
             <van-cell title="审批结论" :value="conclusion" :is-link="params.dealState == 1?true:false" @click="params.dealState == 1?chooseConclusion:''" />
           </van-cell-group>
           <card v-if="showAdvances">
@@ -326,6 +326,11 @@ export default {
             this.data.projProjectInfo.loanAmt
           );
           this.message = this.data.projPayInfo.riskDescription;
+          if(this.data.projPayInfo.advancesAssetName){
+            this.showAdvances = true;
+          }else{
+            this.showAdvances = false;
+          }
           this.loading = false;
         })
         .catch(e => {
@@ -367,7 +372,7 @@ export default {
       } else {
         this.conclusion = value.name;
         this.conclusionCode = value.value;
-        if (this.conclusionCode == "01") {
+        if (this.conclusionCode == "01" && params) {
           this.showAdvances = true;
         } else {
           this.showAdvances = false;
