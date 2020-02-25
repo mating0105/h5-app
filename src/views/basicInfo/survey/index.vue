@@ -501,13 +501,12 @@ export default {
       this.bankNum = num;
     },
     onSelect(rows) {
-      this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
+      this.$bridge.callHandler("bankCodeOCR", rows.value, data => {
+        this.test = data;
         if (this.bankNum == 1) {
           this.$set(this.ruleForm, "jrnlCardno", data.BANK_NUM);
-          this.test = data;
         } else {
           this.$set(this.ruleForm, "paymentCarNum", data.BANK_NUM);
-          this.test = data;
         }
         this.show3 = false;
       });
