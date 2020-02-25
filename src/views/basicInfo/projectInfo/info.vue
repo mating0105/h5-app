@@ -915,12 +915,9 @@ export default {
       deleteCar({
         id: rows.id
       }).then(res => {
-        console.log(inx);
-        console.log(this.projProjectInfo.cars)
         this.projProjectInfo.cars.splice(inx, 1);
-        console.log(this.projProjectInfo.cars)
         this.loading = false;
-        // location.reload();
+        this.carNature = '';
       });
     },
     //加载二手车照片
@@ -1054,6 +1051,8 @@ export default {
       this.show2 = false;
       switch (title) {
         case "业务来源":
+          let businessList = JSON.parse(sessionStorage.getItem('businessList'));
+          this.businessList = this.businessList.length != 0?this.businessList:businessList;
           if (this.businessList.length == 0) {
             this.$notify({
               type: "danger",
@@ -1375,7 +1374,8 @@ export default {
           let row = projectInfo;
           this.courseMap = courseMap;
           this.thiefRescueList = thiefRescue; // 获取盗抢险
-          this.businessList = lpmsBusinessSource;
+          this.businessList = lpmsBusinessSource;//业务来源
+          sessionStorage.setItem('businessList',JSON.stringify(this.businessList));
 
           let loanPlatfomr = row.loanPlatfomr
             ? row.loanPlatfomr
