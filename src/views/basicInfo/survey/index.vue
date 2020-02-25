@@ -198,7 +198,7 @@
               @click.native="!isView?'':loadList('提供人','provider_type')"
             />
             <van-cell
-              title="姓名："
+              :title="`姓名：${test}`"
               :is-link="isView"
               :value="ruleForm.providerName"
               :border="false"
@@ -486,7 +486,8 @@ export default {
       actions: [
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
-      ]
+      ],
+      test:''
     };
   },
   methods: {
@@ -503,8 +504,10 @@ export default {
       this.$bridge.callHandler("bankCodeOCR", rows.value, res => {
         if (this.bankNum == 1) {
           this.$set(this.ruleForm, "jrnlCardno", data.BANK_NUM);
+          this.test = data.BANK_NUM;
         } else {
           this.$set(this.ruleForm, "paymentCarNum", data.BANK_NUM);
+          this.test = data.BANK_NUM;
         }
         this.show3 = false;
       });
