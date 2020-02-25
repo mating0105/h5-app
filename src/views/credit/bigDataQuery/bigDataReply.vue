@@ -120,7 +120,7 @@
       },
       creditRequire() {
         if (this.isBank) {
-          return false
+          return 'canPeopleBankResult'
         } else if (this.rbCredit) {
           return 'canPersonalCreditResult'
         } else {
@@ -153,7 +153,7 @@
           data.forEach(item => {
             item.declare = declare;
           })
-          const require = this.creditRequire && obj[this.creditRequire]
+          const require = obj[this.creditRequire]
           obj.dataList.push({
             declare: declare,//图片描述
             isRequire: require,//*是否必须

@@ -113,16 +113,16 @@
         },
         users: [],
         obj: {
-          joiDebtorSpouse: ['0113', '0114', '0115', '0116', '2004'],//共债人配偶
-          borrowerSpouse: ['0105', '0106', '0107', '0108', '2002'],//借款人配偶
-          security: ['0120', '0117', '0118', '0119', '2005'],//担保人
-          borrower: ['0101', '0102', '0103', '0104', '2001'],//借款人
-          joiDebtor: ['0109', '0110', '0111', '0112', '2003'],//共债人
+          joiDebtorSpouse: ['0113', '0114', '0116', '2004'],//共债人配偶
+          borrowerSpouse: ['0105', '0106', '0108', '2002'],//借款人配偶
+          security: ['0120', '0117', '0119', '2005'],//担保人
+          borrower: ['0101', '0102', '0104', '2001'],//借款人
+          joiDebtor: ['0109', '0110', '0112', '2003'],//共债人
         },
         changeUserList: [],
         showUser: false,
         taskData: {},
-        whiteList: [],
+        whiteList: ['2001', '0119', '2005', '0108', '2002', '0112', '2003', '0116', '2004'],
         isIdCard: ['0101', '0102', '0105', '0106', '0120', '0117', '0109', '0110', '0113', '0114']//身份证分类
       }
     },
@@ -198,7 +198,7 @@
               this.getDocumentByType(i, item)
             })
           })
-          this.users = data.cuCreditRegister.surDtlList.reverse()
+          this.users = data.cuCreditRegister.surDtlList
           this.loading = false
         } catch (e) {
           this.loading = false

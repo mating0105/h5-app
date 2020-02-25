@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="xh-contract-status">
-                <div v-if="creditRequire && !item[creditRequire]">
+                <div v-if="!item[creditRequire]">
                     <span style="display: inline-block; margin-right: 0.5rem">不查询</span>
                 </div>
                 <div v-else @click="showPopup(item)">
