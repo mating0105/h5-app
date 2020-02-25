@@ -197,7 +197,8 @@ import {
   Toast,
   Notify,
   SwipeCell,
-  Dialog
+  Dialog,
+  ActionSheet
 } from "vant";
 import formValidator from "@/mixins/formValidator";
 import Bus from "@/utils/bus";
@@ -213,7 +214,8 @@ const Components = [
   Toast,
   Notify,
   SwipeCell,
-  Dialog
+  Dialog,
+  ActionSheet
 ];
 Components.forEach(item => {
   Vue.use(item);
