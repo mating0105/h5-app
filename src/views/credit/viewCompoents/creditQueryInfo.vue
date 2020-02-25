@@ -2,7 +2,7 @@
     <Card>
         <template v-slot:header>
             {{title}} 
-            <!-- <span class="typeDesc" v-if="typeDesc">{{typeDesc}}</span> -->
+            <span class="status" :class="{total_result:'status-pass'}" v-if="typeDesc">{{typeDesc}}</span>
             <div class="credit-arrow-wrap" @click="isSpread = !isSpread">
               <van-icon v-if="isSpread" class="credit-arrow" name="arrow-up"/>
               <van-icon v-else class="credit-arrow" name="arrow-down"/>
@@ -84,7 +84,7 @@
       return {
         copyDataList:this.dataList,
         isSpread:true,
-        qaueryResult:0,
+        total_result:false,
         showImg:false,
         images:[]
 
@@ -96,22 +96,30 @@
         return this.$store.state.user.wordbook
       },
       typeDesc() {
-        switch (this.qaueryResult) {
-          case 0:
+        // Accept - 通过，Reject - 拒绝，Review - 复议
+    
+        const _flag = this.copyDataList.every(item => {
+          item.credit100StrategyResult === 'Accept'
+        })
+        if(_flag){
+          this.total_result = true
+          return '通过'
+        }else{
+          const _tag = this.copyDataList.some(item => {
+            item.credit100StrategyResult === 'Reject'
+          })
+          if(_tag){
             return '拒绝'
-            break;
-          case 1:
-            return '查询'
-            break;
-          case 2:
-            return '复议'
-            break;
-          case 3:
-            return '通过'
-            break;
-          default:
-            return '其他'
-            break;
+          }else{
+            const _ele = this.copyDataList.some(item => {
+              item.credit100StrategyResult === 'Review'
+            })
+            if(_ele){
+              return '复议'
+            }else{
+              return '其他'
+            }
+          }
         }
       }
     },
@@ -149,8 +157,8 @@
           case 'Review':
             return '复议'
             break;
-        
           default:
+            return '其他'
             break;
         }
       },
@@ -194,12 +202,15 @@
     .xh-no-pass .van-cell__value {
         color: #C4252A;
     }
-    .typeDesc{
+    .status{
         display: inline-block;
         padding: 4px 8px;
         border-radius: 2px;
         color: #fff;
         background-color: #C4252A;
+    }
+    .status-pass{
+        background-color: green;
     }
     .credit-arrow-wrap{
       float: right;
