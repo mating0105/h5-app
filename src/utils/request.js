@@ -66,7 +66,7 @@ const responseFulfilled = response => {
 
 const responseRejected = error => {
   if(error.response.status === 401) {
-    console.log(1)
+    Notify({ type: 'danger', message: '登录失效，请重新登录' });
     // debounce(lgoinInAgain, 500)
     loginAgainFn()
     // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
