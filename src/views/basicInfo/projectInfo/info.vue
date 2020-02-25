@@ -1338,6 +1338,7 @@ export default {
     },
     // 字典选择取消
     cancel() {
+      this.userlist = false;
       this.show3 = false;
     },
     returnVal(val, type) {
