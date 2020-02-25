@@ -142,8 +142,8 @@ export default {
       this.$router.push({
         path: "/xhProject",
         query: {
-          customerName: rows.customerName, //客户姓名
-          contactPhone: rows.certificateNum, //客户身份证
+          customerName: rows.certificateNum, //客户姓名
+          contactPhone: rows.contactPhone, //客户身份证
           certificateNum: rows.contactPhone, //客户手机号码
           customerId: rows.customerId,
           customerNum: rows.customerNum,
@@ -160,8 +160,8 @@ export default {
         path: "/xhProject",
         query: {
           customerName: rows.customerName, //客户姓名
-          contactPhone: rows.certificateNum, //客户身份证
-          certificateNum: rows.contactPhone, //客户手机号码
+          contactPhone: rows.contactPhone, //客户身份证
+          certificateNum: rows.certificateNum, //客户手机号码
           customerId: rows.customerId,
           customerNum: rows.customerNum,
           projectNo: rows.projectNo,

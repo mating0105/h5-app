@@ -1934,7 +1934,7 @@ export default {
     postProcess() {
       let obj = {
         conclusionCode: "01",
-        businessKey: this.params.projectId,
+        businessKey: this.params.projectId?this.params.projectId:this.params.businesskey,
         commentsDesc: this.message,
         processedBy: this.processedBy
       };

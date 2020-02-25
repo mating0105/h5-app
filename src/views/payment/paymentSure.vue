@@ -400,7 +400,7 @@ export default {
       if (this.dataImg.length<1 && this.conclusionCode == "01") {
         this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
-        if (this.conclusion) {
+        
           let businessKey = this.params.info.businesskey;
           let data = {
             wfComment: {
@@ -449,12 +449,7 @@ export default {
           } else {
             this.$notify({ type: "danger", message: "请选择审批结论" });
           }
-        } else {
-          this.$notify({
-            type: "danger",
-            message: "请通知风控审批官给予风控意见"
-          });
-        }
+        
       }
     },
     //加载垫款图片
