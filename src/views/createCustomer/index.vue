@@ -241,6 +241,7 @@ import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
 import { mapState } from "vuex";
 import formValidator from "@/mixins/formValidator";
+import _ from 'lodash'
 const Components = [
   Button,
   Row,
@@ -429,7 +430,7 @@ export default {
       this.fieldName = field;
       switch (title) {
         case "征信对象类型":
-          this.options = this.wordbook.credit_object_type;
+          this.options = _.filter(this.wordbook.credit_object_type, item => item.value !== "borrower")
           this.show4 = true;
           break;
         default:
