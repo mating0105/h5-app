@@ -9,8 +9,9 @@
             </van-tabs>
         </template>
         <template v-if="active === 1">
-            <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
-            <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+            <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+            <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+            <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult"></creditInfoTable>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="false" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>

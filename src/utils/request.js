@@ -36,6 +36,7 @@ const requestFulfilled = config => {
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
     config.headers['token'] = getToken()
+    // config.headers['Accept'] = '*'
   }
   return config
 }
@@ -65,6 +66,7 @@ const responseFulfilled = response => {
 
 const responseRejected = error => {
   if(error.response.status === 401) {
+    console.log(1)
     // debounce(lgoinInAgain, 500)
     loginAgainFn()
     // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录

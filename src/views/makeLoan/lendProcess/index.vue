@@ -1171,6 +1171,7 @@ export default {
             this.initImage();
           }
           this.listLoading = false;
+          this.initNumber()
         }
       } catch (err) {
         console.log(err);
@@ -1199,6 +1200,21 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    initNumber() {
+      this.priceFloat(this.form.loanInfo, 'factLoanAmt')
+      this.priceFloat(this.form.borrowerInfo, 'mainLoanWage')
+      this.priceFloat(this.form.loanInfo, 'loanAmt')
+      this.priceFloat(this.form.loanInfo, 'factCharges')
+      this.priceFloat(this.form.loanInfo, 'assessmentPrice')
+      this.priceFloat(this.form.loanInfo, 'premiumPrice')
+      this.priceFloat(this.form.loanInfo, 'businessPrice')
+      this.priceFloat(this.form.loanInfo, 'informationPrice')
+      this.priceFloat(this.form.loanInfo, 'carTotalPrice')
+      this.form.carInfos.forEach(item => {
+        this.priceFloat(item, 'actualInvoicedPrice')
+        this.priceFloat(item, 'seeingCarPrice')
+      })
     },
     // 字典转换
     returnText(n, val) {
