@@ -10,7 +10,7 @@
         </template>
         <template v-if="active === 1">
             <!-- 百融 -->
-            <creditQueryInfo v-if="TYPE" @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <div v-else>
               <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
               <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
@@ -29,13 +29,13 @@
         </template>
 
         <!-- 提交按钮 -->
-        <div class="xh-submit-box" v-if="edit && !TYPE">
+        <div class="xh-submit-box" v-if="edit && TYPE !== 'bairong'">
             <van-button size="large" @click="nextStep"
                         class="xh-btn"
             >发起征信查询
             </van-button>
         </div>
-        <div class="xh-submit-box" v-if="active === 0 && TYPE">
+        <div class="xh-submit-box" v-if="active === 0 && TYPE === 'bairong'">
           <van-button size="large" @click="triggerQuery"
                       class="xh-btn"
           >发起征信查询</van-button>
@@ -128,10 +128,10 @@
           let dataList;
           if (getValue("credit")) {
             dataList = JSON.parse(getValue("credit"))
-            if(this.TYPE)
+            if(this.TYPE === 'bairong')
                 this.reRegister = dataList.reRegister
           } else {
-            if(this.TYPE){
+            if(this.TYPE === 'bairong'){
               res = await creditQueryOf100(params)
               this.reRegister = res.data.cuCreditRegister.reRegister
             }else{
@@ -221,7 +221,7 @@
         })
       },
       async triggerQuery () {
-        if(this.reRegister != true){
+        if(this.reRegister !== 'true'){
           Toast('30天后才能重新查询')
           return
         }
