@@ -239,6 +239,7 @@ import { uploadsDocument } from "@/api/document";
 import { getSex, getBirth, getAge } from "@/utils/customer";
 import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
+import { getValue } from "@/utils/session";
 import { mapState } from "vuex";
 import formValidator from "@/mixins/formValidator";
 import _ from 'lodash'
@@ -460,8 +461,17 @@ export default {
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
         if (this.customerData.creditObjectType === "borrower") {
-          Toast.fail("不能添加借款人");
+          Toast.fail("不能添加借款人!");
           return;
+        }
+
+        if (getValue("credit")) {
+          let creditObj = JSON.parse(getValue("credit"))
+          const arr = _.filter(creditObj.surDtlList, item => item.cpCertificateNum === this.customerData.certificateNum)
+          if(arr.length > 0) {
+            Toast.fail("已经添加过此人，不可再次添加!");
+            return;
+          }
         }
         this.$store.dispatch("credit/setCustomerData", {
           data: this.customerData,
