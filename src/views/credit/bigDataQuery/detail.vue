@@ -31,7 +31,7 @@
         <div class="xh-submit-box" v-if="edit && !TYPE">
             <van-button size="large" @click="nextStep"
                         class="xh-btn"
-            >征信回复
+            >发起征信查询
             </van-button>
         </div>
         <div class="xh-submit-box" v-if="active === 0 && TYPE">

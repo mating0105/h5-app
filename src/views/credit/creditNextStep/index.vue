@@ -36,7 +36,7 @@
             <van-button size="large"
                         @click="submit"
                         class="xh-btn"
-            >提交
+            >发起征信查询
             </van-button>
         </div>
         <van-popup v-model="showUser" position="bottom" get-container="#app">
