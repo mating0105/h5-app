@@ -461,11 +461,11 @@
       }
     },
     mounted () {
-      this.initData()
-      this.initImage()
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isReply = Boolean(this.$route.query.isReply) && this.$route.query.isReply !== 'false'
       this.isReplyView = Boolean(this.$route.query.isReplyView) && this.$route.query.isReplyView !== 'false'
+      this.initData()
+      this.initImage()
       this.rulesForm("order-credit-old-car-xh")
     }
   }
