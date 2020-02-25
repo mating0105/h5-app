@@ -95,9 +95,8 @@ export default {
       error: false,
       finished: false,
       params: {
-        pageIndex: 1,
+        pageIndex: 0,
         pageSize: 10,
-        searchKey:''
       },
       isLoading: false
     };
@@ -106,11 +105,6 @@ export default {
     ...mapState({
       wordbook: state => state.user.wordbook
     }),
-    cuCreditStatus() {
-      return (
-        [{ label: "全部", value: "" }, ...this.wordbook.apply_status] || []
-      );
-    }
   },
   methods: {
     onSearch() {

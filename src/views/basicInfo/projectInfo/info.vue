@@ -311,7 +311,7 @@
             <van-cell-group :border="false">
               <van-cell title="二手车照片:" />
             </van-cell-group>
-            <imageList :dataList="dataImg" :view="true"></imageList>
+             <imageList :dataList="dataImg" :view="true"></imageList>
           </template>
           <van-cell title="备注:" :value="item.remark" />
           <div slot="right" style="height: 100%">
@@ -333,7 +333,9 @@
               @click="removeCar(item,index)"
             >删除</van-button>
           </div>
+          
         </van-swipe-cell>
+       
       </div>
     </Card>
 
@@ -341,7 +343,7 @@
     <Card class="xh-top-10" v-if="carNature == 'old_car'">
       <template v-slot:header>车辆评估信息</template>
       <van-row class="xh-project">
-        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>1?projProjectInfo.cars[0].evaluatingPrice:''" />
+        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>0?(projProjectInfo.cars[0].evaluatingPrice).toFixed(2):''" />
         <van-cell-group :border="false">
           <van-cell title="评估报告:" />
         </van-cell-group>
@@ -945,8 +947,8 @@ export default {
           let deletable = documentType === '6666' || this.isView
           arr.push({
             declare: declare,//图片描述
-            isRequire: documentType === '6666',//*是否必须
-            deletable: deletable,//是否可以操作-上传和删除
+            isRequire: false,//*是否必须
+            deletable: false,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.projProjectInfo.cars[0].assessId,
             customerId: this.projProjectInfo.cars[0].assessId,
@@ -1027,6 +1029,7 @@ export default {
     // 产品转id类型
     changeRows(projectInfo) {
       let ids = "";
+      console.log(this.productTypeName)
       if (this.productTypeName.length > 0) {
         this.productTypeName.forEach(t => {
           if (t.productName == projectInfo.proPat.productName) {
@@ -1034,7 +1037,10 @@ export default {
           }
         });
       }
-      this.$set(this.projProjectInfo, "productId", ids);
+      if(ids){
+        this.$set(this.projProjectInfo, "productId", ids);
+      }
+      
     },
     // 省市区选择
     confirmSelect(code, name) {
@@ -1355,6 +1361,7 @@ export default {
     loanData() {
       if(JSON.parse(sessionStorage.getItem("pro"))){
         this.dealData(JSON.parse(sessionStorage.getItem("pro")));
+        this.productName
       }else{
         Toast.loading({
           message: "加载中...",
@@ -1363,7 +1370,6 @@ export default {
           loadingType: "spinner",
           overlay: true
         });
-        console.log(22222)
         let projectId = this.params.projectNum?this.params.projectNum.replace('XM',''):'';
         getProjectInfo({
           id: this.params.projectId?this.params.projectId:projectId?projectId:this.params.businesskey
@@ -1585,10 +1591,9 @@ export default {
       }else{
         this.projProjectInfo = JSON.parse(projProjectInfo);
       }
-      // if (row.cars[0].carNature == "old_car") {
-      //   console.log(1111);
-      //   this.loadImg();
-      // }
+      if (this.projProjectInfo.cars[0].carNature == "old_car") {
+        this.loadImg();
+      }
       setTimeout(() => {
         // 处理产品破数据
         this.changeRows(row);
@@ -1938,7 +1943,11 @@ export default {
           });
           this.dLoading = false;
           // this.$bridge.callHandler("jumpToTaskTab", "", res => {});
-          this.$router.go(-1);
+          if(this.params.newCus){
+            this.$router.go(-2);
+          }else{
+            this.$router.go(-1);
+          }
         })
         .catch(() => {
           this.dLoading = false;
@@ -1956,16 +1965,22 @@ export default {
     },
     //点击完善信息
     conpleteInfo() {
-      
-      let query = { ...this.params, newPro: true };
-      this.$router.push({
-        path: "/xhProject",
-        query
-      });
+      let info = {...this.params ,newPro: true};
+      if(this.$route.query.dealState){
+        this.$router.push({
+          path: "/xhProject",
+          query:{info:JSON.stringify(info),dealState:this.$route.query.dealState}
+        });
+      }else{
+        this.$router.push({
+          path: "/xhProject",
+          query:info
+        });
+      }
+        
     }
   },
   mounted() {
-    console.log(1)
     if (this.$route.query.info) {
       this.params = JSON.parse(this.$route.query.info);
     } else {
