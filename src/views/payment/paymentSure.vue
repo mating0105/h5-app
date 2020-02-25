@@ -35,7 +35,7 @@
             </van-col>
           </van-row>
         </div>
-        <div v-show="params.dealState == '1'">
+        <div>
           <van-cell-group :border="true" class="xh-conclusion">
             <van-cell
               title="风控意见"
@@ -43,7 +43,7 @@
             />
           </van-cell-group>
           <van-cell-group :border="true" class="xh-conclusion">
-            <van-cell title="审批结论" :value="conclusion" is-link @click="chooseConclusion" />
+            <van-cell title="审批结论" :value="conclusion" :is-link="params.dealState == 1?true:false" @click="params.dealState == 1?chooseConclusion:''" />
           </van-cell-group>
           <card v-if="showAdvances">
             <template slot="header">资方垫款信息</template>

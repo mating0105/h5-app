@@ -156,7 +156,7 @@ export default {
     //查看详情
     showDetail(rows) {
       this.$router.push({
-        path: "/paymentSure",
+        path: "/paymentSure2",
         query: {
           info: JSON.stringify(rows),
           dealState: "3"

@@ -56,7 +56,7 @@
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="贷款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                  <van-cell title="贷款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
                     <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
@@ -83,7 +83,7 @@
                 <van-cell-group :border="false">
                   <van-cell
                     title="担保费"
-                    :value="paymentDetail.projBudgetList.warrantCharges?paymentDetail.projBudgetList.warrantCharges:'0'"
+                    :value="paymentDetail.projBudgetList.warrantCharges?this.numFilter(paymentDetail.projBudgetList.warrantCharges):'0.00'"
                   >
                   <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
@@ -111,7 +111,7 @@
                     clearable
                     name="investigateCharges"
                     error-message-align="right"
-                    label="调查费(元)"
+                    label="调查费"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
@@ -127,7 +127,7 @@
                     clearable
                     name="gpsCharges"
                     error-message-align="right"
-                    label="GPS费(元)"
+                    label="GPS费"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
@@ -143,7 +143,7 @@
                     clearable
                     name="colligateCharges"
                     error-message-align="right"
-                    label="综合服务费(元)"
+                    label="综合服务费"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
@@ -159,7 +159,7 @@
                     clearable
                     name="notarialFees"
                     error-message-align="right"
-                    label="公证费(元)"
+                    label="公证费"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
@@ -175,7 +175,7 @@
                     clearable
                     name="allopatryCharges"
                     error-message-align="right"
-                    label="异地上户费(元)"
+                    label="异地上户费"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
@@ -191,7 +191,7 @@
                     clearable
                     name="doolBail"
                     error-message-align="right"
-                    label="上户保证金(元)"
+                    label="上户保证金"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
@@ -207,7 +207,7 @@
                     clearable
                     name="agreeBail"
                     error-message-align="right"
-                    label="履约保证金(元)"
+                    label="履约保证金"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
@@ -223,7 +223,7 @@
                     clearable
                     name="collectCarDealer"
                     error-message-align="right"
-                    label="实收车商(元)"
+                    label="实收车商"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
@@ -247,7 +247,7 @@
                     clearable
                     name="dcnAmt"
                     error-message-align="right"
-                    label="打折金额(元)"
+                    label="打折金额"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
@@ -257,7 +257,7 @@
                   </van-field>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="实收金额(元)" :value="this.numFilter(actincmAmt)" >
+                  <van-cell title="实收金额" :value="this.numFilter(actincmAmt)" >
                      <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
@@ -562,6 +562,11 @@ export default {
       }
     };
   },
+  filters:{
+    filterTime(time){
+        return time ? format(time,'yyyy-MM-dd hh:mm:ss') : ''
+      }
+  },
   computed: {
     // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
     totalCharges() {
@@ -610,7 +615,7 @@ export default {
         });
       }
       return obj;
-    }
+    },
   },
   watch: {},
   methods: {
@@ -626,6 +631,8 @@ export default {
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
+          this.paymentDetail.projPayInfo.payTimeDesc = format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm');
+          this.paymentDetail.projBudgetList.pyfDtDesc = format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm')
         })
         .catch(e => {
           this.loading = false;
@@ -669,6 +676,9 @@ export default {
           this.loading = false;
           this.$notify({ type: "success", message: "保存成功" });
           this.paymentDetail = res.data.project;
+          this.paymentDetail.projPayInfo.payTimeDesc = format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm');
+          this.paymentDetail.projBudgetList.pyfDtDesc = format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm')
+
         })
         .catch(e => {
           this.loading = false;
@@ -913,16 +923,17 @@ export default {
     //   }
     // },
     confirmTime(value) {
-      var time = format(value, "yyyyMMdd hh:mm");
-      var time2 = format(value, "yyyy-MM-dd hh:mm");
+      console.log(Date.parse(new Date(value)));
       switch (this.timeType) {
         case "pyfDt":
-          this.paymentDetail.projBudgetList.pyfDtDesc = time2;
-          this.paymentDetail.projBudgetList.pyfDt = time;
+          this.paymentDetail.projBudgetList.pyfDt = Date.parse(new Date(value));
+          this.paymentDetail.projBudgetList.pyfDtDesc = format(value,'yyyy-MM-dd hh:mm')
+          this.errorMsg.pyfDt = '';
           break;
         case "payTime":
-          this.paymentDetail.projBudgetList.payTimeDesc = time2;
-          this.paymentDetail.projPayInfo.payTime = time;
+          this.paymentDetail.projPayInfo.payTime = Date.parse(new Date(value));
+          this.paymentDetail.projPayInfo.payTimeDesc = format(value,'yyyy-MM-dd hh:mm');
+          this.errorMsg.payTime = '';
           break;
       }
       this.show2 = false;
