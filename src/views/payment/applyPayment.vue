@@ -67,7 +67,7 @@
                   <van-cell title="放款平台" :value="paymentDetail.projProjectInfo.dsbrPltfrmNm" />
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="公司利率" :value="paymentDetail.projProjectInfo.bankNewRate" />
+                  <van-cell title="公司利率" :value="this.numFilter(paymentDetail.projProjectInfo.bankNewRate)" />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell title="客户利率" :value="this.numFilter(paymentDetail.projProjectInfo.customerRate)" />
@@ -293,17 +293,17 @@
               <template slot="header">走款信息</template>
               <van-row>
                 <van-cell-group :border="false">
-                  <van-cell title="银行贷款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                  <van-cell title="银行贷款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
                      <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="送审金额" :value="paymentDetail.projProjectInfo.sendLoanAmt" >
+                  <van-cell title="送审金额" :value="this.numFilter(paymentDetail.projProjectInfo.sendLoanAmt)" >
                      <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="应走款金额" :value="paymentDetail.projProjectInfo.loanAmt" >
+                  <van-cell title="应走款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
                      <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
@@ -631,8 +631,21 @@ export default {
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
-          this.paymentDetail.projPayInfo.payTimeDesc = format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm');
-          this.paymentDetail.projBudgetList.pyfDtDesc = format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm')
+          //初始化数据
+          this.paymentDetail.projPayInfo.payTimeDesc = this.paymentDetail.projPayInfo.payTime?format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm'):'';
+          this.paymentDetail.projBudgetList.pyfDtDesc = this.paymentDetail.projBudgetList.pyfDt?format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm'):'';
+          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'';
+          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
+          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
+          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'';
+          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'';
+          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'';
+          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'';
+          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'';
+          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'';
+          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'';
+          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'';
+
         })
         .catch(e => {
           this.loading = false;
