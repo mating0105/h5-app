@@ -95,7 +95,7 @@ export default {
       error: false,
       finished: false,
       params: {
-        pageIndex: 0,
+        pageIndex: 1,
         pageSize: 10,
       },
       isLoading: false
@@ -115,6 +115,7 @@ export default {
     },
     onLoad() {
       this.loading = !this.isLoading;
+      console.log(this.params);
       approveList(this.params).then(res => {
         if (res.code == 200) {
           setTimeout(() => {

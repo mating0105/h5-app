@@ -15,10 +15,10 @@ Vue.mixin(mixins);
 
 import Bridge from './utils/JSbridge'
 Vue.prototype.$bridge = Bridge;
-Vue.prototype.$prefixurl = 'http://172.16.10.5:10004/#/';//内网测试gps
+// Vue.prototype.$prefixurl = 'http://172.16.10.5:10004/#/';//内网测试gps
 // Vue.prototype.$prefixurl = 'http://xhh5.wwvas.com/#/';// 正式gps
 // Vue.prototype.$prefixurl = 'http://192.168.50.55:8089/#/';//
-// Vue.prototype.$prefixurl = 'http://apk.wwvas.com:10004/#/';//外网测试gps
+Vue.prototype.$prefixurl = 'http://apk.wwvas.com:10002/#/';//外网测试gps
 
 /**
  * If you don't want to use mock-server

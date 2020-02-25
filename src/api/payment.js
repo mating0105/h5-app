@@ -82,7 +82,7 @@ export function approveList(params) {
     return request({
         url: '/order/captureExpends/risklist',
         method: 'get',
-        data: params
+        params
     })
 }
 // 审批官风控意见提交
