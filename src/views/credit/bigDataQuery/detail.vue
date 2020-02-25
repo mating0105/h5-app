@@ -14,6 +14,7 @@
             <div v-else>
               <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
               <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult"></creditInfoTable>
             </div>
         </template>
         <template v-else-if="active === 0">
