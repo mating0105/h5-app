@@ -36,7 +36,7 @@
           </van-row>
         </div>
         <div>
-          <van-cell-group :border="true" class="xh-conclusion">
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
             <van-cell
               title="风控意见"
               :value="data.projPayInfo.riskConclusion?data.projPayInfo.riskConclusion == 1?'通过':'不通过':''"
@@ -82,7 +82,7 @@
             </van-cell-group>
             <imageList :dataList="dataImg"></imageList>
           </card>
-          <card>
+          <card v-if="params.dealState == 1">
             <template v-slot:header>意见描述</template>
             <section>
               <van-cell-group :border="false">
@@ -100,7 +100,7 @@
               </van-cell-group>
             </section>
           </card>
-          <div class="xh-submit" style="padding:0 10px 10px 10px;">
+          <div class="xh-submit" style="padding:0 10px 10px 10px;" v-if="params.dealState == 1">
             <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
           </div>
         </div>
@@ -402,10 +402,10 @@ export default {
     },
     //提交流程
     submit() {
+
       if (this.dataImg.length<1 && this.conclusionCode == "01") {
         this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
-        
           let businessKey = this.params.info.businesskey;
           let data = {
             wfComment: {
