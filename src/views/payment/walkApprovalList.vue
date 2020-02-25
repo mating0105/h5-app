@@ -28,7 +28,7 @@
               <van-col span="24">客户名称：{{item.customerName}}</van-col>
               <van-col span="24" class="xh-top-10">身份证：{{item.certificateNum}}</van-col>
               <van-col span="24" class="xh-top-10">手机号码：{{item.contactPhone}}</van-col>
-              <van-col span="24" class="xh-top-10" v-if="item.riskConclusion">
+              <van-col span="24" class="xh-top-10" v-if="item.riskConclusion != null">
                   <span :class="item.riskConclusion == 1?'pass':'nopass'">{{item.riskConclusion == 1?'审批通过':'审批拒绝'}}</span>
               </van-col>
             </van-row>
@@ -96,7 +96,8 @@ export default {
       finished: false,
       params: {
         pageIndex: 1,
-        pageSize: 10
+        pageSize: 10,
+        searchKey:''
       },
       isLoading: false
     };

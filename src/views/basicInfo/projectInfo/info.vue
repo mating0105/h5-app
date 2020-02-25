@@ -341,7 +341,7 @@
     <Card class="xh-top-10" v-if="carNature == 'old_car'">
       <template v-slot:header>车辆评估信息</template>
       <van-row class="xh-project">
-        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars[0].evaluatingPrice" />
+        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>1?projProjectInfo.cars[0].evaluatingPrice:''" />
         <van-cell-group :border="false">
           <van-cell title="评估报告:" />
         </van-cell-group>
@@ -1352,7 +1352,7 @@ export default {
       return val;
     },
     // 获取报单数据
-    async loanData() {
+    loanData() {
       if(JSON.parse(sessionStorage.getItem("pro"))){
         this.dealData(JSON.parse(sessionStorage.getItem("pro")));
       }else{
@@ -1364,8 +1364,9 @@ export default {
           overlay: true
         });
         console.log(22222)
+        let projectId = this.params.projectNum?this.params.projectNum.replace('XM',''):'';
         getProjectInfo({
-          id: this.params.projectId?this.params.projectId:this.params.businesskey
+          id: this.params.projectId?this.params.projectId:projectId?projectId:this.params.businesskey
         })
           .then(res => {
             this.dealData(res);
