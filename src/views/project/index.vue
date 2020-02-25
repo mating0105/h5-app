@@ -943,7 +943,7 @@ export default {
       this.params.dealState = this.params.isView == 0 ? 1 : 3; // 图片 上传 1 ----  查看 3
       this.params.businesskey = this.$route.query.projectId;
       this.isView = this.params.isView == 0;
-      if (this.params.newPro) {
+      if (this.params.newPro && !isView) {
         this.meunRow = [
           {
             name: "客户及配偶",
