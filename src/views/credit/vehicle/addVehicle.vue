@@ -467,32 +467,53 @@ export default {
         }, 500);
       });
     },
+    //验证字段
+    async verifyForm () {
+        let num = 0;
+        for (let item in this.errorMsg) {
+          if (this.errorMsg.hasOwnProperty(item)) {
+            this.errorMsg[item] = this.returnMsg(item, this.carFrom[item]);
+          }
+        }
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            for (let item in this.errorMsg) {
+              if (this.errorMsg.hasOwnProperty(item)) {
+                if (this.errorMsg[item]) {
+                  num++;
+                }
+              }
+            }
+            resolve(num === 0)
+          }, 500)
+        })
+      },
     /**
      * 保存车辆
      */
     saveCar() {
-      if (this.carFrom.carNature === "old_car") {
-        if (!this.verifyImage()) {
-          Toast.fail("二手车照片必传");
-          return;
-        }
-      }
-      this.loading = true;
-      this.carFrom.projectId = this.params.projectId;
-      addCar(this.carFrom).then(res => {
-        this.loading = false;
-        let prolist = JSON.parse(sessionStorage.getItem('pro'));
-        prolist.cars = res.data;
-        sessionStorage.setItem('pro',JSON.stringify(prolist));
-        this.$notify({
-          type: "success",
-          message: res.msg
-        });
-        this.$nextTick(() => {
-         
-          this.$router.go(-1);
-        });
-      });
+       this.verifyForm().then(async (res) => {
+         if(res){
+            this.loading = true;
+            this.carFrom.projectId = this.params.projectId;
+            addCar(this.carFrom).then(res => {
+              this.loading = false;
+              let prolist = JSON.parse(sessionStorage.getItem('proInfo'));
+              prolist.cars = res.data;
+              sessionStorage.setItem('proInfo',JSON.stringify(prolist));
+              this.$notify({
+                type: "success",
+                message: res.msg
+              });
+              this.$nextTick(() => {
+                this.$router.go(-1);
+              });
+            }).catch(()=>{
+              this.loading = false;
+            });
+          }
+       })
+       
     },
     verifyImage() {
       let len = this.dataList.length;

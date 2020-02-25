@@ -861,7 +861,7 @@ export default {
       // if (!this.edit) {
       //   return
       // }
-      
+      sessionStorage.setItem('proInfo',JSON.stringify(this.projProjectInfo))
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum,
