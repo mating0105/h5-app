@@ -487,7 +487,7 @@ export default {
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
       ],
-      test:''
+      test:'1111'
     };
   },
   methods: {
