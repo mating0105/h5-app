@@ -112,7 +112,7 @@
       init() {
         this.dataList.forEach(item => {
           if(this.creditRequire && !item[this.creditRequire]) {
-            item[this.type] = 'not_search1'
+            item[this.type] = 'not_search'
           }
         })
       }
