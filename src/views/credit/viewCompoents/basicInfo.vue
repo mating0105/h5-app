@@ -73,7 +73,7 @@
                         <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
                     </div>
                 </div>
-                <imageList :dataList="item.dataList" :view="!edit"></imageList>
+                <imageList :dataList="item.dataList" :view="!edit" :isGroup="true"></imageList>
             </div>
         </Card>
     </div>
@@ -137,7 +137,8 @@
           joiDebtor: ['6683', '6671', '6677', '6688'],//共债人
         },
         whiteList: ['6679', '0113', '0105', '0117', '0101', '0109', '6690', '0114', '0106', '0120', '0102', '0110'],
-        surDtlList: []
+        surDtlList: [],
+        isIdCard: ['0101', '0102', '0105', '0106', '0120', '0117', '0109', '0110', '0113', '0114']//身份证分类
       }
     },
     watch: {
@@ -223,7 +224,8 @@
             customerNum,
             customerId: dataList.customerId,
             kind: '1',
-            fileList: []
+            fileList: [],
+            title: this.isIdCard.includes(documentType) ? '身份证': '其他'
           }
           obj.dataList.push(beanData)
           const {data} = await getDocumentByType(params)

@@ -12,8 +12,8 @@
             <!-- 百融 -->
             <creditQueryInfo v-if="TYPE" @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <div v-else>
-              <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
-              <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
             </div>
         </template>
         <template v-else-if="active === 0">
@@ -31,7 +31,7 @@
         <div class="xh-submit-box" v-if="edit && !TYPE">
             <van-button size="large" @click="nextStep"
                         class="xh-btn"
-            >征信回复
+            >发起征信查询
             </van-button>
         </div>
         <div class="xh-submit-box" v-if="active === 0 && TYPE">

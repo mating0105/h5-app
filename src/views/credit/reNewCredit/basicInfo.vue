@@ -410,6 +410,7 @@ export default {
       } catch (e) {
         this.loading = false;
         console.log(e);
+        return Promise.reject(e)
       }
     },
     nextStepFn() {
