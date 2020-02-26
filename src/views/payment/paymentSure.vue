@@ -39,7 +39,7 @@
           <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
             <van-cell
               title="风控意见"
-              :value="data.projPayInfo.riskConclusion?data.projPayInfo.riskConclusion == 1?'通过':'不通过':''"
+              :value="riskConclusion"
             />
           </van-cell-group>
           <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
@@ -95,7 +95,7 @@
                   type="textarea"
                   maxlength="200"
                   placeholder="请输入"
-                  show-word-limit
+                  
                 />
               </van-cell-group>
             </section>
@@ -205,6 +205,7 @@ export default {
           riskConclusion:''
         }
       },
+      riskConclusion:'',
       meunRow: [
         {
           name: "项目基本信息",
@@ -336,6 +337,16 @@ export default {
           }else{
             this.showAdvances = false;
           }
+          switch (this.data.projPayInfo.riskConclusion){
+            case 0:
+              this.riskConclusion = '不通过';
+              break;
+              case 1:
+                this.riskConclusion = '通过';
+                break;
+                default:
+                  break;
+          }
           this.loading = false;
         })
         .catch(e => {
@@ -393,7 +404,7 @@ export default {
     },
     confirmTime(value) {
       this.time = Date.parse(new Date(value));
-      var time = format(value, "yyyyMMdd hh:mm");
+      var time = format(value, "yyyy-MM-dd hh:mm");
       this.datalist.advancesTime = time;
       this.show2 = false;
     },
