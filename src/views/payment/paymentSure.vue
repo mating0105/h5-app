@@ -43,7 +43,7 @@
             />
           </van-cell-group>
           <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
-            <van-cell title="审批结论" :value="conclusion" :is-link="params.dealState == 1?true:false" @click="params.dealState == 1 && chooseConclusion()" />
+            <van-cell title="审批结论" :value="conclusion" :is-link="params.dealState == 1?true:false" @click="params.dealState == 1 && loadType('审批意见','message')" />
           </van-cell-group>
           <card v-if="showAdvances">
             <template slot="header">资方垫款信息</template>
@@ -374,10 +374,24 @@ export default {
           });
           this.options = list;
           break;
+          case '审批意见':
+            this.options = [
+            {
+              name: "已垫款",
+              value: "01"
+            },
+            {
+              name: "回退",
+              value: "02"
+            },
+            {
+              name: "拒绝",
+              value: "04"
+            }
+          ];
+          break;
+
       }
-    },
-    chooseConclusion() {
-      this.show = true;
     },
     confirm(value) {
       console.log(value);
