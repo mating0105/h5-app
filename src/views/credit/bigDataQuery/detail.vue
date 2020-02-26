@@ -10,7 +10,7 @@
         </template>
         <template v-if="active === 1">
             <!-- 百融 -->
-            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <div v-else>
               <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
               <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
@@ -233,8 +233,8 @@
         }
         Bus.$emit('creditSave',this.TYPE);
         
-        Bus.$on('creditSaveSuccess', query => {
-          this.getCreditInfo('getBrAgain').then(() => {this.active = 1})
+        Bus.$on('querySuccess', res => {
+          res === 'bairong' && this.getCreditInfo('getBrAgain').then(() => {this.active = 1})
         })
         /* const params = {
           lpCertificateNum: this.$route.query.lpCertificateNum,
@@ -260,4 +260,4 @@
 
 <style>
 
-    </style>
+</style>
