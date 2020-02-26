@@ -479,7 +479,7 @@ export default {
         this.$router.go(-1);
       } else {
         //新建客户，走接口
-        // if (this.src && this.srcBack) {
+        if (this.src && this.srcBack) {
         this.loading = true;
         submitCreate(this.customerData)
           .then(res => {
@@ -488,8 +488,8 @@ export default {
               customerNum: res.data.customerNum,
               customerId: res.data.id
             };
-            // this.uploadImg("0101", params, this.dataURLtoFile(this.src));
-            // this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+            this.uploadImg("0101", params, this.dataURLtoFile(this.src));
+            this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
 
             this.$notify({
               type: "success",
@@ -501,12 +501,12 @@ export default {
           .catch(e => {
             this.loading = false;
           });
-        // } else {
-        //   this.$notify({
-        //     type: "danger",
-        //     message: "请上传身份证正反面"
-        //   });
-        // }
+        } else {
+          this.$notify({
+            type: "danger",
+            message: "请上传身份证正反面"
+          });
+        }
       }
     },
     uploadImg(val, params, file) {
@@ -611,17 +611,17 @@ export default {
         }
       }
     },
-    // IdcardLoading(name) {
-    //   this.$bridge.callHandler(name, '', (res) => {
-    //     this.customerData.bankCardNum = res.BANK_NUM || ''
-    //     this.ruleMessge({
-    //       target: {
-    //         name: 'bankCardNum',
-    //         value: this.customerData.bankCardNum
-    //       }
-    //     })
-    //   })
-    // },
+    IdcardLoading(name) {
+      this.$bridge.callHandler(name, '', (res) => {
+        this.customerData.bankCardNum = res.BANK_NUM || ''
+        this.ruleMessge({
+          target: {
+            name: 'bankCardNum',
+            value: this.customerData.bankCardNum
+          }
+        })
+      })
+    },
     /**
      * 识别
      */
