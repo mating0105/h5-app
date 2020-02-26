@@ -117,7 +117,7 @@
           console.log(e)
         }
       },
-      async getCreditInfo () {
+      async getCreditInfo (_tag) {
         try {
           this.loading = true
           const params = {
@@ -126,18 +126,24 @@
           }
           let res;
           let dataList;
-          if (getValue("credit")) {
-            dataList = JSON.parse(getValue("credit"))
-            if(this.TYPE === 'bairong')
-                this.reRegister = dataList.reRegister
-          } else {
-            if(this.TYPE === 'bairong'){
-              res = await creditQueryOf100(params)
-              this.reRegister = res.data.cuCreditRegister.reRegister
-            }else{
-              res = await getCreditInfo(params)
-            }
+          if(_tag && _tag ==='getBrAgain'){
+            res = await creditQueryOf100(params)
+            this.reRegister = res.data.cuCreditRegister.reRegister
             dataList = res.data.cuCreditRegister
+          }else{
+            if (getValue("credit")) {
+              dataList = JSON.parse(getValue("credit"))
+              if(this.TYPE === 'bairong')
+                  this.reRegister = dataList.reRegister
+            } else {
+              if(this.TYPE === 'bairong'){
+                res = await creditQueryOf100(params)
+                this.reRegister = res.data.cuCreditRegister.reRegister
+              }else{
+                res = await getCreditInfo(params)
+              }
+              dataList = res.data.cuCreditRegister
+            }
           }
 
           this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
@@ -226,13 +232,16 @@
           return
         }
         Bus.$emit('creditSave',this.TYPE);
-        this.active = 1
-        const params = {
+        
+        Bus.$on('creditSaveSuccess', query => {
+          this.getCreditInfo('getBrAgain').then(() => {this.active = 1})
+        })
+        /* const params = {
           lpCertificateNum: this.$route.query.lpCertificateNum,
           id: this.$route.query.id
         }
       　const res = await creditQueryOf100(params)
-        this.reRegister = res.data.cuCreditRegister.reRegister
+        this.reRegister = res.data.cuCreditRegister.reRegister */
       },
       lookDocs(){
         this.active = 2
