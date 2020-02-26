@@ -1,5 +1,5 @@
 <template>
-  <ViewPage :goPage="rightFn" :backFn="closeNativeWebView" :scroll="true">
+  <ViewPage :goPage="rightFn" :backFn="closeNativeWebView">
     <template v-slot:head>
       <van-search v-model="params.searchKey" :placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
