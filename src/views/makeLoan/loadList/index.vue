@@ -243,6 +243,8 @@ export default {
     mounted(){
         this.getDictionaryData();
         this.onLoad();
+        sessionStorage.removeItem("pro");
+        sessionStorage.removeItem("proInfo");
     }
 
 };

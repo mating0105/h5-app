@@ -869,7 +869,7 @@ export default {
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum,
-        projectId: this.params.projectId
+        projectId: this.params.projectId?this.params.projectId:this.params.businesskey
       };
       this.$router.push({
         path: "/addVehicle",
@@ -932,7 +932,7 @@ export default {
             this.getDocumentByType('6666', this.dataImg2)//二手车评估报告
         })
       } catch (e) {
-        console.log(e);
+        
       }
     },
     async getDocumentByType (documentType, arr) {
@@ -980,7 +980,6 @@ export default {
       return name;
     },
     returnPlatform(val, list) {
-      console.log(val, list);
       let name;
       list.forEach(i => {
         if (i.value == val) {
@@ -1031,7 +1030,6 @@ export default {
     // 产品转id类型
     changeRows(projectInfo) {
       let ids = "";
-      console.log(this.productTypeName)
       if (this.productTypeName.length > 0) {
         this.productTypeName.forEach(t => {
           if (t.productName == projectInfo.proPat.productName) {
@@ -1399,7 +1397,6 @@ export default {
       let row = projectInfo;
       this.courseMap = courseMap;
       this.thiefRescueList = thiefRescue; // 获取盗抢险
-      console.log(this.thiefRescueList,'this.thiefRescueList')
       this.businessList = lpmsBusinessSource;//业务来源
 
       let loanPlatfomr = row.loanPlatfomr
@@ -1594,6 +1591,7 @@ export default {
       }else{
         this.projProjectInfo = JSON.parse(projProjectInfo);
       }
+      console.log(this.projProjectInfo,1111)
       if (this.projProjectInfo.cars[0].carNature == "old_car") {
         this.loadImg();
       }
@@ -1616,7 +1614,6 @@ export default {
       };
       getLoanPlatformTree(obj).then(res => {
         if (res.code == 200) {
-          console.log(this.platform);
           let datas = [];
           let list = res.data;
           list.forEach(t => {
@@ -1997,7 +1994,6 @@ export default {
         this.isView = this.$route.query.dealState == 1  && this.params.activityId == 'WF_PROJ_APPR_01_T01';
       }
     }
-    console.log(this.isView)
     // let datas = JSON.parse(sessionStorage.getItem("pro"));
     // let datas = null
     // if (!datas) {

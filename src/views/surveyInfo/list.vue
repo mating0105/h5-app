@@ -90,7 +90,8 @@ export default {
       finished: false,
       params: {
         pageIndex: 1,
-        pageSize: 10
+        pageSize: 10,
+        searchKey: '',
       },
       isLoading: false
     };
@@ -121,7 +122,6 @@ export default {
               this.list.push(t);
             });
             // 加载状态结束
-            this.loading = false;
             this.params.pageIndex++;
             // 数据全部加载完成
             if (this.list.length == res.data.totalCount) {
@@ -129,6 +129,7 @@ export default {
             } else {
               this.finished = false;
             }
+            this.loading = false;
             this.isLoading = false;
           }, 500);
         } else {

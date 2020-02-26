@@ -495,7 +495,7 @@ export default {
        this.verifyForm().then(async (res) => {
          if(res){
             this.loading = true;
-            this.carFrom.projectId = this.params.projectId;
+            this.carFrom.projectId = this.params.projectId?this.params.projectId:this.params.businesskey;
             addCar(this.carFrom).then(res => {
               this.loading = false;
               let prolist = JSON.parse(sessionStorage.getItem('proInfo'));
