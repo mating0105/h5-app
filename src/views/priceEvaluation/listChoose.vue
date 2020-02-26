@@ -208,8 +208,8 @@ export default {
     },
     //选择某一项，跳回项目报单
     chooseThis(rows, index) {
-      console.log(rows);
-      rows.projectId = this.$route.query.projectId;
+      console.log(this.$route.query)
+      rows.projectId = this.$route.query.projectId?this.$route.query.projectId:this.$route.query.businesskey;
       rows.assessId = rows.id;
       rows.id = '';
       addCar(rows).then(res => {
