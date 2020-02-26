@@ -26,6 +26,7 @@
         input-align="right"
         clearable
         :border="false"
+        required
         v-model="form.bankCardNum"
         @blur.prevent="ruleMessge"
         :error-message="errorMsg.bankCardNum"

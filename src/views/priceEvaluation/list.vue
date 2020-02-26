@@ -155,10 +155,10 @@
       isSendRole () {
         let flag = true
         let list = ['CustomerAttache', 'CustomerManager']
-        this.roleInfoList.filter(item => {
+        const arr = this.roleInfoList.filter(item => {
             return list.includes(item.enname)
         })
-        flag = this.roleInfoList.length > 0
+        flag = arr.length > 0
         return flag
       }
     },
