@@ -1,6 +1,6 @@
 // 费用信息
 <template>
-  <ViewPage>
+  <ViewPage :loading="loading">
     <div class="xh-cost-content">
       <redCard label="客户基本信息" style="margin:0 10px;">
         <template slot="cardBody">
@@ -23,7 +23,9 @@
             <van-cell title="产品性质" :value="productProperty" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="贷款金额(元)" :value="numFilter(payDetail.projProjectInfo.loanAmt)" />
+            <van-cell title="贷款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell
@@ -35,46 +37,66 @@
             <van-cell title="放款平台" :value="payDetail.projProjectInfo.dsbrPltfrmNm" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="公司利率" :value="payDetail.projProjectInfo.bankNewRate" />
+            <van-cell title="公司利率" :value="numFilter(payDetail.projProjectInfo.bankNewRate)" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="客户利率" :value="payDetail.projProjectInfo.customerRate" />
+            <van-cell title="客户利率" :value="numFilter(payDetail.projProjectInfo.customerRate)" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="担保费率" :value="payDetail.projProjectInfo.guaranteeRate" />
+            <van-cell title="担保费率" :value="numFilter(payDetail.projProjectInfo.guaranteeRate)" />
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell
               title="担保费(元)"
-              :value="payDetail.projBudgetList.warrantCharges?payDetail.projBudgetList.warrantCharges:'0'"
-            />
+              :value="payDetail.projBudgetList.warrantCharges?numFilter(payDetail.projBudgetList.warrantCharges):'0.00'"
+            >
+            <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="评估费(元)" :value="payDetail.projBudgetList.estimateCharges" />
+            <van-cell title="评估费" :value="numFilter(payDetail.projBudgetList.estimateCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="调查费(元)" :value="payDetail.projBudgetList.investigateCharges" />
+            <van-cell title="调查费" :value="numFilter(payDetail.projBudgetList.investigateCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="GPS费(元)" :value="payDetail.projBudgetList.gpsCharges" />
+            <van-cell title="GPS费" :value="numFilter(payDetail.projBudgetList.gpsCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="综合服务费(元)" :value="payDetail.projBudgetList.colligateCharges" />
+            <van-cell title="综合服务费" :value="numFilter(payDetail.projBudgetList.colligateCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="公证费(元)" :value="payDetail.projBudgetList.notarialFees" />
+            <van-cell title="公证费" :value="numFilter(payDetail.projBudgetList.notarialFees)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="异地上户费(元)" :value="payDetail.projBudgetList.allopatryCharges" />
+            <van-cell title="异地上户费" :value="numFilter(payDetail.projBudgetList.allopatryCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="上户保证金(元)" :value="payDetail.projBudgetList.doolBail" />
+            <van-cell title="上户保证金" :value="numFilter(payDetail.projBudgetList.doolBail)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="履约保证金(元)" :value="payDetail.projBudgetList.agreeBail" />
+            <van-cell title="履约保证金" :value="numFilter(payDetail.projBudgetList.agreeBail)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="实收车商(元)" :value="payDetail.projBudgetList.collectCarDealer" />
+            <van-cell title="实收车商" :value="numFilter(payDetail.projBudgetList.collectCarDealer)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
         </van-row>
       </card>
@@ -82,13 +104,19 @@
         <template slot="header">缴费明细</template>
         <van-row>
           <van-cell-group :border="false">
-            <van-cell title="费用合计" :value="payDetail.projBudgetList.totalCharges" />
+            <van-cell title="费用合计" :value="numFilter(payDetail.projBudgetList.totalCharges)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="打折金额(元)" :value="payDetail.projBudgetList.dcnAmt" />
+            <van-cell title="打折金额" :value="numFilter(payDetail.projBudgetList.dcnAmt)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="实收金额(元)" :value="payDetail.projBudgetList.actincmAmt" />
+            <van-cell title="实收金额" :value="numFilter(payDetail.projBudgetList.actincmAmt)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell title="缴费时间" :value="payDetail.projBudgetList.pyfDt" />
@@ -102,13 +130,19 @@
         <template slot="header">走款信息</template>
         <van-row>
           <van-cell-group :border="false">
-            <van-cell title="银行贷款金额(元)" :value="payDetail.projProjectInfo.loanAmt" />
+            <van-cell title="银行贷款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="送审金额(元)" :value="payDetail.projProjectInfo.sendLoanAmt" />
+            <van-cell title="送审金额" :value="numFilter(payDetail.projProjectInfo.sendLoanAmt)" >
+              <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="应走款金额(元)" :value="payDetail.projProjectInfo.loanAmt" />
+            <van-cell title="应走款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
+            <div slot="right-icon" class="xh-cell-right">元</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell title="走款模式" :value="payType" />
@@ -145,6 +179,7 @@ import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
 import { Row, Col, Tab, Tabs, Cell, CellGroup } from "vant";
 import { getPaymentDetail, getDic } from "@/api/payment";
+import { format } from "@/utils/format";
 const Components = [Row, Col, Tab, Tabs, Cell, CellGroup];
 Components.forEach(item => {
   Vue.use(item);
@@ -166,17 +201,21 @@ export default {
       payMethod: "",
       payType: "",
       bankTypeJry: "",
-      params: {}
+      params: {},
+      loading:false
     };
   },
   methods: {
     loadData() {
+      this.loading = true;
       getPaymentDetail({
         projectId: this.params.info && this.params.info.projectId,
         businesskey: this.params.info.businesskey
       })
         .then(res => {
           this.payDetail = res.data;
+          this.payDetail.projPayInfo.payTime = format(new Date(this.payDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm');
+          this.payDetail.projBudgetList.pyfDt = format(new Date(this.payDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm')
 
           this.productProperty = this.returnText(
             "product_property",
@@ -194,10 +233,11 @@ export default {
             "BANK_TYPE_JYR",
             res.data.projPayInfo.payeeBank
           );
+          this.loading = false;
         })
         .catch(err => {
           setTimeout(() => {
-            this.$router.go(-1);
+              this.loading = false;
           }, 1000);
         });
     },

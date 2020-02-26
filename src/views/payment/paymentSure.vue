@@ -36,7 +36,7 @@
           </van-row>
         </div>
         <div>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1">
             <van-cell
               title="风控意见"
               :value="riskConclusion"
@@ -413,7 +413,9 @@ export default {
     },
     //提交流程
     submit() {
-
+      if(this.data.projPayInfo.riskLeader == 1 && this.riskConclusion == ''){
+        this.$notify({ type: "danger", message: "请通知审批官审批" });
+      }else{
       if (this.dataImg.length<1 && this.conclusionCode == "01") {
         this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
@@ -465,7 +467,7 @@ export default {
           } else {
             this.$notify({ type: "danger", message: "请选择审批结论" });
           }
-        
+        }
       }
     },
     //加载垫款图片
