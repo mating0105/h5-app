@@ -7,7 +7,7 @@
     :scroll="true"
   >
     <template v-slot:head>
-      <van-search v-model="params.searchKey" :placeholder="`请输入客户名称${phone},${accout}`" show-action @search="onSearch" />
+      <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
