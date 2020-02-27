@@ -7,7 +7,7 @@
     :scroll="true"
   >
     <template v-slot:head>
-      <van-search v-model="params.searchKey" :placeholder="请输入客户名称" show-action @search="onSearch" />
+      <van-search v-model="params.searchKey" placeholder="请输入客户名称" show-action @search="onSearch" />
     </template>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list
@@ -282,8 +282,8 @@ export default {
   mounted() {
     this.accout = Cookies.get("loginName");
     this.phone = Cookies.get("phone");
-    // this.accout = '137';
-    // this.phone = '13705712126'
+    // this.accout = '101';
+    // this.phone = '13500000000'
     this.onLoad();
   }
 };
