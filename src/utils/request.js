@@ -36,7 +36,7 @@ const requestFulfilled = config => {
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
     config.headers['token'] = getToken()
-    // config.headers['Accept'] = '*'
+    config.headers['Accept'] = '*'
   }
   return config
 }
