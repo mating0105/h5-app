@@ -38,6 +38,7 @@
         <div class="xh-submit-box" v-if="active === 0 && TYPE === 'bairong'">
           <van-button size="large" @click="triggerQuery"
                       class="xh-btn"
+                      :disabled="disableClick"
           >发起征信查询</van-button>
         </div>
         
@@ -79,7 +80,7 @@
     data () {
       return {
         TYPE:'',
-        reRegister:null, //百融征信查询，30天以内不能再次查询
+        disableClick:false,
         active: 0,
         dataList: {
           investigateBank: '',
@@ -128,17 +129,13 @@
           let dataList;
           if(_tag && _tag ==='getBrAgain'){
             res = await creditQueryOf100(params)
-            this.reRegister = res.data.cuCreditRegister.reRegister
             dataList = res.data.cuCreditRegister
           }else{
             if (getValue("credit")) {
               dataList = JSON.parse(getValue("credit"))
-              if(this.TYPE === 'bairong')
-                  this.reRegister = dataList.reRegister
             } else {
               if(this.TYPE === 'bairong'){
                 res = await creditQueryOf100(params)
-                this.reRegister = res.data.cuCreditRegister.reRegister
               }else{
                 res = await getCreditInfo(params)
               }
@@ -227,21 +224,38 @@
         })
       },
       async triggerQuery () {
-        if(this.reRegister !== 'true'){
+        let date1 = new Date();
+        let date2 = new Date(date1);
+        date2.setDate(date1.getDate() + 30)
+
+        let isRegister = this.dataList.surDtlList.some(element => {
+          !element.credit100StrategyQuerydate || new Date(element.credit100StrategyQuerydate) <= date2
+        });
+
+        if(this.isRegister){
           Toast('30天后才能重新查询')
           return
         }
-        Bus.$emit('creditSave',this.TYPE);
         
-        Bus.$on('querySuccess', res => {
-          res === 'bairong' && this.getCreditInfo('getBrAgain').then(() => {this.active = 1})
+        Bus.$emit('creditSave',this.TYPE);
+        Bus.$on("queryStart", res => {
+          this.disableClick = true
+          this.loading = true
+        });
+
+        Bus.$on('queryFaile', res => {
+          this.disableClick = false
+          this.loading = false
         })
-        /* const params = {
-          lpCertificateNum: this.$route.query.lpCertificateNum,
-          id: this.$route.query.id
-        }
-      　const res = await creditQueryOf100(params)
-        this.reRegister = res.data.cuCreditRegister.reRegister */
+        Bus.$on('querySuccess', res => {
+          this.disableClick = false
+          this.loading = false
+          if(res === 'bairong'){
+            this.getCreditInfo('getBrAgain')
+            this.$forceUpdate()
+            this.active = 1
+          }
+        })
       },
       lookDocs(){
         this.active = 2
@@ -259,5 +273,5 @@
 </script>
 
 <style>
-
+  
 </style>
