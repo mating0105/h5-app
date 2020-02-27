@@ -2,7 +2,7 @@
     <Card>
         <template v-slot:header>
             {{title}} 
-            <span class="status" :class="{total_result:'status-pass'}" v-if="typeDesc">{{typeDesc}}</span>
+            <span class="status" :class="{'status-pass':credit100Result === '通过'}" v-if="credit100Result">{{credit100Result}}</span>
             <div class="credit-arrow-wrap" @click="isSpread = !isSpread">
               <van-icon v-if="isSpread" class="credit-arrow" name="arrow-up"/>
               <van-icon v-else class="credit-arrow" name="arrow-down"/>
@@ -78,7 +78,8 @@
           return []
         }
       },
-      type: String
+      type: String,
+      credit100Result:String
     },
     data(){
       return {
@@ -94,33 +95,6 @@
       // 所有字典
       wordbook () {
         return this.$store.state.user.wordbook
-      },
-      typeDesc() {
-        // Accept - 通过，Reject - 拒绝，Review - 复议
-    
-        const _flag = this.copyDataList.every(item => {
-          item.credit100StrategyResult === 'Accept'
-        })
-        if(_flag){
-          this.total_result = true
-          return '通过'
-        }else{
-          const _tag = this.copyDataList.some(item => {
-            item.credit100StrategyResult === 'Reject'
-          })
-          if(_tag){
-            return '拒绝'
-          }else{
-            const _ele = this.copyDataList.some(item => {
-              item.credit100StrategyResult === 'Review'
-            })
-            if(_ele){
-              return '复议'
-            }else{
-              return '其他'
-            }
-          }
-        }
       }
     },
     filters:{

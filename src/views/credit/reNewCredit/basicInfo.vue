@@ -368,6 +368,52 @@ export default {
         query
       });
     },
+    // 百融大数据征信授权书提示
+    async bigDataTipOfBr(){
+      try {
+        this.checkPrice();
+        if (!this.verifyForm()) {
+          return;
+        }
+
+        this.dataList.surDtlList = [this.form, ...this.perInfoList];
+      
+        let _arr = [],
+            _response = null;
+        let _promise = new Promise((resolve,reject) => {
+          this.dataList.surDtlList.forEach((item,index) => {
+            item.dataList.forEach((ele)=> {
+              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
+                _arr.push(item.creditPersonName)
+              }
+              resolve(true)
+            })
+          })
+        })
+        _promise.then(async (resolve,reject) => {
+          if(_arr.length > 0){
+            Dialog.confirm({
+              message: `${_arr.join('、')}没有上传征信查询授权书，无法查询征信，确定吗？`
+            }).then(async () => {
+              this.loading =  true
+              _response = await creditSaveOf100(this.dataList) 
+            })
+          }else{
+            this.loading =  true
+            _response = await creditSaveOf100(this.dataList) 
+            console.log(_response)
+          }
+        }).then(() => {
+            this.loading =  false
+            this.$nextTick(() => {
+              Toast.success("保存成功");
+              Bus.$emit("querySuccess", 'bairong');
+            });
+        })
+      } catch (error) {
+        
+      }
+    },
     /**
      * 下一步
      **/
@@ -382,10 +428,7 @@ export default {
         if(TYPE !== 'bairong' && TYPE) {
           this.dataList.creditTypeFlag = TYPE
         }
-        const { data } = TYPE === 'bairong'
-          ? await creditSaveOf100(this.dataList)
-          : await saveCreditInfo(this.dataList);
-
+        const { data } = await saveCreditInfo(this.dataList);
 
         const query = {
           customerId: data.customerId,
@@ -652,7 +695,8 @@ export default {
   mounted() {
     Bus.$off('creditSave')
     Bus.$on("creditSave", TYPE => {
-      this.nextStep(TYPE);
+      TYPE === 'bairong' ? this.bigDataTipOfBr() : this.nextStep(TYPE);
+      
     });
     this.rulesForm("order-credit-xh"); //新车
   },
