@@ -11,7 +11,7 @@
             <van-cell title="身份证号:" :border="false" :value="item.cpCertificateNum"/>
             <van-cell title="电话号码:" :border="false" :value="item.telephone"/>
             <van-cell title="银行卡号:" :border="false" :value="item.bankCardNum"/>
-            <van-cell title="征信时间:" :border="false" :value="item.investigateDate"/>
+            <van-cell title="征信时间:" :border="false" :value="item[dateType]"/>
             <!--        <van-cell title="原因:" :value="item.telephone"/>-->
         </div>
     </Card>
@@ -41,7 +41,8 @@
           return []
         }
       },
-      type: String
+      type: String,
+      dateType: String
     },
     computed: {
       // 所有字典

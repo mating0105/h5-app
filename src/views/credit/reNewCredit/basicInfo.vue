@@ -541,7 +541,7 @@ export default {
      **/
     removePer(index, item) {
       if (!item.canDel) {
-        Notify({ type: "danger", message: "不可以删除客户" });
+        Notify({ type: "danger", message: "该客户已有征信记录，无法删除" });
         return;
       }
       Dialog.confirm({

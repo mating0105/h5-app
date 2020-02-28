@@ -109,7 +109,7 @@
             </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="打折金额" :value="numFilter(payDetail.projBudgetList.dcnAmt)" >
+            <van-cell title="减免金额" :value="numFilter(payDetail.projBudgetList.dcnAmt)" >
               <div slot="right-icon" class="xh-cell-right">元</div>
             </van-cell>
           </van-cell-group>
@@ -119,7 +119,7 @@
             </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="缴费时间" :value="payDetail.projBudgetList.pyfDt" />
+            <van-cell title="首付款时间" :value="payDetail.projBudgetList.pyfDt" />
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell title="缴费方式" :value="payMethod" />

@@ -247,7 +247,7 @@
                     clearable
                     name="dcnAmt"
                     error-message-align="right"
-                    label="打折金额"
+                    label="减免金额"
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
@@ -263,7 +263,7 @@
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
-                    title="缴费时间"
+                    title="首付款时间"
                     required
                     is-link
                     v-model="paymentDetail.projBudgetList.pyfDtDesc"
@@ -601,7 +601,7 @@ export default {
       ).toFixed(2);
     },
     actincmAmt() {
-      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0.00; //打折金额
+      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0.00; //减免金额
       return (parseFloat(this.totalCharges) - dcnAmt).toFixed(2);
     },
     wordbook() {
