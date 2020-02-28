@@ -375,43 +375,66 @@ export default {
         if (!this.verifyForm()) {
           return;
         }
-
+        this.dataList.creditTypeFlag = 1
+        // debugger
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
-        let _arr = [],
-            _response = null;
+        let _arr = []
+        const _itemList = this.dataList.surDtlList.map(item => { 
+          if(item.dataList.length > 0)
+            return item.dataList
+        })
         let _promise = new Promise((resolve,reject) => {
-          this.dataList.surDtlList.forEach((item,index) => {
-            item.dataList.forEach((ele)=> {
+          if(_itemList.length > 0){
+            _itemList.forEach((ele)=> {
               if (ele.documentType === "6690" && ele.fileList.length <= 0) {
                 _arr.push(item.creditPersonName)
               }
               resolve(true)
             })
-          })
+          }else{
+            resolve(true)
+          }
+          /* this.dataList.surDtlList.forEach((item,index) => {
+            if(!item.dataList.length){
+              resolve(true)
+            }else{
+              item.dataList.forEach((ele)=> {
+                if (ele.documentType === "6690" && ele.fileList.length <= 0) {
+                  _arr.push(item.creditPersonName)
+                }
+                resolve(true)
+              })
+            }
+          }) */
         })
         _promise.then(async (resolve,reject) => {
+          Bus.$emit("queryStart", 'bairong');
           if(_arr.length > 0){
             Dialog.confirm({
               message: `${_arr.join('、')}没有上传征信查询授权书，无法查询征信，确定吗？`
             }).then(async () => {
-              this.loading =  true
-              _response = await creditSaveOf100(this.dataList) 
+              const _response = await creditSaveOf100(this.dataList)
+              // _response.code === 200 ? resolve(true) : reject(true)
             })
           }else{
-            this.loading =  true
-            _response = await creditSaveOf100(this.dataList) 
-            console.log(_response)
+            const _response = await creditSaveOf100(this.dataList)
+            // console.log(_response.code)
+            // _response.code === 200 ? resolve(true) : reject(true)
+            
           }
         }).then(() => {
-            this.loading =  false
             this.$nextTick(() => {
               Toast.success("保存成功");
               Bus.$emit("querySuccess", 'bairong');
             });
+        }).catch((error) => {
+            Bus.$emit("queryFaile", 'bairong');
+            console.log(error)
         })
       } catch (error) {
-        
+        Bus.$emit("queryFaile", 'bairong');
+        console.log(error)
       }
     },
     /**
@@ -541,7 +564,7 @@ export default {
      **/
     removePer(index, item) {
       if (!item.canDel) {
-        Notify({ type: "danger", message: "不可以删除客户" });
+        Notify({ type: "danger", message: "该客户已有征信记录，无法删除" });
         return;
       }
       Dialog.confirm({

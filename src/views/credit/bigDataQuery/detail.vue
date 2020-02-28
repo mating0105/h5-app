@@ -12,14 +12,14 @@
             <!-- 百融 -->
             <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <div v-else>
-              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
-              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
-              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult"></creditInfoTable>
+              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
+              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
             </div>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
-            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
+            <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
         </template>
         <template v-else-if="active === 2">
             <relatedDocs :requestParams="requestParams"></relatedDocs>
@@ -38,6 +38,7 @@
         <div class="xh-submit-box" v-if="active === 0 && TYPE === 'bairong'">
           <van-button size="large" @click="triggerQuery"
                       class="xh-btn"
+                      :disabled="disableClick"
           >发起征信查询</van-button>
         </div>
         
@@ -79,7 +80,7 @@
     data () {
       return {
         TYPE:'',
-        reRegister:null, //百融征信查询，30天以内不能再次查询
+        disableClick:false,
         active: 0,
         dataList: {
           investigateBank: '',
@@ -128,17 +129,13 @@
           let dataList;
           if(_tag && _tag ==='getBrAgain'){
             res = await creditQueryOf100(params)
-            this.reRegister = res.data.cuCreditRegister.reRegister
             dataList = res.data.cuCreditRegister
           }else{
             if (getValue("credit")) {
               dataList = JSON.parse(getValue("credit"))
-              if(this.TYPE === 'bairong')
-                  this.reRegister = dataList.reRegister
             } else {
               if(this.TYPE === 'bairong'){
                 res = await creditQueryOf100(params)
-                this.reRegister = res.data.cuCreditRegister.reRegister
               }else{
                 res = await getCreditInfo(params)
               }
@@ -227,21 +224,42 @@
         })
       },
       async triggerQuery () {
-        if(this.reRegister !== 'true'){
-          Toast('30天后才能重新查询')
+        
+        let nowDate = new Date()
+        
+        // 当前时间与查询时间+30天对比
+        let isRegister = this.dataList.surDtlList.some(element => {
+          let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
+          return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
+        });
+
+        if(isRegister){
+          Toast('已查询的用户请30天后重新查询')
           return
         }
-        Bus.$emit('creditSave',this.TYPE);
         
-        Bus.$on('querySuccess', res => {
-          res === 'bairong' && this.getCreditInfo('getBrAgain').then(() => {this.active = 1})
+        Bus.$emit('creditSave',this.TYPE);
+        Bus.$on("queryStart", res => {
+          this.disableClick = true
+          this.loading = true
+        });
+
+        Bus.$on('queryFaile', res => {
+          this.disableClick = false
+          this.loading = false
         })
-        /* const params = {
-          lpCertificateNum: this.$route.query.lpCertificateNum,
-          id: this.$route.query.id
-        }
-      　const res = await creditQueryOf100(params)
-        this.reRegister = res.data.cuCreditRegister.reRegister */
+        Bus.$on('querySuccess', res => {
+          this.disableClick = false
+          this.loading = false
+          if(res === 'bairong'){
+            this.getCreditInfo('getBrAgain').then(() => {
+              this.active = 1
+              this.$refs['basicInfo'].initData()
+              this.$forceUpdate()
+            })
+            
+          }
+        })
       },
       lookDocs(){
         this.active = 2
@@ -259,5 +277,5 @@
 </script>
 
 <style>
-
+  
 </style>

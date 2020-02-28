@@ -39,7 +39,7 @@
                   class="xh-radius"
                   style="border-radius: 6px;"
                   @click="applyPay(item)"
-                >申请走款</van-button>
+                >申请垫款</van-button>
               </div>
             </template>
           </Card>
@@ -142,7 +142,7 @@ export default {
         }
       });
     },
-    // 发起走款
+    // 发起垫款
     applyPay(rows) {
       this.$router.push({
         path: "/applyPayment",

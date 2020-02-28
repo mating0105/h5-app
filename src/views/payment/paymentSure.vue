@@ -1,4 +1,4 @@
-// 走款确认
+// 垫款确认
 <template>
   <ViewPage :loading="loading">
     <van-tabs v-model="activeName">

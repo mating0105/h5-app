@@ -243,31 +243,31 @@ export const constantRoutes = [
     path: '/applyPayment',
     name: 'ApplyPayment',
     component: () => import('@/views/payment/applyPayment'),
-    meta: {title: '缴费走款申请', icon: 'dashboard'}
+    meta: {title: '缴费垫款申请', icon: 'dashboard'}
   },
   {
     path: '/applyPaymentList',
     name: 'ApplyPaymentList',
     component: () => import('@/views/payment/list'),
-    meta: {title: '缴费走款', icon: 'dashboard'}
+    meta: {title: '缴费垫款', icon: 'dashboard'}
   },
   {
     path: '/walkApprovalList',
     name: 'WalkApprovalList',
     component: () => import('@/views/payment/walkApprovalList'),
-    meta: {title: '走款审批', icon: 'dashboard'}
+    meta: {title: '垫款审批', icon: 'dashboard'}
   },
   {
     path: '/paymentSure',
     name: 'PaymentSure',
     component: () => import('@/views/payment/paymentSure'),
-    meta: {title: '走款确认', icon: 'dashboard'}
+    meta: {title: '垫款确认', icon: 'dashboard'}
   },
   {
     path: '/paymentSure2',
     name: 'PaymentSure2',
     component: () => import('@/views/payment/paymentSure2'),
-    meta: {title: '走款确认', icon: 'dashboard'}
+    meta: {title: '垫款确认', icon: 'dashboard'}
   },
   {
     path: '/paymentProjectInfo',

@@ -29,7 +29,7 @@ export function savePay(params) {
         data: params
     })
 }
-//提交接口-业务发起走款创建流程
+//提交接口-业务发起垫款创建流程
 export function submitPay(params) {
     return request({
         url: '/order/captureExpends/createProess',
@@ -53,7 +53,7 @@ export function approvalRecord(params) {
         data: params
     })
 }
-//提交接口-财务确认走款
+//提交接口-财务确认垫款
 export function submitGo(params) {
     return request({
         url: '/order/captureExpends/submit',
@@ -77,7 +77,7 @@ export function gpsList(params) {
         data: params
     })
 }
-// 审批官走款审批列表
+// 审批官垫款审批列表
 export function approveList(params) {
     return request({
         url: '/order/captureExpends/risklist',
