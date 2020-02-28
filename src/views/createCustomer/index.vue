@@ -3,7 +3,7 @@
     <div class="xh-create-img">
       <van-row type="flex" justify="space-between" class="xh-create-imgdiv">
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('src')">
-          <div v-if="!src">
+          <div v-if="!src" class="create-item">
             <van-icon name="plus" style="margin-top:30px;" />
             <p>身份证人像面</p>
           </div>
@@ -12,9 +12,9 @@
           </div>
         </van-col>
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('srcBack')">
-          <div v-if="!srcBack">
+          <div v-if="!srcBack" class="create-item">
             <van-icon name="plus" style="margin-top:30px;" />
-            <p>身份证国徽面</p>
+             <p>身份证国徽面</p>
           </div>
           <div v-else>
             <img :src="srcBack" alt style="width:100%;" />
@@ -666,6 +666,7 @@ export default {
 .xh-create-imgdiv {
   padding: 10px;
   background: #eee;
+  color: red;
 }
 .xh-creat-imgbox {
   display: inline-block;
@@ -674,6 +675,24 @@ export default {
   text-align: center;
   overflow: hidden;
 }
+
+.create-item p {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.xh-creat-imgbox:nth-child(1) {
+    background-image: url("../../images/idcard.jpg");
+    background-size:100% 100%;
+    background-repeat: no-repeat;
+}
+
+.xh-creat-imgbox:nth-child(2) {
+    background-image: url("../../images/idcardbg.jpg");
+    background-size:100% 100%;
+    background-repeat: no-repeat;
+}
+
 .xh-customer-family {
   padding: 10px 20px;
 }

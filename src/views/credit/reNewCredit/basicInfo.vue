@@ -109,9 +109,9 @@
             </div>
     </Card>-->
 
-    <Card style="margin-top: 1rem;">
+    <Card style="margin-top: 1rem;" v-if="perInfoList.length > 0 || edit">
       <template v-slot:header>
-        新增查询人
+          {{perInfoList.length > 0 || edit ? '新增' : ''}}查询人
         <div class="card-icon" @click="addPer" v-if="edit">
           <van-icon name="add-o" />
         </div>
@@ -256,7 +256,7 @@ export default {
       bankArr: [], //银行数组
       bankList: {},
       columns: [],
-      // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
+      // isInternet: '',//是否为银行征信（0：银行征信；1：大数据征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
       errorMsg: {
         //必填list
         investigateBankName: "",

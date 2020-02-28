@@ -88,29 +88,29 @@
                     </div>
                 </Card>
                 <!-- 通知业务员 -->
-                <Card style="margin-top:15px;" v-if="approvalConclusionDesc=='退回'">
-                    <template v-slot:header>
-                        <div class="notice">
-                            <p>通知业务员</p>
-                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">
-                                {{form.projectInfo.clientManager.name}}
-                            </van-checkbox>
-                        </div>
-                    </template>
-                </Card>
+<!--                <Card style="margin-top:15px;" v-if="approvalConclusionDesc=='退回'">-->
+<!--                    <template v-slot:header>-->
+<!--                        <div class="notice">-->
+<!--                            <p>通知业务员</p>-->
+<!--                            <van-checkbox slot="right-icon" shape="square" label-position='left' v-model="salesmanChecked" style="line-height: inherit;">-->
+<!--                                {{form.projectInfo.clientManager.name}}-->
+<!--                            </van-checkbox>-->
+<!--                        </div>-->
+<!--                    </template>-->
+<!--                </Card>-->
                 <!-- 通知财务 -->
-                <Card style="margin-top:15px;" v-if="approvalConclusionDesc=='拒绝放款'">
-                    <template v-slot:header>
-                        <div class="notice">
-                            <p>通知财务</p>
-                            <van-cell>
-                                <span @click="showPopupType('FinanceCashier')">{{FinanceCashierDesc}}</span>
-                                <van-checkbox slot="right-icon" label-disabled shape="square" v-model="cashierChecked"
-                                              style="line-height: inherit;margin-left:10px;"></van-checkbox>
-                            </van-cell>
-                        </div>
-                    </template>
-                </Card>
+<!--                <Card style="margin-top:15px;" v-if="approvalConclusionDesc=='拒绝放款'">-->
+<!--                    <template v-slot:header>-->
+<!--                        <div class="notice">-->
+<!--                            <p>通知财务</p>-->
+<!--                            <van-cell>-->
+<!--                                <span @click="showPopupType('FinanceCashier')">{{FinanceCashierDesc}}</span>-->
+<!--                                <van-checkbox slot="right-icon" label-disabled shape="square" v-model="cashierChecked"-->
+<!--                                              style="line-height: inherit;margin-left:10px;"></van-checkbox>-->
+<!--                            </van-cell>-->
+<!--                        </div>-->
+<!--                    </template>-->
+<!--                </Card>-->
                 <!-- 提交按钮 -->
                 <div class="xh-submit" style="padding: 0 10px;">
                     <van-button :disabled="approvalConclusionDesc=='请选择'" size="large" class="xh-bg-main" @click="submit" :loading="submitloading">提 交
@@ -119,8 +119,8 @@
             </van-tab>
             </van-tab>
             <van-tab title="征信信息" name="2">
-                <creditInfoTable title="人行征信" :dataList="creditList.surDtlList" type="creditResult"></creditInfoTable>
-                <creditInfoTable title="互联网查询" :dataList="creditList.surDtlList" type="bigDataResult"></creditInfoTable>
+                <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult"></creditInfoTable>
+                <creditInfoTable title="大数据查询" :dataList="creditList.surDtlList" type="bigDataResult"></creditInfoTable>
             </van-tab>
             <van-tab title="审批记录" name="3">
                 <ApprovalRecord></ApprovalRecord>

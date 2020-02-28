@@ -206,8 +206,8 @@
         </div>
       </van-tab>
       <van-tab title="征信信息" name="2" v-if="isCredit">
-        <creditInfoTable title="人行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
-        <creditInfoTable title="互联网查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
+        <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult"></creditInfoTable>
+        <creditInfoTable title="大数据查询" :dataList="dataList.surDtlList" type="bigDataResult"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3">
         <ApprovalRecord
