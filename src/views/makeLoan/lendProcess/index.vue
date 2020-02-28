@@ -18,7 +18,8 @@
                 v-model="projectForm.projectInfo.clientManager.name"
                 :border="false"
               />
-              <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false" />
+<!--              <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false" />-->
+              <van-cell title="报单时间：" :value="dayjs(projectForm.projectInfo.createDate).format('YYYY-MM-DD HH:mm')" :border="false" />
               <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false" />
               <van-cell title="制单人员：" :border="false" :value="userName" />
               <!--                            <van-cell title="垫款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
