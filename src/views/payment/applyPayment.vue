@@ -290,7 +290,7 @@
           </div>
           <div v-show="stepVal ==2">
             <card>
-              <template slot="header">走款信息</template>
+              <template slot="header">垫款信息</template>
               <van-row>
                 <van-cell-group :border="false">
                   <van-cell title="银行贷款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
@@ -303,17 +303,17 @@
                   </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
-                  <van-cell title="应走款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
+                  <van-cell title="应垫款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
                      <div slot="right-icon" class="xh-cell-right">元</div>
                   </van-cell>
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
-                    title="走款模式"
+                    title="垫款模式"
                     required
                     is-link
                     :value="returnText('payType',paymentDetail.projPayInfo.payType)"
-                    @click="loadType('走款模式', 'payType')"
+                    @click="loadType('垫款模式', 'payType')"
                     label-class="labelClass"
                     @blur.prevent="ruleMessge"
                     :label="errorMsg.payType"
@@ -321,7 +321,7 @@
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
-                    title="走款时间"
+                    title="垫款时间"
                     required
                     is-link
                     :value="paymentDetail.projPayInfo.payTimeDesc"
@@ -373,12 +373,12 @@
           </div>
           <div v-show="stepVal ==3">
             <card>
-              <template slot="header">走款资料</template>
+              <template slot="header">垫款资料</template>
               <imageList :dataList="dataList"></imageList>
             </card>
             <card>
               <van-row style="padding:10px;">
-                <van-checkbox v-model="notice">通知风控审批走款</van-checkbox>
+                <van-checkbox v-model="notice">通知风控审批垫款</van-checkbox>
               </van-row>
             </card>
             <card>
@@ -510,7 +510,7 @@ export default {
       activeName: "cost",
       list: [
         { name: "费用信息", key: 1 },
-        { name: "走款信息", key: 2 },
+        { name: "垫款信息", key: 2 },
         { name: "上传凭证", key: 3 }
       ],
       stepVal: 1,
@@ -525,7 +525,7 @@ export default {
         info: {}
       }, //上个页面传过来的参数
       loading: false,
-      notice:false,//是否通知风控走款
+      notice:false,//是否通知风控垫款
       selectName: "",
       dicList: [], //字典获取
       valueKey: "label",
@@ -552,7 +552,7 @@ export default {
         dcnAmt: "",
         pyfDt: "",
         pyfMod: "",
-        // ---------------- 走款信息
+        // ---------------- 垫款信息
         payType: "",
         payTime: ""
         // payeeAccount: "",
@@ -700,7 +700,7 @@ export default {
     //提交流程
     submit() {
       if (this.dataList[0].fileList.length < 1) {
-        this.$notify({ type: "danger", message: "请上传走款资料" });
+        this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
         this.loading = true;
         let num = 0;
@@ -785,7 +785,7 @@ export default {
           this.options = this.dicList.pay_method;
           this.show3 = true;
           break;
-        case "走款模式":
+        case "垫款模式":
           this.options = this.dicList.payType;
           this.show3 = true;
           break;
@@ -806,7 +806,7 @@ export default {
       let arr = [
         "product_property", //产品性质
         "pay_method", //缴费方式
-        "payType", //走款模式
+        "payType", //垫款模式
         "BANK_TYPE_JYR" //银行
       ];
       getDic(arr).then(res => {
@@ -918,7 +918,7 @@ export default {
           this.timetitle = "请选择缴费时间";
           break;
         case "payTime":
-          this.timetitle = "请选择走款时间";
+          this.timetitle = "请选择垫款时间";
           break;
       }
     },
@@ -954,7 +954,7 @@ export default {
     cancelTime() {
       this.show2 = false;
     },
-    //加载走款图片
+    //加载垫款图片
     loadImg() {
       this.getDocumentByType("0620");
     },

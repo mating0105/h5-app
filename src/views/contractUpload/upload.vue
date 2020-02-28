@@ -54,7 +54,7 @@ export default {
           path: "/costDetail"
         },
         // {
-        //   title:'走款信息',path:'/c'
+        //   title:'垫款信息',path:'/c'
         // },
         {
           title: "相关文档",

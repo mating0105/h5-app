@@ -102,8 +102,8 @@ export default {
                     {label:'客户经理待办',value:'WF_PROJ_APPR_01_T01',processName:'审批流程'},
                     {label:'内勤待办',value:'WF_PROJ_APPR_01_T04',processName:'审批流程'},
                     {label:'审批官待办',value:'WF_PROJ_APPR_01_T52',processName:'审批流程'},
-                    {label:'业务人员待办',value:'WF_CAPTURE_001_T001',processName:'走款流程'},
-                    {label:'财务走款确认待办',value:'WF_CAPTURE_001_T002',processName:'走款流程'},
+                    {label:'业务人员待办',value:'WF_CAPTURE_001_T001',processName:'垫款流程'},
+                    {label:'财务垫款确认待办',value:'WF_CAPTURE_001_T002',processName:'垫款流程'},
                     {label:'客户征信经理待办',value:'WF_CU_CREDIT_001_T001',processName:'征信流程'},
                     {label:'驻行人员待办',value:'WF_CU_CREDIT_001_T003',processName:'征信流程'},
                     {label:'合规文员待办',value:'WF_BANK_MAKE_LOAN_001_T002',processName:'放款流程'},
@@ -118,7 +118,7 @@ export default {
                     {name:'内勤待办',path:'/xhProject',params:newParams},
                     {name:'审批官待办',path:'/xhProject',params:newParams},
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},
-                    {name:'财务走款确认待办',path:'/paymentSure',params:newParams},
+                    {name:'财务垫款确认待办',path:'/paymentSure',params:newParams},
                     {name:'客户征信经理待办',path:'/reNewCredit',params:newParams},
                     {name:'驻行人员待办',path:'/bankQuery',params:newParams},
                     {name:'合规文员待办',path:'/lendProcess',params:newParams},
@@ -134,7 +134,7 @@ export default {
                     {name:'原单变更申请',path:'/d',params:newParams},
                     {name:'车易贷_征信调查',path:'/f',params:newParams},
                     {name:'项目审批',path:'/xhProject',params:newParams},
-                    {name:'缴费走款',path:'/paymentSure',params:newParams},
+                    {name:'缴费垫款',path:'/paymentSure',params:newParams},
                     {name:'车商准入',path:'/i',params:newParams},
                 ]
             }

@@ -21,7 +21,7 @@
               <van-cell title="报单时间：" v-model="projectForm.projectInfo.createTime" :border="false" />
               <van-cell title="垫款编号：" v-model="projectForm.projectInfo.projectNo" :border="false" />
               <van-cell title="制单人员：" :border="false" :value="userName" />
-              <!--                            <van-cell title="走款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
+              <!--                            <van-cell title="垫款模式：" :value-class="dealState?'':'rightClass'" :is-link='!dealState' v-model="projectForm.projectInfo.payType"-->
               <!--                                      @click="showPopupType('payType')" :border="false"/>-->
             </div>
           </Card>
@@ -769,7 +769,7 @@ export default {
       popupShow: false,
       title1: "",
       loading: false,
-      payTypeShow: false, //走款模式判断显示，
+      payTypeShow: false, //垫款模式判断显示，
       stepIndex: 1,
       rightIcon: true,
       commentsDesc: "", //意见描述
@@ -904,7 +904,7 @@ export default {
       };
       switch (type) {
         case "payType":
-          this.title1 = "请选择走款模式";
+          this.title1 = "请选择垫款模式";
           this.columns = [
             { label: "快垫", key: "1" },
             { label: "传统", key: "2" }

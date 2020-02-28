@@ -127,7 +127,7 @@
         </van-row>
       </card>
       <card>
-        <template slot="header">走款信息</template>
+        <template slot="header">垫款信息</template>
         <van-row>
           <van-cell-group :border="false">
             <van-cell title="银行贷款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
@@ -140,15 +140,15 @@
             </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="应走款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
+            <van-cell title="应垫款金额" :value="numFilter(payDetail.projProjectInfo.loanAmt)" >
             <div slot="right-icon" class="xh-cell-right">元</div>
             </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="走款模式" :value="payType" />
+            <van-cell title="垫款模式" :value="payType" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="走款时间" :value="payDetail.projPayInfo.payTime" />
+            <van-cell title="垫款时间" :value="payDetail.projPayInfo.payTime" />
           </van-cell-group>
           <div v-show="payDetail.projPayInfo.payType == '2'">
             <van-cell-group :border="false">
@@ -246,7 +246,7 @@ export default {
       let arr = [
         "product_property", //产品性质
         "pay_method", //缴费方式
-        "payType", //走款模式
+        "payType", //垫款模式
         "BANK_TYPE_JYR" //银行
       ];
       getDic(arr).then(res => {
