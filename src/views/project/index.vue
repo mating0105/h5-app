@@ -419,8 +419,8 @@ export default {
         { label: "退回", value: "03" },
         { label: "拒绝", value: "04" }
       ],
-      completionDesc: "通过",
-      completion: "01", // 结论
+      completionDesc: "",
+      completion: "", // 结论
       typeTitle: "",
       isActive: false,
 

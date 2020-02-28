@@ -31,7 +31,7 @@
                   slot="right-icon"
                   size="mini"
                   style="line-height: inherit;"
-                  @click="lookUpResult(item.credit100VerificationReport,'贷前信息查询报告')"
+                  @click="lookUpResult(item.credit100VerificationReport)"
                 >查看报告</van-button>
               </van-cell>
               <div class="credit-info-solid"></div>
@@ -42,7 +42,7 @@
                   slot="right-icon"
                   size="mini"
                   style="line-height: inherit;"
-                  @click="lookUpResult(item.credit100StrategyReport,'贷前风险策略报告')"
+                  @click="lookUpResult(item.credit100StrategyReport)"
                 >查看报告</van-button>
               </van-cell>
             </div>
@@ -132,7 +132,6 @@
             return '复议'
             break;
           default:
-            return '其他'
             break;
         }
       },
@@ -154,9 +153,9 @@
         }
         return name;
       },
-      lookUpResult(url,text){
+      lookUpResult(url){
         this.images = []
-        this.imgTitle = text
+        this.imgTitle = null
         this.images = ['data:image/jpeg/jpg/png;base64,'+url]
         this.showImg = true
       },
