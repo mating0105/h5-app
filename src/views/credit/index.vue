@@ -64,7 +64,7 @@
                         </van-row>
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
-                                <span v-for="(i, index) in buttonList" style="margin-left: 0.3rem" :key='index'>
+                                <span v-for="(i, index) in buttonList" style="margin-left: 0.12rem" :key='index'>
                                   <van-button
                                         v-if="i.buttonId !== '1'"
                                         plain

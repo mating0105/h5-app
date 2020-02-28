@@ -109,9 +109,9 @@
             </div>
     </Card>-->
 
-    <Card style="margin-top: 1rem;">
+    <Card style="margin-top: 1rem;" v-if="perInfoList.length > 0 || edit">
       <template v-slot:header>
-        新增查询人
+          {{perInfoList.length > 0 || edit ? '新增' : ''}}查询人
         <div class="card-icon" @click="addPer" v-if="edit">
           <van-icon name="add-o" />
         </div>
