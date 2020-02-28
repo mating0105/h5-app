@@ -366,6 +366,7 @@ export default {
       managementList().then(res => {
         this.manageList = res.data;
         this.datalist.advancesAssetName = this.manageList[0].advancesAssetName;
+        this.datalist.advancesAssetId = this.manageList[0].id;
       });
     },
     //上拉菜单选择
