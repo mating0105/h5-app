@@ -19,17 +19,10 @@
         @load="onLoad"
       >
         <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-          <Card
-            class="xh-top-10"
-            :bodyPadding="true"
-            style="margin:1rem 1rem 0 1rem;"
-          >
+          <Card class="xh-top-10" :bodyPadding="true" style="margin:1rem 1rem 0 1rem;">
             <template v-slot:header>
               <section class="xh-plus">
-                <van-cell
-                  :title="item.chassisNumber"
-                  icon="notes-o"
-                >已评估</van-cell>
+                <van-cell :title="item.chassisNumber" icon="notes-o">已评估</van-cell>
               </section>
             </template>
             <van-row style="min-height: 10rem" @click.native="chooseThis(item,ie)">
@@ -61,6 +54,11 @@
         </div>
       </van-list>
     </van-pull-refresh>
+    <div class="xh-fixed-submit">
+      <div class="xh-submit">
+        <van-button icon="plus" size="large" class="xh-bg-main" @click="addVehicle">新增二手车</van-button>
+      </div>
+    </div>
   </ViewPage>
 </template>
 
@@ -118,7 +116,7 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         searchKey: "",
-        status: 4,
+        status: 4
       }
     };
   },
@@ -192,6 +190,15 @@ export default {
     nameToString() {
       return [...arguments].map(item => item).join("");
     },
+    //新增二手车
+    addVehicle () {
+      this.$router.push({
+        path: '/vehicle',
+        query: {
+          addUsedCar: true
+        }
+      })
+    },
     //下拉刷新
     onRefresh() {
       this.list = [];
@@ -208,19 +215,21 @@ export default {
     },
     //选择某一项，跳回项目报单
     chooseThis(rows, index) {
-      console.log(this.$route.query)
-      rows.projectId = this.$route.query.projectId?this.$route.query.projectId:this.$route.query.businesskey;
+      console.log(this.$route.query);
+      rows.projectId = this.$route.query.projectId
+        ? this.$route.query.projectId
+        : this.$route.query.businesskey;
       rows.assessId = rows.id;
-      rows.id = '';
+      rows.id = "";
       addCar(rows).then(res => {
         this.loading = false;
         this.$notify({
           type: "success",
           message: res.msg
         });
-        let prolist = JSON.parse(sessionStorage.getItem('proInfo'));
+        let prolist = JSON.parse(sessionStorage.getItem("proInfo"));
         prolist.cars = res.data;
-        sessionStorage.setItem('proInfo',JSON.stringify(prolist));
+        sessionStorage.setItem("proInfo", JSON.stringify(prolist));
         this.$nextTick(() => {
           if (this.$route.query.type == 1) {
             this.$router.go(-1);
