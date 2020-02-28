@@ -302,6 +302,7 @@
                 v-model="item.engineNum"
                 clearable
                 name="colligateCharges"
+                :disabled="!isView"
                 error-message-align="right"
                 label="发动机号"
                 input-align="right"
