@@ -291,7 +291,7 @@ export default {
   methods: {
     meunList(row) {
       console.log(row);
-      this.params.dealState = "3";
+      // this.params.dealState = "3";
       if (row.url == "/paymentProjectInfo") {
         this.$router.push({
           path: row.url,
@@ -315,6 +315,7 @@ export default {
           // window.location.href = url;
         }else{
           this.$notify({ type: "danger", message: "未安装GPS" });
+          console.log(this.params.dealState);
         }
       } else {
         this.$router.push({
@@ -345,7 +346,7 @@ export default {
           }
           switch (this.data.projPayInfo.riskConclusion) {
             case 0:
-              this.riskConclusion = "不通过";
+              this.riskConclusion = "拒绝";
               break;
             case 1:
               this.riskConclusion = "通过";
