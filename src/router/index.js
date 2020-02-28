@@ -270,6 +270,12 @@ export const constantRoutes = [
     meta: {title: '垫款确认', icon: 'dashboard'}
   },
   {
+    path:'/advanceEnquiry',
+    name: 'advanceEnquiry',
+    component: () => import('@/views/payment/advanceEnquiry'),
+    meta: {title: '垫款查询', icon: 'dashboard'}
+  },
+  {
     path: '/paymentProjectInfo',
     name: 'PaymentProjectInfo',
     component: () => import('@/views/payment/projectInfo'),
