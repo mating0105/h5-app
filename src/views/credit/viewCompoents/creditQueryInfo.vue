@@ -131,13 +131,18 @@
           case 'Review':
             return '复议'
             break;
+          case null:
+            return '未查询'
+            break;
+          case '':
+            return '无建议'
+            break;
           default:
             break;
         }
       },
       filterTime(time){
         return time ? format(new Date(time),'yyyy MM dd hh:mm:ss') : ''
-        
       }
     },
     methods: {

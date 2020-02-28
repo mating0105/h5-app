@@ -232,7 +232,17 @@
           let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
           return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
         });
-
+        /* const _itemList = this.dataList.surDtlList.filter(item => item.dataList && item.dataList.length > 0)
+        if(_itemList.length > 0){
+          _itemList.forEach((item,index) => {
+            item.dataList.forEach((ele)=> {
+              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
+                _arr.push(item.creditPersonName)
+              }
+              resolve(true)
+            })
+          })
+        } */
         if(isRegister){
           Toast('已查询的用户请30天后重新查询')
           return
@@ -240,24 +250,26 @@
         
         Bus.$emit('creditSave',this.TYPE);
         Bus.$on("queryStart", res => {
-          this.disableClick = true
           this.loading = true
+          this.disableClick = true
         });
 
         Bus.$on('queryFaile', res => {
-          this.disableClick = false
           this.loading = false
+          this.disableClick = false
+          // this.active = 1
         })
         Bus.$on('querySuccess', res => {
-          this.disableClick = false
           this.loading = false
+          this.disableClick = false
           if(res === 'bairong'){
+            this.$refs['basicInfo'].initData()
             this.getCreditInfo('getBrAgain').then(() => {
+                this.active = 1
+                this.$forceUpdate()
+            }).catch(() => {
               this.active = 1
-              this.$refs['basicInfo'].initData()
-              this.$forceUpdate()
             })
-            
           }
         })
       },

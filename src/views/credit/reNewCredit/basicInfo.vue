@@ -376,58 +376,52 @@ export default {
           return;
         }
         this.dataList.creditTypeFlag = 1
-        // debugger
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
         let _arr = []
-        const _itemList = this.dataList.surDtlList.map(item => { 
-          if(item.dataList.length > 0)
-            return item.dataList
-        })
+        const _itemList = this.dataList.surDtlList.filter(item => item.dataList && item.dataList.length > 0)
         let _promise = new Promise((resolve,reject) => {
           if(_itemList.length > 0){
-            _itemList.forEach((ele)=> {
-              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
-                _arr.push(item.creditPersonName)
-              }
-              resolve(true)
-            })
-          }else{
-            resolve(true)
-          }
-          /* this.dataList.surDtlList.forEach((item,index) => {
-            if(!item.dataList.length){
-              resolve(true)
-            }else{
+            _itemList.forEach((item,index) => {
               item.dataList.forEach((ele)=> {
                 if (ele.documentType === "6690" && ele.fileList.length <= 0) {
                   _arr.push(item.creditPersonName)
                 }
                 resolve(true)
               })
-            }
-          }) */
+            })
+          }else{
+            resolve(true)
+          }
         })
+
         _promise.then(async (resolve,reject) => {
           Bus.$emit("queryStart", 'bairong');
           if(_arr.length > 0){
             Dialog.confirm({
               message: `${_arr.join('、')}没有上传征信查询授权书，无法查询征信，确定吗？`
-            }).then(async () => {
-              const _response = await creditSaveOf100(this.dataList)
-              // _response.code === 200 ? resolve(true) : reject(true)
+            }).then(() => {
+              creditSaveOf100(this.dataList).then(() => {
+                this.$nextTick(() => {
+                  Toast.success("查询成功");
+                  Bus.$emit("querySuccess", 'bairong');
+                });
+              }).catch(() => {
+                Bus.$emit("queryFaile", 'bairong');
+              })
+            }).catch(() => {
+                Bus.$emit("queryFaile", 'bairong');
             })
           }else{
-            const _response = await creditSaveOf100(this.dataList)
-            // console.log(_response.code)
-            // _response.code === 200 ? resolve(true) : reject(true)
-            
+            creditSaveOf100(this.dataList).then(() => {
+              this.$nextTick(() => {
+                Toast.success("查询成功");
+                Bus.$emit("querySuccess", 'bairong');
+              });
+            }).catch(() => {
+              Bus.$emit("queryFaile", 'bairong');
+            })
           }
-        }).then(() => {
-            this.$nextTick(() => {
-              Toast.success("保存成功");
-              Bus.$emit("querySuccess", 'bairong');
-            });
         }).catch((error) => {
             Bus.$emit("queryFaile", 'bairong');
             console.log(error)
