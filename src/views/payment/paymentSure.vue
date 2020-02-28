@@ -43,6 +43,9 @@
           >
             <van-cell title="风控意见" :value="riskConclusion" />
           </van-cell-group>
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1">
+            <van-cell title="风控说明" :value="data.projPayInfo.riskDescription" />
+          </van-cell-group>
           <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
             <van-cell
               title="审批结论"
@@ -50,9 +53,6 @@
               :is-link="params.dealState == 1?true:false"
               @click="params.dealState == 1 && loadType('审批意见','message')"
             />
-          </van-cell-group>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
-            <van-cell title="审批意见" :value="data.projPayInfo.riskDescription" />
           </van-cell-group>
           <card v-if="showAdvances">
             <template slot="header">资方垫款信息</template>
@@ -364,6 +364,7 @@ export default {
     loadManagement() {
       managementList().then(res => {
         this.manageList = res.data;
+        this.datalist.advancesAssetName = this.manageList[0].advancesAssetName;
       });
     },
     //上拉菜单选择
@@ -438,6 +439,8 @@ export default {
       } else {
         if (this.dataImg.length < 1 && this.conclusionCode == "01") {
           this.$notify({ type: "danger", message: "请上传垫款资料" });
+        }else if(this.conclusionCode == "01" && !this.datalist.advancesTime){
+          this.$notify({ type: "danger", message: "请选择垫款时间" });
         } else {
           let businessKey = this.params.info.businesskey;
           let data = {

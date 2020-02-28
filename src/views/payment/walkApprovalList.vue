@@ -32,7 +32,7 @@
                   <span :class="item.riskConclusion == 1?'pass':'nopass'">{{item.riskConclusion == 1?'审批通过':'审批拒绝'}}</span>
               </van-col>
             </van-row>
-            <template v-slot:footer v-if="item.riskConclusion != 1">
+            <template v-slot:footer v-if="item.button != 0 ">
               <div style="text-align:right;">
                 <van-button
                   plain
