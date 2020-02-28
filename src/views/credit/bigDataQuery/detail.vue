@@ -19,7 +19,7 @@
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
-            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
+            <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
         </template>
         <template v-else-if="active === 2">
             <relatedDocs :requestParams="requestParams"></relatedDocs>
@@ -224,16 +224,17 @@
         })
       },
       async triggerQuery () {
-        let date1 = new Date();
-        let date2 = new Date(date1);
-        date2.setDate(date1.getDate() + 30)
-
+        
+        let nowDate = new Date()
+        
+        // 当前时间与查询时间+30天对比
         let isRegister = this.dataList.surDtlList.some(element => {
-          !element.credit100StrategyQuerydate || new Date(element.credit100StrategyQuerydate) <= date2
+          let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
+          return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
         });
 
-        if(this.isRegister){
-          Toast('30天后才能重新查询')
+        if(isRegister){
+          Toast('已查询的用户请30天后重新查询')
           return
         }
         
@@ -251,9 +252,12 @@
           this.disableClick = false
           this.loading = false
           if(res === 'bairong'){
-            this.getCreditInfo('getBrAgain')
-            this.$forceUpdate()
-            this.active = 1
+            this.getCreditInfo('getBrAgain').then(() => {
+              this.active = 1
+              this.$refs['basicInfo'].initData()
+              this.$forceUpdate()
+            })
+            
           }
         })
       },

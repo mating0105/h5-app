@@ -428,11 +428,13 @@ export default {
               Toast.success("保存成功");
               Bus.$emit("querySuccess", 'bairong');
             });
-        }).catch(() => {
+        }).catch((error) => {
             Bus.$emit("queryFaile", 'bairong');
+            console.log(error)
         })
       } catch (error) {
         Bus.$emit("queryFaile", 'bairong');
+        console.log(error)
       }
     },
     /**
