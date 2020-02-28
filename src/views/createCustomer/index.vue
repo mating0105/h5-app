@@ -491,12 +491,12 @@ export default {
             this.uploadImg("0101", params, this.dataURLtoFile(this.src));
             this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
 
-            // this.$notify({
-            //   type: "success",
-            //   message: "建档成功"
-            // });
-            // this.loading = false;
-            // this.$router.go(-1);
+            this.$notify({
+              type: "success",
+              message: "建档成功"
+            });
+            this.loading = false;
+            this.$router.go(-1);
           })
           .catch(e => {
             this.loading = false;
