@@ -36,14 +36,23 @@
           </van-row>
         </div>
         <div>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1">
+          <van-cell-group
+            :border="true"
+            class="xh-conclusion"
+            v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1"
+          >
+            <van-cell title="风控意见" :value="riskConclusion" />
+          </van-cell-group>
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
             <van-cell
-              title="风控意见"
-              :value="riskConclusion"
+              title="审批结论"
+              :value="conclusion"
+              :is-link="params.dealState == 1?true:false"
+              @click="params.dealState == 1 && loadType('审批意见','message')"
             />
           </van-cell-group>
           <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
-            <van-cell title="审批结论" :value="conclusion" :is-link="params.dealState == 1?true:false" @click="params.dealState == 1 && loadType('审批意见','message')" />
+            <van-cell title="审批意见" :value="data.projPayInfo.riskDescription" />
           </van-cell-group>
           <card v-if="showAdvances">
             <template slot="header">资方垫款信息</template>
@@ -95,7 +104,6 @@
                   type="textarea"
                   maxlength="200"
                   placeholder="请输入"
-                  
                 />
               </van-cell-group>
             </section>
@@ -198,14 +206,12 @@ export default {
       activeName: "project",
       params: {}, //上个页面接收的数据
       data: {
-        projProjectInfo: {
-          
-        },
-        projPayInfo:{
-          riskConclusion:''
+        projProjectInfo: {},
+        projPayInfo: {
+          riskConclusion: ""
         }
       },
-      riskConclusion:'',
+      riskConclusion: "",
       meunRow: [
         {
           name: "项目基本信息",
@@ -295,14 +301,21 @@ export default {
           }
         });
       } else if (row.url == "/gpsurl") {
-        let url =
-          this.$prefixurl +
-          `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
-        //通知移动端加载gps安装页面
-        this.$bridge.callHandler("loadUrl", url, data => {
-          this.onLoad();
-        });
-        // window.location.href = url;
+        if (
+          this.data.projGpsInstals[0].gpsnum > 0 &&
+          this.data.projGpsInstals[0].gpsIsDone != "-1"
+        ) {
+          let url =
+            this.$prefixurl +
+            `orderDetail?id=${this.data.projGpsInstals[0].orderId}&showTitle=false&externalid=${this.params.info.projectNum}&externalcustnum=${this.params.info.customerNum}&externalvehicleid=${this.params.info.customerId}&username=${this.accout}&xhphonenum=${this.phone}&type=xh_h5`;
+          //通知移动端加载gps安装页面
+          this.$bridge.callHandler("loadUrl", url, data => {
+            this.onLoad();
+          });
+          // window.location.href = url;
+        }else{
+          this.$notify({ type: "danger", message: "未安装GPS" });
+        }
       } else {
         this.$router.push({
           path: row.url,
@@ -321,31 +334,25 @@ export default {
       })
         .then(res => {
           this.data = res.data;
-          if (
-            this.data.projGpsInstals[0].gpsnum > 0 &&
-            this.data.projGpsInstals[0].gpsIsDone != "-1"
-          ) {
-          } else {
-            this.meunRow.splice(4, 1);
-          }
           this.datalist.loanAmt = this.numFilter(
             this.data.projProjectInfo.loanAmt
           );
           this.message = this.data.projPayInfo.riskDescription;
-          if(this.data.projPayInfo.advancesAssetName){
+          if (this.data.projPayInfo.advancesAssetName) {
             this.showAdvances = true;
-          }else{
+          } else {
             this.showAdvances = false;
           }
-          switch (this.data.projPayInfo.riskConclusion){
+          switch (this.data.projPayInfo.riskConclusion) {
             case 0:
-              this.riskConclusion = '不通过';
+              this.riskConclusion = "不通过";
               break;
-              case 1:
-                this.riskConclusion = '通过';
-                break;
-                default:
-                  break;
+            case 1:
+              this.riskConclusion = "通过";
+              break;
+            default:
+              this.riskConclusion = "";
+              break;
           }
           this.loading = false;
         })
@@ -374,8 +381,8 @@ export default {
           });
           this.options = list;
           break;
-          case '审批意见':
-            this.options = [
+        case "审批意见":
+          this.options = [
             {
               name: "已垫款",
               value: "01"
@@ -390,7 +397,6 @@ export default {
             }
           ];
           break;
-
       }
     },
     confirm(value) {
@@ -398,7 +404,7 @@ export default {
       if (value.type == "垫款资方") {
         this.datalist.advancesAssetName = value.name;
         this.datalist.advancesAssetId = value.value;
-        console.log('advancesAssetId',this.datalist.advancesAssetId);
+        console.log("advancesAssetId", this.datalist.advancesAssetId);
       } else {
         this.conclusion = value.name;
         this.conclusionCode = value.value;
@@ -427,12 +433,12 @@ export default {
     },
     //提交流程
     submit() {
-      if(this.data.projPayInfo.riskLeader == 1 && this.riskConclusion == ''){
+      if (this.data.projPayInfo.riskLeader == 1 && this.riskConclusion == "") {
         this.$notify({ type: "danger", message: "请通知审批官审批" });
-      }else{
-      if (this.dataImg.length<1 && this.conclusionCode == "01") {
-        this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
+        if (this.dataImg.length < 1 && this.conclusionCode == "01") {
+          this.$notify({ type: "danger", message: "请上传垫款资料" });
+        } else {
           let businessKey = this.params.info.businesskey;
           let data = {
             wfComment: {
@@ -511,11 +517,10 @@ export default {
           kind: "1",
           fileList: data
         });
-        console.log(this.dataImg,22222)
       } catch (e) {
         console.log(e);
       }
-    },
+    }
   },
   mounted() {
     this.params = {

@@ -260,7 +260,8 @@ export default {
       let data = {
         id: this.params.info.payInfoId,
         riskDescription: this.message,
-        riskConclusion: this.riskConclusion
+        riskConclusion: this.riskConclusion,
+        projectId:this.params.info.projectId?this.params.info.projectId:this.params.info.businesskey
       };
       if (this.riskConclusion) {
         if (!this.message) {
