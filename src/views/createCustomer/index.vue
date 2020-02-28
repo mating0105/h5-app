@@ -479,7 +479,7 @@ export default {
         this.$router.go(-1);
       } else {
         //新建客户，走接口
-        // if (this.src && this.srcBack) {
+        if (this.src && this.srcBack) {
         this.loading = true;
         submitCreate(this.customerData)
           .then(res => {
@@ -501,12 +501,12 @@ export default {
           .catch(e => {
             this.loading = false;
           });
-        /* } else {
+        } else {
           this.$notify({
             type: "danger",
             message: "请上传身份证正反面"
           });
-        } */
+        }
       }
     },
     uploadImg(val, params, file) {
