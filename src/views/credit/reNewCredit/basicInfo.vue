@@ -256,7 +256,7 @@ export default {
       bankArr: [], //银行数组
       bankList: {},
       columns: [],
-      // isInternet: '',//是否为人行征信（0：人行征信；1：互联网征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
+      // isInternet: '',//是否为银行征信（0：银行征信；1：大数据征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
       errorMsg: {
         //必填list
         investigateBankName: "",
