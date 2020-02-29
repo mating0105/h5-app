@@ -1926,12 +1926,13 @@ export default {
               label: t.companyName + "-" + t.name
             });
           });
-          this.peopleList = objArr;
-          this.loadType("下一节点处理人", "nextpeople");
           setTimeout(()=>{
+          this.peopleList = objArr;
+         
+            this.loadType("下一节点处理人", "nextpeople");
+          
             this.dLoading = false;
           },1000)
-          
         })
         .catch(() => {
           this.dLoading = false;
