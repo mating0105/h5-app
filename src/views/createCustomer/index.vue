@@ -610,18 +610,7 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-    },
-    IdcardLoading(name) {
-      this.$bridge.callHandler(name, '', (res) => {
-        this.customerData.bankCardNum = res.BANK_NUM || ''
-        this.ruleMessge({
-          target: {
-            name: 'bankCardNum',
-            value: this.customerData.bankCardNum
-          }
-        })
-      })
-    },
+    }
     /**
      * 识别
      */
