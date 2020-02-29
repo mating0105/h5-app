@@ -1177,12 +1177,9 @@ export default {
           this.show3 = true;
           break;
         case "下一节点处理人":
+          this.options = [];
           this.options = this.peopleList;
-          console.log(this.options);
-          setTimeout(() =>{
-            this.show3 = true;
-          },1000)
-          
+          this.show3 = true;
           break;
         default:
           break;
@@ -1926,13 +1923,9 @@ export default {
               label: t.companyName + "-" + t.name
             });
           });
-          setTimeout(()=>{
           this.peopleList = objArr;
-         
-            this.loadType("下一节点处理人", "nextpeople");
-          
-            this.dLoading = false;
-          },1000)
+          this.loadType("下一节点处理人", "nextpeople");
+          this.dLoading = false;
         })
         .catch(() => {
           this.dLoading = false;
