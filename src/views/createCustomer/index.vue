@@ -610,7 +610,7 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-    }
+    },
     /**
      * 识别
      */
