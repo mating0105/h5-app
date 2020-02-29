@@ -250,17 +250,17 @@
         
         Bus.$emit('creditSave',this.TYPE);
         Bus.$on("queryStart", res => {
-          this.loading = true
+          // this.loading = true
           this.disableClick = true
         });
 
         Bus.$on('queryFaile', res => {
-          this.loading = false
+          // this.loading = false
           this.disableClick = false
           // this.active = 1
         })
         Bus.$on('querySuccess', res => {
-          this.loading = false
+          // this.loading = false
           this.disableClick = false
           if(res === 'bairong'){
             this.$refs['basicInfo'].initData()
