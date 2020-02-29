@@ -1177,7 +1177,12 @@ export default {
           this.show3 = true;
           break;
         case "下一节点处理人":
-          this.options = [];
+          if (this.peopleList.length == 0) {
+            return;
+          }
+          this.valueKey = "label";
+          this.valueId = "id";
+          this.fieldName = "label";
           this.options = this.peopleList;
           this.show3 = true;
           break;
