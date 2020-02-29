@@ -61,6 +61,11 @@
                                人保征信未通过
                             </span>
                             </van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.credit100Result">
+                            <span class="xh-danger-tag">
+                               {{item.credit100Result}}
+                            </span>
+                            </van-col>
                         </van-row>
                         <template v-slot:footer>
                             <div style="text-align:right; min-height: 2rem">
