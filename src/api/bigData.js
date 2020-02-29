@@ -37,6 +37,17 @@ export function bankReply(params) {
   })
 }
 
+/**
+ * 垫款查询列表
+ * @param params
+ */
+export function getAdvanceEnquiryList(params) {
+    return request({
+      url: '/order/advanceOrder/list',
+      method: 'post',
+      data: params
+    })
+  }
 
 
 
