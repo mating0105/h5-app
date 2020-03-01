@@ -855,6 +855,7 @@ export default {
       dataImg2: [], //评估报告
       message: "",
       userlist: false, //是否有下一节点人
+      peopleList:[],//选人数组
       processedBy: "",
       imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723'],//二手车照片类型
 
@@ -1176,6 +1177,13 @@ export default {
           this.show3 = true;
           break;
         case "下一节点处理人":
+          if (this.peopleList.length == 0) {
+            return;
+          }
+          this.valueKey = "label";
+          this.valueId = "id";
+          this.fieldName = "label";
+          this.options = this.peopleList;
           this.show3 = true;
           break;
         default:
@@ -1920,7 +1928,7 @@ export default {
               label: t.companyName + "-" + t.name
             });
           });
-          this.options = objArr;
+          this.peopleList = objArr;
           this.loadType("下一节点处理人", "nextpeople");
           this.dLoading = false;
         })
