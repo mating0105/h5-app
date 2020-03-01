@@ -37,13 +37,19 @@
             <van-cell title="放款平台" :value="payDetail.projProjectInfo.dsbrPltfrmNm" />
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="公司利率" :value="numFilter(payDetail.projProjectInfo.bankNewRate)" />
+            <van-cell title="公司利率" :value="numFilter(payDetail.projProjectInfo.bankNewRate)" >
+              <div slot="right-icon" class="xh-cell-right">%</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="客户利率" :value="numFilter(payDetail.projProjectInfo.customerRate)" />
+            <van-cell title="客户利率" :value="numFilter(payDetail.projProjectInfo.customerRate)" >
+              <div slot="right-icon" class="xh-cell-right">%</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
-            <van-cell title="担保费率" :value="numFilter(payDetail.projProjectInfo.guaranteeRate)" />
+            <van-cell title="担保费率" :value="numFilter(payDetail.projProjectInfo.guaranteeRate)" >
+              <div slot="right-icon" class="xh-cell-right">%</div>
+            </van-cell>
           </van-cell-group>
           <van-cell-group :border="false">
             <van-cell
