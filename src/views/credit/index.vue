@@ -109,7 +109,7 @@
                 </div>
             </van-list>
         </van-pull-refresh>
-        <div class="xh-fixed-submit">
+        <div class="xh-fixed-submit" v-if="isCreateRole">
             <div class="xh-submit">
                 <van-button
                         icon="plus"
@@ -126,6 +126,7 @@
 <script>
   import Vue from "vue";
   import { getList, getButtonList, checkedReregisterMob } from "@/api/credit";
+  import { getUserInfoByTo } from "@/api/priceEvaluation";
   // 自定义组件
   import ViewPage from "@/layout/components/ViewPage";
   import Card from "@/components/card/index";
@@ -159,7 +160,8 @@
           searchKey: '',
           status: ''
         },
-        buttonList: []
+        buttonList: [],
+        roleInfoList: []
       };
     },
     computed: {
@@ -169,6 +171,16 @@
       }),
       cuCreditStatus () {
         return [{label: '全部', value: ''}, ...this.wordbook.cu_credit_status] || []
+      },
+      isCreateRole () {
+        let flag = true
+        let list = ['CustomerManager']
+        const arr = this.roleInfoList.filter(item => {
+          return list.includes(item.enname)
+        })
+        flag = arr.length > 0
+        console.log(flag)
+        return flag
       }
     },
     watch: {
@@ -278,11 +290,21 @@
         }catch (e) {
           console.log(e)
         }
+      },
+      //获取用户信息
+      async getUserInfoByTo () {
+        try {
+          const {data} = await getUserInfoByTo()
+          this.roleInfoList = data.roleInfoList
+        } catch (e) {
+          console.log(e)
+        }
       }
     },
     mounted () {
       this.onLoad();
       this.getButtonList();
+      this.getUserInfoByTo();
     }
   };
 </script>

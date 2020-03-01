@@ -69,7 +69,7 @@ export default {
         { title: '5、完善调查信息功能(非流程)',
           text: '',
           list: [
-            { roleName: '', title: '完善调查信息', content: '项目报单发起后，项目报单审批通过可随时完善调查信息' }
+            { roleName: '', title: '完善调查信息', content: '项目报单发起后，项目报单审批通过前可随时完善调查信息' }
           ]
         },
         { title: '6、合同签约上传功能(非流程)',
