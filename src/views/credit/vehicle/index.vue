@@ -482,7 +482,7 @@
             })
           }
         }
-        this.$router.push('/priceEvaluationList ')
+        this.$router.push('/priceEvaluationList')
       }
     },
     mounted () {

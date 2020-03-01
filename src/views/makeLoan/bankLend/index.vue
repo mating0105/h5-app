@@ -117,7 +117,6 @@
                     </van-button>
                 </div>
             </van-tab>
-            </van-tab>
             <van-tab title="征信信息" name="2">
                 <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult"></creditInfoTable>
                 <creditInfoTable title="大数据查询" :dataList="creditList.surDtlList" type="bigDataResult"></creditInfoTable>
