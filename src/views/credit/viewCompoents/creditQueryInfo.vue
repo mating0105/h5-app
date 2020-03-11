@@ -185,10 +185,10 @@
         padding: 4px 8px;
         border-radius: 2px;
         color: #fff;
-        background-color: #C4252A;
+        background-color: #E60000;
     }
     .status-pass{
-        background-color: green;
+        background-color: #21C272;
     }
     .credit-arrow-wrap{
       float: right;
