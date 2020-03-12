@@ -258,7 +258,11 @@
         </div>
       </template>
       <div>
-        <van-swipe-cell v-for="(item, index) in projProjectInfo.cars" :key="index" :disabled="!isView">
+        <van-swipe-cell
+          v-for="(item, index) in projProjectInfo.cars"
+          :key="index"
+          :disabled="!isView"
+        >
           <van-cell
             title="车辆类别:"
             :border="false"
@@ -312,7 +316,7 @@
             <van-cell-group :border="false">
               <van-cell title="二手车照片:" />
             </van-cell-group>
-             <imageList :dataList="dataImg" :view="true"></imageList>
+            <imageList :dataList="dataImg" :view="true"></imageList>
           </template>
           <van-cell title="备注:" :value="item.remark" />
           <div slot="right" style="height: 100%">
@@ -334,9 +338,7 @@
               @click="removeCar(item,index)"
             >删除</van-button>
           </div>
-          
         </van-swipe-cell>
-       
       </div>
     </Card>
 
@@ -344,8 +346,12 @@
     <Card class="xh-top-10" v-if="carNature == 'old_car'">
       <template v-slot:header>车辆评估信息</template>
       <van-row class="xh-project">
-        <van-cell title="评估价:" :border="false" :value="projProjectInfo.cars.length>0?(projProjectInfo.cars[0].evaluatingPrice).toFixed(2):''" >
-           <div slot="right-icon" class="xh-cell-right">元</div>
+        <van-cell
+          title="评估价:"
+          :border="false"
+          :value="projProjectInfo.cars.length>0?(projProjectInfo.cars[0].evaluatingPrice).toFixed(2):''"
+        >
+          <div slot="right-icon" class="xh-cell-right">元</div>
         </van-cell>
         <van-cell-group :border="false">
           <van-cell title="评估报告:" />
@@ -568,7 +574,10 @@
       </van-row>
     </Card>
     <!-- 意见 -->
-    <Card style="margin: 10px;" v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'">
+    <Card
+      style="margin: 10px;"
+      v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'"
+    >
       <template v-slot:header>意见描述</template>
       <section>
         <van-cell-group :border="false">
@@ -588,14 +597,39 @@
     </Card>
 
     <!-- 提交按钮 -->
-    <div class="xh-submit" style="padding: 20px 10px;" v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'">
-      <van-button
-        size="large"
-        class="xh-bg-main"
-        @click="submitProject"
-        :loading="dLoading"
-        :disabled="dLoading"
-      >提 交</van-button>
+    <div v-if="(isView && !params.activityId) || params.activityId == 'WF_PROJ_APPR_01_T01'">
+      <div class="xh-submit" v-if="isActive">
+        <van-row>
+          <van-col :span="4">
+            <van-button
+              size="large"
+              type="default"
+              :disabled="dLoading"
+              :loading="dLoading"
+              style="color: #000;"
+              @click="submitStop"
+            >终止</van-button>
+          </van-col>
+          <van-col :span="20">
+            <van-button
+              size="large"
+              class="xh-bg-main"
+              @click="submitTask"
+              :loading="dLoading"
+              :disabled="dLoading"
+            >提 交</van-button>
+          </van-col>
+        </van-row>
+      </div>
+      <div class="xh-submit" style="padding: 20px 10px;">
+        <van-button
+          size="large"
+          class="xh-bg-main"
+          @click="submitProject"
+          :loading="dLoading"
+          :disabled="dLoading"
+        >提 交</van-button>
+      </div>
     </div>
 
     <!-- 弹出选项 -->
@@ -637,7 +671,8 @@ import {
   setNewCar,
   deleteCar,
   setProjectTask,
-  setProjectProcess
+  setProjectProcess,
+  isEndActive
 } from "@/api/project";
 // 校验
 import formValidator from "@/mixins/formValidator";
@@ -685,7 +720,7 @@ Components.forEach(item => {
 });
 import { mapState } from "vuex";
 import imageList from "@/components/imageList";
-import { getValue, setValue, removeValue } from '@/utils/session'
+import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
 export default {
   mixins: [formValidator],
@@ -855,10 +890,35 @@ export default {
       dataImg2: [], //评估报告
       message: "",
       userlist: false, //是否有下一节点人
-      peopleList:[],//选人数组
+      peopleList: [], //选人数组
       processedBy: "",
-      imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723'],//二手车照片类型
-
+      imageTypeList: [
+        "6700",
+        "6701",
+        "6702",
+        "6703",
+        "6704",
+        "6705",
+        "6706",
+        "6707",
+        "6708",
+        "6709",
+        "6710",
+        "6711",
+        "6712",
+        "6713",
+        "6714",
+        "6715",
+        "6716",
+        "6717",
+        "6718",
+        "6719",
+        "6720",
+        "6721",
+        "6722",
+        "6723"
+      ], //二手车照片类型
+      isActive: false //是否是可以终止的订单
     };
   },
   methods: {
@@ -867,11 +927,13 @@ export default {
       // if (!this.edit) {
       //   return
       // }
-      sessionStorage.setItem('proInfo',JSON.stringify(this.projProjectInfo))
+      sessionStorage.setItem("proInfo", JSON.stringify(this.projProjectInfo));
       const query = {
         customerId: this.params.customerId,
         customerNum: this.params.customerNum,
-        projectId: this.params.projectId?this.params.projectId:this.params.businesskey
+        projectId: this.params.projectId
+          ? this.params.projectId
+          : this.params.businesskey
       };
       this.$router.push({
         path: "/addVehicle",
@@ -881,7 +943,7 @@ export default {
     nameToString() {
       return [...arguments].map(item => item).join(" ");
     },
-    // 车辆编辑 
+    // 车辆编辑
     editCar(rows, inx) {
       const query = {
         customerId: this.params.customerId,
@@ -894,7 +956,7 @@ export default {
         ...rows
       };
       query.projectId = this.params.projectId;
-      
+
       this.$router.push({
         path: "/addVehicle",
         query
@@ -905,7 +967,6 @@ export default {
       deleteCar({
         id: rows.id
       }).then(res => {
-        
         this.$router.push({
           path: "/priceEvaluationChoose",
           query: {
@@ -923,45 +984,45 @@ export default {
       }).then(res => {
         this.projProjectInfo.cars.splice(inx, 1);
         this.loading = false;
-        this.carNature = '';
+        this.carNature = "";
       });
     },
     //加载二手车照片
     async loadImg() {
       try {
         this.imageTypeList.forEach(item => {
-            this.getDocumentByType(item, this.dataImg)
-            this.getDocumentByType('6666', this.dataImg2)//二手车评估报告
-        })
-      } catch (e) {
-        
-      }
+          this.getDocumentByType(item, this.dataImg);
+          this.getDocumentByType("6666", this.dataImg2); //二手车评估报告
+        });
+      } catch (e) {}
     },
-    async getDocumentByType (documentType, arr) {
-        try {
-          const params = {
-            customerNum: this.projProjectInfo.cars[0].assessId,
-            documentType: documentType
-          }
-          const {data} = await getDocumentByType(params)
-          const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
-          data.forEach(item => {
-            item.declare = declare;
-          })
-          let deletable = documentType === '6666' || this.isView
-          arr.push({
-            declare: declare,//图片描述
-            isRequire: false,//*是否必须
-            deletable: false,//是否可以操作-上传和删除
-            documentType: documentType,
-            customerNum: this.projProjectInfo.cars[0].assessId,
-            customerId: this.projProjectInfo.cars[0].assessId,
-            kind: '1',
-            fileList: data
-          })
-        } catch (e) {
-          console.log(e)
-        }
+    async getDocumentByType(documentType, arr) {
+      try {
+        const params = {
+          customerNum: this.projProjectInfo.cars[0].assessId,
+          documentType: documentType
+        };
+        const { data } = await getDocumentByType(params);
+        const declare = this.documentType[documentType]
+          ? this.documentType[documentType].label
+          : "图片描述";
+        data.forEach(item => {
+          item.declare = declare;
+        });
+        let deletable = documentType === "6666" || this.isView;
+        arr.push({
+          declare: declare, //图片描述
+          isRequire: false, //*是否必须
+          deletable: false, //是否可以操作-上传和删除
+          documentType: documentType,
+          customerNum: this.projProjectInfo.cars[0].assessId,
+          customerId: this.projProjectInfo.cars[0].assessId,
+          kind: "1",
+          fileList: data
+        });
+      } catch (e) {
+        console.log(e);
+      }
     },
     // 字典转换
     returnText(n, val, list, ids, field) {
@@ -1039,10 +1100,9 @@ export default {
           }
         });
       }
-      if(ids){
+      if (ids) {
         this.$set(this.projProjectInfo, "productId", ids);
       }
-      
     },
     // 省市区选择
     confirmSelect(code, name) {
@@ -1059,8 +1119,9 @@ export default {
       this.show2 = false;
       switch (title) {
         case "业务来源":
-          let businessList = JSON.parse(sessionStorage.getItem('businessList'));
-          this.businessList = this.businessList.length != 0?this.businessList:businessList;
+          let businessList = JSON.parse(sessionStorage.getItem("businessList"));
+          this.businessList =
+            this.businessList.length != 0 ? this.businessList : businessList;
           if (this.businessList.length == 0) {
             this.$notify({
               type: "danger",
@@ -1127,7 +1188,7 @@ export default {
             this.fieldName = "businessModel";
             this.options = this.businessModellist;
             this.show3 = true;
-          }else{
+          } else {
             this.$notify({
               type: "danger",
               message: "请先添加车辆"
@@ -1166,7 +1227,8 @@ export default {
           this.show3 = true;
           break;
         case "盗抢险购买平台":
-          this.platformList = this.platformList.length != 0?this.platformList:platformList;
+          this.platformList =
+            this.platformList.length != 0 ? this.platformList : platformList;
           if (this.platformList.length == 0) {
             return;
           }
@@ -1214,7 +1276,7 @@ export default {
                 this.isWordbook = true;
                 this.fieldName = "isAccessCar";
                 this.options = this.wordbook.is_Access_Car;
-                this.projProjectInfo.carDealersIdName = '';
+                this.projProjectInfo.carDealersIdName = "";
                 return;
               }
               break;
@@ -1369,10 +1431,10 @@ export default {
     },
     // 获取报单数据
     loanData() {
-      if(JSON.parse(sessionStorage.getItem("pro"))){
+      if (JSON.parse(sessionStorage.getItem("pro"))) {
         this.dealData(JSON.parse(sessionStorage.getItem("pro")));
-        this.productName
-      }else{
+        this.productName;
+      } else {
         Toast.loading({
           message: "加载中...",
           forbidClick: true,
@@ -1380,13 +1442,19 @@ export default {
           loadingType: "spinner",
           overlay: true
         });
-        let projectId = this.params.projectNum?this.params.projectNum.replace('XM',''):'';
+        let projectId = this.params.projectNum
+          ? this.params.projectNum.replace("XM", "")
+          : "";
         getProjectInfo({
-          id: this.params.projectId?this.params.projectId:projectId?projectId:this.params.businesskey
+          id: this.params.projectId
+            ? this.params.projectId
+            : projectId
+            ? projectId
+            : this.params.businesskey
         })
           .then(res => {
             this.dealData(res);
-            sessionStorage.setItem('pro',JSON.stringify(res));
+            sessionStorage.setItem("pro", JSON.stringify(res));
           })
           .catch(() => {
             Toast.clear();
@@ -1394,7 +1462,7 @@ export default {
       }
     },
     //处理初始化数据
-    dealData(res){
+    dealData(res) {
       const { code, data, msg } = res;
       const {
         projectInfo,
@@ -1406,7 +1474,7 @@ export default {
       let row = projectInfo;
       this.courseMap = courseMap;
       this.thiefRescueList = thiefRescue; // 获取盗抢险
-      this.businessList = lpmsBusinessSource;//业务来源
+      this.businessList = lpmsBusinessSource; //业务来源
 
       let loanPlatfomr = row.loanPlatfomr
         ? row.loanPlatfomr
@@ -1466,8 +1534,8 @@ export default {
           companyId: row.companyId
         });
       }
-      let projProjectInfo = sessionStorage.getItem('proInfo');
-      if(!projProjectInfo){
+      let projProjectInfo = sessionStorage.getItem("proInfo");
+      if (!projProjectInfo) {
         this.projProjectInfo = {
           loanPlatfomr: loanPlatfomr,
           carDealer: carDealer,
@@ -1597,10 +1665,10 @@ export default {
             "name"
           )
         };
-      }else{
+      } else {
         this.projProjectInfo = JSON.parse(projProjectInfo);
       }
-      console.log(this.projProjectInfo,1111)
+      console.log(this.projProjectInfo, 1111);
       if (this.projProjectInfo.cars[0].carNature == "old_car") {
         this.loadImg();
       }
@@ -1908,7 +1976,9 @@ export default {
       let obj = {
         wfBizComments: {
           conclusionCode: "01",
-          businessKey: this.params.projectId?this.params.projectId:this.params.businesskey,
+          businessKey: this.params.projectId
+            ? this.params.projectId
+            : this.params.businesskey,
           commentsDesc: this.message
         },
         isPerfectMsg: this.assesstment ? "1" : "0",
@@ -1940,7 +2010,9 @@ export default {
     postProcess() {
       let obj = {
         conclusionCode: "01",
-        businessKey: this.params.projectId?this.params.projectId:this.params.businesskey,
+        businessKey: this.params.projectId
+          ? this.params.projectId
+          : this.params.businesskey,
         commentsDesc: this.message,
         processedBy: this.processedBy
       };
@@ -1952,9 +2024,9 @@ export default {
           });
           this.dLoading = false;
           // this.$bridge.callHandler("jumpToTaskTab", "", res => {});
-          if(this.params.newCus){
+          if (this.params.newCus) {
             this.$router.go(-2);
-          }else{
+          } else {
             this.$router.go(-1);
           }
         })
@@ -1974,19 +2046,29 @@ export default {
     },
     //点击完善信息
     conpleteInfo() {
-      let info = {...this.params ,newPro: true};
-      if(this.$route.query.dealState){
+      let info = { ...this.params, newPro: true };
+      if (this.$route.query.dealState) {
         this.$router.push({
           path: "/xhProject",
-          query:{info:JSON.stringify(info),dealState:this.$route.query.dealState}
+          query: {
+            info: JSON.stringify(info),
+            dealState: this.$route.query.dealState
+          }
         });
-      }else{
+      } else {
         this.$router.push({
           path: "/xhProject",
-          query:info
+          query: info
         });
       }
-        
+    },
+    // 是否出现终止
+    endActive() {
+      isEndActive({
+        projId: this.params.projectId?this.params.projectId:this.params.businesskey
+      }).then(res => {
+        this.isActive = res.data == "05" ? true : false;
+      });
     }
   },
   mounted() {
@@ -1996,27 +2078,23 @@ export default {
       this.params = this.$route.query;
     }
     this.isView = this.params.isView == 0;
-    if(this.$route.query.dealState){
-      if(this.params.isView){
-        this.isView = this.$route.query.dealState == 1 && this.isView && this.params.activityId == 'WF_PROJ_APPR_01_T01';
-      }else{
-        this.isView = this.$route.query.dealState == 1  && this.params.activityId == 'WF_PROJ_APPR_01_T01';
+    if (this.$route.query.dealState) {
+      if (this.params.isView) {
+        this.isView =
+          this.$route.query.dealState == 1 &&
+          this.isView &&
+          this.params.activityId == "WF_PROJ_APPR_01_T01";
+      } else {
+        this.isView =
+          this.$route.query.dealState == 1 &&
+          this.params.activityId == "WF_PROJ_APPR_01_T01";
       }
     }
-    // let datas = JSON.parse(sessionStorage.getItem("pro"));
-    // let datas = null
-    // if (!datas) {
-    //   this.loanData();
-    // }else{
-    //   this.projProjectInfo = datas;
-    //   if (datas.cars[0].carNature == "old_car") {
-    //     this.loadImg();
-    //   }
-    // }
     this.loanData();
+    this.endActive();
     this.rulesForm("order-project-xh");
   },
-  destroyed () {
+  destroyed() {
     sessionStorage.setItem("proInfo", JSON.stringify(this.projProjectInfo));
   }
 };
