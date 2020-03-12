@@ -232,7 +232,7 @@
         this.params.status = '';
         this.onSearch();
       },
-      startFormFn (item, query = {edit: false}, path = '/bigDataQueryDetail') {
+      startFormFn (item, query = {edit: false}, path = '/bigDataCredit') {
         this.$router.push({path, query: {lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
       },
       // 发起报单
@@ -246,7 +246,7 @@
           break;
           case '2': this.startFormFn(item, {edit: true, bigData: true})
           break;
-          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbDetail')
+          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbCredit')
           break;
         }
       

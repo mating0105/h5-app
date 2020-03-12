@@ -70,16 +70,16 @@ export const constantRoutes = [
   },
 
   {
-    path: '/bigDataQueryDetail',
-    name: 'bigDataQueryDetail',
-    component: () => import('@/views/credit/bigDataQuery/detail'),
-    meta: {title: '大数据征信查询详情'}
+    path: '/bigDataCredit',
+    name: 'bigDataCredit',
+    component: () => import('@/views/credit/bigDataQuery/bigDataCredit'),
+    meta: {title: '大数据征信查询'}
   },
 
   {
-    path: '/rbDetail',
-    name: 'rbDetail',
-    component: () => import('@/views/credit/bigDataQuery/detail'),
+    path: '/rbCredit',
+    name: 'rbCredit',
+    component: () => import('@/views/credit/bigDataQuery/rbCredit'),
     meta: {title: '人保征信查询详情'}
   },
 
