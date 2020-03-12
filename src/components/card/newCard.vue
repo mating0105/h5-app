@@ -91,9 +91,10 @@ Vue.use(Tag);
         }
         .card__sub__title{
             padding: 1rem;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-top:0.8rem;
             color:red;
+            font-weight: Bold;
         }
 
         .card__footer {
