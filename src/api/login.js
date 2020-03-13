@@ -13,7 +13,7 @@ export function login(params) {
 } 
 
 export function setBookObj(params) {
-  return request({
+  return serviceOther({
     url: '/manage/dict/getDictByTypes',
     method: 'post',
     data: params

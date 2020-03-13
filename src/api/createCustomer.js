@@ -1,8 +1,8 @@
 //客户建档
-import request from '@/utils/request'
+import request,{serviceOther} from '@/utils/request'
 
 export function getDic(params) {
-    return request({
+    return serviceOther({
         url: '/manage/dict/getDictByTypes',
         method: 'post',
         data: params

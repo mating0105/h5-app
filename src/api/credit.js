@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request,{serviceOther} from '@/utils/request'
 
 /**
  * 获取银行
@@ -30,7 +30,7 @@ export function getCreditInfo(params) {
  */
 export function getList(params) {
   return request({
-    url: '/order/creditInfo/queryCreaditRegister',
+    url: '/order/standardCreditInfo/queryCreaditRegister',
     method: 'get',
     params
   })
@@ -41,7 +41,7 @@ export function getList(params) {
  * @param params
  */
 export function getButtonList(params) {
-  return request({
+  return serviceOther({
     url: '/manage/buttonConfig/getButtonByServer?serverName=credit-list',
     method: 'get',
     params
