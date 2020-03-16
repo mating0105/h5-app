@@ -62,7 +62,7 @@
                             </span>
                             </van-col>
                             <van-col span="24" class="xh-top-10" v-if="item.credit100Result">
-                            <span :class="item.credit100Result === '通过' ? 'xh-success-tag' :'xh-danger-tag'">
+                            <span :class="item.credit100Result.slice(-2) === '通过' ? 'xh-success-tag' :'xh-danger-tag'">
                                {{item.credit100Result}}
                             </span>
                             </van-col>
