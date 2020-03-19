@@ -1,7 +1,7 @@
 // 审批记录
 <template>
   <div class="xh-approval">
-    <Card v-for="item in recordList" style="margin-top:10px;">
+    <Card v-for="item in recordList" style="margin-top:10px;" v-if="recordList.length > 0">
       <van-row>
         <van-col class="xh-approval-name">
           <span>{{item.name}}</span>
@@ -18,16 +18,17 @@
         <van-cell title="意见描述:" :value="item.commentsDesc" />
       </van-cell-group>
     </Card>
+    <div v-if="recordList.length < 1"><van-divider>暂无操作记录</van-divider></div>
   </div>
 </template>
 <script>
 import Vue from "vue";
-import { Row, Col, Cell, CellGroup } from "vant";
+import { Row, Col, Cell, CellGroup,Divider } from "vant";
 import Card from "@/components/card/index";
 import { approvalRecord } from "@/api/payment";
 import { format } from "@/utils/format";
 import { mapState } from "vuex";
-const Components = [Row, Col, Cell, CellGroup];
+const Components = [Row, Col, Cell, CellGroup,Divider];
 Components.forEach(item => {
   Vue.use(item);
 });

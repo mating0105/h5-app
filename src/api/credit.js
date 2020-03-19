@@ -23,6 +23,13 @@ export function getCreditInfo(params) {
     params
   })
 }
+export function getCreditDetail(params) {
+  return request({
+    url: '/order/standardCreditInfo/cuCreditRegisterFormMob',
+    method: 'get',
+    params
+  })
+}
 
 /**
  * 获取征信列表
@@ -155,16 +162,19 @@ export function getButtonOfCredit(params) {
     params
   })
 }
-
-/**
- * 征信按钮-电子签
- * @param params
- */
-export function getButtonOfBankCredit(params) {
-    return serviceOther({
-      url: '/manage/buttonConfig/getButtonByServer/v2?serverName=credit-search-type',
-      method: 'get',
-      params
-    })
-  }
-  
+// 获取方式
+export function getByServer(params) {
+  return serviceOther({
+    url: '/manage/buttonConfig/getButtonByServer/v2',
+    method: 'get',
+    params
+  })
+}
+//字典
+export function setBookObj(params) {
+  return serviceOther({
+    url: '/manage/dict/getDictByTypes',
+    method: 'post',
+    data: params
+  })
+}

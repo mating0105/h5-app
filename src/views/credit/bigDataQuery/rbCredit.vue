@@ -1,293 +1,207 @@
 <template>
-    <ViewPage :loading="loading">
-        <template v-slot:head>
-            <van-tabs v-model="active">
-                <van-tab title="基本信息"></van-tab>
-                <van-tab title="征信信息"></van-tab>
-                <van-tab title="相关文档"></van-tab>
-                <van-tab title="审批记录"></van-tab>
-            </van-tabs>
-        </template>
-        <template v-if="active === 1">
-            <!-- 百融 -->
-            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
-            <div v-else>
-              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
-            </div>
-        </template>
-        <template v-else-if="active === 0">
-            <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
-            <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
-        </template>
-        <template v-else-if="active === 2">
-            <relatedDocs :requestParams="requestParams"></relatedDocs>
-        </template>
-        <template v-else-if="active === 3">
-            <approvalRecord :requestParams="recordParams"></approvalRecord>
-        </template>
-
-        <!-- 提交按钮 -->
-        <div class="xh-submit-box" v-if="edit && TYPE !== 'bairong'">
-            <van-button size="large" @click="nextStep"
-                        class="xh-btn"
-            >发起征信查询
-            </van-button>
-        </div>
-        <div class="xh-submit-box" v-if="active === 0 && TYPE === 'bairong'">
-          <van-button size="large" @click="triggerQuery"
-                      class="xh-btn"
-                      :disabled="disableClick"
-          >发起征信查询</van-button>
-        </div>
-        
-    </ViewPage>
+  <ViewPage :loading="loading">
+    <template v-slot:head>
+      <van-tabs v-model="active">
+        <van-tab title="基本信息"></van-tab>
+        <van-tab title="操作记录"></van-tab>
+      </van-tabs>
+    </template>
+    <template v-if="active === 0 && dataList.id">
+      <basicInfo
+        :dataList="dataList"
+        :edit="edit"
+        :form="form"
+        :perInfoList="perInfoList"
+        :buttonId="buttonId"
+        :hiddenHandle="true"
+      ></basicInfo>
+    </template>
+    <template v-else-if="active === 1">
+      <approvalRecord :requestParams="recordParams"></approvalRecord>
+    </template>
+  </ViewPage>
 </template>
 
 <script>
-  import ViewPage from '@/layout/components/ViewPage';
-  import Card from '@/components/card'
-  import creditInfoTable from '../viewCompoents/creditInfoTable'
-  import creditQueryInfo from '../viewCompoents/creditQueryInfo'
-  import basicInfo from '../viewCompoents/basicInfo'
-  import basicInfoCredit from '../reNewCredit/basicInfo'
-  import relatedDocs from '@/views/relatedDocs/relatedDocs'
-  import approvalRecord from '@/views/basicInfo/approvalRecord'
-  import { getValue, setValue, removeValue } from '@/utils/session'
-  import Vue from 'vue';
-  import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
-  import Bus from '@/utils/bus';
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
+import ViewPage from "@/layout/components/ViewPage";
+import Card from "@/components/card";
+import NewCard from "@/components/card/newCard";
+import creditInfoTable from "../viewCompoents/creditInfoTable";
+import creditQueryInfo from "../viewCompoents/creditQueryInfo";
+import relatedDocs from "@/views/relatedDocs/relatedDocs";
+import approvalRecord from "@/views/basicInfo/approvalRecord";
+import formValidator from "@/mixins/formValidator";
+import imageList from "@/components/imageList";
+import { getValue, setValue, removeValue } from "@/utils/session";
+import { getDocumentByType } from "@/api/document";
+import basicInfo from "../bigDataQuery/bigDataBasicInfo";
+import radio from "@/components/radio";
+import radioItem from "@/components/radio/radioItem";
+import Vue from "vue";
+import {
+  getCreditDetail,
+  setBookObj,
+  getByServer,
+  saveCreditInfo,
+  createTask,
+  getUsers,
+  submitCredit
+} from "@/api/credit";
+import Bus from "@/utils/bus";
+import {
+  Cell,
+  CellGroup,
+  Field,
+  Icon,
+  Button,
+  Picker,
+  Popup,
+  Toast,
+  Notify,
+  SwipeCell,
+  Dialog,
+  Tab,
+  Tabs,
+  ActionSheet
+} from "vant";
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs]
-  Components.forEach(item => {
-    Vue.use(item)
-  })
+const Components = [
+  Cell,
+  CellGroup,
+  Field,
+  Icon,
+  Button,
+  Picker,
+  Popup,
+  Toast,
+  Notify,
+  SwipeCell,
+  Dialog,
+  Tab,
+  Tabs,
+  ActionSheet
+];
+Components.forEach(item => {
+  Vue.use(item);
+});
 
-  export default {
-    name: "bigDataQueryDetail",
-    components: {
-      ViewPage,
-      Card,
-      creditInfoTable,
-      creditQueryInfo,
-      basicInfo,
-      basicInfoCredit,
-      relatedDocs,
-      approvalRecord
-    },
-    data () {
-      return {
-        TYPE:'',
-        disableClick:false,
-        active: 0,
-        dataList: {
-          investigateBank: '',
-          investigateBankName: '',
-          isInternetCredit: '',
-          carInfos: [],
-          surDtlList: []
-        },
-        loading: false,
-        form: {},
-        perInfoList: [], //客户下面的其他客户数据
-        edit: false,
-        requestParams: {
-          customerNum: '', customerId: '', dealState: '3'
-        },
-        recordParams: {
-          businesskey: '', businesstype: '07'
-        },
-        bigData: false,
-        rbCredit: false
-      }
-    },
-    methods: {
-      async getButtonOfCredit() {
-        try {
-          const {data} = await getButtonOfCredit()
-          // 征信回复：:5/百融征信查询：6
-          this.buttonId = data[0].buttonId
-          if(this.buttonId){
-            this.TYPE = this.buttonId == 6 ? 'bairong' : ''
-          }else{
-            this.TYPE =  ''
-          }
-        }catch (e) {
-          console.log(e)
-        }
+export default {
+  mixins: [formValidator],
+  components: {
+    ViewPage,
+    Card,
+    NewCard,
+    creditInfoTable,
+    creditQueryInfo,
+    relatedDocs,
+    approvalRecord,
+    imageList,
+    radio,
+    radioItem,
+    basicInfo
+  },
+  data() {
+    return {
+      active: 0,
+      dataList: {
+        investigateBank: "",
+        investigateBankName: "",
+        isInternetCredit: "",
+        carInfos: [],
+        surDtlList: []
       },
-      async getCreditInfo (_tag) {
-        try {
-          this.loading = true
-          const params = {
-            lpCertificateNum: this.$route.query.lpCertificateNum,
-            id: this.$route.query.id
-          }
-          let res;
-          let dataList;
-          if(_tag && _tag ==='getBrAgain'){
-            res = await creditQueryOf100(params)
-            dataList = res.data.cuCreditRegister
-          }else{
-            if (getValue("credit")) {
-              dataList = JSON.parse(getValue("credit"))
-            } else {
-              if(this.TYPE === 'bairong'){
-                res = await creditQueryOf100(params)
-              }else{
-                res = await getCreditInfo(params)
-              }
-              dataList = res.data.cuCreditRegister
-            }
-          }
-
-          this.requestParams.customerNum = dataList.perInfo ? dataList.perInfo.customerNum : ''
-          this.requestParams.customerId = dataList.customerId
-          this.recordParams.businesskey = dataList.id
-          this.loading = false
-
-          dataList.surDtlList.forEach(e => {
-            e.dataList = []
-            if (e.creditObjectType === 'borrower') {
-              this.form = e;
-            } else {
-              this.perInfoList.push(e);
-            }
-          })
-          this.dataList = dataList;
-          this.initCustomerData()
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
+      loading: false,
+      edit: false,
+      form: {},
+      perInfoList: [],
+      recordParams: {
+        businesskey: "",
+        businessType: "07"
       },
-      initCustomerData () {
-        let customerData = this.$store.state.credit.customerData
-        if (customerData) {
-          const index = this.$store.state.credit.index
-          customerData = this.enFormatter(customerData)
-          if (index === -1) {
-            this.perInfoList.push(customerData)
-            this.dataList.surDtlList.push(customerData)
-          } else {
-            const perInfo = this.perInfoList[index]
-            if (perInfo) {
-              for (let key in customerData) {
-                if (customerData.hasOwnProperty(key)) {
-                  perInfo[key] = customerData[key] || perInfo[key]
-                }
-              }
-            }
-          }
-          this.$store.dispatch('credit/removeCustomerData')
-        }
-      },
-      enFormatter (beanData) {
-        return {
-          "sex": beanData.sex, //性别
-          "creditPersonName": beanData.customerName,//客户姓名
-          "cpCertificateNum": beanData.certificateNum,//身份证号码
-          "age": beanData.age,//年龄
-          "creditObjectType": beanData.creditObjectType,//征信对象类型
-          "perInfo": {
-            "nationName": beanData.nationName,//民族
-            "nation": beanData.nation,//民族
-            "birthday": beanData.birthday,//出生日期
-            "signOrg": beanData.signOrg//身份证签发机关
-          },
-          "familyAddress": beanData.familyAddress,//身份证住址
-          "startDate": beanData.startDate,//起始日
-          "endDate": beanData.endDate,//截止日
-          "telephone": beanData.contactPhone,//手机号码
-          "bankCardNum": beanData.bankCardNum, //银行卡号
-          dataList: [],
-          canDel: true
-        }
-      },
-      /**
-       * 下一步
-       **/
-      async nextStep () {
-        Bus.$off('creditSaveSuccess')
-        let creditTypeFlag = 1
-        if (this.rbCredit) {
-          creditTypeFlag = 2
-        }
-        Bus.$emit('creditSave', creditTypeFlag);
-        Bus.$on('creditSaveSuccess', query => {
-          this.$router.push({
-            path: '/bigDataReply',
-            query: this.$route.query
-          })
-        })
-      },
-      async triggerQuery () {
-        
-        let nowDate = new Date()
-        
-        // 当前时间与查询时间+30天对比
-        let isRegister = this.dataList.surDtlList.some(element => {
-          let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
-          return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
-        });
-        /* const _itemList = this.dataList.surDtlList.filter(item => item.dataList && item.dataList.length > 0)
-        if(_itemList.length > 0){
-          _itemList.forEach((item,index) => {
-            item.dataList.forEach((ele)=> {
-              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
-                _arr.push(item.creditPersonName)
-              }
-              resolve(true)
-            })
-          })
-        } */
-        if(isRegister){
-          Toast('已查询的用户请30天后重新查询')
-          return
-        }
-        
-        Bus.$emit('creditSave',this.TYPE);
-        Bus.$on("queryStart", res => {
-          // this.loading = true
-          this.disableClick = true
-        });
-
-        Bus.$on('queryFaile', res => {
-          // this.loading = false
-          this.disableClick = false
-          // this.active = 1
-        })
-        Bus.$on('querySuccess', res => {
-          // this.loading = false
-          this.disableClick = false
-          if(res === 'bairong'){
-            this.$refs['basicInfo'].initData()
-            this.getCreditInfo('getBrAgain').then(() => {
-                this.active = 1
-                this.$forceUpdate()
-            }).catch(() => {
-              this.active = 1
-            })
-          }
-        })
-      },
-      lookDocs(){
-        this.active = 2
-      }
-    },
-    created(){
-    },
-    mounted () {
-      this.getButtonOfCredit().then(() => this.getCreditInfo() )
-      this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
-      this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
-      this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      buttonId:'',
+    };
+  },
+  computed: {
+    // 所有字典
+    wordbook() {
+      return this.$store.state.user.wordbook;
     }
+  },
+  methods: {
+    async loadData() {
+      this.loading = true;
+      let data;
+      if (getValue("credit")) {
+        data = JSON.parse(getValue("credit"));
+      } else {
+        let datalist = {
+          creditType:this.params.buttonId,
+          lpCertificateNum: this.params.lpCertificateNum
+        };
+        let res = await getCreditDetail(datalist);
+        data = res.data.cuCreditRegister;
+      }
+      this.sign = data.standardCreditStatus;
+      this.time = data.registerDate;
+      data.surDtlList.forEach(e => {
+        e.dataList = [];
+        if (e.creditObjectType === "borrower") {
+          this.form = e;
+        } else {
+          this.perInfoList.push(e);
+        }
+      });
+      this.dataList = data;
+      this.recordParams.businesskey = this.dataList.id;
+      this.initCustomerData();
+      this.loading = false;
+    },
+    initCustomerData() {
+      let customerData = this.$store.state.credit.customerData;
+      if (customerData) {
+        const index = this.$store.state.credit.index;
+        customerData = this.enFormatter(customerData);
+        if (index === -1) {
+          this.perInfoList.push(customerData);
+          this.data.surDtlList.push(customerData);
+        } else {
+          const perInfo = this.perInfoList[index];
+          if (perInfo) {
+            for (let key in customerData) {
+              if (customerData.hasOwnProperty(key)) {
+                perInfo[key] = customerData[key] || perInfo[key];
+              }
+            }
+          }
+        }
+        this.$store.dispatch("credit/removeCustomerData");
+      }
+    }
+  },
+  mounted() {
+    this.params = this.$route.query;
+    this.edit = this.params.edit;
+    this.buttonId = this.params.buttonId;
+    this.loadData();
   }
+};
 </script>
 
 <style>
-  
+.card-title {
+  color: #ec191f;
+  margin: 1rem;
+  font-weight: bold;
+}
+.waitInfoBox {
+  padding: 1rem;
+}
+.waitInfo {
+  background-color: rgba(236, 25, 31, 0.1);
+  color: #ec191f;
+  height: 4rem;
+  line-height: 4rem;
+  padding: 0 1rem;
+  border: 1px solid #ec191f;
+}
 </style>
