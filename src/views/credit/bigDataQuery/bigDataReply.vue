@@ -38,6 +38,7 @@ import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
 import basicInfo from "../bigDataQuery/bigDataBasicReply";
+import { format } from "@/utils/format";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 import Vue from "vue";
@@ -126,7 +127,7 @@ export default {
         businessType: "07"
       },
       buttonId: "",
-      TYPE: "", //征信查询方式
+      TYPE: "rengong", //征信查询方式
       creditTypeList:[],//征信查询数组
     };
   },
@@ -140,27 +141,26 @@ export default {
     async loadData() {
       this.loading = true;
       let data,res;
-      if (getValue("credit")) {
-        data = JSON.parse(getValue("credit"));
-      } else {
-        let datalist = {
-          buttonId: this.params.buttonId,
-          lpCertificateNum: this.params.lpCertificateNum
-        };
-        if(this.TYPE == 'bairong'){
-          res = await creditQueryOf100(datalist)
-        }else{
-          res = await getCreditDetail(datalist);
-        }
-        data = res.data;
+      let datalist = {
+        buttonId: 2,
+        lpCertificateNum: this.params.info.certificateNum
+      };
+      if(this.TYPE == 'bairong'){
+        res = await creditQueryOf100(datalist)
+      }else{
+        res = await getCreditDetail(datalist);
       }
+      data = res.data;
       this.sign = data.standardCreditStatus;
       this.time = data.registerDate;
       data.surDtlList.forEach(e => {
         e.dataList = [];
         if (e.creditObjectType === "borrower") {
           this.form = e;
+          console.log(format(new Date(),'yyyy-MM-dd hh:mm'))
+          this.form.time = format(new Date(),'yyyy-MM-dd hh:mm');
         } else {
+          e.time = format(new Date(),'yyyy-MM-dd hh:mm');
           this.perInfoList.push(e);
         }
       });
@@ -218,9 +218,12 @@ export default {
     },
   },
   mounted() {
-    this.params = this.$route.query;
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
+    console.log(this.params.info)
     this.edit = false;
-    this.buttonId = this.params.buttonId;
     this.loadData();
   }
 };

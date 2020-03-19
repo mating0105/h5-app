@@ -48,13 +48,15 @@
           is-link
           :border="false"
           :value="form.time"
-          @click="showPopupTime('payTime')"
+          @click="showPopupTime('borrower')"
           label-class="labelClass"
           @blur.prevent="ruleMessge"
           :label="errorMsg.payTime"
         />
-        <van-cell title="相关文档:" required :border="false" />
+        <van-cell title="相关文档:" :border="false" />
         <imageList :dataList="mainImg"></imageList>
+        <van-cell title="征信报告:" required :border="false" />
+        <imageList :dataList="mainCreditImg"></imageList>
       </div>
       <div v-if="perInfoList.length > 0">
         <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
@@ -76,30 +78,30 @@
             :value="item.isSearchCredit?(item.isSearchCredit == '1'?'是':'否'):''"
           />
           <van-cell
-          label-class="labelClass"
-          :label="errorMsg.isSearchCredit"
-          title="征信结果:"
-          is-link
-          :border="false"
-          required
-        >
-          <radio v-model="item.isSearchCredit">
-            <radio-item label="1">是</radio-item>
-            <radio-item label="0">否</radio-item>
-          </radio>
-        </van-cell>
-        <van-cell
-          title="征信结果时间:"
-          required
-          is-link
-          :border="false"
-          :value="item.time"
-          @click="showPopupTime('payTime')"
-          label-class="labelClass"
-          @blur.prevent="ruleMessge"
-          :label="errorMsg.payTime"
-        />
-          <van-cell title="相关文档" required :border="false" />
+            label-class="labelClass"
+            :label="errorMsg.isSearchCredit"
+            title="征信结果:"
+            is-link
+            :border="false"
+            required
+          >
+            <radio v-model="item.isSearchCredit">
+              <radio-item label="1">是</radio-item>
+              <radio-item label="0">否</radio-item>
+            </radio>
+          </van-cell>
+          <van-cell
+            title="征信结果时间:"
+            required
+            is-link
+            :border="false"
+            :value="item.time"
+            @click="showPopupTime('payTime')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.payTime"
+          />
+          <van-cell title="相关文档" :border="false" />
           <imageList :dataList="item.dataList"></imageList>
           <div slot="right" style="height: 100%">
             <van-button
@@ -147,6 +149,18 @@
         />
       </div>
     </van-popup>
+    <van-action-sheet get-container="#app" v-model="showTimePicker" class="xh-list">
+      <div class="xh-list-body">
+        <van-datetime-picker
+          title="征信结果时间"
+          type="datetime"
+          v-model="currentDate"
+          :max-date="maxDate"
+          @confirm="confirmTime"
+          @cancel="showTimePicker = false"
+        />
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -157,6 +171,7 @@ import formValidator from "@/mixins/formValidator";
 import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
+import { format } from "@/utils/format";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 import Vue from "vue";
@@ -184,7 +199,8 @@ import {
   Dialog,
   Tab,
   Tabs,
-  ActionSheet
+  ActionSheet,
+  DatetimePicker
 } from "vant";
 
 const Components = [
@@ -201,7 +217,8 @@ const Components = [
   Dialog,
   Tab,
   Tabs,
-  ActionSheet
+  ActionSheet,
+  DatetimePicker
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -245,12 +262,14 @@ export default {
       },
       showSign: false,
       showTime: false,
+      showTimePicker: false,
       scanActions: [
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
       ],
       showScan: false,
       mainImg: [], //主借人相关文档
+      mainCreditImg:[],//主借人征信报告
       recordParams: {
         businesskey: "",
         businesstype: "07"
@@ -271,7 +290,10 @@ export default {
         borrower: ["0101", "0102", "2001", "6690"] //主借人
       },
       processedBy: "", //提交人id
-      taskData: {} //
+      taskData: {}, //
+      maxDate: new Date(),
+      currentDate: new Date(), //当前时间
+      peopleTime: "",
     };
   },
   computed: {
@@ -301,11 +323,6 @@ export default {
       });
       this.showScan = false;
     },
-    //保存数据到本地
-    save() {
-      this.data.surDtlList = [this.form, ...this.perInfoList];
-      setValue("credit", JSON.stringify(this.dataList));
-    },
     //新增关联人信息
     addPer() {
       const query = {
@@ -317,48 +334,6 @@ export default {
         path: "/creatCustomer",
         query
       });
-    },
-    async getAnyServer(serverName, type) {
-      let serverNameType = {
-        serverName: serverName
-      };
-      let res = await getByServer(serverNameType);
-      if (type == "electronic") {
-        this.dataList.signType = res.data[0].buttonId;
-        //是否电子签
-        if (res.data[0].buttonName == "电子签") {
-          this.isElectronic = true;
-          //如果是电子签，则没有大数据征信授权书
-          this.obj = {
-            joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
-            borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
-            security: ["0120", "0117", "2005"], //担保人
-            joiDebtor: ["0109", "0110", "2003"], //共债人
-            borrower: ["0101", "0102", "2001"] //主借人
-          };
-          this.dataList.surDtlList.forEach(e => {
-            const arr = this.obj[e.creditObjectType];
-            arr.forEach(i => {
-              this.getDocumentByType(i, e);
-            });
-          });
-        } else {
-          this.isElectronic = false;
-          this.obj = {
-            joiDebtorSpouse: ["0113", "0114", "2004", "6604"], //共债人配偶
-            borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-            security: ["0120", "0117", "2005", "6692"], //担保人
-            joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-            borrower: ["0101", "0102", "2001", "6690"] //主借人
-          };
-          this.dataList.surDtlList.forEach(e => {
-            const arr = this.obj[e.creditObjectType];
-            arr.forEach(i => {
-              this.getDocumentByType(i, e);
-            });
-          });
-        }
-      }
     },
     unFormatter(beanData) {
       const perInfo = beanData.perInfo || {};
@@ -612,9 +587,10 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
+        // const isRequire = this.documentType[documentType] != '0202'
         const imgdata = {
           declare: declare, //图片描述
-          isRequire: true, //*是否必须
+          isRequire: isRequire, //*是否必须
           deletable: true, //是否可以操作-上传和删除
           documentType: documentType,
           customerNum: this.dataList.perInfo.customerNum,
@@ -632,13 +608,35 @@ export default {
         });
         imgdata.fileList = data;
       } catch (e) {}
+    },
+    //时间选择
+    showPopupTime(people) {
+      this.showTimePicker = true;
+      this.peopleTime = people;
+    },
+    confirmTime(value) {
+      this.showTimePicker = false;
+      if (this.peopleTime == "borrower") {
+        this.form.time = format(value, "yyyy-MM-dd hh:mm");
+      } else {
+      }
     }
   },
   mounted() {
-   
-  },
-  destroyed() {
-    this.save();
+    console.log(this.dataList, 2222);
+    this.obj = {
+      joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
+      borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
+      security: ["0120", "0117", "2005"], //担保人
+      joiDebtor: ["0109", "0110", "2003"], //共债人
+      borrower: ["0101", "0102", "2001"] //主借人
+    };
+    this.dataList.surDtlList.forEach(e => {
+      const arr = this.obj[e.creditObjectType];
+      arr.forEach(i => {
+        this.getDocumentByType(i, e);
+      });
+    });
   }
 };
 </script>
