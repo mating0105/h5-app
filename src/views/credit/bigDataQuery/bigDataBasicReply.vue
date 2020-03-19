@@ -31,15 +31,15 @@
         />
         <van-cell
           label-class="labelClass"
-          :label="errorMsg.isSearchCredit"
+          :label="errorMsg.creditResult"
           title="征信结果:"
           is-link
           :border="false"
           required
         >
-          <radio v-model="form.isSearchCredit">
-            <radio-item label="1">是</radio-item>
-            <radio-item label="0">否</radio-item>
+          <radio v-model="form.creditResult">
+            <radio-item label="1">通过</radio-item>
+            <radio-item label="0">拒绝</radio-item>
           </radio>
         </van-cell>
         <van-cell
@@ -47,11 +47,11 @@
           required
           is-link
           :border="false"
-          :value="form.time"
+          :value="form.investigateDate"
           @click="showPopupTime('borrower')"
           label-class="labelClass"
           @blur.prevent="ruleMessge"
-          :label="errorMsg.payTime"
+          :label="errorMsg.investigateDate"
         />
         <van-cell title="相关文档:" :border="false" />
         <imageList :dataList="mainImg"></imageList>
@@ -85,9 +85,9 @@
             :border="false"
             required
           >
-            <radio v-model="item.isSearchCredit">
-              <radio-item label="1">是</radio-item>
-              <radio-item label="0">否</radio-item>
+            <radio v-model="item.creditResult">
+              <radio-item label="1">通过</radio-item>
+              <radio-item label="0">拒绝</radio-item>
             </radio>
           </van-cell>
           <van-cell
@@ -95,14 +95,18 @@
             required
             is-link
             :border="false"
-            :value="item.time"
+            :value="item.investigateDate"
             @click="showPopupTime('payTime')"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
-            :label="errorMsg.payTime"
+            :label="errorMsg.investigateDate"
           />
+         
           <van-cell title="相关文档" :border="false" />
           <imageList :dataList="item.dataList"></imageList>
+          <van-cell title="征信报告" required :border="false" />
+          <imageList :dataList="item.creditList"></imageList>
+          
           <div slot="right" style="height: 100%">
             <van-button
               type="warning"
@@ -117,9 +121,9 @@
           </div>
         </van-swipe-cell>
       </div>
-      <div class="card-title" style="margin:2rem 1rem;">
+      <div class="card-title" style="margin:2rem 1rem;" v-if="edit">
         新增关联人信息
-        <div class="card-icon" @click="addPer" v-if="edit">
+        <div class="card-icon" @click="addPer" >
           <van-icon name="add-o" size="2rem" />
         </div>
       </div>
@@ -127,11 +131,13 @@
       <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" />
     </NewCard>
     <div class="xh-submit-box" v-if="TYPE != 'bairong'">
-      <van-button size="large" class="xh-btn" @click="submit">提交征信查询</van-button>
+      <van-button size="large" class="xh-btn xh-primary" @click="back">返回</van-button>
+      <van-button size="large" class="xh-btn" @click="showResult">提前告知征信结果</van-button>
+      <van-button size="large" class="xh-btn" @click="submit">提交</van-button>
     </div>
 
     <div class="xh-submit-box" v-if="TYPE === 'bairong'">
-      <van-button size="large" @click="triggerQuery" class="xh-btn">发起征信查询</van-button>
+      <van-button size="large" @click="triggerQuery" class="xh-btn">提交</van-button>
     </div>
 
     <!-- 身份证识别/银行卡识别 -->
@@ -269,7 +275,7 @@ export default {
       ],
       showScan: false,
       mainImg: [], //主借人相关文档
-      mainCreditImg:[],//主借人征信报告
+      mainCreditImg: [], //主借人征信报告
       recordParams: {
         businesskey: "",
         businesstype: "07"
@@ -289,11 +295,17 @@ export default {
         joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
         borrower: ["0101", "0102", "2001", "6690"] //主借人
       },
-      processedBy: "", //提交人id
-      taskData: {}, //
+      bigData: {
+        joiDebtorSpouse: ["0210"], //共债人配偶
+        borrowerSpouse: ["0208"], //借款人配偶
+        security: ["0211"], //担保人
+        borrower: ["0207"], //借款人
+        joiDebtor: ["0209"] //共债人
+      },
+      whiteList:['0207','0208','0209','0210','0211'],
       maxDate: new Date(),
       currentDate: new Date(), //当前时间
-      peopleTime: "",
+      peopleTime: ""
     };
   },
   computed: {
@@ -418,10 +430,6 @@ export default {
       }
       return color;
     },
-    //点击授权电子签
-    electronicFn(val) {
-      console.log(val, 9999);
-    },
     // 字典转换
     returnText(val, key) {
       let name = "";
@@ -434,8 +442,6 @@ export default {
       }
       return name;
     },
-    //刷新征信查询状态
-    refreshStatus() {},
     //编辑人
     editPer(per, index) {
       const query = {
@@ -473,7 +479,7 @@ export default {
       }
       return num === 0;
     },
-    //提交征信查询
+    //提交
     async submit() {
       if (!this.verifyForm()) {
         return;
@@ -484,38 +490,15 @@ export default {
         loadingType: "spinner",
         overlay: true
       });
-      this.dataList.creditType = this.buttonId;
-      const { data } = await saveCreditInfo(this.dataList);
-      removeValue("credit");
-      try {
-        const params = {
-          businessKey: data.creditRegisterId,
-          businessType: "07",
-          commentsDesc: "同意",
-          conclusionCode: "01",
-          processDefineKey: "WF_CU_CREDIT_001"
-        };
-        const subData = await createTask(params);
-        this.taskData = subData.data;
-        const userParams = {
-          businessKey: this.dataList.id,
-          commentsDesc: this.remarks ? this.remarks : "同意",
-          conclusionCode: "01"
-        };
-        const res = await getUsers(userParams);
-        let objArr = [];
-        res.data.list.forEach(t => {
-          objArr.push({
-            ...t,
-            label: t.companyName + "-" + t.name
-          });
-        });
-        this.changeUserList = objArr;
-        Toast.clear();
-        this.showPickerFn("user");
-      } catch (e) {
-        Toast.clear();
-      }
+     
+    },
+    //返回
+    back(){
+
+    },
+    //提前告知征信结果
+    showResult(){
+
     },
     //提交百融征信查询
     async triggerQuery() {
@@ -587,11 +570,11 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        // const isRequire = this.documentType[documentType] != '0202'
+        const isRequire = !this.whiteList.includes(documentType)
         const imgdata = {
           declare: declare, //图片描述
           isRequire: isRequire, //*是否必须
-          deletable: true, //是否可以操作-上传和删除
+          deletable: isRequire, //是否可以操作-上传和删除
           documentType: documentType,
           customerNum: this.dataList.perInfo.customerNum,
           customerId: this.dataList.perInfo.id,
@@ -599,9 +582,23 @@ export default {
           fileList: []
         };
         if (obj.creditObjectType == "borrower") {
-          this.mainImg.push(imgdata);
+          if(this.whiteList.includes(documentType)){
+            this.mainCreditImg.push(imgdata);
+          }else{
+            this.mainImg.push(imgdata);
+          }
+        } else {
+          if(this.whiteList.includes(documentType)){
+             obj.creditList.push(imgdata);
+          }else{
+             obj.dataList.push(imgdata);
+          }
         }
-        obj.dataList.push(imgdata);
+        // if(bigData.creditObjectType == 'borrower'){
+        //   this.mainCreditImg.push(imgdata);
+        // } else {
+        //   bigData.creditList.push(imgdata);
+        // }
         const { data } = await getDocumentByType(params);
         data.forEach(item => {
           item.declare = declare;
@@ -617,7 +614,7 @@ export default {
     confirmTime(value) {
       this.showTimePicker = false;
       if (this.peopleTime == "borrower") {
-        this.form.time = format(value, "yyyy-MM-dd hh:mm");
+        this.form.investigateDate = format(value, "yyyy-MM-dd hh:mm");
       } else {
       }
     }
@@ -634,7 +631,11 @@ export default {
     this.dataList.surDtlList.forEach(e => {
       const arr = this.obj[e.creditObjectType];
       arr.forEach(i => {
-        this.getDocumentByType(i, e);
+        this.getDocumentByType(i, e);//相关文档
+      });
+      const arr2 = this.bigData[e.creditObjectType];
+      arr2.forEach(i => {
+        this.getDocumentByType(i, e);//征信报告
       });
     });
   }

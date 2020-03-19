@@ -19,6 +19,27 @@
         :creditTypeList="creditTypeList"
       ></basicInfo>
     </template>
+    <template v-else-if="active === 1">
+      <creditQueryInfo
+        v-if="TYPE === 'bairong'"
+        @lookDocs="lookDocs"
+        title="大数据征信查询信息"
+        :credit100Result="dataList.credit100Result"
+        :dataList="dataList.surDtlList"
+        type="bigDataResult"
+      ></creditQueryInfo>
+      <basicInfo
+        :dataList="dataList"
+        :edit="edit"
+        :form="form"
+        :perInfoList="perInfoList"
+        :buttonId="buttonId"
+        :hiddenHandle="true"
+        :type="TYPE"
+        :creditTypeList="creditTypeList"
+        v-else
+      ></basicInfo>
+    </template>
     <template v-else-if="active === 2">
       <approvalRecord :requestParams="recordParams"></approvalRecord>
     </template>
@@ -113,11 +134,11 @@ export default {
         investigateBankName: "",
         isInternetCredit: "",
         surDtlList: [],
-        creditSearchType:'',
-        creditSearchTypeDesc:''
+        creditSearchType: "",
+        creditSearchTypeDesc: ""
       },
-      creditSearchTypeDesc:'',
-      creditSearchType:'',
+      creditSearchTypeDesc: "",
+      creditSearchType: "",
       loading: false,
       edit: false,
       form: {},
@@ -128,7 +149,7 @@ export default {
       },
       buttonId: "",
       TYPE: "rengong", //征信查询方式
-      creditTypeList:[],//征信查询数组
+      creditTypeList: [] //征信查询数组
     };
   },
   computed: {
@@ -140,14 +161,14 @@ export default {
   methods: {
     async loadData() {
       this.loading = true;
-      let data,res;
+      let data, res;
       let datalist = {
         buttonId: 2,
         lpCertificateNum: this.params.info.certificateNum
       };
-      if(this.TYPE == 'bairong'){
-        res = await creditQueryOf100(datalist)
-      }else{
+      if (this.TYPE == "bairong") {
+        res = await creditQueryOf100(datalist);
+      } else {
         res = await getCreditDetail(datalist);
       }
       data = res.data;
@@ -157,10 +178,10 @@ export default {
         e.dataList = [];
         if (e.creditObjectType === "borrower") {
           this.form = e;
-          console.log(format(new Date(),'yyyy-MM-dd hh:mm'))
-          this.form.time = format(new Date(),'yyyy-MM-dd hh:mm');
+          this.form.investigateDate = format(new Date(), "yyyy-MM-dd hh:mm");
         } else {
-          e.time = format(new Date(),'yyyy-MM-dd hh:mm');
+          e.investigateDate = format(new Date(), "yyyy-MM-dd hh:mm");
+          e.creditList = [];
           this.perInfoList.push(e);
         }
       });
@@ -215,14 +236,14 @@ export default {
         canDel: true,
         isSearchCredit: beanData.isSearchCredit
       };
-    },
+    }
   },
   mounted() {
     this.params = {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
-    console.log(this.params.info)
+    console.log(this.params.info);
     this.edit = false;
     this.loadData();
   }

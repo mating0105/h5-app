@@ -509,6 +509,7 @@ export default {
         overlay:true
       });
       this.dataList.creditType = this.buttonId;
+      this.dataList.remarks = this.remarks;
       const { data } = await saveCreditInfo(this.dataList);
       removeValue("credit");
       try {
@@ -517,7 +518,8 @@ export default {
           businessType: "07",
           commentsDesc: "同意",
           conclusionCode: "01",
-          processDefineKey: "WF_CU_CREDIT_001"
+          processDefineKey: "WF_CU_CREDIT_001",
+          remarks:this.remarks
         };
         const subData = await createTask(params);
         this.taskData = subData.data;
