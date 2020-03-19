@@ -1,210 +1,163 @@
-<!--
- * @Description: 银行征信查询
- * @Author: mating
- * @Date: 2020-03-12
- -->
 <template>
   <div :loading="loading">
-    <NewCard label="银行征信查询信息（E分期）" :showSign="showSign" :showTime="showTime" :sign='sign' :signColor='signColor'>
-      <div class="loadText">
-        <div>E分期征信结果查询中，请耐心等待</div>
-        <van-icon @click.stop='clickrefreshIcon' name="replay" size="1.8rem" color='#000'/>
-      </div>
-      <!-- <div class="loadText">
-        <div>退后原因：xxxx(以E分期接口返回为准)</div>
-      </div> -->
-      <div>
-        <div class="subtitle">主借人信息</div>
-        <van-cell title="客户姓名:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
-        <van-field name="bankCardNum" :disabled="!edit" label="银行卡号：" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required v-model="form.bankCardNum" @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum" :right-icon="!edit ? '' : 'scan'" @click-right-icon="IdcardLoading('bankCodeOCR')"
-        />
-        <van-cell title="征信查询方式:" required :border="false" :value="form.telephone" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
-        <van-cell label-class="labelClass" :label="errorMsg.carNature" title="意向车辆性质：" :border="false" required
-        >
-            <radio v-model="form.carNature" @change="changeNature">
-            <radio-item
-                :label="item.value"
-                v-for="(item,index) in isQueryList"
-                :key="index"
-            >{{item.label}}</radio-item>
-            </radio>
-        </van-cell>
-        <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向车辆价格：" placeholder="请输入"
-        >
-            <div slot="button">元</div>
-        </van-field>
-        <van-cell title="身份证签发机关:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="身份证有效期:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="身份证住址:" required :border="false" :value="form.telephone" />
-        <!-- 征信授权电子签 -->
-        <van-cell title="征信授权电子签" required :border="false" :value="form.telephone" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
-        <!-- 相关文档--图片 -->
-        <van-cell title="相关文档" required 
-            :border="false" 
-            :value="form.telephone"
-            :right-icon="!edit ? '' : 'scan'"
-            >
-            <imageList slot="label" :dataList="imageListData"></imageList>
-        </van-cell>
-      </div>
-      <div>
-        <div class="subtitle">配偶信息</div>
-        <van-field name="bankCardNum" :disabled="!edit" label="姓名" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required v-model="form.bankCardNum" @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum"/>
-        <van-field name="cpCertificateNum" label="证件号码:" :disabled="!edit" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable
-            :border="false"
-            required
-            v-model="form.cpCertificateNum"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.cpCertificateNum" />
-        <van-field 
-            label="手机号码:" 
-            required 
-            :border="false" 
-            :value="form.telephone" 
-            name="telephone"
-            :disabled="!edit"
-            :placeholder="!edit?'':'请输入'"
-            label-width="110"
-            input-align="right"
-            clearable
-            v-model="form.telephone"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.telephone"/>
-        <van-field
-            name="bankCardNum"
-            :disabled="!edit"
-            label="银行卡号："
-            :placeholder="!edit?'':'请输入'"
-            label-width="110"
-            input-align="right"
-            clearable
-            :border="false"
-            required
-            v-model="form.bankCardNum"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.bankCardNum"
-            :right-icon="!edit ? '' : 'scan'"
-            @click-right-icon="IdcardLoading('bankCodeOCR')"
-        />
-        <van-cell 
-            title="征信对象关系:" 
-            required 
-            :border="false" 
-            :value="form.telephone"
-            :right-icon="!edit ? '' : 'scan'"
-            is-link='edit'
-            @click="showPickerFn"/>
-        <van-cell
-            label-class="labelClass"
-            :label="errorMsg.carNature"
-            title="是否查询征信："
-            :border="false"
-            required
-        >
-            <radio v-model="form.carNature" @change="changeNature">
-            <radio-item
-                :label="item.label"
-                v-for="(item,index) in isQueryList"
-                :key="index"
-            >{{item.label}}</radio-item>
-            </radio>
-        </van-cell>
-        <van-cell title="身份证签发机关:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="身份证有效期:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="身份证住址:" required :border="false" :value="form.telephone" />
-        <!-- 征信授权电子签 -->
-        <van-cell 
-            title="征信授权电子签" 
-            required 
-            :border="false" 
-            :value="form.telephone"
-            :right-icon="!edit ? '' : 'scan'"
-            is-link='edit'
-            @click="showPickerFn"/>
-        <!-- 相关文档 -->
-        <van-cell title="相关文档" required 
-            :border="false" 
-            :value="form.telephone"
-            :right-icon="!edit ? '' : 'scan'"
-            >
-            <imageList slot="label" :dataList="imageListData"></imageList>
-        </van-cell>
-        
-      </div>
-      <div>
-        <div class="subtitle">担保人信息</div>
-        <van-swipe-cell :disabled="!edit" v-for="(item, index) in dataList.carInfos" :key="index">
-            <van-cell title="姓名:" required :border="false" :value="item.creditPersonName" />
-            <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
-            <van-cell title="电话号码:" required :border="false" :value="item.telephone" />
-            <van-cell title="银行卡号:" :border="false" :value="item.bankCardNum" />
-            <van-cell
-                title="征信对象类型:"
-                required
-                :value="returnText(item.creditObjectType, 'credit_object_type')"
-            />
-            <div slot="right" style="height: 100%">
-                <van-button
-                type="warning"
-                style="height:100%;border-radius: 0;"
-                @click="editPer(item, index)"
-                >修改</van-button>
-                <van-button
-                type="danger"
-                style="height:100%;border-radius: 0;"
-                @click="removePer(index, item)"
-                >删除</van-button>
+    <Card>
+      <template v-slot:header>客户信息</template>
+      <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName" />
+      <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
+      <van-cell title="电话号码:" required :border="false" :value="form.telephone" />
+      <van-cell title="征信对象类型:" required :border="false" value="借款人" />
+      <van-cell
+        title="银行："
+        label-class="labelClass"
+        :label="errorMsg.investigateBankName"
+        :disabled="!edit"
+        :border="false"
+        required
+        :is-link="edit"
+        :value="dataList.investigateBankName"
+        @click="showPickerFn"
+      />
+      <van-field
+        name="bankCardNum"
+        :disabled="!edit"
+        label="银行卡号："
+        :placeholder="!edit?'':'请输入'"
+        label-width="110"
+        input-align="right"
+        clearable
+        :border="false"
+        required
+        v-model="form.bankCardNum"
+        @blur.prevent="ruleMessge"
+        :error-message="errorMsg.bankCardNum"
+        :right-icon="!edit ? '' : 'scan'"
+        @click-right-icon="IdcardLoading('bankCodeOCR')"
+      />
+      <van-field
+        class="label_plus"
+        name="intentionPrice"
+        @blur.prevent="ruleMessge"
+        :error-message="errorMsg.intentionPrice"
+        :disabled="!edit"
+        :border="false"
+        v-model="dataList.intentionPrice"
+        type="tel"
+        required
+        clearable
+        @blur="checkPrice"
+        input-align="right"
+        label="意向贷款金额："
+        placeholder="请输入"
+      >
+        <div slot="button">元</div>
+      </van-field>
+      <van-field
+        v-model="dataList.remarks"
+        :border="false"
+        :disabled="!edit"
+        type="textarea"
+        placeholder="输入说明"
+        rows="1"
+        :autosize="autosize"
+        class="zh-textarea"
+      />
+    </Card>
+
+    <!-- <Card style="margin-top: 1rem;">
+            <template v-slot:header>
+                {{dataList.carInfos.length === 0 ? '新增': ''}}车辆信息
+                <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0 && edit">
+                    <van-icon name="add-o"/>
+                </div>
+            </template>
+            <div>
+                <van-swipe-cell :disabled="!edit" v-for="(item, index) in dataList.carInfos" :key="index">
+                    <van-cell title="车辆类别:" :border="false"
+                              :value="nameToString(returnText(item.carType, 'car_type'), returnText(item.carType2, 'car_type2'))"/>
+                    <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
+                    <van-cell title="车辆规格:" :border="false" :value="returnText(item.carSpecifications, 'vehicle_specifications')"/>
+                    <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
+                    <van-cell title="车辆品牌型号:" :border="false" :value="nameToString(item.brndNm, item.carSeries, item.carModel)"/>
+                    <van-cell v-if="item.carNature === 'old_car'" title="车架号:" :border="false" :value="item.chassisNumber"/>
+                    <van-cell title="销售价:" v-if="item.carNature === 'new_car'" :border="false" :value="item.salePriceDto">
+                        <div slot="right-icon" class="xh-cell-right">元</div>
+                    </van-cell>
+                    <template v-else-if="item.carNature === 'old_car'">
+                        <van-cell title="车牌所在地:" :border="false" :value="item.carLicenseLocation"/>
+                        <van-cell title="首次上牌日:" :border="false" :value="item.plateDate"/>
+                        <van-cell title="行驶里程:" :border="false" :value="item.roadHaul">
+                            <div slot="right-icon" class="xh-cell-right">公里</div>
+                        </van-cell>
+                        <van-cell title="发动机号:" :border="false" :value="item.engineNum"/>
+                    </template>
+                    <van-cell title="备注:" :value="item.remark"/>
+                    <div slot="right" style="height: 100%">
+                        <van-button
+                                type="warning"
+                                style="height:100%;border-radius: 0;"
+                                @click="editCar(item, index)"
+                        >修改
+                        </van-button>
+                        <van-button
+                                type="danger"
+                                style="height:100%;border-radius: 0;"
+                                @click="removeCar(index)"
+                        >删除
+                        </van-button>
+                    </div>
+                </van-swipe-cell>
             </div>
+    </Card>-->
+
+    <Card style="margin-top: 1rem;" v-if="perInfoList.length > 0 || edit">
+      <template v-slot:header>
+          {{perInfoList.length > 0 || edit ? '新增' : ''}}查询人
+        <div class="card-icon" @click="addPer" v-if="edit">
+          <van-icon name="add-o" />
+        </div>
+      </template>
+      <div>
+        <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
+          <van-cell title="客户名称:" required :border="false" :value="item.creditPersonName" />
+          <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
+          <van-cell title="电话号码:" required :border="false" :value="item.telephone" />
+          <van-cell title="银行卡号:" :border="false" :value="item.bankCardNum" />
+          <van-cell
+            title="征信对象类型:"
+            required
+            :value="returnText(item.creditObjectType, 'credit_object_type')"
+          />
+          <div slot="right" style="height: 100%">
+            <van-button
+              type="warning"
+              style="height:100%;border-radius: 0;"
+              @click="editPer(item, index)"
+            >修改</van-button>
+            <van-button
+              type="danger"
+              style="height:100%;border-radius: 0;"
+              @click="removePer(index, item)"
+            >删除</van-button>
+          </div>
         </van-swipe-cell>
       </div>
-      <div class="subtitle" style="display:flex;align-items:center;">
-        <div>{{perInfoList.length > 0 || edit ? '新增' : ''}}查询人</div>
-        <van-icon style="margin-left:1rem;" name="add-o" size="1.8rem" @click="addPer" v-if="edit" color="#000"/>
-      </div>
-      <!-- 备注说明 -->
-      <div>
-        <div class="subtitle">备注说明</div>
-        <van-field
-            v-model="dataList.remarks"
-            :border="false"
-            :disabled="!edit"
-            type="textarea"
-            placeholder="请输入"
-            rows="1"
-            :autosize="autosize"
-            class="zh-textarea"
-        />
-      </div>
-      <!-- 提交征信查询  置灰-->
-        <!-- 推送至E分期 -->
-        <!-- 终止查询 -->
-        <!-- 推送至E分期  + 终止查询 -->
-        <div style="margin-top:45px;" name='footer'>
-            <div style="font-size:10px;text-align:center;padding:0 1.2rem;letter-spacing: 1.2px;">
-                <span>若以上信息有误,</span>
-                <van-button type="text" size="mini" class="modifyText" @click="modifyInfo">点击进行修改</van-button>
-                <span>,修改后须重新推送至E分期</span>
-            </div>
-            <div class="xh-submit-box" v-if="edit && !hiddenHandle" style="margin-top:15px;">
-                <van-button
-                    v-show="canTermin"
-                    size="large"
-                    style="width: 25%; flex: none"
-                    class="xh-btn xh-primary"
-                    @click="stopTask"
-                >终止</van-button>
-                <van-button
-                    size="large"
-                    @click="nextStepFn"
-                    :disabled="Boolean(errorMsg.intentionPrice)"
-                    class="xh-btn"
-                >推送至E分期</van-button>
-            </div>
-        </div>
-    </NewCard>
-    
+    </Card>
+    <!-- 提交按钮 -->
+    <div class="xh-submit-box" v-if="edit && !hiddenHandle">
+      <van-button
+        v-show="canTermin"
+        size="large"
+        style="width: 25%; flex: none"
+        class="xh-btn xh-primary"
+        @click="stopTask"
+      >终止</van-button>
+      <van-button
+        size="large"
+        @click="nextStepFn"
+        :disabled="Boolean(errorMsg.intentionPrice)"
+        class="xh-btn"
+      >下一步</van-button>
+    </div>
 
     <van-popup v-model="showPicker" position="bottom" get-container="#app">
       <van-picker
@@ -223,10 +176,7 @@
 
 <script>
 import ViewPage from "@/layout/components/ViewPage";
-import NewCard from "@/components/card/newCard";
-import radio from "@/components/radio";
-import radioItem from "@/components/radio/radioItem";
-import imageList from "@/components/imageList";
+import Card from "@/components/card";
 import Vue from "vue";
 import {
   getBank,
@@ -277,10 +227,7 @@ export default {
   mixins: [formValidator],
   components: {
     ViewPage,
-    NewCard,
-    radio,
-    radioItem,
-    imageList,
+    Card
   },
   props: {
     dataList: Object,
@@ -295,18 +242,6 @@ export default {
   },
   data() {
     return {
-        showTime:true,//卡片（显示时间）
-        showSign:true,//卡片（显示标签）
-        sign:'查询中',//标签标记内容  （查询中、被退回）
-        signColor:'red',//标签标记颜色
-        isQueryList:[{
-            value:'01',
-            label:'是'
-        },{
-            value:'02',
-            label:'否'
-        }],
-        imageListData:[],//相关文档
       vehicleForm: {
         type: "测试数据"
       },
@@ -314,7 +249,7 @@ export default {
       loading: false,
       autosize: {
         maxHeight: 100,
-        minHeight: 20
+        minHeight: 80
       },
       canTermin: false,
       showPicker: false,
@@ -346,36 +281,6 @@ export default {
     }
   },
   methods: {
-    /*----------第三步------------------- */
-    //点击刷新按钮
-    clickrefreshIcon(){
-        console.log(1111)
-
-    },
-    changeNature(val) {
-      console.log(val);
-      if (val === "new_car") {
-        this.rulesForm("order-credit-car-xh");
-        delete this.errorMsg.chassisNumber;
-      } else {
-        this.$router.push({
-          path: "/priceEvaluationChoose",
-          query: {
-            type:2,
-            projectId:this.params.projectId
-          }
-        });
-      }
-    },
-    /*----------第二步------------------- */
-    //修改信息
-    modifyInfo(){
-        console.log('点击修改信息')
-
-    },
-    getTypeList(key) {
-      return this.$store.state.user.wordbook[key] || [];
-    },
     selectList() {},
     // 字典转换
     returnText(val, key) {
@@ -819,34 +724,6 @@ export default {
 </script>
 
 <style lang="scss">
-.loadText{
-    padding: 1rem 1rem;
-    margin:1rem 1rem 0 1rem;
-    display:flex;
-    justify-content: space-between;
-    font-size:1.4rem;
-    align-items: center;
-    color:red;
-    border-radius: 6px;
-    background-color: rgba(236,25,31,0.05);
-    // border:1px solid red;
-}
-.subtitle{
-    padding: 1rem;
-    font-size: 1.4rem;
-    color:red;
-    font-weight: Bold;
-    margin-top: 0.8rem;
-}
-
-.modifyText{
-    padding:0;
-    margin:0;
-    border:0;
-    color:#07c160;
-    background-color: transparent;
-}
-
 .labelClass {
   left: 1.33333rem;
 }

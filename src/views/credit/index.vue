@@ -289,6 +289,7 @@ export default {
           query: {
             lpCertificateNum: item.lpCertificateNum,
             id: item.id,
+            buttonId:item.banCredit.buttonId,
             edit: true,
             ...query
           }
@@ -302,7 +303,7 @@ export default {
           this.startFormFn(item, { edit: true, bigData: true },"/bigDataCredit",item.bigDataCredit.buttonId);
           break;
         case "personal":
-          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbCredit",item.banCredit.buttonId);
+          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbCredit",item.personalGua.buttonId);
           break;
       }
     },

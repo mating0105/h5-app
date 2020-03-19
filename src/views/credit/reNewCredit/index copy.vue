@@ -1,23 +1,6 @@
-<!--
- * @Description: 银行征信查询
- * @Author: mating
- * @Date: 2020-03-12
- -->
 <template>
     <ViewPage :loading="loading">
-        <template v-slot:head>
-            <van-tabs v-model="active">
-                <van-tab title="基本信息"></van-tab>
-                <van-tab title="操作记录"></van-tab>
-            </van-tabs>
-        </template>
-        <template v-if="active === 0">
-            <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query"></basicInfo>
-        </template>
-        <template v-else-if="active === 1">
-        <approvalRecord :requestParams="recordParams"></approvalRecord>
-        </template>
-        
+        <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query"></basicInfo>
     </ViewPage>
 </template>
 
@@ -25,15 +8,13 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask,getButtonOfBankCredit } from '@/api/credit'
-  import { getDic } from "@/api/createCustomer";
+  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask } from '@/api/credit'
   import { getValue, setValue, removeValue } from '@/utils/session'
-  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs} from 'vant';
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog } from 'vant';
   import formValidator from '@/mixins/formValidator'
   import basicInfo from './basicInfo'
-  import approvalRecord from "@/views/basicInfo/approvalRecord";
 
-  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs]
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog]
   Components.forEach(item => {
     Vue.use(item)
   })
@@ -44,12 +25,10 @@
     components: {
       ViewPage,
       Card,
-      basicInfo,
-      approvalRecord
+      basicInfo
     },
     data () {
       return {
-        active:0,
         dataList: {
           investigateBank: '',
           investigateBankName: '',
@@ -77,21 +56,6 @@
       selectList () {
 
       },
-      //---------获取字典数据------------------
-      async getDictionaryData () {
-        try {
-          let arr = [
-            "CREDIT_OBJECT_RELATION",//征信类型
-
-          ];
-          const data = await getDic(arr);
-          if (data.code == 200) {
-            console.log(data.data)
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      },
       // 字典转换
       returnText (val, key) {
         let name = '';
@@ -107,7 +71,6 @@
       async getCreditInfo () {
         try {
           this.loading = true
-          console.log(getValue("credit"))
           if (getValue("credit")) {
             this.dataList = JSON.parse(getValue("credit"))
           } else {
@@ -118,9 +81,7 @@
             if (this.query.again) {
               params.reRegister = 1
             }
-            console.log(params,'params')
             const res = await getCreditInfo(params)
-            console.log(res,'res')
             this.dataList = res.data.cuCreditRegister;
           }
           this.loading = false
@@ -232,41 +193,29 @@
             this.errorMsg.intentionPrice = '贷款金额不能超过销售价的8.8成'
           }
         }
-      },
-      //获取征信按钮-电子签
-      async getButtonOfBankCredit(){
-          try{
-              const data=await getButtonOfBankCredit();
-              console.log(data,'data')
-
-          }catch(err){
-              console.log(err)
-          }
       }
     },
     mounted () {
-    //   if (this.$route.query.info && this.$route.query.dealState) {
-    //     const info = this.getStringToObj(this.$route.query.info)
-    //     const query = this.$route.query
-    //     this.query = {
-    //       lpCertificateNum: info.certificateNum,
-    //       id: info.businesskey
-    //     }
-    //     this.recordParams.businessKey = info.businesskey
-    //     if (query.dealState == 3) {
-    //       this.edit = false
-    //     }
-    //     if (query.dealState == 1) {
-    //       this.edit = true
-    //       this.canTermin = true
-    //     }
-    //     removeValue("credit");
-    //   } else {
+      if (this.$route.query.info && this.$route.query.dealState) {
+        const info = this.getStringToObj(this.$route.query.info)
+        const query = this.$route.query
+        this.query = {
+          lpCertificateNum: info.certificateNum,
+          id: info.businesskey
+        }
+        this.recordParams.businessKey = info.businesskey
+        if (query.dealState == 3) {
+          this.edit = false
+        }
+        if (query.dealState == 1) {
+          this.edit = true
+          this.canTermin = true
+        }
+        removeValue("credit");
+      } else {
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
-    //   }
-      this.getDictionaryData();
-      this.getButtonOfBankCredit();
+      }
       this.getCreditInfo()
     }
   }
