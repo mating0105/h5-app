@@ -155,3 +155,16 @@ export function getButtonOfCredit(params) {
     params
   })
 }
+
+/**
+ * 征信按钮-电子签
+ * @param params
+ */
+export function getButtonOfBankCredit(params) {
+    return serviceOther({
+      url: '/manage/buttonConfig/getButtonByServer/v2?serverName=credit-search-type',
+      method: 'get',
+      params
+    })
+  }
+  

@@ -9,9 +9,9 @@
                 {{time}}
             </div>
         </div>
-        <div class="card__sub__title" v-if="$slots.subTitle">
+        <!-- <div class="card__sub__title" v-if="$slots.subTitle">
             <slot name="subTitle"></slot>
-        </div>
+        </div> -->
         <div :class="{card__body: bodyPadding}" v-if="$slots.default">
             <slot></slot>
         </div>
@@ -89,13 +89,13 @@ Vue.use(Tag);
                 margin-top:0.8rem;
             }
         }
-        .card__sub__title{
-            padding: 1rem;
-            font-size: 1.4rem;
-            margin-top:0.8rem;
-            color:red;
-            font-weight: Bold;
-        }
+        // .card__sub__title{
+        //     padding: 1rem;
+        //     font-size: 1.4rem;
+        //     // margin-top:0.8rem;
+        //     color:red;
+        //     font-weight: Bold;
+        // }
 
         .card__footer {
             padding: 1rem;

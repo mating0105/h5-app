@@ -33,7 +33,13 @@ export const constantRoutes = [
     path: '/reNewCredit',
     name: 'ReNewCredit',
     component: () => import('@/views/credit/reNewCredit'),
-    meta: {title: '征信申请'}
+    meta: {title: '银行征信查询'}
+  },
+  {
+    path: '/bankCreditReply',
+    name: 'bankCreditReply',
+    component: () => import('@/views/credit/reNewCredit/bankCreditReply.vue'),
+    meta: {title: '银行征信回复'}
   },
 
   {

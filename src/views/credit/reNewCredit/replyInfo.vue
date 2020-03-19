@@ -1,29 +1,28 @@
 <!--
- * @Description: 银行征信查询
+ * @Description: 银行征信回复
  * @Author: mating
- * @Date: 2020-03-12
+ * @Date: 2020-03-17
  -->
 <template>
   <div :loading="loading">
-    <NewCard label="银行征信查询信息（E分期）" :showSign="showSign" :showTime="showTime" :sign='sign' :signColor='signColor'>
+    <NewCard label="银行征信查询信息" :showSign="showSign" :showTime="showTime" :sign='sign' :signColor='signColor'>
       <div class="loadText">
-        <div>E分期征信结果查询中，请耐心等待</div>
-        <van-icon @click.stop='clickrefreshIcon' name="replay" size="1.8rem" color='#000'/>
+        <div>请及时回复征信结果，上传征信报告</div>
       </div>
       <!-- <div class="loadText">
-        <div>退后原因：xxxx(以E分期接口返回为准)</div>
+        <div>E分期综合征信结果为通过，暂无法获知单人征信结果</div>
       </div> -->
       <div>
         <div class="subtitle">主借人信息</div>
-        <van-cell title="客户姓名:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
-        <van-field name="bankCardNum" :disabled="!edit" label="银行卡号：" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required v-model="form.bankCardNum" @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum" :right-icon="!edit ? '' : 'scan'" @click-right-icon="IdcardLoading('bankCodeOCR')"
+        <van-cell title="客户姓名:" required :border="false" />
+        <van-cell title="证件号码:" required :border="false"/>
+        <van-cell title="手机号码:" required :border="false"/>
+        <van-field name="bankCardNum" :disabled="!edit" label="银行卡号：" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum" :right-icon="!edit ? '' : 'scan'" @click-right-icon="IdcardLoading('bankCodeOCR')"
         />
-        <van-cell title="征信查询方式:" required :border="false" :value="form.telephone" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
+        <van-cell title="征信查询方式:" required :border="false" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
         <van-cell label-class="labelClass" :label="errorMsg.carNature" title="意向车辆性质：" :border="false" required
         >
-            <radio v-model="form.carNature" @change="changeNature">
+            <radio @change="changeNature">
             <radio-item
                 :label="item.value"
                 v-for="(item,index) in isQueryList"
@@ -31,45 +30,77 @@
             >{{item.label}}</radio-item>
             </radio>
         </van-cell>
-        <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向车辆价格：" placeholder="请输入"
+        <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向车辆价格：" placeholder="请输入"
         >
             <div slot="button">元</div>
         </van-field>
-        <van-cell title="身份证签发机关:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="身份证有效期:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="身份证住址:" required :border="false" :value="form.telephone" />
+        <!-- 人工 start-->
+        <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向贷款价格：" placeholder="请输入"
+        >
+            <div slot="button">元</div>
+        </van-field>
+        <van-cell title="银行:" required :border="false" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
+        <van-cell label-class="labelClass" :label="errorMsg.carNature" title="征信结果：" :border="false" required
+        >
+            <radio @change="changeNature">
+            <radio-item
+                :label="item.value"
+                v-for="(item,index) in isQueryList"
+                :key="index"
+            >{{item.label}}</radio-item>
+            </radio>
+        </van-cell>
+        <van-cell label-class="labelClass" :label="errorMsg.carNature" title="征信结果时间：" :border="false" required
+        >
+            <radio @change="changeNature">
+            <radio-item
+                :label="item.value"
+                v-for="(item,index) in isQueryList"
+                :key="index"
+            >{{item.label}}</radio-item>
+            </radio>
+        </van-cell>
+         <!-- 人工 end-->
+
+        <van-cell title="身份证签发机关:" required :border="false" />
+        <van-cell title="身份证有效期:" required :border="false" />
+        <van-cell title="身份证住址:" required :border="false" />
         <!-- 征信授权电子签 -->
-        <van-cell title="征信授权电子签" required :border="false" :value="form.telephone" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
+        <van-cell title="征信授权电子签" required :border="false" :right-icon="!edit ? '' : 'scan'" is-link='edit' @click="showPickerFn"/>
         <!-- 相关文档--图片 -->
-        <van-cell title="相关文档" required 
+        <van-cell title="相关文档：" required 
             :border="false" 
-            :value="form.telephone"
+            :right-icon="!edit ? '' : 'scan'"
+            >
+            <imageList slot="label" :dataList="imageListData"></imageList>
+        </van-cell>
+        <!-- 征信报告--图片 -->
+        <van-cell title="征信报告：" required 
+            :border="false" 
             :right-icon="!edit ? '' : 'scan'"
             >
             <imageList slot="label" :dataList="imageListData"></imageList>
         </van-cell>
       </div>
+      <!-- 关联人 -->
       <div>
         <div class="subtitle">配偶信息</div>
-        <van-field name="bankCardNum" :disabled="!edit" label="姓名" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required v-model="form.bankCardNum" @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum"/>
+        <van-field name="bankCardNum" :disabled="!edit" label="姓名" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum"/>
         <van-field name="cpCertificateNum" label="证件号码:" :disabled="!edit" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable
             :border="false"
             required
-            v-model="form.cpCertificateNum"
             @blur.prevent="ruleMessge"
             :error-message="errorMsg.cpCertificateNum" />
         <van-field 
             label="手机号码:" 
             required 
             :border="false" 
-            :value="form.telephone" 
             name="telephone"
             :disabled="!edit"
             :placeholder="!edit?'':'请输入'"
             label-width="110"
             input-align="right"
             clearable
-            v-model="form.telephone"
             @blur.prevent="ruleMessge"
             :error-message="errorMsg.telephone"/>
         <van-field
@@ -82,7 +113,6 @@
             clearable
             :border="false"
             required
-            v-model="form.bankCardNum"
             @blur.prevent="ruleMessge"
             :error-message="errorMsg.bankCardNum"
             :right-icon="!edit ? '' : 'scan'"
@@ -92,7 +122,6 @@
             title="征信对象关系:" 
             required 
             :border="false" 
-            :value="form.telephone"
             :right-icon="!edit ? '' : 'scan'"
             is-link='edit'
             @click="showPickerFn"/>
@@ -103,7 +132,7 @@
             :border="false"
             required
         >
-            <radio v-model="form.carNature" @change="changeNature">
+            <radio @change="changeNature">
             <radio-item
                 :label="item.label"
                 v-for="(item,index) in isQueryList"
@@ -111,63 +140,60 @@
             >{{item.label}}</radio-item>
             </radio>
         </van-cell>
-        <van-cell title="身份证签发机关:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="身份证有效期:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="身份证住址:" required :border="false" :value="form.telephone" />
+        <!-- 人工 start -->
+        <van-cell label-class="labelClass" :label="errorMsg.carNature" title="征信结果：" :border="false" required
+        >
+            <radio @change="changeNature">
+            <radio-item
+                :label="item.value"
+                v-for="(item,index) in isQueryList"
+                :key="index"
+            >{{item.label}}</radio-item>
+            </radio>
+        </van-cell>
+        <van-cell label-class="labelClass" :label="errorMsg.carNature" title="征信结果时间：" :border="false" required
+        >
+            <radio @change="changeNature">
+            <radio-item
+                :label="item.value"
+                v-for="(item,index) in isQueryList"
+                :key="index"
+            >{{item.label}}</radio-item>
+            </radio>
+        </van-cell>
+        <!-- 人工 end -->
+
+        <van-cell title="身份证签发机关:" required :border="false" />
+        <van-cell title="身份证有效期:" required :border="false" />
+        <van-cell title="身份证住址:" required :border="false" />
         <!-- 征信授权电子签 -->
         <van-cell 
             title="征信授权电子签" 
             required 
             :border="false" 
-            :value="form.telephone"
             :right-icon="!edit ? '' : 'scan'"
             is-link='edit'
             @click="showPickerFn"/>
         <!-- 相关文档 -->
-        <van-cell title="相关文档" required 
+        <van-cell title="相关文档：" required 
             :border="false" 
-            :value="form.telephone"
+            :right-icon="!edit ? '' : 'scan'"
+            >
+            <imageList slot="label" :dataList="imageListData"></imageList>
+        </van-cell>
+        <!-- 征信报告 -->
+        <van-cell title="征信报告：" required 
+            :border="false" 
             :right-icon="!edit ? '' : 'scan'"
             >
             <imageList slot="label" :dataList="imageListData"></imageList>
         </van-cell>
         
       </div>
-      <div>
-        <div class="subtitle">担保人信息</div>
-        <van-swipe-cell :disabled="!edit" v-for="(item, index) in dataList.carInfos" :key="index">
-            <van-cell title="姓名:" required :border="false" :value="item.creditPersonName" />
-            <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
-            <van-cell title="电话号码:" required :border="false" :value="item.telephone" />
-            <van-cell title="银行卡号:" :border="false" :value="item.bankCardNum" />
-            <van-cell
-                title="征信对象类型:"
-                required
-                :value="returnText(item.creditObjectType, 'credit_object_type')"
-            />
-            <div slot="right" style="height: 100%">
-                <van-button
-                type="warning"
-                style="height:100%;border-radius: 0;"
-                @click="editPer(item, index)"
-                >修改</van-button>
-                <van-button
-                type="danger"
-                style="height:100%;border-radius: 0;"
-                @click="removePer(index, item)"
-                >删除</van-button>
-            </div>
-        </van-swipe-cell>
-      </div>
-      <div class="subtitle" style="display:flex;align-items:center;">
-        <div>{{perInfoList.length > 0 || edit ? '新增' : ''}}查询人</div>
-        <van-icon style="margin-left:1rem;" name="add-o" size="1.8rem" @click="addPer" v-if="edit" color="#000"/>
-      </div>
       <!-- 备注说明 -->
       <div>
         <div class="subtitle">备注说明</div>
         <van-field
-            v-model="dataList.remarks"
             :border="false"
             :disabled="!edit"
             type="textarea"
@@ -177,34 +203,31 @@
             class="zh-textarea"
         />
       </div>
-      <!-- 提交征信查询  置灰-->
-        <!-- 推送至E分期 -->
-        <!-- 终止查询 -->
-        <!-- 推送至E分期  + 终止查询 -->
         <div style="margin-top:45px;" name='footer'>
-            <div style="font-size:10px;text-align:center;padding:0 1.2rem;letter-spacing: 1.2px;">
-                <span>若以上信息有误,</span>
-                <van-button type="text" size="mini" class="modifyText" @click="modifyInfo">点击进行修改</van-button>
-                <span>,修改后须重新推送至E分期</span>
-            </div>
-            <div class="xh-submit-box" v-if="edit && !hiddenHandle" style="margin-top:15px;">
+            <!--  v-if="edit && !hiddenHandle"  -->
+            <div class="xh-submit-box" style="margin-top:15px;">
                 <van-button
-                    v-show="canTermin"
                     size="large"
-                    style="width: 25%; flex: none"
+                    style="width: 16%; flex: none"
                     class="xh-btn xh-primary"
-                    @click="stopTask"
-                >终止</van-button>
+                    @click="nextStepFn"
+                >退回</van-button>
+                <van-button
+                    size="large"
+                    style="width: 40%; flex: none"
+                    class="xh-btn"
+                    @click="nextStepFn"
+                >提前告知征信结果</van-button>
                 <van-button
                     size="large"
                     @click="nextStepFn"
                     :disabled="Boolean(errorMsg.intentionPrice)"
                     class="xh-btn"
-                >推送至E分期</van-button>
+                >提交</van-button>
             </div>
         </div>
     </NewCard>
-    
+
 
     <van-popup v-model="showPicker" position="bottom" get-container="#app">
       <van-picker
@@ -216,8 +239,18 @@
         @change="onChange"
       />
     </van-popup>
-      <!-- 身份证识别/银行卡识别 -->
-      <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern"/>
+    <!-- 身份证识别/银行卡识别 -->
+    <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern"/>
+    
+    <!-- 弹框 -->
+    <dialogBox class="dialogBox" :title="'确认终止本次查询吗？'" :showDialog='showDialog' :onConfirm='confirmFn' :onCancel='cancelFn'>
+        <template>
+            <van-cell title="原因：" title-style='color:red;'>
+                <van-field slot="label" v-model="cause" placeholder="请输入" type="textarea" :autosize="autosize" maxlength="100" show-word-limit />
+            </van-cell>
+        </template>
+    </dialogBox>
+
   </div>
 </template>
 
@@ -226,6 +259,7 @@ import ViewPage from "@/layout/components/ViewPage";
 import NewCard from "@/components/card/newCard";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
+import dialogBox from '@/components/dialogBox/index'
 import imageList from "@/components/imageList";
 import Vue from "vue";
 import {
@@ -281,6 +315,7 @@ export default {
     radio,
     radioItem,
     imageList,
+    dialogBox
   },
   props: {
     dataList: Object,
@@ -297,8 +332,8 @@ export default {
     return {
         showTime:true,//卡片（显示时间）
         showSign:true,//卡片（显示标签）
-        sign:'查询中',//标签标记内容  （查询中、被退回）
-        signColor:'red',//标签标记颜色
+        sign:'通过',//标签标记内容  （查询中、被退回）
+        signColor:'green',//标签标记颜色
         isQueryList:[{
             value:'01',
             label:'是'
@@ -307,6 +342,8 @@ export default {
             label:'否'
         }],
         imageListData:[],//相关文档
+        showDialog:false,
+        cause:'',//原因
       vehicleForm: {
         type: "测试数据"
       },
@@ -346,6 +383,15 @@ export default {
     }
   },
   methods: {
+      confirmFn(){
+          this.showDialog=false;
+          console.log(11111)
+
+      },
+      cancelFn(){
+          this.showDialog=false;
+          console.log(2222)
+      },
     /*----------第三步------------------- */
     //点击刷新按钮
     clickrefreshIcon(){
@@ -570,14 +616,16 @@ export default {
       }
     },
     nextStepFn() {
-      this.nextStep().then(query => {
-        this.$nextTick(() => {
-          this.$router.push({
-            path: "/creditNextStep",
-            query
-          });
-        });
-      });
+        this.showDialog=true;
+
+    //   this.nextStep().then(query => {
+    //     this.$nextTick(() => {
+    //       this.$router.push({
+    //         path: "/creditNextStep",
+    //         query
+    //       });
+    //     });
+    //   });
     },
     /**
      *  删除车
@@ -829,7 +877,6 @@ export default {
     color:red;
     border-radius: 6px;
     background-color: rgba(236,25,31,0.05);
-    // border:1px solid red;
 }
 .subtitle{
     padding: 1rem;
@@ -847,6 +894,10 @@ export default {
     background-color: transparent;
 }
 
+.xh-submit-box>button{
+    margin:0 0.2rem;
+}
+
 .labelClass {
   left: 1.33333rem;
 }
@@ -860,5 +911,18 @@ export default {
   .column2 {
     text-align: left;
   }
+}
+.dialogBox{
+    .van-cell{
+        border:1px solid;
+        border-radius: 6px;
+        .van-cell__label{
+            border:none;
+            border-top:1px solid;
+            .van-cell{
+                border:none;
+            }
+        }
+    }
 }
 </style>
