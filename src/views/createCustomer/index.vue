@@ -14,7 +14,7 @@
         <van-col :span="10" class="xh-creat-imgbox" @click="loadImg('srcBack')">
           <div v-if="!srcBack" class="create-item">
             <van-icon name="plus" style="margin-top:30px;" />
-             <p>身份证国徽面</p>
+            <p>身份证国徽面</p>
           </div>
           <div v-else>
             <img :src="srcBack" alt style="width:100%;" />
@@ -54,21 +54,22 @@
           />
         </van-cell-group>
         <van-cell-group :border="false" v-show="params.credit">
-             <van-field
-                  name="bankCardNum"
-                  label="银行卡号："
-                  placeholder="请输入"
-                  input-align="right"
-                  clearable
-                  v-model="customerData.bankCardNum"
-                  @blur.prevent="ruleMessge"
-                  :error-message="errorMsg.bankCardNum"
-                  right-icon="scan"
-                  @click-right-icon="IdcardLoading('bankCodeOCR')"/>
+          <van-field
+            name="bankCardNum"
+            label="银行卡号："
+            placeholder="请输入"
+            input-align="right"
+            clearable
+            v-model="customerData.bankCardNum"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.bankCardNum"
+            right-icon="scan"
+            @click-right-icon="IdcardLoading('bankCodeOCR')"
+          />
         </van-cell-group>
         <van-cell-group :border="false" v-show="params.credit">
           <van-cell
-          class="cell-except"
+            class="cell-except"
             title="征信对象类型"
             required
             is-link
@@ -78,6 +79,33 @@
             @blur.prevent="ruleMessge"
             :label="errorMsg.creditObjectType"
           />
+        </van-cell-group>
+        <van-cell-group :border="false" v-show="params.credit">
+          <van-cell
+            class="cell-except"
+            title="征信对象关系"
+            required
+            is-link
+            :value="returnText('CREDIT_OBJECT_RELATION',customerData.creditObjectRelation)"
+            @click="loadType('征信对象关系', 'creditObjectRelation')"
+            label-class="labelClass"
+            @blur.prevent="ruleMessge"
+            :label="errorMsg.creditObjectRelation"
+          />
+        </van-cell-group>
+        <van-cell-group :border="false" v-show="params.credit">
+          <van-cell
+            label-class="labelClass"
+            :label="errorMsg.isSearchCredit"
+            title="是否查询征信:"
+            :border="false"
+            required
+          >
+            <radio v-model="customerData.isSearchCredit">
+              <radio-item label="1">是</radio-item>
+              <radio-item label="0">否</radio-item>
+            </radio>
+          </van-cell>
         </van-cell-group>
         <van-cell-group :border="false">
           <van-cell title="性别" :value="customerData.sex == 1?'男':(customerData.sex == 2?'女':'')" />
@@ -211,8 +239,8 @@
         />
       </div>
     </van-action-sheet>
-      <!-- 身份证识别/银行卡识别 -->
-      <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern"/>
+    <!-- 身份证识别/银行卡识别 -->
+    <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern" />
   </ViewPage>
 </template>
 <script>
@@ -241,8 +269,10 @@ import { getDic, submitCreate } from "@/api/createCustomer";
 import { get } from "http";
 import { getValue } from "@/utils/session";
 import { mapState } from "vuex";
+import radio from "@/components/radio";
+import radioItem from "@/components/radio/radioItem";
 import formValidator from "@/mixins/formValidator";
-import _ from 'lodash'
+import _ from "lodash";
 const Components = [
   Button,
   Row,
@@ -264,7 +294,9 @@ export default {
   components: {
     ViewPage,
     card,
-    MapSheet
+    MapSheet,
+    radio,
+    radioItem
   },
   mixins: [formValidator],
   data() {
@@ -283,6 +315,8 @@ export default {
         endDate: "", //截止日
         contactPhone: "", //手机号码
         bankCardNum: "", //银行卡号
+        creditObjectRelation:"",//征信对象关系
+        isSearchCredit:"",//是否征询查询
       },
       show1: false,
       show2: false,
@@ -304,7 +338,7 @@ export default {
       valueKey: "label",
       selectName: "",
       valueId: "id", // 下拉选择取的哪个value值
-      src:"", //正面图片
+      src: "", //正面图片
       srcBack: "", //背面图片
       errorMsg: {
         customerName: "", //客户姓名
@@ -314,14 +348,14 @@ export default {
         signOrg: "", //身份证签发机关
         startDate: "", //起始日
         endDate: "", //截止日
-        contactPhone: "" ,//手机号
+        contactPhone: "" //手机号
       },
       sign: "", //标识点击正反面照片查看
       showScan: false,
       scanActions: [
-        {name: "相机扫描识别", value: "scan"},
-        {name: "相册导入识别", value: "album"}
-      ],
+        { name: "相机扫描识别", value: "scan" },
+        { name: "相册导入识别", value: "album" }
+      ]
     };
   },
   computed: {
@@ -362,8 +396,8 @@ export default {
           Dialog.confirm({
             title: "",
             message: "身份证是否长期有效？",
-            confirmButtonText:'是',
-            cancelButtonText:'否'
+            confirmButtonText: "是",
+            cancelButtonText: "否"
           })
             .then(() => {
               this.customerData.endDate = "9999-99-99";
@@ -427,11 +461,17 @@ export default {
     //上拉菜单选择
     loadType(title, field) {
       this.selectName = title;
-      this.isWordbook = false;
       this.fieldName = field;
       switch (title) {
         case "征信对象类型":
-          this.options = _.filter(this.wordbook.credit_object_type, item => item.value !== "borrower")
+          this.options = _.filter(
+            this.wordbook.credit_object_type,
+            item => item.value !== "borrower"
+          );
+          this.show4 = true;
+          break;
+        case "征信对象关系":
+          this.options = this.wordbook.CREDIT_OBJECT_RELATION;
           this.show4 = true;
           break;
         default:
@@ -465,9 +505,12 @@ export default {
           return;
         }
         if (getValue("credit") && this.$route.query.index === undefined) {
-          let creditObj = JSON.parse(getValue("credit"))
-          const arr = _.filter(creditObj.surDtlList, item => item.cpCertificateNum === this.customerData.certificateNum)
-          if(arr.length > 0) {
+          let creditObj = JSON.parse(getValue("credit"));
+          const arr = _.filter(
+            creditObj.surDtlList,
+            item => item.cpCertificateNum === this.customerData.certificateNum
+          );
+          if (arr.length > 0) {
             Toast.fail("已经添加过此人，不可再次添加!");
             return;
           }
@@ -480,27 +523,27 @@ export default {
       } else {
         //新建客户，走接口
         if (this.src && this.srcBack) {
-        this.loading = true;
-        submitCreate(this.customerData)
-          .then(res => {
-            const params = {
-              kind: "1",
-              customerNum: res.data.customerNum,
-              customerId: res.data.id
-            };
-            this.uploadImg("0101", params, this.dataURLtoFile(this.src));
-            this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+          this.loading = true;
+          submitCreate(this.customerData)
+            .then(res => {
+              const params = {
+                kind: "1",
+                customerNum: res.data.customerNum,
+                customerId: res.data.id
+              };
+              this.uploadImg("0101", params, this.dataURLtoFile(this.src));
+              this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
 
-            // this.$notify({
-            //   type: "success",
-            //   message: "建档成功"
-            // });
-            // this.loading = false;
-            // this.$router.go(-1);
-          })
-          .catch(e => {
-            this.loading = false;
-          });
+              // this.$notify({
+              //   type: "success",
+              //   message: "建档成功"
+              // });
+              // this.loading = false;
+              // this.$router.go(-1);
+            })
+            .catch(e => {
+              this.loading = false;
+            });
         } else {
           this.$notify({
             type: "danger",
@@ -614,20 +657,21 @@ export default {
     /**
      * 识别
      */
-    IdcardLoading () {
+    IdcardLoading() {
       this.showScan = true;
     },
     //银行卡
-    discern (e) {
-      this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
-        this.customerData.bankCardNum = res.BANK_NUM || ''
-      })
+    discern(e) {
+      this.$bridge.callHandler("bankCodeOCR", e.value, res => {
+        this.customerData.bankCardNum = res.BANK_NUM || "";
+      });
       this.showScan = false;
     }
   },
   mounted() {
     this.getFamilyDic();
     this.params = this.$route.query;
+    console.log(this.params)
     this.rulesForm("cs-personal-xh");
     if (this.params.credit) {
       //从征信里进入
@@ -641,6 +685,8 @@ export default {
         contactPhone: "", //手机号
         creditObjectType: "", //征信对象类型
         bankCardNum: "", //银行卡号
+        creditObjectRelation: "", //征信对象关系
+        isSearchCredit:'',//是否查询征信
       };
     } else {
       //新建客户
@@ -666,20 +712,20 @@ export default {
 }
 
 .create-item p {
-    font-size: 1.5rem;
-    font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .xh-creat-imgbox:nth-child(1) {
-    background-image: url("../../images/idcard.jpg");
-    background-size:100% 100%;
-    background-repeat: no-repeat;
+  background-image: url("../../images/idcard.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .xh-creat-imgbox:nth-child(2) {
-    background-image: url("../../images/idcardbg.jpg");
-    background-size:100% 100%;
-    background-repeat: no-repeat;
+  background-image: url("../../images/idcardbg.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .xh-customer-family {
@@ -702,7 +748,7 @@ export default {
 .xh-creat .labelClass {
   left: calc(100% + 1.33333rem);
 }
-.cell-except .labelClass{
-  left:0;
+.cell-except .labelClass {
+  left: 0;
 }
 </style>

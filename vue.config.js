@@ -61,8 +61,9 @@ module.exports = {
         changeOrigin: true
       },
       '/document': {
-        target: `http://172.16.10.4:8085`,
+        // target: `http://172.16.10.4:8085`,
         // target: `http://119.3.165.2:8085`,
+        target:`http://192.168.80.47:8203`,
         changeOrigin: true
       },
       '/group1': {

@@ -47,17 +47,17 @@
               <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
               <van-col span="24" class="xh-top-10">
                 <span
-                  :class="item.banCredit?returnColor(item.banCredit.proessStatus):''"
+                  :class="item.banCredit?returnColor(item.banCredit.standardStatus):''"
                   v-if="item.banCredit"
                   @click="clickBtn('bank',item.banCredit.proessStatus)"
                 >{{item.banCredit.remark}}</span>
                 <span
-                  :class="item.bigDataCredit?returnColor(item.bigDataCredit.proessStatus):''"
+                  :class="item.bigDataCredit?returnColor(item.bigDataCredit.standardStatus):''"
                   v-if="item.bigDataCredit"
                   @click="clickBtn('bigdata',item.bigDataCredit.proessStatus)"
                 >{{item.bigDataCredit.remark}}</span>
                 <span
-                  :class="item.personalGua?returnColor(item.personalGua.proessStatus):''"
+                  :class="item.personalGua?returnColor(item.personalGua.standardStatus):''"
                   v-if="item.personalGua"
                   @click="clickBtn('personal',item.personalGua.proessStatus)"
                 >{{item.personalGua.remark}}</span>
@@ -268,12 +268,13 @@ export default {
       this.params.status = "";
       this.onSearch();
     },
-    startFormFn(item, query = { edit: false }, path = "/bigDataCredit") {
+    startFormFn(item, query = { edit: false }, path,buttonId) {
       this.$router.push({
         path,
         query: {
           lpCertificateNum: item.lpCertificateNum,
           id: item.id,
+          buttonId:buttonId,
           ...query
         }
       });
@@ -298,10 +299,10 @@ export default {
           goPageCredit();
           break;
         case "bigdata":
-          this.startFormFn(item, { edit: true, bigData: true });
+          this.startFormFn(item, { edit: true, bigData: true },"/bigDataCredit",item.bigDataCredit.buttonId);
           break;
         case "personal":
-          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbCredit");
+          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbCredit",item.banCredit.buttonId);
           break;
       }
     },

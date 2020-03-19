@@ -23,6 +23,13 @@ export function getCreditInfo(params) {
     params
   })
 }
+export function getCreditDetail(params) {
+  return request({
+    url: '/order/standardCreditInfo/cuCreditRegisterFormMob',
+    method: 'get',
+    params
+  })
+}
 
 /**
  * 获取征信列表
@@ -153,5 +160,21 @@ export function getButtonOfCredit(params) {
     url: '/manage/buttonConfig/getButtonByServer?serverName=big-data-credit',
     method: 'get',
     params
+  })
+}
+// 获取方式
+export function getByServer(params) {
+  return serviceOther({
+    url: '/manage/buttonConfig/getButtonByServer/v2',
+    method: 'get',
+    params
+  })
+}
+//字典
+export function setBookObj(params) {
+  return serviceOther({
+    url: '/manage/dict/getDictByTypes',
+    method: 'post',
+    data: params
   })
 }

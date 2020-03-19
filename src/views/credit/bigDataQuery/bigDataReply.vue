@@ -1,393 +1,246 @@
 <template>
-    <ViewPage :loading="loading">
-        <result :dataList="surDtlList" v-if="surDtlList" :creditName="nameFormatter()" :type="type" :creditRequire="creditRequire"></result>
-        <Card style="margin-top: 1rem">
-            <template v-slot:header>
-                {{nameFormatter()}}征信报告照片
-            </template>
-            <div v-for="(item, index) in users" :key="index">
-                <div class="xh-image-box">
-                    <div class="xh-box-item">
-                        <svg-icon icon-class="user"/>
-                        <span>{{item.creditPersonName}}</span>
-                        <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
-                    </div>
-                </div>
-                <imageList :dataList="item.dataList"></imageList>
-            </div>
-        </Card>
-        <Card v-if="isBank" v style="margin-top: 1rem">
-            <template v-slot:header>
-                意见描述
-            </template>
-            <van-field v-model="remarks" :border="false" type="textarea" placeholder="输入说明" rows="1"
-                       :autosize='autosize' class="zh-textarea"/>
-        </Card>
-        <!-- 提交按钮 -->
-        <div class="xh-submit-box" v-if="edit">
-            <van-button size="large" @click="submit"
-                        class="xh-btn"
-            >提交
-            </van-button>
-        </div>
-    </ViewPage>
+  <ViewPage :loading="loading">
+    <template v-slot:head>
+      <van-tabs v-model="active">
+        <van-tab title="基本信息"></van-tab>
+        <van-tab title="征信信息"></van-tab>
+        <van-tab title="操作记录"></van-tab>
+      </van-tabs>
+    </template>
+    <template v-if="active === 0 && dataList.id">
+      <basicInfo
+        :dataList="dataList"
+        :edit="edit"
+        :form="form"
+        :perInfoList="perInfoList"
+        :buttonId="buttonId"
+        :hiddenHandle="true"
+        :type="TYPE"
+        :creditTypeList="creditTypeList"
+      ></basicInfo>
+    </template>
+    <template v-else-if="active === 2">
+      <approvalRecord :requestParams="recordParams"></approvalRecord>
+    </template>
+  </ViewPage>
 </template>
 
 <script>
+import ViewPage from "@/layout/components/ViewPage";
+import Card from "@/components/card";
+import NewCard from "@/components/card/newCard";
+import creditInfoTable from "../viewCompoents/creditInfoTable";
+import creditQueryInfo from "../viewCompoents/creditQueryInfo";
+import relatedDocs from "@/views/relatedDocs/relatedDocs";
+import approvalRecord from "@/views/basicInfo/approvalRecord";
+import formValidator from "@/mixins/formValidator";
+import imageList from "@/components/imageList";
+import { getValue, setValue, removeValue } from "@/utils/session";
+import { getDocumentByType } from "@/api/document";
+import basicInfo from "../bigDataQuery/bigDataBasicReply";
+import radio from "@/components/radio";
+import radioItem from "@/components/radio/radioItem";
+import Vue from "vue";
+import {
+  getCreditDetail,
+  setBookObj,
+  getByServer,
+  saveCreditInfo,
+  createTask,
+  getUsers,
+  submitCredit,
+  creditQueryOf100
+} from "@/api/credit";
+import Bus from "@/utils/bus";
+import {
+  Cell,
+  CellGroup,
+  Field,
+  Icon,
+  Button,
+  Picker,
+  Popup,
+  Toast,
+  Notify,
+  SwipeCell,
+  Dialog,
+  Tab,
+  Tabs,
+  ActionSheet
+} from "vant";
 
-  import ViewPage from '@/layout/components/ViewPage';
-  import Card from '@/components/card';
-  import imageList from '@/components/imageList'
-  import result from '../viewCompoents/result'
-  import { Field, Button, ActionSheet, Popup, Toast, Dialog } from 'vant'
-  import Vue from 'vue'
-  import { getDocumentByType } from '@/api/document'
-  import { getCreditInfo } from '@/api/credit'
-  import { reply, bankReply } from '@/api/bigData'
-  import { removeValue } from '@/utils/session'
-  import _ from 'lodash'
+const Components = [
+  Cell,
+  CellGroup,
+  Field,
+  Icon,
+  Button,
+  Picker,
+  Popup,
+  Toast,
+  Notify,
+  SwipeCell,
+  Dialog,
+  Tab,
+  Tabs,
+  ActionSheet
+];
+Components.forEach(item => {
+  Vue.use(item);
+});
 
-  Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Dialog)
-  const bank = {
-    joiDebtorSpouse: ['0205'],//共债人配偶
-    borrowerSpouse: ['0203'],//借款人配偶
-    security: ['0206'],//担保人
-    borrower: ['0202'],//借款人
-    joiDebtor: ['0204'],//共债人
-  }
-  const bigData = {
-    joiDebtorSpouse: ['0210'],//共债人配偶
-    borrowerSpouse: ['0208'],//借款人配偶
-    security: ['0211'],//担保人
-    borrower: ['0207'],//借款人
-    joiDebtor: ['0209'],//共债人
-  }
-  const rb = {
-    joiDebtorSpouse: ['6699'],//共债人配偶
-    borrowerSpouse: ['6696'],//借款人配偶
-    security: ['6697'],//担保人
-    borrower: ['6695'],//借款人
-    joiDebtor: ['6698'],//共债人
-  }
-
-  export default {
-    name: "creditNextStep",
-    components: {
-      ViewPage,
-      Card,
-      imageList,
-      result
-    },
-    data () {
-      return {
-        loading: false,
-        autosize: {
-          maxHeight: 100,
-          minHeight: 80
-        },
-        users: [],
-        obj: {},
-        edit: true,
-        form: {},
-        surDtlList: null,
-        isBank: false,
-        remarks: '',
-        bigData: false,
-        rbCredit: false,
-      }
-    },
-    computed: {
-      wordbook () {
-        return this.$store.state.user.wordbook
+export default {
+  mixins: [formValidator],
+  components: {
+    ViewPage,
+    Card,
+    NewCard,
+    creditInfoTable,
+    creditQueryInfo,
+    relatedDocs,
+    approvalRecord,
+    imageList,
+    radio,
+    radioItem,
+    basicInfo
+  },
+  data() {
+    return {
+      active: 0,
+      dataList: {
+        investigateBank: "",
+        investigateBankName: "",
+        isInternetCredit: "",
+        surDtlList: [],
+        creditSearchType:'',
+        creditSearchTypeDesc:''
       },
-      documentType () {
-        let obj = {}
-        if (this.wordbook.document_type && this.wordbook.document_type.length) {
-          this.wordbook.document_type.forEach(item => {
-            obj[item.value] = item
-          })
-        }
-        return obj
+      creditSearchTypeDesc:'',
+      creditSearchType:'',
+      loading: false,
+      edit: false,
+      form: {},
+      perInfoList: [],
+      recordParams: {
+        businesskey: "",
+        businessType: "07"
       },
-      type () {
-        if (this.isBank) {
-          return 'creditResult'
-        } else if (this.rbCredit) {
-          return 'personalGuaResult'
-        } else {
-          return 'bigDataResult'
-        }
-      },
-      creditRequire() {
-        if (this.isBank) {
-          return 'canPeopleBankResult'
-        } else if (this.rbCredit) {
-          return 'canPersonalCreditResult'
-        } else {
-          return 'canBigDataResult'
-        }
-      }
-    },
-    methods: {
-      // 字典转换
-      returnText (val, key) {
-        let name = '';
-        if (this.wordbook[key]) {
-          this.wordbook[key].forEach(e => {
-            if (e.value === val) {
-              name = e.label;
-            }
-          });
-        }
-        return name;
-      },
-      async getDocumentByType (documentType, obj, beanData) {
-        try {
-          const customerNum = beanData.perInfo ? beanData.perInfo.customerNum : ''
-          const params = {
-            customerNum: customerNum,
-            documentType: documentType
-          }
-          const {data} = await getDocumentByType(params)
-          const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
-          data.forEach(item => {
-            item.declare = declare;
-          })
-          const require = obj[this.creditRequire]
-          obj.dataList.push({
-            declare: declare,//图片描述
-            isRequire: require,//*是否必须
-            deletable: true,//是否可以操作-上传和删除
-            documentType: documentType,
-            customerNum: customerNum,
-            customerId: beanData.customerId,
-            kind: '1',
-            fileList: data
-          })
-        } catch (e) {
-          console.log(e)
-        }
-      },
-      async getCreditInfo () {
-        try {
-          this.loading = true
-          const params = {
-            lpCertificateNum: this.$route.query.lpCertificateNum,
-            id: this.$route.query.id
-          }
-          const {data} = await getCreditInfo(params)
-          const form = data.cuCreditRegister
-          form.surDtlList = data.cuCreditRegister.surDtlList
-          const users = _.cloneDeep(form.surDtlList)
-          if (this.isBank) {
-            this.obj = bank
-          } else if (this.rbCredit) {
-            this.obj = rb
-          } else {
-            this.obj = bigData
-          }
-          users.forEach(item => {
-            item.dataList = []
-            const arr = this.obj[item.creditObjectType]
-            arr.forEach(i => {
-              this.getDocumentByType(i, item, form)
-            })
-          })
-          this.users = users
-          this.form = form
-          this.surDtlList = form.surDtlList
-          this.loading = false
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
-      },
-      checkCar () {
-        let flag = true
-        if (this.form.carInfos.length) {
-          this.form.carInfos.forEach(item => {
-            if (item.carNature === 'old_car' && !item.evaluatingPriceDot) {
-              flag = false
-            }
-          })
-        }
-        return flag
-      },
-      checkResult () {
-        let flag = true
-        if (!this.surDtlList) {
-          return
-        }
-        this.surDtlList.forEach(item => {
-          if (!item[this.type]) {
-            flag = false
-          }
-        })
-        return flag
-      },
-      async submit () {
-        try {
-          if (!this.checkResult()) {
-            Toast.fail('未选择征信结果!')
-            return
-          }
-          if (this.isBank) {
-            if (!this.checkCar()) {
-              Dialog.confirm({
-                title: '提示',
-                message: '暂无二手车评估价，确定提交流程吗？'
-              }).then(() => {
-                this.loading = true
-                this.submitBank()
-              }).catch(() => {
-                //
-              });
-            } else {
-              this.submitBank()
-            }
-          } else {
-            let url = '/order/creditInfo/updateCreditResult'
-            if (this.rbCredit) {
-              url = '/order/creditInfo/updatePersonalGuarantee'
-            }
-            this.loading = true
-            await reply(url, this.form.surDtlList)
-            this.loading = false
-            this.$nextTick(() => {
-              Toast.success('提交成功')
-            })
-            this.$nextTick(() => {
-              this.$router.push('/creditList')
-            })
-          }
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
-      },
-      async submitBank () {
-        try {
-          const params = {wfBizComments: {commentsDesc: this.remarks, conclusionCode: '01', businessKey: this.form.id}, cuCreditRegister: this.form}
-          await bankReply(params)
-          this.loading = false
-          this.$nextTick(() => {
-            Toast.success('提交成功')
-          })
-          this.$nextTick(() => {
-            this.$router.push('/lendProcessList')
-          })
-        } catch (e) {
-          this.loading = false
-          console.log(e)
-        }
-      },
-      nameFormatter () {
-        let name = '';
-        if (this.isBank) {
-          name = '银行'
-        } else if (this.bigData) {
-          name = '大数据'
-        } else if (this.rbCredit) {
-          name = '人保'
-        }
-        return name
-      }
-    },
-    mounted () {
-      removeValue("credit");
-      this.getCreditInfo()
-      // this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
-      this.isBank = Boolean(this.$route.query.isBank)
-      this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
-      this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      buttonId: "",
+      TYPE: "", //征信查询方式
+      creditTypeList:[],//征信查询数组
+    };
+  },
+  computed: {
+    // 所有字典
+    wordbook() {
+      return this.$store.state.user.wordbook;
     }
+  },
+  methods: {
+    async loadData() {
+      this.loading = true;
+      let data,res;
+      if (getValue("credit")) {
+        data = JSON.parse(getValue("credit"));
+      } else {
+        let datalist = {
+          buttonId: this.params.buttonId,
+          lpCertificateNum: this.params.lpCertificateNum
+        };
+        if(this.TYPE == 'bairong'){
+          res = await creditQueryOf100(datalist)
+        }else{
+          res = await getCreditDetail(datalist);
+        }
+        data = res.data;
+      }
+      this.sign = data.standardCreditStatus;
+      this.time = data.registerDate;
+      data.surDtlList.forEach(e => {
+        e.dataList = [];
+        if (e.creditObjectType === "borrower") {
+          this.form = e;
+        } else {
+          this.perInfoList.push(e);
+        }
+      });
+      this.dataList = data;
+      this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
+      this.dataList.creditSearchType = this.creditSearchType;
+      this.recordParams.businesskey = this.dataList.id;
+      this.initCustomerData();
+      this.loading = false;
+    },
+    initCustomerData() {
+      let customerData = this.$store.state.credit.customerData;
+      if (customerData) {
+        const index = this.$store.state.credit.index;
+        customerData = this.enFormatter(customerData);
+        if (index === -1) {
+          this.perInfoList.push(customerData);
+          this.data.surDtlList.push(customerData);
+        } else {
+          const perInfo = this.perInfoList[index];
+          if (perInfo) {
+            for (let key in customerData) {
+              if (customerData.hasOwnProperty(key)) {
+                perInfo[key] = customerData[key] || perInfo[key];
+              }
+            }
+          }
+        }
+        this.$store.dispatch("credit/removeCustomerData");
+      }
+    },
+    enFormatter(beanData) {
+      return {
+        sex: beanData.sex, //性别
+        creditPersonName: beanData.customerName, //客户姓名
+        cpCertificateNum: beanData.certificateNum, //身份证号码
+        age: beanData.age, //年龄
+        creditObjectType: beanData.creditObjectType, //征信对象类型
+        creditObjectRelation: beanData.creditObjectRelation, //征信对象类型
+        perInfo: {
+          nationName: beanData.nationName, //民族
+          nation: beanData.nation, //民族
+          birthday: beanData.birthday, //出生日期
+          signOrg: beanData.signOrg //身份证签发机关
+        },
+        familyAddress: beanData.familyAddress, //身份证住址
+        startDate: beanData.startDate, //起始日
+        endDate: beanData.endDate, //截止日
+        telephone: beanData.contactPhone, //手机号码
+        bankCardNum: beanData.bankCardNum, //银行卡号
+        dataList: [],
+        canDel: true,
+        isSearchCredit: beanData.isSearchCredit
+      };
+    },
+  },
+  mounted() {
+    this.params = this.$route.query;
+    this.edit = false;
+    this.buttonId = this.params.buttonId;
+    this.loadData();
   }
+};
 </script>
 
-<style scoped lang="scss">
-
-    .xh-image-box {
-        padding: 0 1rem 0 1rem;
-
-        &:first-child {
-            padding-top: 1rem;
-        }
-
-        .xh-box-item {
-            margin-bottom: .5rem;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            span {
-                display: inline-block;
-            }
-
-            span:nth-of-type(1) {
-                margin: 0 .5rem;
-            }
-        }
-    }
-
-    .xh-electronic-box {
-        background: rgb(242, 242, 242);
-        margin: 1rem;
-        padding: 1rem;
-        display: flex;
-        position: relative;
-        border-radius: 5px;
-        overflow: hidden;
-
-        .xh-box-item {
-            margin-bottom: .5rem;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            span {
-                display: inline-block;
-            }
-
-            span:nth-of-type(1) {
-                margin: 0 .5rem;
-            }
-        }
-
-    }
-
-
-    .xh-electronic-tag {
-        background: #FDF1F0;
-        border-radius: 4px;
-        padding: .2rem;
-        color: #C4252A;
-    }
-
-    .xh-contract-status {
-        > div {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translate(0, -50%);
-        }
-
-        .xh-contract-true {
-            color: #3ECE73;
-        }
-
-        .xh-contract-false {
-            color: #C4252A;
-        }
-
-        .xh-contract-icon {
-            font-size: 2.4rem;
-            font-weight: 600;
-            display: inline-block;
-            vertical-align: middle;
-            color: #999;
-        }
-    }
-
+<style>
+.card-title {
+  color: #ec191f;
+  margin: 1rem;
+  font-weight: bold;
+}
+.waitInfoBox {
+  padding: 1rem;
+}
+.waitInfo {
+  background-color: rgba(236, 25, 31, 0.1);
+  color: #ec191f;
+  height: 4rem;
+  line-height: 4rem;
+  padding: 0 1rem;
+  border: 1px solid #ec191f;
+}
 </style>
