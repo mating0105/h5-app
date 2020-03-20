@@ -1,6 +1,6 @@
 <template>
     <div :class="isShowTitle?'card is-always-shadow':''">
-        <div class="card__header">
+        <div class="card__header" v-if="isShowTitle">
             <div>
                 <span class="card_label">{{label}}</span>
                 <van-tag :color="signColor" :text-color="textColor" size="large" v-show="showSign">{{sign}}</van-tag>

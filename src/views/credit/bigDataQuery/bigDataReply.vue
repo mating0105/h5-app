@@ -8,9 +8,9 @@
       </van-tabs>
     </template>
     <template v-if="active === 0 && dataList.id">
-      <basicInfo
+      <basicReplyInfo
         :dataList="dataList"
-        :edit="edit"
+        :edit="true"
         :form="form"
         :perInfoList="perInfoList"
         :buttonId="buttonId"
@@ -18,7 +18,8 @@
         :showTypes="true"
         :thisCreditType="thisCreditType"
         :creditTypeList="creditTypeList"
-      ></basicInfo>
+        :isShowTitle = 'true'
+      ></basicReplyInfo>
     </template>
     <template v-else-if="active === 1">
       <!-- 百融 -->
@@ -33,9 +34,9 @@
       <div v-else-if="thisCreditType != '6' && creditHistoryList.length >0">
         <collapsBox label="大数据征信查询信息" :creditList="creditHistoryList" :changeitem="changeitem">
           <template>
-            <basicInfo
+            <basicReplyInfo
               :dataList="dataList"
-              :edit="edit"
+              :edit="false"
               :form="form"
               :perInfoList="perInfoList"
               :buttonId="buttonId"
@@ -43,7 +44,8 @@
               :showTypes="false"
               :thisCreditType="thisCreditType"
               :creditTypeList="creditTypeList"
-            ></basicInfo>
+              :isShowTitle = 'false'
+            ></basicReplyInfo>
           </template>
         </collapsBox>
       </div>
@@ -69,7 +71,7 @@ import formValidator from "@/mixins/formValidator";
 import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
-import basicInfo from "../bigDataQuery/bigDataBasicReply";
+import basicReplyInfo from "../bigDataQuery/bigDataBasicReply";
 import { format } from "@/utils/format";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
@@ -143,7 +145,7 @@ export default {
     imageList,
     radio,
     radioItem,
-    basicInfo,
+    basicReplyInfo,
     collapsBox
   },
   data() {

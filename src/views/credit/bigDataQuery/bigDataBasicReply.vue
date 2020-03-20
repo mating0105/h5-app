@@ -7,9 +7,10 @@
       :sign="sign"
       :signColor="signColor"
       :time="time"
+      :isShowTitle="isShowTitle"
     >
       <div>
-        <div class="card-title">主借人信息</div>
+        <div class="card-title">主借人信息{{edit}}</div>
         <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName" />
         <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
         <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
@@ -38,7 +39,7 @@
           required
           v-if="thisCreditType == '5'"
         >
-          <radio v-model="form.creditResult">
+          <radio v-model="form.creditResult" :disabled="!edit">
             <radio-item label="pass">通过</radio-item>
             <radio-item label="not_pass">拒绝</radio-item>
           </radio>
@@ -46,10 +47,10 @@
         <van-cell
           title="征信结果时间:"
           required
-          is-link
+          :is-link="edit?true:false"
           :border="false"
           :value="form.investigateDate"
-          @click="showPopupTime('borrower')"
+          @click="edit?showPopupTime('borrower'):''"
           label-class="labelClass"
           @blur.prevent="ruleMessge"
           :label="errorMsg.investigateDate"
@@ -85,12 +86,12 @@
             label-class="labelClass"
             :label="errorMsg.isSearchCredit"
             title="征信结果:"
-            is-link
             :border="false"
             required
+            :disabled="!edit"
             v-if="thisCreditType == '5'"
           >
-            <radio v-model="item.creditResult">
+            <radio v-model="item.creditResult" :disabled="!edit">
               <radio-item label="pass">通过</radio-item>
               <radio-item label="not_pass">拒绝</radio-item>
             </radio>
@@ -98,10 +99,11 @@
           <van-cell
             title="征信结果时间:"
             required
-            is-link
+            :is-link="edit?true:false"
             :border="false"
+            :disabled="!edit"
             :value="item.investigateDate"
-            @click="showPopupTime('payTime')"
+            @click="edit?showPopupTime(''):''"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
             :label="errorMsg.investigateDate"
@@ -262,7 +264,8 @@ export default {
     },
     buttonId: String,
     creditTypeList: Array, //征信查询方式
-    thisCreditType: String
+    thisCreditType: String,
+    isShowTitle:Boolean,
   },
   mixins: [formValidator],
   components: {
@@ -626,7 +629,7 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        const isRequire = this.whiteList.includes(documentType);
+        const isRequire = this.whiteList.includes(documentType) && this.edit;
         const imgdata = {
           declare: declare, //图片描述
           isRequire: isRequire, //*是否必须
