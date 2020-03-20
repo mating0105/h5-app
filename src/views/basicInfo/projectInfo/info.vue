@@ -1442,14 +1442,9 @@ export default {
           loadingType: "spinner",
           overlay: true
         });
-        let projectId = this.params.projectNum
-          ? this.params.projectNum.replace("XM", "")
-          : "";
         getProjectInfo({
           id: this.params.projectId
             ? this.params.projectId
-            : projectId
-            ? projectId
             : this.params.businesskey
         })
           .then(res => {
