@@ -23,11 +23,20 @@ export function getCreditInfo(params) {
     params
   })
 }
+//获取征信详情
 export function getCreditDetail(params) {
   return request({
     url: '/order/standardCreditInfo/cuCreditRegisterFormMob',
     method: 'get',
     params
+  })
+}
+//获取历史征信
+export function getCreditHistory(params) {
+  return request({
+    url: '/order/standardCreditInfo/historyList',
+    method: 'post',
+    data: params
   })
 }
 

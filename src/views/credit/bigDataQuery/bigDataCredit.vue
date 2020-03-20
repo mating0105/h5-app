@@ -164,6 +164,10 @@ export default {
         }
       });
       this.dataList = data;
+      this.dataList.reRegister = this.params.reRegister;
+      if(this.params.reRegister == 1){
+        this.dataList.id = '';
+      }
       this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
       this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
@@ -198,7 +202,7 @@ export default {
         customerData = this.enFormatter(customerData);
         if (index === -1) {
           this.perInfoList.push(customerData);
-          this.data.surDtlList.push(customerData);
+          this.dataList.surDtlList.push(customerData);
         } else {
           const perInfo = this.perInfoList[index];
           if (perInfo) {

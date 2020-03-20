@@ -7,6 +7,7 @@
       :sign="returnText(sign,'standard_credit_status')"
       :signColor="returnColor(sign)"
       :time="time"
+      :isShowTitle="isShowTitle"
     >
       <div class="waitInfoBox" v-show="sign == '01'">
         <van-row type="flex" justify="space-between" class="waitInfo">
@@ -208,6 +209,14 @@ Components.forEach(item => {
 
 export default {
   name: "bigDataBasicInfo",
+  mixins: [formValidator],
+  components: {
+    ViewPage,
+    NewCard,
+    imageList,
+    radio,
+    radioItem
+  },
   props: {
     dataList: Object,
     form: Object,
@@ -222,16 +231,13 @@ export default {
     TYPE: {
       default: "",
       type: String
+    },
+    showTypes: {
+      default: true,
+      type: Boolean
     }
   },
-  mixins: [formValidator],
-  components: {
-    ViewPage,
-    NewCard,
-    imageList,
-    radio,
-    radioItem
-  },
+
   data() {
     return {
       sign: "", //征信查询状态
@@ -242,6 +248,7 @@ export default {
         creditSearchType: "",
         creditObjectRelation: ""
       },
+      isShowTitle:true,
       showSign: false,
       showTime: false,
       scanActions: [
@@ -302,7 +309,7 @@ export default {
     },
     //保存数据到本地
     save() {
-      this.data.surDtlList = [this.form, ...this.perInfoList];
+      this.dataList.surDtlList = [this.form, ...this.perInfoList];
       setValue("credit", JSON.stringify(this.dataList));
     },
     //新增关联人信息
@@ -506,7 +513,7 @@ export default {
         message: "加载中...",
         forbidClick: true,
         loadingType: "spinner",
-        overlay:true
+        overlay: true
       });
       this.dataList.creditType = this.buttonId;
       this.dataList.remarks = this.remarks;
@@ -519,7 +526,7 @@ export default {
           commentsDesc: "同意",
           conclusionCode: "01",
           processDefineKey: "WF_CU_CREDIT_001",
-          remarks:this.remarks
+          remarks: this.remarks
         };
         const subData = await createTask(params);
         this.taskData = subData.data;

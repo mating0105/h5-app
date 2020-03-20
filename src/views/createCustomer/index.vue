@@ -101,7 +101,7 @@
             :border="false"
             required
           >
-            <radio v-model="customerData.isSearchCredit">
+            <radio v-model="customerData.isSearchCredit" @change="getRadio">
               <radio-item label="1">是</radio-item>
               <radio-item label="0">否</radio-item>
             </radio>
@@ -589,6 +589,11 @@ export default {
       let d = val.split(".");
       let a = d.join("-");
       return a;
+    },
+    //选择是否查询征信
+    getRadio(val){
+      console.log(val,1111);
+      this.errorMsg.isSearchCredit = '';
     },
     //选择获取图片方式
     onSelect(e) {

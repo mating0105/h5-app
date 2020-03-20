@@ -49,17 +49,17 @@
                 <span
                   :class="item.banCredit?returnColor(item.banCredit.standardStatus):''"
                   v-if="item.banCredit"
-                  @click="clickBtn('bank',item.banCredit.proessStatus)"
+                  @click.stop="clickBtn('bank',item.banCredit.standardStatus,item)"
                 >{{item.banCredit.remark}}</span>
                 <span
                   :class="item.bigDataCredit?returnColor(item.bigDataCredit.standardStatus):''"
                   v-if="item.bigDataCredit"
-                  @click="clickBtn('bigdata',item.bigDataCredit.proessStatus)"
+                  @click.stop="clickBtn('bigdata',item.bigDataCredit.standardStatus,item)"
                 >{{item.bigDataCredit.remark}}</span>
                 <span
                   :class="item.personalGua?returnColor(item.personalGua.standardStatus):''"
                   v-if="item.personalGua"
-                  @click="clickBtn('personal',item.personalGua.proessStatus)"
+                  @click.stop="clickBtn('personal',item.personalGua.standardStatus,item)"
                 >{{item.personalGua.remark}}</span>
               </van-col>
             </van-row>
@@ -244,7 +244,7 @@ export default {
           classname = "xh-danger-tag";
           break;
         case "04":
-          classname = "xh-gray-tag";
+          classname = "xh-success-tag";
           break;
         case "05":
           classname = "xh-primary-tag";
@@ -280,7 +280,7 @@ export default {
       });
     },
     // 发起报单
-    startForm(type, item, query = {}) {
+    async startForm(type, item, query = {}) {
       console.log(item, type)
       removeValue("credit");
       const goPageCredit = () => {
@@ -300,7 +300,12 @@ export default {
           goPageCredit();
           break;
         case "bigdata":
-          this.startFormFn(item, { edit: true, bigData: true },"/bigDataCredit",item.bigDataCredit.buttonId);
+          if(item.bigDataCredit.proessStatus == '03' || item.bigDataCredit.proessStatus == '04'){
+            await checkedReregisterMob({ lpCertificateNum: item.lpCertificateNum });
+            this.startFormFn(item, { edit: true, bigData: true,reRegister:1 },"/bigDataCredit",item.bigDataCredit.buttonId);
+          }else{
+            this.startFormFn(item, { edit: true, bigData: true},"/bigDataCredit",item.bigDataCredit.buttonId);
+          }
           break;
         case "personal":
           this.startFormFn(item, { edit: true, rbCredit: true }, "/rbCredit",item.personalGua.buttonId);
@@ -308,14 +313,17 @@ export default {
       }
     },
     //点击标签查看详情
-    clickBtn(name, status) {
-      if (status == "04") {
+    clickBtn(name, status,item) {
+      console.log(name,status);
+      if (status == "04" || status == "03") {
         this.$notify("暂无查看权限");
       } else {
         switch (name) {
           case "bank":
+
             break;
           case "bigdata":
+            this.startFormFn(item, { edit: true, bigData: true },"/bigDataCredit",item.bigDataCredit.buttonId);
             break;
           case "personal":
             break;
@@ -367,6 +375,9 @@ export default {
   mounted() {
     this.onLoad();
     this.getUserInfoByTo();
+  },
+  destroyed(){
+    removeValue('credit');
   }
 };
 </script>

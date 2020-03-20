@@ -48,7 +48,13 @@ export function getAdvanceEnquiryList(params) {
       data: params
     })
   }
-
-
+//提前告知征信结果
+  export function informInAdvanceResult(params) {
+    return request({
+      url: '/order/standardCreditInfo/informInAdvanceResult',
+      method: 'post',
+      data: params
+    })
+  }
 
 

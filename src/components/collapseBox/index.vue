@@ -1,15 +1,15 @@
 <template>
     <div>
-        <van-collapse class="collapse is-always-shadow" v-for="(item,index) in 5" v-model="activeName" accordion @change="changeitem">
+        <van-collapse class="collapse is-always-shadow" v-for="(item,index) in creditList" v-model="activeName" accordion @change="changeitem">
             <van-collapse-item :name="index">
                 <div slot="title">
                     <div class="collapse__header">
                         <div>
-                            <span class="collapse_label">{{label}}</span>
-                            <van-tag class="collapse_tag" :color="signColor" :text-color="textColor" size="large" v-show="showSign">{{sign}}</van-tag>
+                            <span class="collapse_label">{{item.label}}</span>
+                            <van-tag class="collapse_tag" :color="item.signColor" :text-color="item.textColor" size="large" v-show="item.showSign">{{item.creditResult}}</van-tag>
                         </div>
-                        <div v-show="showTime" class="collapse_time">
-                            {{time}}
+                        <div v-show="item.showTime" class="collapse_time">
+                            {{item.registerDate}}
                         </div>
                     </div>
                 </div>
@@ -28,38 +28,13 @@ Vue.use(Tag, Collapse, CollapseItem);
   export default {
     name: "collapsBox",
     props: {
-      bodyPadding: Boolean,
-      label: {
-        type: String,
-        default: '我是标题'
-      },
-      sign:{
-        type: String,
-        default: '标记'
-      },
-      signColor:{
-        type: String,
-        default: '#00C67C'
-      },
-      textColor:{
-        type: String,
-        default: '#fff'
-      },
-      showSign:{
-        type: Boolean,
-        default: false
-      },
-      time:{
-        type:String,
-        default: '2020-03-11 10:30:30'
-      },
-      showTime:{
-        type: Boolean,
-        default: false
-      },
       changeitem:{
         type: Function,
         default: false
+      },
+      creditList:{
+        type: Array,
+        default: []
       }
     },
     data(){

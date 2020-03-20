@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request,{serviceOther} from '@/utils/request'
 
 //获取详情信息
 export function loanInfoDetail(params) {
@@ -50,7 +50,7 @@ export function findList(params){
 }
 //获取页面字段规则
 export function fieldRules(params){
-    return request({
+    return serviceOther({
         url:'/manage/regularConfig/getRegularByServer',
         method: 'get',
         params

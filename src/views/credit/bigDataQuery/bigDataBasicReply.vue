@@ -4,8 +4,8 @@
       label="大数据征信查询信息"
       :showSign="showSign"
       :showTime="showTime"
-      :sign="returnText(sign,'standard_credit_status')"
-      :signColor="returnColor(sign)"
+      :sign="sign"
+      :signColor="signColor"
       :time="time"
     >
       <div>
@@ -36,10 +36,11 @@
           is-link
           :border="false"
           required
+          v-if="thisCreditType == '5'"
         >
           <radio v-model="form.creditResult">
-            <radio-item label="1">通过</radio-item>
-            <radio-item label="0">拒绝</radio-item>
+            <radio-item label="pass">通过</radio-item>
+            <radio-item label="not_pass">拒绝</radio-item>
           </radio>
         </van-cell>
         <van-cell
@@ -52,11 +53,14 @@
           label-class="labelClass"
           @blur.prevent="ruleMessge"
           :label="errorMsg.investigateDate"
+          v-if="thisCreditType == '5'"
         />
         <van-cell title="相关文档:" :border="false" />
         <imageList :dataList="mainImg"></imageList>
-        <van-cell title="征信报告:" required :border="false" />
-        <imageList :dataList="mainCreditImg"></imageList>
+        <div v-if="thisCreditType == '5'">
+          <van-cell title="征信报告:" required :border="false" />
+          <imageList :dataList="mainCreditImg"></imageList>
+        </div>
       </div>
       <div v-if="perInfoList.length > 0">
         <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
@@ -84,10 +88,11 @@
             is-link
             :border="false"
             required
+            v-if="thisCreditType == '5'"
           >
             <radio v-model="item.creditResult">
-              <radio-item label="1">通过</radio-item>
-              <radio-item label="0">拒绝</radio-item>
+              <radio-item label="pass">通过</radio-item>
+              <radio-item label="not_pass">拒绝</radio-item>
             </radio>
           </van-cell>
           <van-cell
@@ -100,13 +105,16 @@
             label-class="labelClass"
             @blur.prevent="ruleMessge"
             :label="errorMsg.investigateDate"
+            v-if="thisCreditType == '5'"
           />
-         
+
           <van-cell title="相关文档" :border="false" />
           <imageList :dataList="item.dataList"></imageList>
-          <van-cell title="征信报告" required :border="false" />
-          <imageList :dataList="item.creditList"></imageList>
-          
+          <div v-if="thisCreditType == '5'">
+            <van-cell title="征信报告" required :border="false" />
+            <imageList :dataList="item.creditList"></imageList>
+          </div>
+          <div v-if="thisCreditType == '6'"></div>
           <div slot="right" style="height: 100%">
             <van-button
               type="warning"
@@ -123,20 +131,20 @@
       </div>
       <div class="card-title" style="margin:2rem 1rem;" v-if="edit">
         新增关联人信息
-        <div class="card-icon" @click="addPer" >
+        <div class="card-icon" @click="addPer">
           <van-icon name="add-o" size="2rem" />
         </div>
       </div>
       <div class="card-title">备注说明</div>
       <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" />
     </NewCard>
-    <div class="xh-submit-box" v-if="TYPE != 'bairong'">
-      <van-button size="large" class="xh-btn xh-primary" @click="back">返回</van-button>
+    <div class="xh-submit-box" v-if="thisCreditType != '6'">
+      <van-button size="large" class="xh-btn xh-primary" @click="back">退回</van-button>
       <van-button size="large" class="xh-btn" @click="showResult">提前告知征信结果</van-button>
       <van-button size="large" class="xh-btn" @click="submit">提交</van-button>
     </div>
 
-    <div class="xh-submit-box" v-if="TYPE === 'bairong'">
+    <div class="xh-submit-box" v-if="thisCreditType === '6'">
       <van-button size="large" @click="triggerQuery" class="xh-btn">提交</van-button>
     </div>
 
@@ -167,6 +175,15 @@
         />
       </div>
     </van-action-sheet>
+
+    <!-- 确认弹框 -->
+    <dialogBox
+      class="dialogBox"
+      :title="'确认提交吗？'"
+      :showDialog="showDialog"
+      :onConfirm="confirmFn"
+      :onCancel="cancelFn"
+    ></dialogBox>
   </div>
 </template>
 
@@ -178,6 +195,8 @@ import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
 import { format } from "@/utils/format";
+import { bankReply, informInAdvanceResult } from "@/api/bigData";
+import dialogBox from "@/components/dialogBox/index";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 import Vue from "vue";
@@ -243,10 +262,7 @@ export default {
     },
     buttonId: String,
     creditTypeList: Array, //征信查询方式
-    TYPE: {
-      default: "",
-      type: String
-    }
+    thisCreditType: String
   },
   mixins: [formValidator],
   components: {
@@ -254,7 +270,8 @@ export default {
     NewCard,
     imageList,
     radio,
-    radioItem
+    radioItem,
+    dialogBox
   },
   data() {
     return {
@@ -266,8 +283,10 @@ export default {
         creditSearchType: "",
         creditObjectRelation: ""
       },
-      showSign: false,
-      showTime: false,
+      showSign: true,
+      showTime: true,
+      sign: "查询中",
+      signColor: "#999",
       showTimePicker: false,
       scanActions: [
         { name: "相机扫描识别", value: "scan" },
@@ -302,10 +321,11 @@ export default {
         borrower: ["0207"], //借款人
         joiDebtor: ["0209"] //共债人
       },
-      whiteList:['0207','0208','0209','0210','0211'],
+      whiteList: ["0207", "0208", "0209", "0210", "0211"],
       maxDate: new Date(),
       currentDate: new Date(), //当前时间
-      peopleTime: ""
+      peopleTime: "",
+      showDialog: false
     };
   },
   computed: {
@@ -484,21 +504,57 @@ export default {
       if (!this.verifyForm()) {
         return;
       }
-      Toast.loading({
-        message: "加载中...",
-        forbidClick: true,
-        loadingType: "spinner",
-        overlay: true
-      });
-     
+      if (!this.remarks) {
+        Toast.fail("请在备注说明里填写退回原因");
+        return;
+      }
+      this.showDialog = true;
     },
     //返回
-    back(){
-
+    async back() {
+      if (!this.remarks) {
+        Toast.fail("请在备注说明里填写退回原因");
+      } else {
+        this.loading = true;
+        const params = {
+          wfBizComments: {
+            commentsDesc: this.remarks,
+            conclusionCode: "02",
+            businessKey: this.dataList.id
+          },
+          cuCreditRegister: this.dataList
+        };
+        await bankReply(params);
+        this.loading = false;
+        this.$nextTick(() => {
+          Toast.success("回退成功");
+          setTimeout(() => {
+            this.$router.push("/lendProcessList");
+          }, 1000);
+        });
+      }
     },
     //提前告知征信结果
-    showResult(){
-
+    async showResult() {
+      if (!this.form.creditResult) {
+        Toast.fail("请选择征信结果");
+        return;
+      }
+      this.perInfoList.forEach(e => {
+        if (!e.creditResult) {
+          Toast.fail("请选择征信结果");
+          return;
+        }
+      });
+      this.loading = true;
+      await informInAdvanceResult(this.dataList);
+      this.loading = false;
+      this.$nextTick(() => {
+        Toast.success("告知成功");
+        setTimeout(() => {
+          this.$router.push("/lendProcessList");
+        }, 1000);
+      });
     },
     //提交百融征信查询
     async triggerQuery() {
@@ -517,7 +573,7 @@ export default {
         return;
       }
 
-      Bus.$emit("creditSave", this.TYPE);
+      Bus.$emit("creditSave", this.thisCreditType);
       Bus.$on("queryStart", res => {
         this.disableClick = true;
       });
@@ -570,7 +626,7 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        const isRequire = !this.whiteList.includes(documentType)
+        const isRequire = this.whiteList.includes(documentType);
         const imgdata = {
           declare: declare, //图片描述
           isRequire: isRequire, //*是否必须
@@ -582,16 +638,16 @@ export default {
           fileList: []
         };
         if (obj.creditObjectType == "borrower") {
-          if(this.whiteList.includes(documentType)){
+          if (this.whiteList.includes(documentType)) {
             this.mainCreditImg.push(imgdata);
-          }else{
+          } else {
             this.mainImg.push(imgdata);
           }
         } else {
-          if(this.whiteList.includes(documentType)){
-             obj.creditList.push(imgdata);
-          }else{
-             obj.dataList.push(imgdata);
+          if (this.whiteList.includes(documentType)) {
+            obj.creditList.push(imgdata);
+          } else {
+            obj.dataList.push(imgdata);
           }
         }
         // if(bigData.creditObjectType == 'borrower'){
@@ -617,10 +673,42 @@ export default {
         this.form.investigateDate = format(value, "yyyy-MM-dd hh:mm");
       } else {
       }
+    },
+    async confirmFn() {
+      try {
+        this.showDialog = false;
+        Toast.loading({
+          message: "加载中...",
+          forbidClick: true,
+          loadingType: "spinner",
+          overlay: true
+        });
+        const params = {
+          wfBizComments: {
+            commentsDesc: this.remarks,
+            conclusionCode: "01",
+            businessKey: this.dataList.id
+          },
+          cuCreditRegister: this.dataList
+        };
+        await bankReply(params);
+        Toast.clear();
+        this.$nextTick(() => {
+          Toast.success("提交成功");
+          setTimeout(() => {
+            this.$router.push("/lendProcessList");
+          }, 1000);
+        });
+      } catch (e) {}
+    },
+    cancelFn() {
+      this.showDialog = false;
     }
   },
   mounted() {
-    console.log(this.dataList, 2222);
+    this.time = this.dataList.registerDate;
+    console.log(this.dataList, 234444);
+    console.log(this.thisCreditType);
     this.obj = {
       joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
       borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
@@ -631,11 +719,13 @@ export default {
     this.dataList.surDtlList.forEach(e => {
       const arr = this.obj[e.creditObjectType];
       arr.forEach(i => {
-        this.getDocumentByType(i, e);//相关文档
+        this.getDocumentByType(i, e); //相关文档
       });
       const arr2 = this.bigData[e.creditObjectType];
+      console.log("arr2", arr2);
       arr2.forEach(i => {
-        this.getDocumentByType(i, e);//征信报告
+        console.log(i, e);
+        this.getDocumentByType(i, e); //征信报告
       });
     });
   }
