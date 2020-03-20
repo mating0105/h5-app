@@ -15,9 +15,8 @@
             <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query"></basicInfo>
         </template>
         <template v-else-if="active === 1">
-        <approvalRecord :requestParams="recordParams"></approvalRecord>
+            <approvalRecord :requestParams="recordParams"></approvalRecord>
         </template>
-        
     </ViewPage>
 </template>
 
@@ -25,7 +24,7 @@
   import ViewPage from '@/layout/components/ViewPage';
   import Card from '@/components/card'
   import Vue from 'vue';
-  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask,getButtonOfBankCredit } from '@/api/credit'
+  import { getBank, getCreditInfo, saveCreditInfo, createTask, stopTask } from '@/api/credit'
   import { getDic } from "@/api/createCustomer";
   import { getValue, setValue, removeValue } from '@/utils/session'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs} from 'vant';
@@ -51,6 +50,7 @@
       return {
         active:0,
         dataList: {
+          status:'',
           investigateBank: '',
           investigateBankName: '',
           isInternetCredit: '',
@@ -77,21 +77,6 @@
       selectList () {
 
       },
-      //---------获取字典数据------------------
-      async getDictionaryData () {
-        try {
-          let arr = [
-            "CREDIT_OBJECT_RELATION",//征信类型
-
-          ];
-          const data = await getDic(arr);
-          if (data.code == 200) {
-            console.log(data.data)
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      },
       // 字典转换
       returnText (val, key) {
         let name = '';
@@ -104,23 +89,22 @@
         }
         return name;
       },
+      //获取征信查询--详情
       async getCreditInfo () {
         try {
           this.loading = true
-          console.log(getValue("credit"))
           if (getValue("credit")) {
             this.dataList = JSON.parse(getValue("credit"))
           } else {
             const params = {
               lpCertificateNum: this.query.lpCertificateNum,
-              id: this.query.id
+              id: this.query.id,
+              buttonId:this.query.buttonId
             }
             if (this.query.again) {
               params.reRegister = 1
             }
-            console.log(params,'params')
             const res = await getCreditInfo(params)
-            console.log(res,'res')
             this.dataList = res.data.cuCreditRegister;
           }
           this.loading = false
@@ -132,10 +116,7 @@
               this.perInfoList.push(e);
             }
           })
-
-          // this.initCar()
           this.initCustomerData()
-          // this.checkPrice()
         } catch (e) {
           this.loading = false
           console.log(e)
@@ -233,16 +214,6 @@
           }
         }
       },
-      //获取征信按钮-电子签
-      async getButtonOfBankCredit(){
-          try{
-              const data=await getButtonOfBankCredit();
-              console.log(data,'data')
-
-          }catch(err){
-              console.log(err)
-          }
-      }
     },
     mounted () {
     //   if (this.$route.query.info && this.$route.query.dealState) {
@@ -265,8 +236,6 @@
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
     //   }
-      this.getDictionaryData();
-      this.getButtonOfBankCredit();
       this.getCreditInfo()
     }
   }
