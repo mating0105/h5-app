@@ -614,7 +614,7 @@
             <van-button
               size="large"
               class="xh-bg-main"
-              @click="submitTask"
+              @click="submitProject"
               :loading="dLoading"
               :disabled="dLoading"
             >提 交</van-button>
