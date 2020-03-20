@@ -1,5 +1,5 @@
 <template>
-    <div class="card is-always-shadow">
+    <div :class="isShowTitle?'card is-always-shadow':''">
         <div class="card__header">
             <div>
                 <span class="card_label">{{label}}</span>
@@ -56,6 +56,9 @@ Vue.use(Tag);
       showTime:{
         type: Boolean,
         default: false
+      },
+      isShowTitle:{
+          type: Boolean,
       }
     }
   }
