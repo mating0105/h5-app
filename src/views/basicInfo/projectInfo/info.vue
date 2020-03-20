@@ -621,7 +621,7 @@
           </van-col>
         </van-row>
       </div>
-      <div class="xh-submit" style="padding: 20px 10px;">
+      <div class="xh-submit" style="padding: 20px 10px;" v-else>
         <van-button
           size="large"
           class="xh-bg-main"
