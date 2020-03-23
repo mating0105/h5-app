@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Vue from 'vue';
-import { Notify } from 'vant';
+import { Notify, Toast } from 'vant';
 
 Vue.use(Notify);
 
@@ -65,7 +65,10 @@ const responseFulfilled = response => {
 }
 
 const responseRejected = error => {
+  console.log(error.response.config)
   if(error.response.status === 401) {
+    let msg = error.response.config.data || ''
+    // Notify({type: 'danger',duration: 5000, message:error.response.config.url + msg})
     Notify({ type: 'danger', message: '登录失效，请重新登录' });
     // debounce(lgoinInAgain, 500)
     loginAgainFn()

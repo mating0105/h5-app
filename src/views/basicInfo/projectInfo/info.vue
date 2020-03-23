@@ -614,14 +614,14 @@
             <van-button
               size="large"
               class="xh-bg-main"
-              @click="submitTask"
+              @click="submitProject"
               :loading="dLoading"
               :disabled="dLoading"
             >提 交</van-button>
           </van-col>
         </van-row>
       </div>
-      <div class="xh-submit" style="padding: 20px 10px;">
+      <div class="xh-submit" style="padding: 20px 10px;" v-else>
         <van-button
           size="large"
           class="xh-bg-main"
@@ -1442,14 +1442,9 @@ export default {
           loadingType: "spinner",
           overlay: true
         });
-        let projectId = this.params.projectNum
-          ? this.params.projectNum.replace("XM", "")
-          : "";
         getProjectInfo({
           id: this.params.projectId
             ? this.params.projectId
-            : projectId
-            ? projectId
             : this.params.businesskey
         })
           .then(res => {

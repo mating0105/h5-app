@@ -14,13 +14,13 @@
 
 <script>
 import { getToken } from "@/utils/auth";
-// import vConsole from 'vconsole'
+import vConsole from 'vconsole'
 
 
 export default {
   name: "App",
   created () {
-    // new vConsole();
+    new vConsole();
   }
 };
 </script>
