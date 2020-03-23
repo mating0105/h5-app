@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Vue from 'vue';
-import { Notify, Toast } from 'vant';
+import { Notify, Toast, Dialog } from 'vant';
 
 Vue.use(Notify);
 
@@ -16,8 +16,13 @@ function debounce(fn, wait) {
 }
 // 处理函数
 function lgoinInAgain() {
-  const time = new Date().getTime()
-  Vue.prototype.$bridge.callHandler("lgoinInAgain", time, res => {});// 调用原生重新登录
+  // Vue.prototype.$bridge.callHandler("lgoinInAgain", '', res => {});// 调用原生重新登录
+  Dialog.alert({
+    title: '登录失效',
+    message: '请重新登录'
+  }).then(() => {
+    Vue.prototype.$bridge.callHandler("lgoinInAgain", '', res => {});
+  });
 }
 
 const loginAgainFn = debounce(lgoinInAgain, 500)
@@ -69,17 +74,12 @@ const responseRejected = error => {
   console.log(error.response.config)
   if(error.response.status === 401) {
     let msg = error.response.config.data || ''
-    // Notify({type: 'danger',duration: 5000, message:error.response.config.url + msg})
     Notify({ type: 'danger', message: '登录失效，请重新登录' });
-    // debounce(lgoinInAgain, 500)
     loginAgainFn()
-    // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
   if(error.response.status === 504) {
-    // debounce(lgoinInAgain, 500)
     loginAgainFn()
-    // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
     return
   }
   console.log('err' + error) // for debug
