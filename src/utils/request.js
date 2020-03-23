@@ -19,7 +19,7 @@ function lgoinInAgain() {
   // Vue.prototype.$bridge.callHandler("lgoinInAgain", '', res => {});// 调用原生重新登录
   Dialog.alert({
     title: '登录失效',
-    message: '请重新登录'
+    message: '您的登录信息已失效，请重新登录！'
   }).then(() => {
     Vue.prototype.$bridge.callHandler("lgoinInAgain", '', res => {});
   });
