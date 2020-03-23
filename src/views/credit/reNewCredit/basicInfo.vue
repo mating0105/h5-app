@@ -375,7 +375,7 @@ export default {
         if (!this.verifyForm()) {
           return;
         }
-        this.dataList.creditTypeFlag = 1
+        // this.dataList.creditTypeFlag = 1
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
         let _arr = []
