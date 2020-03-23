@@ -16,7 +16,8 @@ function debounce(fn, wait) {
 }
 // 处理函数
 function lgoinInAgain() {
-  Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
+  const time = new Date().getTime()
+  Vue.prototype.$bridge.callHandler("lgoinInAgain", time, res => {});// 调用原生重新登录
 }
 
 const loginAgainFn = debounce(lgoinInAgain, 500)
