@@ -17,7 +17,6 @@ function debounce(fn, wait) {
 // 处理函数
 function lgoinInAgain() {
   Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
-  Vue.prototype.$bridge.callHandler("zfj_test", "", res => {});// 调用原生重新登录
 }
 
 const loginAgainFn = debounce(lgoinInAgain, 500)
@@ -69,8 +68,8 @@ const responseRejected = error => {
   console.log(error.response.config)
   if(error.response.status === 401) {
     let msg = error.response.config.data || ''
-    Notify({type: 'danger',duration: 5000, message:error.response.config.url + msg})
-    // Notify({ type: 'danger', message: '登录失效，请重新登录' });
+    // Notify({type: 'danger',duration: 5000, message:error.response.config.url + msg})
+    Notify({ type: 'danger', message: '登录失效，请重新登录' });
     // debounce(lgoinInAgain, 500)
     loginAgainFn()
     // Vue.prototype.$bridge.callHandler("lgoinInAgain", "", res => {});// 调用原生重新登录
