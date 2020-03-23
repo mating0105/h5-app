@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request,{serviceOther} from '@/utils/request'
 
 //获取详情信息
 export function loanInfoDetail(params) {
@@ -61,5 +61,13 @@ export function fieldRulesNew(params){
         url:params.urls,
         method: 'get',
         params:params.obj
+    })
+}
+//待办--获取征信类型
+export function getCreditList(params){
+    return serviceOther({
+        url:'/manage/buttonConfig/getButtonByServer/v2',
+        method: 'get',
+        params
     })
 }

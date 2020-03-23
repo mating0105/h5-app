@@ -20,19 +20,29 @@
                     <div v-for="(item,index) in listData" :key="'loadList'+index" :title="item">
                         <Card class="xh-top-10">
                             <template v-slot:header>
-                                <section class="xh-plus">
-                                    <van-cell :title="returnText(dictionaryData,'business_type',item.businesstype)"  icon="after-sale"></van-cell>
+                                <section class="xh-plus head">
+                                    <div>
+                                        <van-cell 
+                                        v-if="item.creditType!==null&&item.creditType!==''" 
+                                        :title="item.creditSearchType!==null&&item.creditSearchType!==''&&returnTextCredit(creditSearchTypeList,item.creditSearchType)!=='人工'? returnTextCredit(creditList,item.creditType)+'('+returnTextCredit(creditSearchTypeList,item.creditSearchType)+')':returnText(dictionaryData,'business_type',item.businesstype)"  
+                                        icon="after-sale"></van-cell>
+                                        <van-cell 
+                                        v-else 
+                                        :title="item.creditSearchType!==null&&item.creditSearchType!==''&&returnTextCredit(creditSearchTypeList,item.creditSearchType)!=='人工'?returnText(dictionaryData,'business_type',item.businesstype)+'('+returnTextCredit(creditSearchTypeList,item.creditSearchType)+')':returnText(dictionaryData,'business_type',item.businesstype)"  
+                                        icon="after-sale"></van-cell>
+                                    </div>
+                                    <div class="timeBox">{{dayjs(item.createDate).format('YYYY-MM-DD HH:mm:ss')}}</div>
                                 </section>
                             </template>
                             <van-row style="padding:10px 10px 20px;line-height:22px;" @click="applyPay(item)">
                                 <van-col span="24">
-                                    项目编号：{{item.projectNum}}
+                                    客户编号：{{item.projectNum}}
                                 </van-col>
-                                <van-col span="10" class="xh-top-10">
+                                <van-col span="24" class="xh-top-10">
                                     客户名称：{{item.customerName}}
                                 </van-col>
-                                <van-col span="14" class="xh-top-10" style="text-align:right;">
-                                    {{dayjs(item.createDate).format('YYYY-MM-DD HH:mm:ss')}}
+                                <van-col v-if="item.remarks" span="24" class="xh-top-10">
+                                    备注说明：{{item.remarks}}
                                 </van-col>
                             </van-row>
                         </Card>
@@ -46,7 +56,7 @@
 <script>
 import Vue from "vue";
 import Card from "@/components/card/index";
-import { findList } from '@/api/makeLoan.js'
+import { findList,getCreditList } from '@/api/makeLoan.js'
 import { getDic } from "@/api/createCustomer";
 import ViewPage from '@/layout/components/ViewPage';
 import dayjs from 'dayjs'
@@ -137,7 +147,9 @@ export default {
                     {name:'缴费垫款',path:'/paymentSure',params:newParams},
                     {name:'车商准入',path:'/i',params:newParams},
                 ]
-            }
+            },
+            creditList:[],//征信类型列表
+            creditSearchTypeList:[],//征信查询方式（人工、E分期）
         };
     },
     watch: {
@@ -202,6 +214,16 @@ export default {
             })
             return name;
         },
+        //征信类型转换
+        returnTextCredit(dataArr,val){
+            let buttonName;
+            dataArr.forEach(e =>{
+                if (e.buttonId == val) {
+                    buttonName = e.buttonName;
+                }
+            })
+            return buttonName;
+        },
         // 发起放款
         applyPay(val) {
             this.info=val;
@@ -238,10 +260,39 @@ export default {
                 Toast.success('刷新成功');
                 this.isLoading = false;
             }, 500);
+        },
+        //获取征信查询方式
+        async getCreditList(){
+            try{
+                let para={
+                    serverName:'credit-list'
+                }
+                const data=await getCreditList(para);
+                if(data.code==200){
+                    this.creditList=data.data;
+                }
+            }catch(err){
+                console.log(err)
+            }
+        },
+        async getCreditSearchType(){
+            try{
+                let para={
+                    serverName:'credit-search-type'
+                }
+                const data=await getCreditList(para);
+                if(data.code==200){
+                    this.creditSearchTypeList=data.data;
+                }
+            }catch(err){
+                console.log(err)
+            }
         }
     },
     mounted(){
         this.getDictionaryData();
+        this.getCreditList();
+        this.getCreditSearchType();
         this.onLoad();
         sessionStorage.removeItem("pro");
         sessionStorage.removeItem("proInfo");
@@ -255,6 +306,15 @@ export default {
   span {
     color: rgb(196, 37, 42);
   }
+}
+.head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .timeBox{
+        color:#303133;
+        font-weight:normal;
+    }
 }
 .xh-fixed-submit {
   position: fixed;
