@@ -21,7 +21,7 @@ function lgoinInAgain() {
     title: '登录失效',
     message: '您的登录信息已失效，请重新登录！'
   }).then(() => {
-    Vue.prototype.$bridge.callHandler("lgoinInAgain", '', res => {});
+    Vue.prototype.$bridge.callHandler("loginOut", '', res => {});
   });
 }
 
