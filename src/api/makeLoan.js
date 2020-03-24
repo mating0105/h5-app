@@ -63,3 +63,11 @@ export function fieldRulesNew(params){
         params:params.obj
     })
 }
+//待办--获取征信类型
+export function getCreditList(params){
+    return serviceOther({
+        url:'/manage/buttonConfig/getButtonByServer/v2',
+        method: 'get',
+        params
+    })
+}

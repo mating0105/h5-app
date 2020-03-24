@@ -18,7 +18,7 @@ export function getBank(params) {
  */
 export function getCreditInfo(params) {
   return request({
-    url: '/order/creditInfo/cuCreditRegisterFormMob',
+    url: '/order/standardCreditInfo/cuCreditRegisterFormMob',
     method: 'get',
     params
   })
@@ -160,17 +160,6 @@ export function creditSaveOf100(params) {
     data: params
   })
 }
-/**
- * 征信按钮
- * @param params
- */
-export function getButtonOfCredit(params) {
-  return request({
-    url: '/manage/buttonConfig/getButtonByServer?serverName=big-data-credit',
-    method: 'get',
-    params
-  })
-}
 // 获取方式
 export function getByServer(params) {
   return serviceOther({
@@ -186,4 +175,13 @@ export function setBookObj(params) {
     method: 'post',
     data: params
   })
+}
+
+//人工--查询银行
+export function getBankList(params){
+    return serviceOther({
+        url: '/cooperation/loanPlatform/getLoanPlatformTree',
+        method: 'get',
+        params
+    })
 }
