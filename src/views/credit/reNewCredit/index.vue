@@ -12,7 +12,7 @@
             </van-tabs>
         </template>
         <template v-if="active === 0">
-            <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query"></basicInfo>
+            <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query" :buttonId='buttonId'></basicInfo>
         </template>
         <template v-else-if="active === 1">
             <approvalRecord :requestParams="recordParams"></approvalRecord>
@@ -64,7 +64,8 @@
         query: {},
         recordParams: {
           businessKey: '', businessType: '07'
-        }
+        },
+        buttonId:'',
       }
     },
     computed: {
@@ -105,7 +106,7 @@
               params.reRegister = 1
             }
             const res = await getCreditInfo(params)
-            this.dataList = res.data.cuCreditRegister;
+            this.dataList = res.data;
           }
           this.loading = false
 
@@ -235,6 +236,7 @@
     //   } else {
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
+        this.buttonId=this.query.buttonId;
     //   }
       this.getCreditInfo()
     }
