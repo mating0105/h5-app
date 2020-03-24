@@ -1,7 +1,7 @@
 <template>
   <div>
     <NewCard
-      label="大数据征信查询信息"
+      label="人保征信查询信息"
       :showSign="dataList.standardCreditStatus && !dataList.reRegister?true:false"
       :showTime="dataList.standardCreditStatus && !dataList.reRegister?true:false"
       :sign="returnText(dataList.standardCreditStatus,'standard_credit_status')"
@@ -11,7 +11,7 @@
     >
       <div class="waitInfoBox" v-show="dataList.standardCreditStatus == '01'">
         <van-row type="flex" justify="space-between" class="waitInfo">
-          <van-col span="20">大数据征信结果查询中，请耐心等待</van-col>
+          <van-col span="20">人保征信结果查询中，请耐心等待</van-col>
           <van-col span="2" style="padding-top:3px;" @click="refreshStatus">
             <van-icon name="replay" size="1.8rem" />
           </van-col>
@@ -43,17 +43,7 @@
           :right-icon="!edit ? '' : 'scan'"
           @click-right-icon="IdcardLoading('bankCodeOCR')"
         />
-        <van-cell
-          title="征信查询方式:"
-          label-class="labelClass"
-          :label="errorMsg.creditSearchType"
-          :disabled="!edit"
-          :border="false"
-          required
-          :is-link="edit"
-          :value="dataList.creditSearchTypeDesc"
-          @click="showPickerFn('creditSearchType')"
-        />
+        <van-cell title="征信查询方式:" required :border="false" :value="dataList.creditSearchTypeDesc" />
         <van-cell
           title="征信签约方式:"
           label-class="labelClass"
@@ -74,7 +64,7 @@
           is-link
           :value="form.electronicSignResult ? form.electronicSignResult: '待签约'"
           v-if="isElectronic"
-          @click="electronicFn(data.electronicSignResult)"
+          @click="edit?electronicFn(data.electronicSignResult):''"
         />
         <van-cell title="相关文档:" required :border="false" />
         <imageList :dataList="mainImg"></imageList>
@@ -156,14 +146,13 @@
       </van-row>
     </div>
     <div v-else>
-      <div class="xh-submit-box" v-if="creditTYPE != 'bairong'">
+      <div class="xh-submit-box">
         <van-button size="large" class="xh-btn" @click="submit">提交征信查询</van-button>
       </div>
-
-      <div class="xh-submit-box" v-if="creditTYPE === 'bairong'">
-        <van-button size="large" @click="triggerQuery" class="xh-btn">发起征信查询1</van-button>
-      </div>
     </div>
+
+
+    
 
     <!-- 身份证识别/银行卡识别 -->
     <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern" />
@@ -270,7 +259,7 @@ Components.forEach(item => {
 });
 
 export default {
-  name: "bigDataBasicInfo",
+  name: "rbBasicInfo",
   mixins: [formValidator],
   components: {
     ViewPage,
@@ -290,11 +279,6 @@ export default {
       type: Boolean
     },
     buttonId: String,
-    creditTypeList: Array, //征信查询方式
-    creditTYPE: {
-      default: "",
-      type: String
-    },
     showTypes: {
       default: true,
       type: Boolean
@@ -332,21 +316,21 @@ export default {
       time: "",
       remarks: "", //备注说明
       obj: {
-        joiDebtorSpouse: ["0113", "0114", "2004", "6694"], //共债人配偶
-        borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-        security: ["0120", "0117", "2005", "6692"], //担保人
-        joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-        borrower: ["0101", "0102", "2001", "6690"] //主借人
+        joiDebtorSpouse: ["0113", "0114", "2004", "6684"], //共债人配偶
+        borrowerSpouse: ["0105", "0106", "2002", "6680"], //借款人配偶
+        security: ["0120", "0117", "2005", "6681"], //担保人
+        joiDebtor: ["0109", "0110", "2003", "6683"], //共债人
+        borrower: ["0101", "0102", "2001", "6679"] //主借人
       },
       processedBy: "", //提交人id
       taskData: {}, //
       electronicList: [],
-      showDialog: false,
-      cause: "",
+      showDialog:false,
+      cause:'',
       autosize: {
         maxHeight: 100,
         minHeight: 20
-      }
+      },
     };
   },
   computed: {
@@ -412,39 +396,17 @@ export default {
     async judge(list) {
       this.dataList.signMode = list;
       //是否电子签
-      console.log(this.dataList.creditSearchTypeDesc,777)
-      if (list == "电子签" && this.dataList.creditSearchTypeDesc != '百融') {
+      if (list == "电子签") {
         this.isElectronic = true;
-        //如果是电子签，则没有大数据征信授权书
-        this.obj = {
-          joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
-          borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
-          security: ["0120", "0117", "2005"], //担保人
-          joiDebtor: ["0109", "0110", "2003"], //共债人
-          borrower: ["0101", "0102", "2001"] //主借人
-        };
-        this.dataList.surDtlList.forEach(e => {
-          const arr = this.obj[e.creditObjectType];
-          arr.forEach(i => {
-            this.getDocumentByType(i, e);
-          });
-        });
       } else {
         this.isElectronic = false;
-        this.obj = {
-          joiDebtorSpouse: ["0113", "0114", "2004", "6694"], //共债人配偶
-          borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-          security: ["0120", "0117", "2005", "6692"], //担保人
-          joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-          borrower: ["0101", "0102", "2001", "6690"] //主借人
-        };
-        this.dataList.surDtlList.forEach(e => {
-          const arr = this.obj[e.creditObjectType];
-          arr.forEach(i => {
-            this.getDocumentByType(i, e);
-          });
-        });
       }
+      this.dataList.surDtlList.forEach(e => {
+        const arr = this.obj[e.creditObjectType];
+        arr.forEach(i => {
+          this.getDocumentByType(i, e);
+        });
+      });
     },
     unFormatter(beanData) {
       const perInfo = beanData.perInfo || {};
@@ -586,7 +548,7 @@ export default {
           num++;
         }
       }
-      console.log("err", num);
+      console.log('err',num);
       return num === 0;
     },
     //提交征信查询
@@ -635,60 +597,6 @@ export default {
         Toast.clear();
       }
     },
-    //提交百融征信查询
-    async triggerQuery() {
-      let nowDate = new Date();
-      // 当前时间与查询时间+30天对比
-      let isRegister = this.dataList.surDtlList.some(element => {
-        let dateItem = element.credit100StrategyQuerydate
-          ? new Date(element.credit100StrategyQuerydate)
-          : "";
-        return dateItem
-          ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate
-          : false;
-      });
-      console.log(isRegister);
-      if (isRegister) {
-        Toast("已查询的用户请30天后重新查询");
-        return;
-      }
-      //验证大数据征信授权书图片是否上传 主借人必传
-      let imgtost = false;
-      for(let i = 0;i<this.mainImg.length;i++){
-        if(this.mainImg[i].documentType== '6690'){
-          if(this.mainImg[i].fileList.length<1){
-            Toast("请上传主借人大数据征信授权书");
-            break;
-          }else{
-            imgtost = true;
-          }
-        }
-      }
-      if(!imgtost){
-        return;
-      }
-      let imgArr = [];
-      this.dataList.surDtlList.forEach(e =>{
-        e.dataList.forEach(i =>{
-          if(i.documentType == '6690' || i.documentType == '6691' || i.documentType == '6692' || i.documentType =='6693'||i.documentType == '6694'){
-            if(i.fileList.length<1){
-              console.log(e.creditObjectType);
-              imgArr.push(this.returnText(e.creditObjectType,'credit_object_type'));
-            }
-          }
-        })
-      })
-      let nameString = imgArr.join('、');
-      Dialog.confirm({
-        title: '',
-        message: `${nameString}没有上传征信查询授权书，无法查询征信，确定吗？`
-      }).then(() => {
-        this.bigDataTipOfBr();
-      }).catch(() => {
-        // on cancel
-      });
-      
-    },
     //提交流程
     async postProcess() {
       const params = {
@@ -701,57 +609,8 @@ export default {
       this.$nextTick(() => {
         Toast.success("提交成功");
       });
-      if (creditTYPE == "bairong") {
-        this.$router.go(-1);
-      } else {
-        this.$emit("reLoad");
-        console.log("更新状态", this.dataList.standardCreditStatus);
-      }
-    },
-    // 百融大数据征信授权书提示
-    async bigDataTipOfBr() {
-      try {
-        if (!this.verifyForm()) {
-          return;
-        }
-        Toast.loading({
-          message: "加载中...",
-          forbidClick: true,
-          loadingType: "spinner",
-          overlay: true
-        });
-        this.dataList.creditTypeFlag = 1;
-        await creditSaveOf100(this.dataList);
-        removeValue("credit");
-        const params = {
-          businessKey: data.creditRegisterId,
-          businessType: "07",
-          commentsDesc: "同意",
-          conclusionCode: "01",
-          processDefineKey: "WF_CU_CREDIT_001",
-          remarks: this.remarks
-        };
-        const subData = await createTask(params);
-        this.taskData = subData.data;
-        const userParams = {
-          businessKey: data.creditRegisterId,
-          commentsDesc: this.remarks ? this.remarks : "同意",
-          conclusionCode: "01"
-        };
-        const res = await getUsers(userParams);
-        let objArr = [];
-        res.data.list.forEach(t => {
-          objArr.push({
-            ...t,
-            label: t.companyName + "-" + t.name
-          });
-        });
-        this.changeUserList = objArr;
-        Toast.clear();
-        this.showPickerFn("user");
-      } catch {
-        Toast.clear();
-      }
+      this.$emit('reLoad');    
+      console.log('更新状态',this.dataList.standardCreditStatus);
     },
     async getDocumentByType(documentType, obj) {
       try {
@@ -788,8 +647,8 @@ export default {
     endTask() {
       this.showDialog = true;
     },
-    async confirmFn() {
-      if (!this.cause) {
+    async confirmFn(){
+      if(!this.cause){
         this.showDialog = false;
         Toast("请输入终止原因");
         return;
@@ -803,7 +662,7 @@ export default {
       let recordParams = {
         businessKey: this.dataList.id,
         businessType: "07"
-      };
+      }
       await stopTask(recordParams);
       Toast.clear();
       this.$nextTick(() => {
@@ -811,11 +670,13 @@ export default {
       });
       this.$router.go(-1);
     },
-    cancelFn() {
+    cancelFn(){
       this.showDialog = false;
     }
   },
   mounted() {
+    this.dataList.creditSearchType = '1';
+    this.dataList.creditSearchTypeDesc = '人工';
     this.getAnyServer("electronic-visa-model", "electronic");
   },
   destroyed() {

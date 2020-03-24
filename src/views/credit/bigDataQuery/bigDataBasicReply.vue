@@ -62,6 +62,36 @@
           <van-cell title="征信报告:" required :border="false" />
           <imageList :dataList="mainCreditImg"></imageList>
         </div>
+        <div v-if="thisCreditType == '6'">
+          <van-row class="br-box">
+            <van-col :span="18">
+              <div>
+                <span class="br-title">贷前信息验证结果：</span>
+                <span class="br-result">通过</span>
+              </div>
+              <div class="br-time">
+                结果查询时间：2020-01-01 11:30:59
+              </div>
+            </van-col>
+            <van-col :span="6">
+              <van-button size="small">查看报告</van-button>
+            </van-col>
+          </van-row>
+          <van-row class="br-box">
+            <van-col :span="18">
+              <div>
+                <span class="br-title">贷前风险策略结果：</span>
+                <span class="br-result">通过</span>
+              </div>
+              <div class="br-time">
+                结果查询时间：2020-01-01 11:30:59
+              </div>
+            </van-col>
+            <van-col :span="6">
+              <van-button size="small">查看报告</van-button>
+            </van-col>
+          </van-row>
+        </div>
       </div>
       <div v-if="perInfoList.length > 0">
         <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
@@ -265,7 +295,7 @@ export default {
     buttonId: String,
     creditTypeList: Array, //征信查询方式
     thisCreditType: String,
-    isShowTitle:Boolean,
+    isShowTitle: Boolean
   },
   mixins: [formValidator],
   components: {
@@ -519,13 +549,15 @@ export default {
         Toast.fail("请在备注说明里填写退回原因");
       } else {
         this.loading = true;
+        this.dataList.remarks = this.remarks;
         const params = {
           wfBizComments: {
             commentsDesc: this.remarks,
             conclusionCode: "02",
-            businessKey: this.dataList.id
+            businessKey: this.dataList.id,
+            remarks:this.remarks
           },
-          cuCreditRegister: this.dataList
+          cuCreditRegister: this.dataList,
         };
         await bankReply(params);
         this.loading = false;
@@ -719,7 +751,11 @@ export default {
       joiDebtor: ["0109", "0110", "2003"], //共债人
       borrower: ["0101", "0102", "2001"] //主借人
     };
+    this.mainImg = [];
+    this.mainCreditImg = [];
     this.dataList.surDtlList.forEach(e => {
+      e.dataList = [];
+      e.creditList = [];
       const arr = this.obj[e.creditObjectType];
       arr.forEach(i => {
         this.getDocumentByType(i, e); //相关文档
@@ -748,6 +784,27 @@ export default {
 
   .column2 {
     text-align: left;
+  }
+}
+//百融征信
+.br-box{
+  margin:1rem;
+  background: #F8F8F8;
+  padding:1.3rem 1rem;
+  .br-title{
+    font-size:1.6rem ;
+    font-weight: bold;
+    color:#262626;
+  }
+  .br-result{
+    font-size:1.6rem ;
+    font-weight: bold;
+    color:#00C67C;
+  }
+  .br-time{
+    margin-top:1rem;
+    color:#a6a6a6;
+    font-size: 1.2rem;
   }
 }
 </style>

@@ -6,15 +6,16 @@
         <van-tab title="操作记录"></van-tab>
       </van-tabs>
     </template>
-    <template v-if="active === 0 && dataList.id">
-      <basicInfo
+    <template v-if="active === 0 && dataList.lpCertificateNum">
+      <rbBasicInfo
         :dataList="dataList"
         :edit="edit"
         :form="form"
         :perInfoList="perInfoList"
         :buttonId="buttonId"
         :hiddenHandle="true"
-      ></basicInfo>
+        @reLoad="reLoad"
+      ></rbBasicInfo>
     </template>
     <template v-else-if="active === 1">
       <approvalRecord :requestParams="recordParams"></approvalRecord>
@@ -34,7 +35,7 @@ import formValidator from "@/mixins/formValidator";
 import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
-import basicInfo from "../bigDataQuery/bigDataBasicInfo";
+import rbBasicInfo from "../bigDataQuery/rbBasicInfo";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 import Vue from "vue";
@@ -45,7 +46,8 @@ import {
   saveCreditInfo,
   createTask,
   getUsers,
-  submitCredit
+  submitCredit,
+  creditQueryOf100
 } from "@/api/credit";
 import Bus from "@/utils/bus";
 import {
@@ -98,7 +100,7 @@ export default {
     imageList,
     radio,
     radioItem,
-    basicInfo
+    rbBasicInfo
   },
   data() {
     return {
@@ -107,9 +109,12 @@ export default {
         investigateBank: "",
         investigateBankName: "",
         isInternetCredit: "",
-        carInfos: [],
-        surDtlList: []
+        surDtlList: [],
+        creditSearchType: "",
+        creditSearchTypeDesc: ""
       },
+      creditSearchTypeDesc: "",
+      creditSearchType: "",
       loading: false,
       edit: false,
       form: {},
@@ -118,7 +123,7 @@ export default {
         businesskey: "",
         businessType: "07"
       },
-      buttonId:'',
+      buttonId: "",
     };
   },
   computed: {
@@ -130,16 +135,16 @@ export default {
   methods: {
     async loadData() {
       this.loading = true;
-      let data;
+      let data, res;
       if (getValue("credit")) {
         data = JSON.parse(getValue("credit"));
       } else {
         let datalist = {
-          creditType:this.params.buttonId,
+          buttonId: this.params.buttonId,
           lpCertificateNum: this.params.lpCertificateNum
         };
-        let res = await getCreditDetail(datalist);
-        data = res.data.cuCreditRegister;
+        res = await getCreditDetail(datalist);
+        data = res.data;
       }
       this.sign = data.standardCreditStatus;
       this.time = data.registerDate;
@@ -152,9 +157,25 @@ export default {
         }
       });
       this.dataList = data;
+      this.dataList.reRegister = this.params.reRegister;
+      if (this.params.reRegister == 1) {
+        this.dataList.id = "";
+      }
+      this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
+      this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
       this.initCustomerData();
       this.loading = false;
+    },
+    //重新加载数据,更新征信状态
+    async reLoad(){
+      let res;
+      let datalist = {
+          buttonId: this.params.buttonId,
+          lpCertificateNum: this.params.lpCertificateNum
+        };
+        res = await getCreditDetail(datalist);
+        this.dataList.standardCreditStatus = res.data.standardCreditStatus;
     },
     initCustomerData() {
       let customerData = this.$store.state.credit.customerData;
@@ -163,7 +184,7 @@ export default {
         customerData = this.enFormatter(customerData);
         if (index === -1) {
           this.perInfoList.push(customerData);
-          this.data.surDtlList.push(customerData);
+          this.dataList.surDtlList.push(customerData);
         } else {
           const perInfo = this.perInfoList[index];
           if (perInfo) {
@@ -176,11 +197,39 @@ export default {
         }
         this.$store.dispatch("credit/removeCustomerData");
       }
+    },
+    enFormatter(beanData) {
+      return {
+        sex: beanData.sex, //性别
+        creditPersonName: beanData.customerName, //客户姓名
+        cpCertificateNum: beanData.certificateNum, //身份证号码
+        age: beanData.age, //年龄
+        creditObjectType: beanData.creditObjectType, //征信对象类型
+        creditObjectRelation: beanData.creditObjectRelation, //征信对象类型
+        perInfo: {
+          nationName: beanData.nationName, //民族
+          nation: beanData.nation, //民族
+          birthday: beanData.birthday, //出生日期
+          signOrg: beanData.signOrg //身份证签发机关
+        },
+        familyAddress: beanData.familyAddress, //身份证住址
+        startDate: beanData.startDate, //起始日
+        endDate: beanData.endDate, //截止日
+        telephone: beanData.contactPhone, //手机号码
+        bankCardNum: beanData.bankCardNum, //银行卡号
+        dataList: [],
+        canDel: true,
+        isSearchCredit: beanData.isSearchCredit
+      };
     }
   },
   mounted() {
     this.params = this.$route.query;
-    this.edit = this.params.edit;
+    if (this.params.standardStatus == "01") {
+      this.edit = false;
+    } else {
+      this.edit = this.params.edit;
+    }
     this.buttonId = this.params.buttonId;
     this.loadData();
   }

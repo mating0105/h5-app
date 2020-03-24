@@ -6,7 +6,7 @@
         <van-tab title="操作记录"></van-tab>
       </van-tabs>
     </template>
-    <template v-if="active === 0 && dataList.id">
+    <template v-if="active === 0 && dataList.lpCertificateNum">
       <basicInfo
         :dataList="dataList"
         :edit="edit"
@@ -14,8 +14,9 @@
         :perInfoList="perInfoList"
         :buttonId="buttonId"
         :hiddenHandle="true"
-        :type="TYPE"
+        :creditTYPE="creditTYPE"
         :creditTypeList="creditTypeList"
+        @reLoad="reLoad"
       ></basicInfo>
     </template>
     <template v-else-if="active === 1">
@@ -111,11 +112,11 @@ export default {
         investigateBankName: "",
         isInternetCredit: "",
         surDtlList: [],
-        creditSearchType:'',
-        creditSearchTypeDesc:''
+        creditSearchType: "",
+        creditSearchTypeDesc: ""
       },
-      creditSearchTypeDesc:'',
-      creditSearchType:'',
+      creditSearchTypeDesc: "",
+      creditSearchType: "",
       loading: false,
       edit: false,
       form: {},
@@ -125,8 +126,8 @@ export default {
         businessType: "07"
       },
       buttonId: "",
-      TYPE: "", //征信查询方式
-      creditTypeList:[],//征信查询数组
+      creditTYPE: "", //征信查询方式
+      creditTypeList: [] //征信查询数组
     };
   },
   computed: {
@@ -138,7 +139,7 @@ export default {
   methods: {
     async loadData() {
       this.loading = true;
-      let data,res;
+      let data, res;
       if (getValue("credit")) {
         data = JSON.parse(getValue("credit"));
       } else {
@@ -146,9 +147,9 @@ export default {
           buttonId: this.params.buttonId,
           lpCertificateNum: this.params.lpCertificateNum
         };
-        if(this.TYPE == 'bairong'){
-          res = await creditQueryOf100(datalist)
-        }else{
+        if (this.creditTYPE == "bairong") {
+          res = await creditQueryOf100(datalist);
+        } else {
           res = await getCreditDetail(datalist);
         }
         data = res.data;
@@ -165,14 +166,28 @@ export default {
       });
       this.dataList = data;
       this.dataList.reRegister = this.params.reRegister;
-      if(this.params.reRegister == 1){
-        this.dataList.id = '';
+      if (this.params.reRegister == 1) {
+        this.dataList.id = "";
       }
       this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
       this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
       this.initCustomerData();
       this.loading = false;
+    },
+    //重新加载数据,更新征信状态
+    async reLoad(){
+      let res;
+      let datalist = {
+          buttonId: this.params.buttonId,
+          lpCertificateNum: this.params.lpCertificateNum
+        };
+        if (this.creditTYPE == "bairong") {
+          res = await creditQueryOf100(datalist);
+        } else {
+          res = await getCreditDetail(datalist);
+        }
+        this.dataList.standardCreditStatus = res.data.standardCreditStatus;
     },
     //大数据征信类型
     async getAnyServer(serverName, type) {
@@ -186,11 +201,11 @@ export default {
         if (this.creditTypeList.length == 1) {
           this.creditSearchTypeDesc = this.creditTypeList[0].buttonName;
           this.creditSearchType = this.creditTypeList[0].id;
-        }
-        if (this.dataList.creditSearchType == 6) {
-          this.TYPE = "bairong";
-        } else {
-          this.TYPE = "";
+          if(this.creditSearchTypeDesc == '百融'){
+            this.creditTYPE = 'bairong';
+          }else{
+            this.creditTYPE = '';
+          }
         }
         this.loadData();
       }
@@ -239,16 +254,18 @@ export default {
         canDel: true,
         isSearchCredit: beanData.isSearchCredit
       };
-    },
+    }
   },
   mounted() {
     this.params = this.$route.query;
-    this.edit = this.params.edit;
+    console.log(this.params, '子');
+    if (this.params.standardStatus == "01") {
+      this.edit = false;
+    } else {
+      this.edit = this.params.edit;
+    }
     this.buttonId = this.params.buttonId;
     this.getAnyServer("big-data-credit", "bigdata");
-    // this.getAnyServer("electronic-visa-model", "electronic").then(() =>
-    //   this.getAnyServer("big-data-credit", "bigdata")
-    // );
   }
 };
 </script>

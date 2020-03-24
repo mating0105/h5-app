@@ -281,7 +281,6 @@ export default {
     },
     // 发起报单
     async startForm(type, item, query = {}) {
-      console.log(item, type)
       removeValue("credit");
       const goPageCredit = () => {
         this.$router.push({
@@ -302,9 +301,9 @@ export default {
         case "bigdata":
           if(item.bigDataCredit.proessStatus == '03' || item.bigDataCredit.proessStatus == '04'){
             await checkedReregisterMob({ lpCertificateNum: item.lpCertificateNum });
-            this.startFormFn(item, { edit: true, bigData: true,reRegister:1 },"/bigDataCredit",item.bigDataCredit.buttonId);
+            this.startFormFn(item, { edit: true, bigData: true,reRegister:1,standardStatus:item.bigDataCredit.standardStatus },"/bigDataCredit",item.bigDataCredit.buttonId);
           }else{
-            this.startFormFn(item, { edit: true, bigData: true},"/bigDataCredit",item.bigDataCredit.buttonId);
+            this.startFormFn(item, { edit: true, bigData: true,standardStatus:item.bigDataCredit.standardStatus},"/bigDataCredit",item.bigDataCredit.buttonId);
           }
           break;
         case "personal":
@@ -320,12 +319,12 @@ export default {
       } else {
         switch (name) {
           case "bank":
-
             break;
           case "bigdata":
-            this.startFormFn(item, { edit: true, bigData: true },"/bigDataCredit",item.bigDataCredit.buttonId);
+            this.startFormFn(item, { edit: item.bigDataCredit.standardStatus == '01'?false:true, bigData: true,standardStatus:item.bigDataCredit.standardStatus },"/bigDataCredit",item.bigDataCredit.buttonId);
             break;
           case "personal":
+            this.startFormFn(item, { edit: item.personalGua.standardStatus == '01'?false:true, rbCredit: true,standardStatus:item.personalGua.standardStatus },"/rbCredit",item.personalGua.buttonId);
             break;
         }
       }
