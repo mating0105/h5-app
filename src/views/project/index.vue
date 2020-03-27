@@ -459,6 +459,7 @@ export default {
       gpsList: [], // gps套餐
       array:[],
       form:{},
+      optionList:[],//意见的数组
     };
   },
   methods: {
