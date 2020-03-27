@@ -61,6 +61,16 @@
                                人保征信未通过
                             </span>
                             </van-col>
+                            <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
+                            <span class="xh-success-tag">
+                               人工征信通过
+                            </span>
+                            </van-col>
+                            <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
+                            <span class="xh-danger-tag">
+                               人工征信未通过
+                            </span>
+                            </van-col>
                             <van-col span="24" class="xh-top-10" v-if="item.credit100Result">
                             <span :class="item.credit100Result.slice(-2) === '通过' ? 'xh-success-tag' :'xh-danger-tag'">
                                {{item.credit100Result}}
@@ -124,90 +134,113 @@
 </template>
 
 <script>
-  import Vue from "vue";
-  import { getList, getButtonList, checkedReregisterMob } from "@/api/credit";
-  import { getUserInfoByTo } from "@/api/priceEvaluation";
-  // 自定义组件
-  import ViewPage from "@/layout/components/ViewPage";
-  import Card from "@/components/card/index";
-  import { removeValue } from '@/utils/session'
-  // 其他组件
-  import { Row, Col, Icon, Cell, Button, List, Search, PullRefresh, Toast } from "vant";
+import Vue from "vue";
+import { getList, getButtonList, checkedReregisterMob } from "@/api/credit";
+import { getUserInfoByTo } from "@/api/priceEvaluation";
+// 自定义组件
+import ViewPage from "@/layout/components/ViewPage";
+import Card from "@/components/card/index";
+import { removeValue } from "@/utils/session";
+// 其他组件
+import {
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Search,
+  PullRefresh,
+  Toast
+} from "vant";
 
-  const Components = [Row, Col, Icon, Cell, Button, List, Search, PullRefresh, Toast];
+const Components = [
+  Row,
+  Col,
+  Icon,
+  Cell,
+  Button,
+  List,
+  Search,
+  PullRefresh,
+  Toast
+];
 
-  Components.forEach(item => {
-    Vue.use(item);
-  });
-  import { mapState } from "vuex";
+Components.forEach(item => {
+  Vue.use(item);
+});
+import { mapState } from "vuex";
 
-  export default {
-    name: 'creditList',
-    components: {
-      ViewPage,
-      Card
-    },
-    data () {
-      return {
-        list: [],
-        loading: false,
-        isLoading: false,
-        error: false,
-        finished: false,
-        params: {
-          pageIndex: 1,
-          pageSize: 10,
-          searchKey: '',
-          status: ''
-        },
-        buttonList: [],
-        roleInfoList: []
-      };
-    },
-    computed: {
-      // 所有字典
-      ...mapState({
-        wordbook: state => state.user.wordbook,
-      }),
-      cuCreditStatus () {
-        return [{label: '全部', value: ''}, ...this.wordbook.cu_credit_status] || []
+export default {
+  name: "creditList",
+  components: {
+    ViewPage,
+    Card
+  },
+  data() {
+    return {
+      list: [],
+      loading: false,
+      isLoading: false,
+      error: false,
+      finished: false,
+      params: {
+        pageIndex: 1,
+        pageSize: 10,
+        searchKey: "",
+        status: ""
       },
-      isCreateRole () {
-        let flag = true
-        let list = ['CustomerManager']
-        let arr = []
-        if(this.roleInfoList) {
-          arr = this.roleInfoList.filter(item => {
-            return list.includes(item.enname)
-          })
-        }
-
-        flag = arr.length > 0
-        return flag
-      }
+      buttonList: [],
+      roleInfoList: []
+    };
+  },
+  computed: {
+    // 所有字典
+    ...mapState({
+      wordbook: state => state.user.wordbook
+    }),
+    cuCreditStatus() {
+      return (
+        [{ label: "全部", value: "" }, ...this.wordbook.cu_credit_status] || []
+      );
     },
-    watch: {
-      error (value) {
-        if (!value) {
-          this.onLoad()
-        }
-      }
-    },
-    methods: {
-      // 字典转换
-      returnText (val) {
-        let name;
-        this.wordbook.cu_credit_status.forEach(e => {
-          if (e.value === val) {
-            name = e.label;
-          }
+    isCreateRole() {
+      let flag = true;
+      let list = ["CustomerManager"];
+      let arr = [];
+      if (this.roleInfoList) {
+        arr = this.roleInfoList.filter(item => {
+          return list.includes(item.enname);
         });
-        return name;
-      },
-      onLoad () {
-        this.loading = !this.isLoading;
-        getList(this.params).then(res => {
-          const {code, data, msg} = res;
+      }
+
+      flag = arr.length > 0;
+      return flag;
+    }
+  },
+  watch: {
+    error(value) {
+      if (!value) {
+        this.onLoad();
+      }
+    }
+  },
+  methods: {
+    // 字典转换
+    returnText(val) {
+      let name;
+      this.wordbook.cu_credit_status.forEach(e => {
+        if (e.value === val) {
+          name = e.label;
+        }
+      });
+      return name;
+    },
+    onLoad() {
+      this.loading = !this.isLoading;
+      getList(this.params)
+        .then(res => {
+          const { code, data, msg } = res;
           data.result.forEach(t => {
             this.list.push(t);
           });
@@ -217,117 +250,138 @@
           this.finished = this.list.length === data.totalCount;
           this.loading = false;
           this.isLoading = false;
-        }).catch(() => {
-          this.error = true
-          this.loading = false
-        });
-      },
-      onSearch () {
-        this.list = []
-        this.finished = false
-        this.params.pageIndex = 1
-        this.params.searchKey = this.params.searchKey.replace(/\s+/g, '');
-        this.onLoad()
-      },
-      // 取消搜索
-      onCancel () {
-        this.params.searchKey = '';
-        this.params.status = '';
-        this.onSearch();
-      },
-      startFormFn (item, query = {edit: false}, path = '/bigDataQueryDetail') {
-        this.$router.push({path, query: {lpCertificateNum: item.lpCertificateNum, id: item.id, ...query}})
-      },
-      // 发起报单
-      startForm (item, type, query = {}) {
-        removeValue("credit");
-        const goPageCredit  = () => {
-          this.$router.push({path: '/reNewCredit', query: {lpCertificateNum: item.lpCertificateNum, id: item.id, edit: true, ...query}})
-        }
-        switch (type.buttonId) {
-          case '1': goPageCredit()
-          break;
-          case '2': this.startFormFn(item, {edit: true, bigData: true})
-          break;
-          case '3': this.startFormFn(item, {edit: true, rbCredit: true}, '/rbDetail')
-          break;
-        }
-      
-      },
-      // 重新发起
-      async startFormAgain (item) {
-        try {
-          await checkedReregisterMob({lpCertificateNum: item.lpCertificateNum})
-          this.startForm(item, {buttonId: '1'} ,{again: true})
-        } catch (e) {
-          console.log(e)
-        }
-      },
-      // 新建客户
-      addClint () {
-        this.$router.push({
-          path: '/creatCustomer',
         })
-      },
-      rightFn (item) {
-        this.params.status = item.value
-        this.onSearch()
-      },
-      //下拉刷新
-      onRefresh () {
-        this.list = []
-        this.params.pageIndex = 1
-        if (this.finished) {
-          this.finished = false
-        } else {
-          this.onLoad()
+        .catch(() => {
+          this.error = true;
+          this.loading = false;
+        });
+    },
+    onSearch() {
+      this.list = [];
+      this.finished = false;
+      this.params.pageIndex = 1;
+      this.params.searchKey = this.params.searchKey.replace(/\s+/g, "");
+      this.onLoad();
+    },
+    // 取消搜索
+    onCancel() {
+      this.params.searchKey = "";
+      this.params.status = "";
+      this.onSearch();
+    },
+    startFormFn(item, query = { edit: false }, path = "/bigDataQueryDetail") {
+      this.$router.push({
+        path,
+        query: {
+          lpCertificateNum: item.lpCertificateNum,
+          id: item.id,
+          ...query
         }
-        setTimeout(() => {
-          Toast.success('刷新成功');
-        }, 500);
-      },
-      async getButtonList() {
-        try {
-          const {data} = await getButtonList()
-          this.buttonList = data
-        }catch (e) {
-          console.log(e)
-        }
-      },
-      //获取用户信息
-      async getUserInfoByTo () {
-        try {
-          const {data} = await getUserInfoByTo()
-          this.roleInfoList = data.roleInfoList
-        } catch (e) {
-          console.log(e)
-        }
+      });
+    },
+    // 发起报单
+    startForm(item, type, query = {}) {
+      removeValue("credit");
+      const goPageCredit = () => {
+        this.$router.push({
+          path: "/reNewCredit",
+          query: {
+            lpCertificateNum: item.lpCertificateNum,
+            id: item.id,
+            edit: true,
+            ...query
+          }
+        });
+      };
+      switch (type.buttonId) {
+        case "1":
+          goPageCredit();
+          break;
+        case "2":
+          this.startFormFn(item, { edit: true, bigData: true });
+          break;
+        case "3":
+          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbDetail");
+          break;
+        case "21": // 人工征信查询
+          this.startFormFn(item, { edit: true, bigData: true }, "/artificialDetail");
+          break;
       }
     },
-    mounted () {
-      this.onLoad();
-      this.getButtonList();
-      this.getUserInfoByTo();
+    // 重新发起
+    async startFormAgain(item) {
+      try {
+        await checkedReregisterMob({ lpCertificateNum: item.lpCertificateNum });
+        this.startForm(item, { buttonId: "1" }, { again: true });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    // 新建客户
+    addClint() {
+      this.$router.push({
+        path: "/creatCustomer"
+      });
+    },
+    rightFn(item) {
+      this.params.status = item.value;
+      this.onSearch();
+    },
+    //下拉刷新
+    onRefresh() {
+      this.list = [];
+      this.params.pageIndex = 1;
+      if (this.finished) {
+        this.finished = false;
+      } else {
+        this.onLoad();
+      }
+      setTimeout(() => {
+        Toast.success("刷新成功");
+      }, 500);
+    },
+    async getButtonList() {
+      try {
+        const { data } = await getButtonList();
+        this.buttonList = data;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    //获取用户信息
+    async getUserInfoByTo() {
+      try {
+        const { data } = await getUserInfoByTo();
+        this.roleInfoList = data.roleInfoList;
+      } catch (e) {
+        console.log(e);
+      }
     }
-  };
+  },
+  mounted() {
+    this.onLoad();
+    this.getButtonList();
+    this.getUserInfoByTo();
+  }
+};
 </script>
 
 <style lang="scss">
-    .xh-plus {
-        span {
-            color: rgb(196, 37, 42);
-        }
-    }
+.xh-plus {
+  span {
+    color: rgb(196, 37, 42);
+  }
+}
 
-    .xh-fixed-submit {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        z-index: 99;
+.xh-fixed-submit {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
 
-        .van-button {
-            border-radius: 0;
-        }
-    }
+  .van-button {
+    border-radius: 0;
+  }
+}
 </style>

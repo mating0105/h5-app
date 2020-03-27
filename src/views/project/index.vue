@@ -32,7 +32,7 @@
                 </div>
               </template>
             </red-card>
-            <van-row class="xh-page-body" style="padding:0.5rem;">
+            <van-row class="xh-page-body" style="padding: 1rem 0.5rem;">
               <van-col
                 span="6"
                 class="xh-meun"
@@ -1000,14 +1000,15 @@ export default {
 }
 .xh-meun {
   text-align: center;
-  padding: 30px 0;
   position: relative;
   vertical-align: middle;
   display: inline-block;
+  height: 100px;
 }
 .xh-icon {
   width: 100%;
   height: 30px;
+  margin-top: 25px;
 }
 .xh-icon img {
   margin: auto;
