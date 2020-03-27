@@ -640,18 +640,16 @@ export default {
           //初始化数据
           this.paymentDetail.projPayInfo.payTimeDesc = this.paymentDetail.projPayInfo.payTime?format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm'):'';
           this.paymentDetail.projBudgetList.pyfDtDesc = this.paymentDetail.projBudgetList.pyfDt?format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm'):'';
-          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'';
-          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
-          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
-          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'';
-          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'';
-          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'';
-          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'';
-          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'';
-          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'';
-          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'';
-          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'';
-
+          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'0.00';
+          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'0.00';
+          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'0.00';
+          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'0.00';
+          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'0.00';
+          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'0.00';
+          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'0.00';
+          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'0.00';
+          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'0.00';
+          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'0.00';
         })
         .catch(e => {
           this.loading = false;

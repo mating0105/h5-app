@@ -52,14 +52,31 @@
 
           <div v-if="isView">
             <!-- 审批结论 -->
-
+            <Card style="margin: 10px 0;" v-for="(item,index) in optionList" :key="index" v-if="params.activityId == 'WF_PROJ_APPR_01_T52'">
+              <template v-slot:header>{{item.buttonName}}</template>
+              <section>
+                <van-cell-group :border="false">
+                  <van-field
+                    v-model="form[item.actionValue]"
+                    rows="2"
+                    autosize
+                    label-width="0"
+                    :border="false"
+                    type="textarea"
+                    placeholder="请输入"
+                    show-word-limit
+                  />
+                </van-cell-group>
+              </section>
+            </Card>
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
               v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
             >
+
               <van-cell
                 :border="false"
-                title="审批结论"
+                title="风控结论"
                 title-class="xh-blue"
                 is-link
                 :value="completionDesc"
@@ -263,7 +280,7 @@ import {
 } from "@/api/project";
 import { getCreditInfo } from "@/api/credit";
 import { mapMethodGaoDe } from "@/api/map";
-import { getGPSData } from "@/api/project";
+import { getGPSData,nuclearOpinion,submitNuclearOpinion } from "@/api/project";
 import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
@@ -439,7 +456,9 @@ export default {
       },
       isName: true, // 那个需求
       isCredit: true, // 是否显示征信
-      gpsList: [] // gps套餐
+      gpsList: [], // gps套餐
+      array:[],
+      form:{},
     };
   },
   methods: {
@@ -496,6 +515,8 @@ export default {
           }
           break;
         case "WF_PROJ_APPR_01_T52":
+          this.form.projId = this.params.projectId;
+          submitNuclearOpinion(this.form).then(res =>{})
           if (this.completion == "01") {
             this.setWindControl();
           } else {
@@ -899,6 +920,12 @@ export default {
     // 测试按钮
     submitCeShi() {
       this.$bridge.callHandler("jumpToTaskTab", "", res => {});
+    },
+    //是否存在电核意见
+    loadOpinion(){
+      nuclearOpinion().then(res =>{
+        this.optionList = res.data;
+      })
     }
   },
   mounted() {
@@ -937,6 +964,7 @@ export default {
           break;
         case "WF_PROJ_APPR_01_T52":
           this.loadData();
+          this.loadOpinion();
           this.params.isView = 1;
           break;
         default:

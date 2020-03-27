@@ -39,14 +39,14 @@
           <van-cell-group
             :border="true"
             class="xh-conclusion"
-            v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1"
+            v-if="params.dealState && data.projPayInfo.riskLeader == 1"
           >
             <van-cell title="风控意见" :value="riskConclusion" />
           </van-cell-group>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1 && data.projPayInfo.riskLeader == 1">
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState && data.projPayInfo.riskLeader == 1">
             <van-cell title="风控说明" :value="data.projPayInfo.riskDescription" />
           </van-cell-group>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState == 1">
+          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState">
             <van-cell
               title="审批结论"
               :value="conclusion"
@@ -54,43 +54,72 @@
               @click="params.dealState == 1 && loadType('审批意见','message')"
             />
           </van-cell-group>
-          <card v-if="showAdvances">
-            <template slot="header">资方垫款信息</template>
-            <van-cell-group :border="false">
-              <van-cell
-                title="垫款资方"
-                required
-                is-link
-                :value="datalist.advancesAssetName"
-                @click="loadType('垫款资方', 'managename')"
-                label-class="labelClass"
-              />
-            </van-cell-group>
-            <van-cell-group :border="false">
-              <van-field
-                v-model="datalist.loanAmt"
-                clearable
-                label="垫款金额"
-                input-align="right"
-                placeholder="请输入"
-              />
-            </van-cell-group>
-            <van-cell-group :border="false">
-              <van-cell
-                title="垫款时间"
-                required
-                is-link
-                :value="datalist.advancesTime"
-                @click="showPopupTime"
-                label-class="labelClass"
-                @blur.prevent="ruleMessge"
-              />
-            </van-cell-group>
-            <van-cell-group :border="false">
-              <van-cell title="垫款凭证" />
-            </van-cell-group>
-            <imageList :dataList="dataImg"></imageList>
+
+          <card style="margin-top: 1rem;">
+            <div>
+              <van-swipe-cell :disabled="params.dealState == 3" v-for="(item,index) in advanceList" :key="index" v-show="item.delFlag != 1">
+                <div class="title">第{{index+1}}次垫款信息</div>
+                <van-cell-group :border="false">
+                  <van-cell
+                    title="垫款资方"
+                    :required="params.dealState != 3"
+                    :is-link="params.dealState != 3"
+                    :value="item.advancesAssetName"
+                    @click="params.dealState == 3?'':loadType('垫款资方', 'managename',index)"
+                    label-class="labelClass"
+                  />
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-field
+                    v-model="item.advancesMoney"
+                    clearable
+                    :required="params.dealState != 3"
+                    label="垫款金额"
+                    input-align="right"
+                    placeholder="请输入"
+                    :disabled="params.dealState == 3"
+                    @blur.prevent="priceFloat(item, 'advancesMoney')"
+                  >
+                  <div slot="button">元</div>
+                  </van-field>
+                </van-cell-group>
+                <van-cell-group :border="false">
+                  <van-cell
+                    title="垫款时间"
+                    :required="params.dealState != 3"
+                    :is-link="params.dealState != 3"
+                    :value="item.time"
+                    @click="params.dealState == 3?'':showPopupTime(index)"
+                    label-class="labelClass"
+                    @blur.prevent="ruleMessge"
+                  />
+                </van-cell-group>
+                <van-cell-group :border="false" >
+                  <van-cell :required="params.dealState != 3" title="垫款凭证" />
+                </van-cell-group>
+                <imageList :dataList="[one]" v-for="one in item.dataImg" :key="item.id"></imageList>
+              
+              <template #right>
+                <van-button
+                  square
+                  text="删除"
+                  type="danger"
+                  class="delete-button"
+                  style="height:100%"
+                  @click="delete(item,index)"
+                />
+              </template>
+
+              </van-swipe-cell>
+            <div class="title" v-if="showAdvances && params.dealState == 1">
+                添加垫款记录
+                <div class="card-icon" @click="addCard" >
+                    <van-icon name="add-o"/>
+                </div>
+            </div>
+            </div>
           </card>
+          
           <card v-if="params.dealState == 1">
             <template v-slot:header>意见描述</template>
             <section>
@@ -160,7 +189,9 @@ import {
   ActionSheet,
   Picker,
   Field,
-  DatetimePicker
+  DatetimePicker,
+  SwipeCell,
+  Toast
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
@@ -188,7 +219,8 @@ const Components = [
   ActionSheet,
   Picker,
   Field,
-  DatetimePicker
+  DatetimePicker,
+  SwipeCell
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -269,9 +301,10 @@ export default {
       accout: "",
       phone: "",
       showAdvances: false, //资方垫款信息是否显示
-      datalist: {},
-      dataImg: [],
-      manageList: [] //资方数组
+      manageList: [], //资方数组
+      advanceList:[],//垫款记录数组
+      advanceIndex:'',
+      timeIndex:'',
     };
   },
   computed: {
@@ -327,7 +360,7 @@ export default {
         });
       }
     },
-    loadData() {
+    async loadData() {
       this.loading = true;
       getPaymentDetail({
         projectId: this.params.info.projectId,
@@ -335,15 +368,12 @@ export default {
       })
         .then(res => {
           this.data = res.data;
-          this.datalist.loanAmt = this.numFilter(
-            this.data.projProjectInfo.loanAmt
-          );
-          this.message = this.data.projPayInfo.riskDescription;
-          if (this.data.projPayInfo.advancesAssetName) {
+          if (res.data.projPayInfo.examineApprove === '01') {
             this.showAdvances = true;
           } else {
             this.showAdvances = false;
           }
+          this.message = this.data.projPayInfo.riskDescription;
           switch (this.data.projPayInfo.riskConclusion) {
             case 0:
               this.riskConclusion = "拒绝";
@@ -355,6 +385,40 @@ export default {
               this.riskConclusion = "";
               break;
           }
+          let name;
+          this.options.forEach(item =>{
+            if(item.value == res.data.projPayInfo.examineApprove){
+              this.conclusion = item.name
+              this.conclusionCode = item.value;
+            }
+          });
+          this.advanceList = res.data.projPayInfo.advancesAsset;
+          if(this.advanceList.length<1){
+            this.advanceList = [{dataImg:[]}];
+            this.advanceList.forEach(e =>{
+              e.dataImg.push({
+                declare: '垫款凭证', //图片描述
+                isRequire: true, //*是否必须
+                deletable: true, //是否可以操作-上传和删除
+                documentType: '0001',
+                customerNum: e.id?e.id:this.params.info.customerNum,
+                customerId: this.params.info.customerId,
+                kind: "1",
+                fileList: []
+              });
+            })
+          }else{
+            let list = JSON.parse(JSON.stringify(this.advanceList));
+            list.forEach(e =>{
+              e.time = format(new Date(e.advancesTime), "yyyy-MM-dd hh:mm");
+              e.dataImg = [];
+              this.getDocumentByType("0001",e);
+            })
+            setTimeout(()=>{
+              this.advanceList = list;
+            })
+            // console.log('2dsfds', this.advanceList)
+          }
           this.loading = false;
         })
         .catch(e => {
@@ -362,16 +426,21 @@ export default {
         });
     },
     //加载垫款资方
-    loadManagement() {
+    async loadManagement() {
       managementList().then(res => {
         this.manageList = res.data;
-        this.datalist.advancesAssetName = this.manageList[0].advancesAssetName;
-        this.datalist.advancesAssetId = this.manageList[0].id;
+        if(this.manageList.length <2){
+          this.advanceList.forEach(e=>{
+            e.advancesAssetName = this.manageList[0].advancesAssetName;
+            e.advancesAssetId = this.manageList[0].id;
+          })
+        }
       });
     },
     //上拉菜单选择
-    loadType(title, field) {
+    loadType(title, field,index) {
       this.show = true;
+      this.advanceIndex = index;
       switch (title) {
         case "垫款资方":
           let list = [];
@@ -403,11 +472,9 @@ export default {
       }
     },
     confirm(value) {
-      console.log(value);
       if (value.type == "垫款资方") {
-        this.datalist.advancesAssetName = value.name;
-        this.datalist.advancesAssetId = value.value;
-        console.log("advancesAssetId", this.datalist.advancesAssetId);
+        this.advanceList[this.advanceIndex].advancesAssetName = value.name;
+        this.advanceList[this.advanceIndex].advancesAssetId = value.value;
       } else {
         this.conclusion = value.name;
         this.conclusionCode = value.value;
@@ -422,63 +489,103 @@ export default {
     cancel() {
       this.show = false;
     },
-    showPopupTime() {
+    showPopupTime(index) {
       this.show2 = true;
+      this.timeIndex = index;
     },
     confirmTime(value) {
-      this.time = Date.parse(new Date(value));
       var time = format(value, "yyyy-MM-dd hh:mm");
-      this.datalist.advancesTime = time;
+      this.advanceList[this.timeIndex].time = time;
+      this.advanceList[this.timeIndex].advancesTime = Date.parse(new Date(value));
       this.show2 = false;
     },
     cancelTime() {
       this.show2 = false;
+    },
+    //删除垫款记录
+    delete(item,index){
+      Dialog.confirm({
+        title: "删除",
+        message: "确定删除该垫款记录？"
+      })
+        .then(() => {
+          // this.advanceList[index].delFlag = 1;
+          this.advanceList.splice(index, 1);
+        })
+        .catch(() => {
+          // on cancel
+        });
     },
     //提交流程
     submit() {
       if (this.data.projPayInfo.riskLeader == 1 && this.riskConclusion == "") {
         this.$notify({ type: "danger", message: "请通知审批官审批" });
       } else {
-        if (this.dataImg.length < 1 && this.conclusionCode == "01") {
-          this.$notify({ type: "danger", message: "请上传垫款资料" });
-        }else if(this.conclusionCode == "01" && !this.datalist.advancesTime){
-          this.$notify({ type: "danger", message: "请选择垫款时间" });
-        } else {
-          let businessKey = this.params.info.businesskey;
-          let data = {
-            wfComment: {
-              businessKey: businessKey,
-              commentsDesc: this.message,
-              conclusionCode: this.conclusionCode
-            },
-            projPayInfo: {
-              advancesAssetId: this.datalist.advancesAssetId,
-              advancesAssetName: this.datalist.advancesAssetName,
-              advancesMoney: this.datalist.loanAmt,
-              advancesTime: this.time
+        if(!this.conclusionCode){
+          this.$notify({ type: "danger", message: "请选择审批结论" });
+          return;
+        }
+        let money = 0;
+        let thisT = true;
+        if(this.conclusionCode == "01"){
+          for(let e = 0;e<this.advanceList.length;e++){
+            if(!this.advanceList[e].advancesAssetName){
+              this.$notify({ type: "danger", message: "请选择垫款资方" });
+              thisT = false;
+              break;
             }
-          };
-          if (this.conclusionCode) {
-            if (this.conclusionCode == "02") {
-              if (!this.message) {
-                this.$notify({ type: "danger", message: "请输入意见描述" });
-              } else {
-                this.loading = true;
-                submitGo(data)
-                  .then(res => {
-                    this.loading = false;
-                    this.$notify({ type: "success", message: "流程提交成功" });
-                    this.$router.go(-1);
-                  })
-                  .catch(e => {
-                    this.loading = false;
-                  });
-              }
+            if(!this.advanceList[e].advancesMoney){
+              this.$notify({ type: "danger", message: "请输入垫款金额" });
+              thisT = false;
+              break;
+            }
+            if(!this.advanceList[e].advancesTime){
+              this.$notify({ type: "danger", message: "请选择垫款时间" });
+              thisT = false;
+              break;
+            }
+            if(this.advanceList[e].dataImg[0].fileList.length<1){
+               this.$notify({ type: "danger", message: "请上传垫款资料" });
+               thisT = false;
+               break;
+            } 
+            console.log(parseFloat(money) , parseFloat(this.advanceList[e].advancesMoney))
+            money = parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
+            this.advanceList[e].documentIds = [];
+            this.advanceList[e].dataImg.forEach(i =>{
+              i.fileList.forEach(p =>{
+                this.advanceList[e].documentIds.push(p.documentId);
+              })
+            })
+          }
+        }
+        if(!thisT){
+          return;
+        }
+        if(money != this.data.projProjectInfo.loanAmt){
+          Toast('垫款金额需等于贷款金额时才能提交');
+          return;
+        }
+        let businessKey = this.params.info.businesskey;
+        this.advanceList.forEach(e =>{
+          e.projPayId = businessKey;
+          e.id = e.id?e.id:''
+        })
+        let data = {
+          wfComment: {
+            businessKey: businessKey,
+            commentsDesc: this.message,
+            conclusionCode: this.conclusionCode
+          },
+          projPayInfo: {
+            advancesAsset:this.advanceList
+          }
+        };
+        if (this.conclusionCode == "02") {
+            if (!this.message) {
+              this.$notify({ type: "danger", message: "请输入意见描述" });
             } else {
               this.loading = true;
-              if (this.message == "") {
-                data.commentsDesc = "同意";
-              }
               submitGo(data)
                 .then(res => {
                   this.loading = false;
@@ -490,41 +597,61 @@ export default {
                 });
             }
           } else {
-            this.$notify({ type: "danger", message: "请选择审批结论" });
+            this.loading = true;
+            if (this.message == "") {
+              data.commentsDesc = "同意";
+            }
+            submitGo(data)
+              .then(res => {
+                this.loading = false;
+                this.$notify({ type: "success", message: "流程提交成功" });
+                this.$router.go(-1);
+              })
+              .catch(e => {
+                this.loading = false;
+              });
           }
-        }
+        
       }
     },
-    //加载垫款图片
-    loadImg() {
-      this.getDocumentByType("0001");
-    },
-    async getDocumentByType(documentType) {
+    async getDocumentByType(documentType,obj) {
       try {
         const params = {
-          customerNum: this.params.info.customerNum,
+          customerNum: obj.id,
           documentType: documentType
         };
-        const { data } = await getDocumentByType(params);
+        const {data} = await getDocumentByType(params);
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        data.forEach(item => {
-          item.declare = declare;
-        });
-        this.dataImg.push({
+        obj.dataImg.push({
           declare: declare, //图片描述
           isRequire: true, //*是否必须
-          deletable: true, //是否可以操作-上传和删除
+          deletable: this.params.dealState != 3, //是否可以操作-上传和删除
           documentType: documentType,
-          customerNum: this.params.info.customerNum,
+          customerNum: obj.id,
           customerId: this.params.info.customerId,
           kind: "1",
-          fileList: data
-        });
+          fileList: data,
+        })
       } catch (e) {
         console.log(e);
       }
+    },
+    //添加垫款记录
+    addCard(){
+      this.advanceList.push({dataImg:[]});
+      this.advanceList[this.advanceList.length-1].dataImg.push({
+        declare: '垫款凭证', //图片描述
+        isRequire: true, //*是否必须
+        deletable: true, //是否可以操作-上传和删除
+        documentType: '0001',
+        customerNum: this.params.info.customerNum,
+        customerId: this.params.info.customerId,
+        kind: "1",
+        fileList: []
+      });
+      
     }
   },
   mounted() {
@@ -536,9 +663,7 @@ export default {
     this.accout = Cookies.get("loginName");
     this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
-    this.loadData(); //加载详情数据
-    this.loadManagement(); //加载资方
-    this.loadImg();
+    this.loadData().then(() => this.loadManagement()); //加载详情数据
   }
 };
 </script>
@@ -578,5 +703,13 @@ export default {
 .xh-conclusion span {
   color: #c4252a;
   font-weight: bold;
+}
+.add-card{
+  padding:1rem;
+  color:#c4252a;
+}
+.title{
+  padding:1rem;
+  color:#EC191F;
 }
 </style>
