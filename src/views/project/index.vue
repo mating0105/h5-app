@@ -50,25 +50,27 @@
             </van-row>
           </div>
 
+          <!-- 电核意见 -->
+          <Card style="margin: 10px 0;" v-for="(item,index) in optionList" :key="index" v-if="optionList.length>0 || params.activityId == 'WF_PROJ_APPR_01_T52'">
+            <template v-slot:header>{{item.buttonName}}</template>
+            <section>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="form[item.actionValue]"
+                  rows="2"
+                  autosize
+                  :disabled="!params.activityId"
+                  label-width="0"
+                  :border="false"
+                  type="textarea"
+                  placeholder="请输入"
+                  show-word-limit
+                />
+              </van-cell-group>
+            </section>
+          </Card>
           <div v-if="isView">
             <!-- 审批结论 -->
-            <Card style="margin: 10px 0;" v-for="(item,index) in optionList" :key="index" v-if="params.activityId == 'WF_PROJ_APPR_01_T52'">
-              <template v-slot:header>{{item.buttonName}}</template>
-              <section>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="form[item.actionValue]"
-                    rows="2"
-                    autosize
-                    label-width="0"
-                    :border="false"
-                    type="textarea"
-                    placeholder="请输入"
-                    show-word-limit
-                  />
-                </van-cell-group>
-              </section>
-            </Card>
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
               v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
@@ -950,6 +952,10 @@ export default {
       this.isView = dealState == 1;
       if(obj.newPro && this.isView){
         this.meunRow.splice(0,1);
+      }
+      if(obj.electricityNuclearOpinion){
+        this.loadOpinion();
+        this.form.electricityNuclearOpinion = obj.electricityNuclearOpinion
       }
       // 待办已办
       switch (obj.activityId) {
