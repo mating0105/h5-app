@@ -350,14 +350,8 @@ export default {
       return obj;
     }
   },
-  watch:{
-    advanceList(val){
-      console.log('44444',val)
-    }
-  },
   methods: {
     meunList(row) {
-      console.log(row);
       // this.params.dealState = "3";
       if (row.url == "/paymentProjectInfo") {
         this.$router.push({
@@ -382,7 +376,6 @@ export default {
           // window.location.href = url;
         } else {
           this.$notify({ type: "danger", message: "未安装GPS" });
-          console.log(this.params.dealState);
         }
       } else {
         this.$router.push({
@@ -394,6 +387,7 @@ export default {
         });
       }
     },
+    //加载基础数据
     async loadData() {
       this.loading = true;
       getPaymentDetail({
@@ -452,7 +446,6 @@ export default {
             setTimeout(() => {
               this.advanceList = list;
             });
-            console.log('2dsfds', this.advanceList)
           }
           this.loading = false;
         })
@@ -506,6 +499,7 @@ export default {
           break;
       }
     },
+    //弹框确认
     confirm(value) {
       if (value.type == "垫款资方") {
         this.advanceList[this.advanceIndex].advancesAssetName = value.name;
@@ -521,13 +515,16 @@ export default {
       }
       this.show = false;
     },
+    //弹框取消
     cancel() {
       this.show = false;
     },
+    //时间选择框弹出
     showPopupTime(index) {
       this.show2 = true;
       this.timeIndex = index;
     },
+    //时间选择
     confirmTime(value) {
       var time = format(value, "yyyy-MM-dd hh:mm");
       this.advanceList[this.timeIndex].time = time;
@@ -536,6 +533,7 @@ export default {
       );
       this.show2 = false;
     },
+    //时间取消
     cancelTime() {
       this.show2 = false;
     },
@@ -585,10 +583,6 @@ export default {
               thisT = false;
               break;
             }
-            console.log(
-              parseFloat(money),
-              parseFloat(this.advanceList[e].advancesMoney)
-            );
             money =
               parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
             this.advanceList[e].documentIds = [];
@@ -621,7 +615,7 @@ export default {
             advancesAsset: this.advanceList
           }
         };
-        if (this.conclusionCode == "02") {
+        if (this.conclusionCode == "02") {//退回流程
           if (!this.message) {
             this.$notify({ type: "danger", message: "请输入意见描述" });
           } else {
@@ -653,6 +647,7 @@ export default {
         }
       }
     },
+    //加载图片
     async getDocumentByType(documentType, obj) {
       try {
         const params = {
