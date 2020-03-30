@@ -350,6 +350,11 @@ export default {
       return obj;
     }
   },
+  watch:{
+    advanceList(val){
+      console.log('44444',val)
+    }
+  },
   methods: {
     meunList(row) {
       console.log(row);
@@ -535,20 +540,16 @@ export default {
       this.show2 = false;
     },
     //删除垫款记录
-    remove(item, index) {
-      console.log('333',this.advanceList)
-      console.log(item, index);
+    remove(index, item) {
       Dialog.confirm({
         title: "删除",
         message: "确定删除该垫款记录？"
       })
         .then(() => {
-          console.log('1111',this.advanceList)
-          this.advanceList.splice(index+1, 1);
-          console.log('22222',this.advanceList)
+          this.advanceList.splice(index, 1);
         })
         .catch(() => {
-          // on cancel
+          reject()
         });
     },
     //提交流程
@@ -678,7 +679,7 @@ export default {
     },
     //添加垫款记录
     addCard() {
-      this.advanceList.push({ dataImg: [] });
+      this.advanceList.push({ dataImg: [], time: format(new Date(), "yyyy-MM-dd hh:mm") });
       this.advanceList[this.advanceList.length - 1].dataImg.push({
         declare: "垫款凭证", //图片描述
         isRequire: true, //*是否必须
