@@ -179,7 +179,7 @@
               </section>
             </Card>
             <!-- 有终止的提交按钮 -->
-            <div v-if="!params.newPro">
+            <!-- <div v-if="!params.newPro">
               <div class="xh-submit" v-if="isActive">
                 <van-row>
                   <van-col :span="4">
@@ -213,7 +213,7 @@
                   :loading="dLoading"
                 >提 交</van-button>
               </div>
-            </div>
+            </div> -->
             <!-- <div class="xh-submit">
               <van-button
                 size="large"

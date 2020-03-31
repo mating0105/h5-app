@@ -500,8 +500,8 @@ export default {
           }
           const params = {
             kind: "1",
-            customerNum: res.data.customerNum,
-            customerId: res.data.id
+            customerNum: this.params.customerNum,
+            customerId: this.params.customerId
           };
           this.uploadImg(docType, params, this.dataURLtoFile(this.src));
           this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
