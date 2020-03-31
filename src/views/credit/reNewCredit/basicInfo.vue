@@ -18,21 +18,21 @@
         @click="showPickerFn"
       />
       <van-field
-        name="bankCardNum"
-        :disabled="!edit"
-        label="银行卡号："
-        :placeholder="!edit?'':'请输入'"
-        label-width="110"
-        input-align="right"
-        clearable
-        :border="false"
-        required
-        v-model="form.bankCardNum"
-        @blur.prevent="ruleMessge"
-        :error-message="errorMsg.bankCardNum"
-        :right-icon="!edit ? '' : 'scan'"
-        @click-right-icon="IdcardLoading('bankCodeOCR')"
-      />
+            v-model="form.bankCardNum"
+            required
+            clearable
+            name="bankCardNum"
+            error-message-align="right"
+            label="银行卡号："
+            input-align="right"
+            placeholder="请输入"
+            :disabled="!edit"
+            :border="false"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.bankCardNum"
+            :right-icon="!edit ? '' : 'scan'"
+            @click-right-icon="IdcardLoading('bankCodeOCR')"
+          />
       <van-field
         class="label_plus"
         name="intentionPrice"
@@ -437,6 +437,7 @@ export default {
     async nextStep(TYPE) {
       try {
         this.checkPrice();
+        console.log(this.verifyForm())
         if (!this.verifyForm()) {
           return;
         }
@@ -625,6 +626,7 @@ export default {
     },
     verifyForm() {
       let num = 0;
+      console.log(this.errorMsg)
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.dataList[item]);
         if (this.errorMsg[item]) {

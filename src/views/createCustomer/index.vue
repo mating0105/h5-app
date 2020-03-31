@@ -548,7 +548,6 @@ export default {
       params.file = file;
       uploadsDocument(params)
         .then(res => {
-          Toast(this.params.credit);
           if (this.params.credit) {
             //征信新增客户，直接返回上一页
             this.$store.dispatch("credit/setCustomerData", {
