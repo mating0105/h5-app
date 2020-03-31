@@ -18,7 +18,7 @@
         @click="showPickerFn"
       />
       <van-field
-            v-model="form.bankCardNum"
+            v-model="dataList.bankCardNum"
             required
             clearable
             name="bankCardNum"
@@ -437,7 +437,6 @@ export default {
     async nextStep(TYPE) {
       try {
         this.checkPrice();
-        console.log(this.verifyForm())
         if (!this.verifyForm()) {
           return;
         }
@@ -477,13 +476,16 @@ export default {
     },
     nextStepFn() {
       this.nextStep().then(query => {
-        this.$nextTick(() => {
-          this.$router.push({
-            path: "/creditNextStep",
-            query
+        if(query){
+          this.$nextTick(() => {
+            this.$router.push({
+              path: "/creditNextStep",
+              query
+            });
           });
-        });
+        }
       });
+      
     },
     /**
      *  删除车
@@ -626,7 +628,6 @@ export default {
     },
     verifyForm() {
       let num = 0;
-      console.log(this.errorMsg)
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.dataList[item]);
         if (this.errorMsg[item]) {
@@ -715,7 +716,6 @@ export default {
     Bus.$off('creditSave')
     Bus.$on("creditSave", TYPE => {
       TYPE === 'bairong' ? this.bigDataTipOfBr() : this.nextStep(TYPE);
-      
     });
     this.rulesForm("order-credit-xh"); //新车
   },
