@@ -204,7 +204,7 @@
                 </van-row>
               </div>
               <!-- 提交按钮 -->
-              <div class="xh-submit" v-else>
+              <!-- <div class="xh-submit" v-else>
                 <van-button
                   size="large"
                   class="xh-bg-main"
