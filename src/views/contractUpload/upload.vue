@@ -11,9 +11,9 @@
         <ProjectInfo></ProjectInfo>
       </van-tab>
       <van-tab title="征信信息" name="creditReportingInfo">
-          <creditInfoTable title="银行征信" :dataList="surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-          <creditInfoTable title="大数据征信" :dataList="surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-          <creditInfoTable title="人保征信" :dataList="surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+          <CreditInfoTable title="银行征信" :dataList="surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
+          <CreditInfoTable title="大数据征信" :dataList="surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
+          <CreditInfoTable title="人保征信" :dataList="surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable>
       </van-tab>
     </van-tabs>
   </ViewPage>
