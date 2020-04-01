@@ -418,7 +418,8 @@
       //发起评估
       async startEvaluate(){
         try {
-          this.loading = true
+          this.loading = true;
+          await saveUsedCar(this.carFrom);
           await startUserCar({id: this.carFrom.id, status: this.carFrom.status})
           this.loading = false
           this.$nextTick(() => {

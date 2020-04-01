@@ -160,7 +160,7 @@
             </van-row>
 
             <!-- 意见 -->
-            <!-- <Card style="margin: 10px 0;" v-if="!params.newPro">
+            <Card style="margin: 10px 0;" v-if="!params.newPro">
               <template v-slot:header>意见描述</template>
               <section>
                 <van-cell-group :border="false">
@@ -177,7 +177,7 @@
                   />
                 </van-cell-group>
               </section>
-            </Card> -->
+            </Card>
             <!-- 有终止的提交按钮 -->
             <!-- <div v-if="!params.newPro">
               <div class="xh-submit" v-if="isActive">
@@ -204,7 +204,7 @@
                 </van-row>
               </div>
               <!-- 提交按钮 -->
-              <!-- <div class="xh-submit" v-else>
+              <div class="xh-submit" v-if="!params.newPro">
                 <van-button
                   size="large"
                   class="xh-bg-main"
@@ -213,7 +213,7 @@
                   :loading="dLoading"
                 >提 交</van-button>
               </div>
-            </div> -->
+            </div>
             <!-- <div class="xh-submit">
               <van-button
                 size="large"
