@@ -106,6 +106,13 @@
     borrower: ['0101', '0102', '6679', '6667', '6673', '6685'],//借款人
     joiDebtor: ['0109', '0110', '6683', '6671', '6677', '6688'],//共债人
   }
+  const rg = {
+    joiDebtorSpouse: ['0113', '0114', '6733', '6672', '6678', '6689'],//共债人配偶
+    borrowerSpouse: ['0105', '0106', '6730', '6668', '6674', '6686'],//借款人配偶
+    security: ['0117', '0120', '6731', '6669', '6675', '6687'],//担保人
+    borrower: ['0101', '0102', '6729', '6667', '6673', '6685'],//借款人
+    joiDebtor: ['0109', '0110', '6732', '6671', '6677', '6688'],//共债人
+  }
 
   export default {
     name: "basicInfo",
@@ -121,6 +128,7 @@
       edit: Boolean,
       bigData: Boolean,
       rbCredit: Boolean,
+      rgCredit:Boolean,
       showImage: {
         default: true,
         type: Boolean
@@ -170,6 +178,8 @@
           name = '大数据'
         } else if (this.rbCredit) {
           name = '人保'
+        }else if(this.rgCredit){
+           name = '人工'
         }
         return name
       },
@@ -192,8 +202,10 @@
         if (this.dataList && this.dataList.surDtlList) {
           if (this.bigData) {
             this.obj = bigData
-          } else {
+          } else if(this.rbCredit){
             this.obj = rb
+          }else if(this.rgCredit){
+            this.obj = rg
           }
           this.dataList.surDtlList.forEach(item => {
             const arr = this.obj[item.creditObjectType]

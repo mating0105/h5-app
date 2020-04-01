@@ -304,7 +304,7 @@ export default {
           this.startFormFn(item, { edit: true, rbCredit: true }, "/rbDetail");
           break;
         case "21": // 人工征信查询
-          this.startFormFn(item, { edit: true, bigData: true }, "/artificialDetail");
+          this.startFormFn(item, { edit: true, rgCredit: true }, "/artificialDetail");
           break;
       }
     },

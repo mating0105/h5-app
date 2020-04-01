@@ -19,7 +19,7 @@
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
-            <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
+            <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :rgCredit="rgCredit" :edit="edit"></basicInfo>
         </template>
         <template v-else-if="active === 2">
             <relatedDocs :requestParams="requestParams"></relatedDocs>
@@ -94,7 +94,8 @@
           businesskey: '', businesstype: '07'
         },
         bigData: false,
-        rbCredit: false
+        rbCredit: false,
+        rgCredit:false
       }
     },
     methods: {
@@ -209,6 +210,9 @@
         if (this.rbCredit) {
           creditTypeFlag = 2
         }
+        if (this.rgCredit) {
+          creditTypeFlag = 21
+        }
         Bus.$emit('creditSave', creditTypeFlag);
         Bus.$on('creditSaveSuccess', query => {
           this.$router.push({
@@ -278,6 +282,7 @@
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      this.rgCredit = Boolean(this.$route.query.rgCredit) && this.$route.query.rgCredit !== 'false'
     }
   }
 </script>
