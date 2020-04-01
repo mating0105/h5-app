@@ -59,7 +59,7 @@
               </van-cell-group>
             </section>
           </card>
-          <van-cell-group :border="true" class="xh-conclusion" v-if="params.dealState">
+          <van-cell-group :border="false" class="xh-conclusion" v-if="params.dealState">
             <van-cell
               title="审批结论"
               :value="conclusion"
@@ -67,7 +67,7 @@
               @click="params.dealState == 1 && loadType('审批意见','message')"
             />
           </van-cell-group>
-          <van-cell-group :border="true" class="xh-conclusion" v-show="conclusionCode == '01'">
+          <van-cell-group :border="false" class="xh-conclusion" v-show="conclusionCode == '01'">
             <van-cell
               title="贷款金额"
               :value="this.numFilter(data.projProjectInfo.loanAmt)"
@@ -401,7 +401,7 @@ export default {
           } else {
             this.showAdvances = false;
           }
-          this.message = this.data.projPayInfo.riskDescription;
+          // this.message = this.data.projPayInfo.riskDescription;
           switch (this.data.projPayInfo.riskConclusion) {
             case 0:
               this.riskConclusion = "拒绝";
@@ -573,7 +573,7 @@ export default {
               thisT = false;
               break;
             }
-            if (!this.advanceList[e].advancesTime) {
+            if (!this.advanceList[e].time) {
               this.$notify({ type: "danger", message: "请选择垫款时间" });
               thisT = false;
               break;
@@ -592,14 +592,15 @@ export default {
               });
             });
           }
+          if (money != this.data.projProjectInfo.loanAmt) {
+            Toast("垫款金额需等于贷款金额时才能提交");
+            return;
+          }
         }
         if (!thisT) {
           return;
         }
-        if (money != this.data.projProjectInfo.loanAmt) {
-          Toast("垫款金额需等于贷款金额时才能提交");
-          return;
-        }
+        
         let businessKey = this.params.info.businesskey;
         this.advanceList.forEach(e => {
           e.projPayId = businessKey;
