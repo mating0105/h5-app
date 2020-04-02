@@ -376,6 +376,7 @@ export default {
           return;
         }
         // this.dataList.creditTypeFlag = 1
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
         let _arr = []
@@ -441,6 +442,7 @@ export default {
           return;
         }
         this.loading = true;
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
         if(TYPE !== 'bairong' && TYPE) {
           this.dataList.creditTypeFlag = TYPE
@@ -584,6 +586,7 @@ export default {
      * 保存数据到本地
      */
     save() {
+      this.form.bankCardNum = this.dataList.bankCardNum;
       this.dataList.surDtlList = [this.form, ...this.perInfoList];
       setValue("credit", JSON.stringify(this.dataList));
     },
