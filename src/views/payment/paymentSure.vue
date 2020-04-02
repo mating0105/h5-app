@@ -70,7 +70,7 @@
           <van-cell-group :border="false" class="xh-conclusion" v-show="conclusionCode == '01'">
             <van-cell
               title="贷款金额"
-              :value="this.numFilter(data.projProjectInfo.loanAmt)"
+              :value="numFilter(data.projProjectInfo.loanAmt)"
             >
              <div slot="right-icon" class="xh-cell-right">元</div>
             </van-cell>
@@ -441,6 +441,7 @@ export default {
             list.forEach(e => {
               e.time = format(new Date(e.advancesTime), "yyyy-MM-dd hh:mm");
               e.dataImg = [];
+              e.advancesMoney = this.numFilter(e.advancesMoney);
               this.getDocumentByType("0001", e);
             });
             setTimeout(() => {
