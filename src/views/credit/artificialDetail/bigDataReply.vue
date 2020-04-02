@@ -133,7 +133,9 @@
           return 'canPeopleBankResult'
         } else if (this.rbCredit) {
           return 'canPersonalCreditResult'
-        } else {
+        } else if(this.rgCredit){
+          return 'canArtificialCreditResult'
+        }else{
           return 'canBigDataResult'
         }
       }
