@@ -69,11 +69,11 @@
               </van-cell-group>
             </section>
           </Card>
-          <div v-if="isView">
+          <div>
             <!-- 审批结论 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52'"
+              v-if="(params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52') || isView"
             >
 
               <van-cell
@@ -85,8 +85,8 @@
                 @click="linkCode"
               />
             </van-row>
-
-            <div v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'">
+            
+            <div v-if="(params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01') || windControl.gradeManual">
               <Card style="margin: 10px 0;">
                 <template slot="header">风控措施</template>
                 <van-row>
@@ -147,7 +147,7 @@
             <!-- 审批官选择做单文员 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'"
+              v-if="(params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01') || isView"
             >
               <van-cell
                 :border="false"
@@ -160,7 +160,7 @@
             </van-row>
 
             <!-- 意见 -->
-            <Card style="margin: 10px 0;" v-if="!params.newPro">
+            <Card style="margin: 10px 0;" v-if="!params.newPro && isView">
               <template v-slot:header>意见描述</template>
               <section>
                 <van-cell-group :border="false">
@@ -204,7 +204,7 @@
                 </van-row>
               </div>
               <!-- 提交按钮 -->
-              <div class="xh-submit" v-if="!params.newPro">
+              <div class="xh-submit" v-if="!params.newPro && isView">
                 <van-button
                   size="large"
                   class="xh-bg-main"
@@ -699,6 +699,8 @@ export default {
             data.projectInfo.riskMeasure.riskCondition, //风控条件
           gpsNum:
             data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNum, //gps数量
+          gpsNumDesc:
+            data.projectInfo.riskMeasure && data.projectInfo.riskMeasure.gpsNumDesc, //gps数量
           wthrDtd: data.projectInfo.wthrDtd, //是否上门
           isFoucusList:
             data.projectInfo.riskMeasure &&
@@ -930,7 +932,7 @@ export default {
       nuclearOpinion().then(res =>{
         this.optionList = res.data;
       })
-    }
+    },
   },
   mounted() {
     let { info, dealState } = this.$route.query;
@@ -938,6 +940,7 @@ export default {
     if (dealState) {
       // 待办已办进入
       let obj = JSON.parse(info);
+      console.log(obj)
       this.params = {
         customerName: obj.customerName, //客户姓名
         contactPhone: obj.contactPhone, //客户身份证
@@ -951,12 +954,17 @@ export default {
         activityId: obj.activityId
       };
       this.isView = dealState == 1;
+      //如果是新的报单并且是查看状态 就不显示项目基本信息
       if(obj.newPro && this.isView){
         this.meunRow.splice(0,1);
       }
+      //判断是否有电核意见
       if(obj.electricityNuclearOpinion){
         this.loadOpinion();
         this.form.electricityNuclearOpinion = obj.electricityNuclearOpinion
+      }
+      if(dealState == 3){
+        this.loadData();
       }
       // 待办已办
       switch (obj.activityId) {
@@ -970,7 +978,7 @@ export default {
           );
           this.params.isView = 0;
           break;
-        case "WF_PROJ_APPR_01_T52":
+        case "WF_PROJ_APPR_01_T52"://风控审批代办
           this.loadData();
           this.loadOpinion();
           this.params.isView = 1;
