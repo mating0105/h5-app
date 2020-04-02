@@ -73,7 +73,7 @@
             <!-- 审批结论 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="params.activityId == 'WF_PROJ_APPR_01_T52'"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52' || params.activityId == 'WF_PROJ_APPR_01_T04'"
             >
 
               <van-cell
