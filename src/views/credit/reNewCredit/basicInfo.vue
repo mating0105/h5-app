@@ -213,6 +213,13 @@
         <div>
             <div class="xh-submit-box" v-if="isPeople">
                 <van-button
+                    v-if="dataList.status=='01'|| dataList.status=='02'"
+                    size="large"
+                    style="width: 25%; flex: none"
+                    class="xh-btn xh-primary"
+                    @click="stopTask"
+                >终止查询</van-button>
+                <van-button
                     size="large"
                     @click="nextStepFn"
                     class="xh-btn"
@@ -222,18 +229,17 @@
             </div>
             <div class="xh-submit-box" v-if="!isPeople && edit && !hiddenHandle" style="margin-top:15px;">
                 <van-button
-                    v-show="canTermin"
+                    v-if="dataList.status=='01'|| dataList.status=='02'"
                     size="large"
                     style="width: 25%; flex: none"
                     class="xh-btn xh-primary"
                     @click="stopTask"
                 >终止查询</van-button>
                 <van-button
-                    v-show="canTermin"
                     size="large"
                     style="width: 25%; flex: none"
                     class="xh-btn xh-primary"
-                    @click="stopTask"
+                    @click="nextStepFn"
                 >提交征信查询</van-button>
                 <van-button
                     size="large"
