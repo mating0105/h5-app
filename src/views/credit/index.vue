@@ -61,12 +61,12 @@
                                人保征信未通过
                             </span>
                             </van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
+                            <van-col span="24" class="xh-top-10" v-if="item.artificialCreditResult === 'pass'">
                             <span class="xh-success-tag">
                                人工征信通过
                             </span>
                             </van-col>
-                            <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
+                            <van-col span="24" class="xh-top-10" v-else-if="item.artificialCreditResult === 'not_pass'">
                             <span class="xh-danger-tag">
                                人工征信未通过
                             </span>
