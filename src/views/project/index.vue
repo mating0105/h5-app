@@ -73,7 +73,7 @@
             <!-- 审批结论 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="(params.activityId == 'WF_PROJ_APPR_01_T04' || params.activityId == 'WF_PROJ_APPR_01_T52') || isView"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52'"
             >
 
               <van-cell
@@ -147,7 +147,7 @@
             <!-- 审批官选择做单文员 -->
             <van-row
               class="xh-page-mian xh-card-box xh-radius xh-top-10"
-              v-if="(params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01') || isView"
+              v-if="params.activityId == 'WF_PROJ_APPR_01_T52' && completion == '01'"
             >
               <van-cell
                 :border="false"
