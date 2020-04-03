@@ -538,7 +538,7 @@ export default {
         } else {
           this.$notify({
             type: "danger",
-            message: "请上传身份证正反面"
+            message: "请上传身份证"
           });
         }
       }
