@@ -43,7 +43,7 @@
         <imageList :dataList="dataList"></imageList>
       </Card>
 
-      <Card style="margin-top: 10px;">
+      <Card style="margin-top: 10px;" v-if="!isView">
         <template v-slot:header> 意见描述 </template>
         <van-field v-model="remark" :border="false" type="textarea" :disabled="isView" placeholder="输入说明" rows="1" :autosize="autosize" maxlength="200" show-word-limit class="zh-textarea" />
       </Card>
@@ -117,6 +117,7 @@ export default {
   },
   activated(){
     this.remark = this.$route.query.remark || '';
+    console.log(this.$route.query)
     this.resetUserInfo();
     this.getListDetails();
   },
@@ -137,7 +138,11 @@ export default {
         this.userInfo[1].name = spsNm;
         this.userInfo[1].phone = spsCtcTel;
         this.userInfo[1].idCard = spsCrdtNo;
-        this.isView = this.projectInfo.bankMakeLoan && this.projectInfo.bankMakeLoan.processState == '已放款';
+        if(this.$route.query.isView){
+          this.isView = this.$route.query.isView == 1;
+        } else{
+          this.isView = this.projectInfo.bankMakeLoan && this.projectInfo.bankMakeLoan.processState == '已放款';
+        }
         this.initImage();
       })
     },

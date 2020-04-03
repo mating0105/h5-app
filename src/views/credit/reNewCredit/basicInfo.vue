@@ -18,21 +18,21 @@
         @click="showPickerFn"
       />
       <van-field
-        name="bankCardNum"
-        :disabled="!edit"
-        label="银行卡号："
-        :placeholder="!edit?'':'请输入'"
-        label-width="110"
-        input-align="right"
-        clearable
-        :border="false"
-        required
-        v-model="form.bankCardNum"
-        @blur.prevent="ruleMessge"
-        :error-message="errorMsg.bankCardNum"
-        :right-icon="!edit ? '' : 'scan'"
-        @click-right-icon="IdcardLoading('bankCodeOCR')"
-      />
+            v-model="dataList.bankCardNum"
+            required
+            clearable
+            name="bankCardNum"
+            error-message-align="right"
+            label="银行卡号："
+            input-align="right"
+            placeholder="请输入"
+            :disabled="!edit"
+            :border="false"
+            @blur.prevent="ruleMessge"
+            :error-message="errorMsg.bankCardNum"
+            :right-icon="!edit ? '' : 'scan'"
+            @click-right-icon="IdcardLoading('bankCodeOCR')"
+          />
       <van-field
         class="label_plus"
         name="intentionPrice"
@@ -376,6 +376,7 @@ export default {
           return;
         }
         // this.dataList.creditTypeFlag = 1
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
         let _arr = []
@@ -441,6 +442,7 @@ export default {
           return;
         }
         this.loading = true;
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
         if(TYPE !== 'bairong' && TYPE) {
           this.dataList.creditTypeFlag = TYPE
@@ -476,13 +478,16 @@ export default {
     },
     nextStepFn() {
       this.nextStep().then(query => {
-        this.$nextTick(() => {
-          this.$router.push({
-            path: "/creditNextStep",
-            query
+        if(query){
+          this.$nextTick(() => {
+            this.$router.push({
+              path: "/creditNextStep",
+              query
+            });
           });
-        });
+        }
       });
+      
     },
     /**
      *  删除车
@@ -581,6 +586,7 @@ export default {
      * 保存数据到本地
      */
     save() {
+      this.form.bankCardNum = this.dataList.bankCardNum;
       this.dataList.surDtlList = [this.form, ...this.perInfoList];
       setValue("credit", JSON.stringify(this.dataList));
     },
@@ -713,7 +719,6 @@ export default {
     Bus.$off('creditSave')
     Bus.$on("creditSave", TYPE => {
       TYPE === 'bairong' ? this.bigDataTipOfBr() : this.nextStep(TYPE);
-      
     });
     this.rulesForm("order-credit-xh"); //新车
   },

@@ -992,8 +992,8 @@ export default {
       try {
         this.imageTypeList.forEach(item => {
           this.getDocumentByType(item, this.dataImg);
-          this.getDocumentByType("6666", this.dataImg2); //二手车评估报告
         });
+        this.getDocumentByType("6666", this.dataImg2); //二手车评估报告
       } catch (e) {}
     },
     async getDocumentByType(documentType, arr) {
@@ -1432,8 +1432,16 @@ export default {
     // 获取报单数据
     loanData() {
       if (JSON.parse(sessionStorage.getItem("pro"))) {
-        this.dealData(JSON.parse(sessionStorage.getItem("pro")));
-        this.productName;
+        getProjectInfo({
+          id: this.params.projectId
+            ? this.params.projectId
+            : this.params.businesskey
+        }).then(res => {
+          this.projProjectInfo.perfectMsg = res.data.projectInfo.perfectMsg;
+          sessionStorage.setItem("pro", JSON.stringify(res));
+          this.dealData(JSON.parse(sessionStorage.getItem("pro")));
+          // this.productName;
+        })
       } else {
         Toast.loading({
           message: "加载中...",

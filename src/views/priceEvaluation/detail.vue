@@ -42,6 +42,14 @@
                            name="engineNum"
                            placeholder="请输入"/>
             </template>
+            <van-field v-model="carFrom.interestLoanAmount" :border="false" clearable input-align="right" label="贷款意向金额："
+                        :disabled="!edit"
+                        :error-message="errorMsg.interestLoanAmount"
+                        name="interestLoanAmount"
+                        @blur.prevent="ruleMessge"
+                        placeholder="请输入">
+                <div slot="button">元</div>
+            </van-field>
 <!--            <van-field :disabled="!edit" v-model="carFrom.remark" :border="false" clearable input-align="right" label="备注："-->
 <!--                       placeholder="请输入"/>-->
             <!--            <van-field class="label_plus" v-model="carFrom.evaluatingPriceDot" :disabled="!edit" :border="false" required clearable input-align="right"-->
@@ -410,7 +418,8 @@
       //发起评估
       async startEvaluate(){
         try {
-          this.loading = true
+          this.loading = true;
+          await saveUsedCar(this.carFrom);
           await startUserCar({id: this.carFrom.id, status: this.carFrom.status})
           this.loading = false
           this.$nextTick(() => {

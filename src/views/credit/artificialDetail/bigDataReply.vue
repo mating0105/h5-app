@@ -69,6 +69,13 @@
     borrower: ['6695'],//借款人
     joiDebtor: ['6698'],//共债人
   }
+  const rg = {
+    joiDebtorSpouse: ['6728'],//共债人配偶
+    borrowerSpouse: ['6725'],//借款人配偶
+    security: ['6726'],//担保人
+    borrower: ['6724'],//借款人
+    joiDebtor: ['6727'],//共债人
+  }
 
   export default {
     name: "creditNextStep",
@@ -94,6 +101,7 @@
         remarks: '',
         bigData: false,
         rbCredit: false,
+        rgCredit: false,
       }
     },
     computed: {
@@ -114,8 +122,10 @@
           return 'creditResult'
         } else if (this.rbCredit) {
           return 'personalGuaResult'
-        } else {
+        } else if(this.bigData){
           return 'bigDataResult'
+        } else if(this.rgCredit){
+          return 'artificialCreditResult'
         }
       },
       creditRequire() {
@@ -123,7 +133,9 @@
           return 'canPeopleBankResult'
         } else if (this.rbCredit) {
           return 'canPersonalCreditResult'
-        } else {
+        } else if(this.rgCredit){
+          return 'canArtificialCreditResult'
+        }else{
           return 'canBigDataResult'
         }
       }
@@ -183,8 +195,10 @@
             this.obj = bank
           } else if (this.rbCredit) {
             this.obj = rb
-          } else {
+          } else if(this.bigData){
             this.obj = bigData
+          }else if(this.rgCredit){
+            this.obj = rg
           }
           users.forEach(item => {
             item.dataList = []
@@ -249,6 +263,8 @@
             let url = '/order/creditInfo/updateCreditResult'
             if (this.rbCredit) {
               url = '/order/creditInfo/updatePersonalGuarantee'
+            }else if(this.rgCredit){
+              url = '/order/creditInfo/updateArtificialCreditResult'
             }
             this.loading = true
             await reply(url, this.form.surDtlList)
@@ -289,6 +305,7 @@
       this.isBank = Boolean(this.$route.query.isBank)
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      this.rgCredit = Boolean(this.$route.query.rgCredit) && this.$route.query.rgCredit !== 'false'
     }
   }
 </script>
