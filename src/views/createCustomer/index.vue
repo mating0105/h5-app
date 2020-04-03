@@ -530,7 +530,11 @@ export default {
               //   message: "建档成功"
               // });
               // this.loading = false;
-              // this.$router.go(-1);
+              // this.$nextTick(() =>{
+              //   this.$router.push({
+              //     path: '/creditList',
+              //   });
+              // })
             })
             .catch(e => {
               this.loading = false;
@@ -563,9 +567,11 @@ export default {
             });
             this.loading = false;
             // this.$router.go(-1);
-            this.$router.push({
-              path: '/creditList',
-            });
+           this.$nextTick(() =>{
+              this.$router.push({
+                path: '/creditList',
+              });
+            })
           }
         })
         .catch(e => {
