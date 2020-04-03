@@ -650,6 +650,8 @@ export default {
           this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'0.00';
           this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'0.00';
           this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'0.00';
+          //详情中拿到projectId,去获取项目信息
+          this.$store.dispatch("credit/temporaryProjectId", this.paymentDetail.projPayInfo.projectId);
         })
         .catch(e => {
           this.loading = false;

@@ -737,7 +737,8 @@ export default {
     },
     // 所有字典
     ...mapState({
-      wordbook: state => state.user.wordbook
+      wordbook: state => state.user.wordbook,
+      setProject: state => state.credit.setProject
     }),
     documentType() {
       let obj = {};
@@ -1433,9 +1434,7 @@ export default {
     loanData() {
       if (JSON.parse(sessionStorage.getItem("pro"))) {
         getProjectInfo({
-          id: this.params.projectId
-            ? this.params.projectId
-            : this.params.businesskey
+          id: this.params.projectId? this.params.projectId: (this.setProject?this.setProject:this.params.businesskey)
         }).then(res => {
           this.projProjectInfo.perfectMsg = res.data.projectInfo.perfectMsg;
           sessionStorage.setItem("pro", JSON.stringify(res));
@@ -1451,9 +1450,7 @@ export default {
           overlay: true
         });
         getProjectInfo({
-          id: this.params.projectId
-            ? this.params.projectId
-            : this.params.businesskey
+          id: this.params.projectId? this.params.projectId: (this.setProject?this.setProject:this.params.businesskey)
         })
           .then(res => {
             this.dealData(res);
