@@ -562,7 +562,10 @@ export default {
               message: "建档成功"
             });
             this.loading = false;
-            this.$router.go(-1);
+            // this.$router.go(-1);
+            this.$router.push({
+              path: '/creditList',
+            });
           }
         })
         .catch(e => {
