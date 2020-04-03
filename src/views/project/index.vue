@@ -951,7 +951,8 @@ export default {
         projectId: obj.businesskey,
         isView: dealState == 1 ? 0 : 1,
         dealState: dealState,
-        activityId: obj.activityId
+        activityId: obj.activityId,
+        newPro:obj.newPro
       };
       this.isView = dealState == 1;
       //如果是新的报单并且是查看状态 就不显示项目基本信息

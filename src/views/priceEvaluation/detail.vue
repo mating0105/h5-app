@@ -65,7 +65,7 @@
             <template v-slot:header>
                 车辆照片
             </template>
-            <imageList :dataList="dataList" :view="!edit"></imageList>
+            <imageList :dataList="dataList"></imageList>
         </Card>
 
         <Card style="margin-top: 1rem;" v-if="isReply">
