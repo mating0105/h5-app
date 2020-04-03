@@ -65,7 +65,7 @@
             <template v-slot:header>
                 车辆照片
             </template>
-            <imageList :dataList="dataList"></imageList>
+            <imageList :dataList="dataList" :view="!edit"></imageList>
         </Card>
 
         <Card style="margin-top: 1rem;" v-if="isReply">
@@ -247,7 +247,7 @@
           data.forEach(item => {
             item.declare = declare;
           })
-          let deletable = documentType === '6666' || this.edit
+          let deletable = documentType === '6666' && this.edit
           arr.push({
             declare: declare,//图片描述
             isRequire: documentType === '6666',//*是否必须
