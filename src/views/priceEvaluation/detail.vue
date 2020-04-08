@@ -42,7 +42,7 @@
                            name="engineNum"
                            placeholder="请输入"/>
             </template>
-            <van-field v-model="carFrom.interestLoanAmount" :border="false" clearable input-align="right" label="贷款意向金额："
+            <van-field v-model="carFrom.interestLoanAmount" :border="false" clearable input-align="right" label="贷款意向金额:"
                         :disabled="!edit"
                         :error-message="errorMsg.interestLoanAmount"
                         name="interestLoanAmount"

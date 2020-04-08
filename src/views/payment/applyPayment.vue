@@ -105,6 +105,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'estimateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'estimateCharges')"
                     :error-message="errorMsg.estimateCharges"
                   >
                   <div slot="button">元</div>
@@ -121,6 +122,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'investigateCharges')"
                     :error-message="errorMsg.investigateCharges"
                   >
                   <div slot="button">元</div>
@@ -137,6 +139,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'gpsCharges')"
                     :error-message="errorMsg.gpsCharges"
                   >
                   <div slot="button">元</div>
@@ -153,6 +156,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'colligateCharges')"
                     :error-message="errorMsg.colligateCharges"
                   >
                   <div slot="button">元</div>
@@ -169,6 +173,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'notarialFees')"
                     :error-message="errorMsg.notarialFees"
                   >
                   <div slot="button">元</div>
@@ -185,6 +190,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'allopatryCharges')"
                     :error-message="errorMsg.allopatryCharges"
                   >
                   <div slot="button">元</div>
@@ -201,6 +207,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'doolBail')"
                     :error-message="errorMsg.doolBail"
                   >
                   <div slot="button">元</div>
@@ -217,6 +224,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'agreeBail')"
                     :error-message="errorMsg.agreeBail"
                   >
                   <div slot="button">元</div>
@@ -233,6 +241,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'collectCarDealer')"
                     :error-message="errorMsg.collectCarDealer"
                   >
                   <div slot="button">元</div>
@@ -257,6 +266,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
+                     @focus="cleanPrice(paymentDetail.projBudgetList, 'dcnAmt')"
                     :error-message="errorMsg.dcnAmt"
                   >
                   <div slot="button">元</div>
@@ -959,6 +969,14 @@ export default {
     },
     cancelTime() {
       this.show2 = false;
+    },
+    //清空0.00
+    cleanPrice(obj,value){
+      if(obj[value] == '0.00'){
+        obj[value] = '';
+      }else{
+        obj[value] = obj[value];
+      }
     },
     //加载垫款图片
     loadImg() {
