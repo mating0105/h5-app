@@ -599,7 +599,7 @@
       // -------------图片------------
       async initImage () {
         try {
-          await this.getDocumentByType('7776')//凭证图片
+          await this.getDocumentByType('RECBANK03')//凭证图片
         } catch (e) {
           console.log(e)
         }

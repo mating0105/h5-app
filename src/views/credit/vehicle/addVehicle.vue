@@ -360,9 +360,9 @@ export default {
     },
     async initImage() {
       try {
-        await this.getDocumentByType("7777"); //发动机细节
-        this.getDocumentByType("8888"); //车辆内饰
-        this.getDocumentByType("9999"); //车辆外观
+        await this.getDocumentByType("VICEVA027"); //发动机细节
+        this.getDocumentByType("VICEVA028"); //车辆内饰
+        this.getDocumentByType("VICEVA029"); //车辆外观
       } catch (e) {
         console.log(e);
       }

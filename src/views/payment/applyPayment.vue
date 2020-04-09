@@ -14,422 +14,409 @@
               </div>
             </template>
           </redCard>
-          <!-- 步骤条 -->
-          <div class="xh-steps xh-steps-horizontal xh-step-center">
-            <div
-              class="xh-step is-horizontal"
-              v-for="i in list"
-              :key="i.key"
-              @click="stepVhange(i.key)"
-            >
-              <div class="xh-step-head">
-                <div class="xh-step-line">
-                  <i class="xh-step-line-inner xh-border-gray"></i>
-                </div>
-                <div
-                  class="xh-step-icon is-text"
-                  :class="stepVal == i.key?'xh-bg-active':'xh-bg-gray'"
+
+          <card>
+            <template slot="header">产品费用</template>
+            <van-row>
+              <van-cell-group :border="false">
+                <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="产品性质"
+                  :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)"
+                />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="贷款金额"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)"
                 >
-                  <div class="xh-step-icon-inner xh-is-status"></div>
-                </div>
-              </div>
-              <div class="xh-step-main">
-                <div
-                  class="xh-step-title"
-                  :class="stepVal == i.key?'xh-step-active':'xh-step-gray'"
-                >{{ i.name }}</div>
-                <div class="xh-step-description"></div>
-              </div>
-            </div>
-          </div>
-          <div v-show="stepVal ==1">
-            <card>
-              <template slot="header">产品费用</template>
-              <van-row>
-                <van-cell-group :border="false">
-                  <van-cell title="产品名称" :value="paymentDetail.projProjectInfo.productName" />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell
-                    title="产品性质"
-                    :value="returnText('product_property',paymentDetail.projProjectInfo.productProperty)"
-                  />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="贷款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
-                    <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="贷款期数" :value="paymentDetail.projProjectInfo.proPat.loanCount" />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="放款平台" :value="paymentDetail.projProjectInfo.dsbrPltfrmNm" />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="公司利率" :value="this.numFilter(paymentDetail.projProjectInfo.bankNewRate)" >
-                    <div slot="right-icon" class="xh-cell-right">%</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="客户利率" :value="this.numFilter(paymentDetail.projProjectInfo.customerRate)" >
-                    <div slot="right-icon" class="xh-cell-right">%</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="担保费率" :value="this.numFilter(paymentDetail.projProjectInfo.guaranteeRate)" >
-                    <div slot="right-icon" class="xh-cell-right">%</div>
-                  </van-cell>
-                </van-cell-group>
-              </van-row>
-            </card>
-            <card style="margin-top:10px;">
-              <template slot="header">其他费用</template>
-              <van-row>
-                <van-cell-group :border="false">
-                  <van-cell
-                    title="担保费"
-                    :value="paymentDetail.projBudgetList.warrantCharges?this.numFilter(paymentDetail.projBudgetList.warrantCharges):'0.00'"
-                  >
                   <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell title="贷款期数" :value="paymentDetail.projProjectInfo.proPat.loanCount" />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell title="放款平台" :value="paymentDetail.projProjectInfo.dsbrPltfrmNm" />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="公司利率"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.bankNewRate)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">%</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="客户利率"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.customerRate)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">%</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="担保费率"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.guaranteeRate)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">%</div>
+                </van-cell>
+              </van-cell-group>
+            </van-row>
+          </card>
+          <card style="margin-top:10px;">
+            <template slot="header">其他费用</template>
+            <van-row>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="担保费"
+                  :value="paymentDetail.projBudgetList.warrantCharges?this.numFilter(paymentDetail.projBudgetList.warrantCharges):'0.00'"
+                >
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.estimateCharges"
+                  required
+                  clearable
+                  name="estimateCharges"
+                  error-message-align="right"
+                  label="评估费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'estimateCharges');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'estimateCharges')"
+                  :error-message="errorMsg.estimateCharges"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.investigateCharges"
+                  required
+                  clearable
+                  name="investigateCharges"
+                  error-message-align="right"
+                  label="调查费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'investigateCharges')"
+                  :error-message="errorMsg.investigateCharges"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.gpsCharges"
+                  required
+                  clearable
+                  name="gpsCharges"
+                  error-message-align="right"
+                  label="GPS费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'gpsCharges')"
+                  :error-message="errorMsg.gpsCharges"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.colligateCharges"
+                  required
+                  clearable
+                  name="colligateCharges"
+                  error-message-align="right"
+                  label="综合服务费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'colligateCharges')"
+                  :error-message="errorMsg.colligateCharges"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.notarialFees"
+                  required
+                  clearable
+                  name="notarialFees"
+                  error-message-align="right"
+                  label="公证费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'notarialFees')"
+                  :error-message="errorMsg.notarialFees"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.allopatryCharges"
+                  required
+                  clearable
+                  name="allopatryCharges"
+                  error-message-align="right"
+                  label="异地上户费"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'allopatryCharges')"
+                  :error-message="errorMsg.allopatryCharges"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.doolBail"
+                  required
+                  clearable
+                  name="doolBail"
+                  error-message-align="right"
+                  label="上户保证金"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'doolBail')"
+                  :error-message="errorMsg.doolBail"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.agreeBail"
+                  required
+                  clearable
+                  name="agreeBail"
+                  error-message-align="right"
+                  label="履约保证金"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'agreeBail')"
+                  :error-message="errorMsg.agreeBail"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.collectCarDealer"
+                  required
+                  clearable
+                  name="collectCarDealer"
+                  error-message-align="right"
+                  label="实收车商"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'collectCarDealer')"
+                  :error-message="errorMsg.collectCarDealer"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+            </van-row>
+          </card>
+          <card style="margin-top:10px;">
+            <template slot="header">缴费明细</template>
+            <van-row>
+              <van-cell-group :border="false">
+                <van-cell title="费用合计" :value="totalCharges" />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="paymentDetail.projBudgetList.dcnAmt"
+                  required
+                  clearable
+                  name="dcnAmt"
+                  error-message-align="right"
+                  label="减免金额"
+                  input-align="right"
+                  placeholder="请输入"
+                  @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
+                  @focus="cleanPrice(paymentDetail.projBudgetList, 'dcnAmt')"
+                  :error-message="errorMsg.dcnAmt"
+                >
+                  <div slot="button">元</div>
+                </van-field>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell title="实收金额" :value="this.numFilter(actincmAmt)">
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="首付款时间"
+                  required
+                  is-link
+                  v-model="paymentDetail.projBudgetList.pyfDtDesc"
+                  @click="showPopupTime('pyfDt')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.pyfDt"
+                />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="缴费方式"
+                  required
+                  is-link
+                  :value="returnText('pyfMod',paymentDetail.projBudgetList.pyfMod)"
+                  @click="loadType('缴费方式', 'pyfMod')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.pyfMod"
+                />
+              </van-cell-group>
+            </van-row>
+          </card>
+
+          <card>
+            <template slot="header">垫款信息</template>
+            <van-row>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="银行贷款金额"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="送审金额"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.sendLoanAmt)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="应垫款金额"
+                  :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)"
+                >
+                  <div slot="right-icon" class="xh-cell-right">元</div>
+                </van-cell>
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="垫款模式"
+                  required
+                  is-link
+                  :value="returnText('payType',paymentDetail.projPayInfo.payType)"
+                  @click="loadType('垫款模式', 'payType')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.payType"
+                />
+              </van-cell-group>
+              <van-cell-group :border="false">
+                <van-cell
+                  title="垫款时间"
+                  required
+                  is-link
+                  :value="paymentDetail.projPayInfo.payTimeDesc"
+                  @click="showPopupTime('payTime')"
+                  label-class="labelClass"
+                  @blur.prevent="ruleMessge"
+                  :label="errorMsg.payTime"
+                />
+              </van-cell-group>
+              <div v-show="paymentDetail.projPayInfo.payType == '2'">
                 <van-cell-group :border="false">
                   <van-field
-                    v-model="paymentDetail.projBudgetList.estimateCharges"
-                    required
+                    v-model="paymentDetail.projPayInfo.payeeAccount"
                     clearable
-                    name="estimateCharges"
-                    error-message-align="right"
-                    label="评估费"
+                    label="银行账号"
                     input-align="right"
                     placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'estimateCharges');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'estimateCharges')"
-                    :error-message="errorMsg.estimateCharges"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.investigateCharges"
-                    required
-                    clearable
-                    name="investigateCharges"
-                    error-message-align="right"
-                    label="调查费"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'investigateCharges')"
-                    :error-message="errorMsg.investigateCharges"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.gpsCharges"
-                    required
-                    clearable
-                    name="gpsCharges"
-                    error-message-align="right"
-                    label="GPS费"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'gpsCharges')"
-                    :error-message="errorMsg.gpsCharges"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.colligateCharges"
-                    required
-                    clearable
-                    name="colligateCharges"
-                    error-message-align="right"
-                    label="综合服务费"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'colligateCharges')"
-                    :error-message="errorMsg.colligateCharges"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.notarialFees"
-                    required
-                    clearable
-                    name="notarialFees"
-                    error-message-align="right"
-                    label="公证费"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'notarialFees')"
-                    :error-message="errorMsg.notarialFees"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.allopatryCharges"
-                    required
-                    clearable
-                    name="allopatryCharges"
-                    error-message-align="right"
-                    label="异地上户费"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'allopatryCharges')"
-                    :error-message="errorMsg.allopatryCharges"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.doolBail"
-                    required
-                    clearable
-                    name="doolBail"
-                    error-message-align="right"
-                    label="上户保证金"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'doolBail')"
-                    :error-message="errorMsg.doolBail"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.agreeBail"
-                    required
-                    clearable
-                    name="agreeBail"
-                    error-message-align="right"
-                    label="履约保证金"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'agreeBail')"
-                    :error-message="errorMsg.agreeBail"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.collectCarDealer"
-                    required
-                    clearable
-                    name="collectCarDealer"
-                    error-message-align="right"
-                    label="实收车商"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
-                    @focus="cleanPrice(paymentDetail.projBudgetList, 'collectCarDealer')"
-                    :error-message="errorMsg.collectCarDealer"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-              </van-row>
-            </card>
-            <card style="margin-top:10px;">
-              <template slot="header">缴费明细</template>
-              <van-row>
-                <van-cell-group :border="false">
-                  <van-cell title="费用合计" :value="totalCharges" />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-field
-                    v-model="paymentDetail.projBudgetList.dcnAmt"
-                    required
-                    clearable
-                    name="dcnAmt"
-                    error-message-align="right"
-                    label="减免金额"
-                    input-align="right"
-                    placeholder="请输入"
-                    @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
-                     @focus="cleanPrice(paymentDetail.projBudgetList, 'dcnAmt')"
-                    :error-message="errorMsg.dcnAmt"
-                  >
-                  <div slot="button">元</div>
-                  </van-field>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="实收金额" :value="this.numFilter(actincmAmt)" >
-                     <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell
-                    title="首付款时间"
-                    required
-                    is-link
-                    v-model="paymentDetail.projBudgetList.pyfDtDesc"
-                    @click="showPopupTime('pyfDt')"
-                    label-class="labelClass"
-                    @blur.prevent="ruleMessge"
-                    :label="errorMsg.pyfDt"
                   />
                 </van-cell-group>
                 <van-cell-group :border="false">
                   <van-cell
-                    title="缴费方式"
-                    required
+                    title="开户银行"
                     is-link
-                    :value="returnText('pyfMod',paymentDetail.projBudgetList.pyfMod)"
-                    @click="loadType('缴费方式', 'pyfMod')"
-                    label-class="labelClass"
-                    @blur.prevent="ruleMessge"
-                    :label="errorMsg.pyfMod"
+                    :value="returnText('payeeBank',paymentDetail.projPayInfo.payeeBank)"
+                    @click="loadType('开户银行', 'payeeBank')"
                   />
                 </van-cell-group>
-              </van-row>
-            </card>
-          </div>
-          <div v-show="stepVal ==2">
-            <card>
-              <template slot="header">垫款信息</template>
-              <van-row>
-                <van-cell-group :border="false">
-                  <van-cell title="银行贷款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
-                     <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="送审金额" :value="this.numFilter(paymentDetail.projProjectInfo.sendLoanAmt)" >
-                     <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell title="应垫款金额" :value="this.numFilter(paymentDetail.projProjectInfo.loanAmt)" >
-                     <div slot="right-icon" class="xh-cell-right">元</div>
-                  </van-cell>
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell
-                    title="垫款模式"
-                    required
-                    is-link
-                    :value="returnText('payType',paymentDetail.projPayInfo.payType)"
-                    @click="loadType('垫款模式', 'payType')"
-                    label-class="labelClass"
-                    @blur.prevent="ruleMessge"
-                    :label="errorMsg.payType"
-                  />
-                </van-cell-group>
-                <van-cell-group :border="false">
-                  <van-cell
-                    title="垫款时间"
-                    required
-                    is-link
-                    :value="paymentDetail.projPayInfo.payTimeDesc"
-                    @click="showPopupTime('payTime')"
-                    label-class="labelClass"
-                    @blur.prevent="ruleMessge"
-                    :label="errorMsg.payTime"
-                  />
-                </van-cell-group>
-                <div v-show="paymentDetail.projPayInfo.payType == '2'">
-                  <van-cell-group :border="false">
-                    <van-field
-                      v-model="paymentDetail.projPayInfo.payeeAccount"
-                      clearable
-                      label="银行账号"
-                      input-align="right"
-                      placeholder="请输入"
-                    />
-                  </van-cell-group>
-                  <van-cell-group :border="false">
-                    <van-cell
-                      title="开户银行"
-                      is-link
-                      :value="returnText('payeeBank',paymentDetail.projPayInfo.payeeBank)"
-                      @click="loadType('开户银行', 'payeeBank')"
-                    />
-                  </van-cell-group>
-                  <van-cell-group :border="false">
-                    <van-field
-                      v-model="paymentDetail.projPayInfo.payeeSubBank"
-                      clearable
-                      label="开户支行"
-                      input-align="right"
-                      placeholder="请输入"
-                    />
-                  </van-cell-group>
-                  <van-cell-group :border="false">
-                    <van-field
-                      v-model="paymentDetail.projPayInfo.payeeFullName"
-                      clearable
-                      label="账户名"
-                      input-align="right"
-                      placeholder="请输入"
-                    />
-                  </van-cell-group>
-                </div>
-              </van-row>
-            </card>
-          </div>
-          <div v-show="stepVal ==3">
-            <card>
-              <template slot="header">垫款资料</template>
-              <imageList :dataList="dataList"></imageList>
-            </card>
-            <card>
-              <van-row style="padding:10px;">
-                <van-checkbox v-model="notice">通知风控审批垫款</van-checkbox>
-              </van-row>
-            </card>
-            <card>
-              <template v-slot:header>意见描述</template>
-              <section>
                 <van-cell-group :border="false">
                   <van-field
-                    v-model="message"
-                    rows="2"
-                    autosize
-                    label-width="0"
-                    :border="false"
-                    type="textarea"
-                    maxlength="200"
+                    v-model="paymentDetail.projPayInfo.payeeSubBank"
+                    clearable
+                    label="开户支行"
+                    input-align="right"
                     placeholder="请输入"
-                    show-word-limit
                   />
                 </van-cell-group>
-              </section>
-            </card>
-            <div class="xh-submit">
-              <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
-            </div>
-          </div>
+                <van-cell-group :border="false">
+                  <van-field
+                    v-model="paymentDetail.projPayInfo.payeeFullName"
+                    clearable
+                    label="账户名"
+                    input-align="right"
+                    placeholder="请输入"
+                  />
+                </van-cell-group>
+              </div>
+            </van-row>
+          </card>
+
+          <card>
+            <template slot="header">垫款资料</template>
+            <imageList :dataList="dataList"></imageList>
+          </card>
+          <card>
+            <van-row style="padding:10px;">
+              <van-checkbox v-model="notice">通知风控审批垫款</van-checkbox>
+            </van-row>
+          </card>
+          <card>
+            <template v-slot:header>意见描述</template>
+            <section>
+              <van-cell-group :border="false">
+                <van-field
+                  v-model="message"
+                  rows="2"
+                  autosize
+                  label-width="0"
+                  :border="false"
+                  type="textarea"
+                  maxlength="200"
+                  placeholder="请输入"
+                  show-word-limit
+                />
+              </van-cell-group>
+            </section>
+          </card>
         </div>
-        <div class="xh-submit" v-show="stepVal !=3">
+        <div class="xh-submit">
           <van-row>
             <van-col :span="4" v-show="this.params.info.activityId">
-              <van-button size="large" class="xh-bg-gray" @click="end">终 止</van-button>
+              <van-button size="large" class="xh-bg-gray" @click="end">终止</van-button>
             </van-col>
-            <van-col
-              :span="this.params.info.activityId? '19': '24'"
-              :offset="this.params.info.activityId? '1': '0'"
-            >
-              <van-button size="large" class="xh-bg-main" @click="save">保 存</van-button>
+            <van-col :span="6" offset="1">
+              <van-button size="large" class="xh-bg-subgray" @click="save" style="color:#333;">暂存</van-button>
+            </van-col>
+            <van-col :span="this.params.info.activityId? '19': '15'" offset="1">
+              <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
             </van-col>
           </van-row>
         </div>
@@ -541,7 +528,7 @@ export default {
         info: {}
       }, //上个页面传过来的参数
       loading: false,
-      notice:false,//是否通知风控垫款
+      notice: false, //是否通知风控垫款
       selectName: "",
       dicList: [], //字典获取
       valueKey: "label",
@@ -578,10 +565,10 @@ export default {
       }
     };
   },
-  filters:{
-    filterTime(time){
-        return time ? format(time,'yyyy-MM-dd hh:mm:ss') : ''
-      }
+  filters: {
+    filterTime(time) {
+      return time ? format(time, "yyyy-MM-dd hh:mm:ss") : "";
+    }
   },
   computed: {
     // 费用合计=实收车商+上户保证金+履约保证金+异地上户费+公证费+综合服务费+调查费+评估费+GPS费用
@@ -617,7 +604,7 @@ export default {
       ).toFixed(2);
     },
     actincmAmt() {
-      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0.00; //减免金额
+      let dcnAmt = parseFloat(this.paymentDetail.projBudgetList.dcnAmt) || 0.0; //减免金额
       return (parseFloat(this.totalCharges) - dcnAmt).toFixed(2);
     },
     wordbook() {
@@ -631,7 +618,7 @@ export default {
         });
       }
       return obj;
-    },
+    }
   },
   watch: {},
   methods: {
@@ -647,28 +634,97 @@ export default {
         .then(res => {
           this.loading = false;
           this.paymentDetail = res.data;
-          //初始化数据
-          this.paymentDetail.projPayInfo.payTimeDesc = this.paymentDetail.projPayInfo.payTime?format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm'):'';
-          this.paymentDetail.projBudgetList.pyfDtDesc = this.paymentDetail.projBudgetList.pyfDt?format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm'):'';
-          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'0.00';
-          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'0.00';
-          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'0.00';
-          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'0.00';
-          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'0.00';
-          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'0.00';
-          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'0.00';
-          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'0.00';
-          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'0.00';
-          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'0.00';
-          //详情中拿到projectId,去获取项目信息
-          this.$store.dispatch("credit/temporaryProjectId", this.paymentDetail.projPayInfo.projectId);
+          this.initData();
         })
         .catch(e => {
           this.loading = false;
         });
     },
-    //保存数据
-    save() {
+    //初始化数据
+    initData() {
+      //初始化数据
+      this.paymentDetail.projPayInfo.payTimeDesc = this.paymentDetail
+        .projPayInfo.payTime
+        ? format(
+            new Date(this.paymentDetail.projPayInfo.payTime),
+            "yyyy-MM-dd hh:mm"
+          )
+        : "";
+      this.paymentDetail.projBudgetList.pyfDtDesc = this.paymentDetail
+        .projBudgetList.pyfDt
+        ? format(
+            new Date(this.paymentDetail.projBudgetList.pyfDt),
+            "yyyy-MM-dd hh:mm"
+          )
+        : "";
+      this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail
+        .projBudgetList.estimateCharges
+        ? this.numFilter(this.paymentDetail.projBudgetList.estimateCharges)
+        : "0.00";
+      this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail
+        .projBudgetList.investigateCharges
+        ? this.numFilter(this.paymentDetail.projBudgetList.investigateCharges)
+        : "0.00";
+      this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail
+        .projBudgetList.gpsCharges
+        ? this.numFilter(this.paymentDetail.projBudgetList.gpsCharges)
+        : "0.00";
+      this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail
+        .projBudgetList.colligateCharges
+        ? this.numFilter(this.paymentDetail.projBudgetList.colligateCharges)
+        : "0.00";
+      this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail
+        .projBudgetList.notarialFees
+        ? this.numFilter(this.paymentDetail.projBudgetList.notarialFees)
+        : "0.00";
+      this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail
+        .projBudgetList.allopatryCharges
+        ? this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges)
+        : "0.00";
+      this.paymentDetail.projBudgetList.doolBail = this.paymentDetail
+        .projBudgetList.doolBail
+        ? this.numFilter(this.paymentDetail.projBudgetList.doolBail)
+        : "0.00";
+      this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail
+        .projBudgetList.agreeBail
+        ? this.numFilter(this.paymentDetail.projBudgetList.agreeBail)
+        : "0.00";
+      this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail
+        .projBudgetList.collectCarDealer
+        ? this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer)
+        : "0.00";
+      this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail
+        .projBudgetList.dcnAmt
+        ? this.numFilter(this.paymentDetail.projBudgetList.dcnAmt)
+        : "0.00";
+      //详情中拿到projectId,去获取项目信息
+      this.$store.dispatch(
+        "credit/temporaryProjectId",
+        this.paymentDetail.projPayInfo.projectId
+      );
+    },
+    //暂存数据，不验证字段必填
+    async save() {
+      this.loading = true;
+      await this.saveFunction();
+      this.$notify({ type: "success", message: "保存成功" });
+      this.loading = false;
+    },
+    //保存数据接口
+    saveFunction() {
+      this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
+      this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
+      savePay(this.paymentDetail)
+        .then(res => {
+          this.paymentDetail = res.data.project;
+          this.initData();
+        })
+        .catch(e => {
+          this.loading = false;
+        });
+    },
+    //提交流程
+    async submit() {
       let num = 0;
       for (let item in this.errorMsg) {
         if (
@@ -697,28 +753,9 @@ export default {
       if (num !== 0) {
         return;
       }
-      this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
-      this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
-      this.loading = true;
-      savePay(this.paymentDetail)
-        .then(res => {
-          this.loading = false;
-          this.$notify({ type: "success", message: "保存成功" });
-          this.paymentDetail = res.data.project;
-          this.paymentDetail.projPayInfo.payTimeDesc = format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm');
-          this.paymentDetail.projBudgetList.pyfDtDesc = format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm')
-
-        })
-        .catch(e => {
-          this.loading = false;
-        });
-    },
-    //提交流程
-    submit() {
       if (this.dataList[0].fileList.length < 1) {
         this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
-        this.loading = true;
         let num = 0;
         for (let item in this.errorMsg) {
           if (
@@ -747,6 +784,8 @@ export default {
           this.loading = false;
           return;
         }
+        this.loading = true;
+        await this.saveFunction();
         this.paymentDetail.projBudgetList.actincmAmt = this.actincmAmt;
         this.paymentDetail.projBudgetList.totalCharges = this.totalCharges;
         submitPay(this.paymentDetail)
@@ -898,17 +937,16 @@ export default {
           if (this.message == "") {
             this.message = "同意";
           }
-        let data = {
-            wfComment :{
+          let data = {
+            wfComment: {
               businessKey: this.paymentDetail.projPayInfo.id,
               conclusionCode: "01",
               commentsDesc: this.message,
               nextUser: row.id,
-              isSendMsg:this.notice?'1':'0'
+              isSendMsg: this.notice ? "1" : "0"
             },
-            projPayInfo:{
-            }
-          }
+            projPayInfo: {}
+          };
           submitProcess(data)
             .then(res => {
               this.loading = false;
@@ -956,13 +994,19 @@ export default {
       switch (this.timeType) {
         case "pyfDt":
           this.paymentDetail.projBudgetList.pyfDt = Date.parse(new Date(value));
-          this.paymentDetail.projBudgetList.pyfDtDesc = format(value,'yyyy-MM-dd hh:mm')
-          this.errorMsg.pyfDt = '';
+          this.paymentDetail.projBudgetList.pyfDtDesc = format(
+            value,
+            "yyyy-MM-dd hh:mm"
+          );
+          this.errorMsg.pyfDt = "";
           break;
         case "payTime":
           this.paymentDetail.projPayInfo.payTime = Date.parse(new Date(value));
-          this.paymentDetail.projPayInfo.payTimeDesc = format(value,'yyyy-MM-dd hh:mm');
-          this.errorMsg.payTime = '';
+          this.paymentDetail.projPayInfo.payTimeDesc = format(
+            value,
+            "yyyy-MM-dd hh:mm"
+          );
+          this.errorMsg.payTime = "";
           break;
       }
       this.show2 = false;
@@ -971,16 +1015,16 @@ export default {
       this.show2 = false;
     },
     //清空0.00
-    cleanPrice(obj,value){
-      if(obj[value] == '0.00'){
-        obj[value] = '';
-      }else{
+    cleanPrice(obj, value) {
+      if (obj[value] == "0.00") {
+        obj[value] = "";
+      } else {
         obj[value] = obj[value];
       }
     },
     //加载垫款图片
     loadImg() {
-      this.getDocumentByType("0620");
+      this.getDocumentByType("VICDOC011");
     },
     async getDocumentByType(documentType) {
       try {

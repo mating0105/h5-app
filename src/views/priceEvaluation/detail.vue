@@ -199,7 +199,7 @@
         isdetail: 0,
         isReply: false,
         isReplyView: false,
-        imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
+        imageTypeList: ['VICEVA003', 'VICEVA004', 'VICEVA005', 'VICEVA006', 'VICEVA007', 'VICEVA008', 'VICEVA009', 'VICEVA010', 'VICEVA011', 'VICEVA012', 'VICEVA013', 'VICEVA014', 'VICEVA015', 'VICEVA016', 'VICEVA017', 'VICEVA018', 'VICEVA019', '6717', '6718', '6719', 'VICEVA023', 'VICEVA024', 'VICEVA025', 'VICEVA026']
       }
     },
     computed: {
@@ -247,10 +247,10 @@
           data.forEach(item => {
             item.declare = declare;
           })
-          let deletable = documentType === '6666' && this.edit
+          let deletable = documentType === 'VICEVA002' && this.edit
           arr.push({
             declare: declare,//图片描述
-            isRequire: documentType === '6666',//*是否必须
+            isRequire: documentType === 'VICEVA002',//*是否必须
             deletable: deletable,//是否可以操作-上传和删除
             documentType: documentType,
             customerNum: this.$route.query.id,
@@ -270,11 +270,11 @@
           this.imageTypeList.forEach(item => {
             this.getDocumentByType(item, this.dataList)
           })
-          // await this.getDocumentByType('7777', this.dataList)//发动机细节
-          // await this.getDocumentByType('8888', this.dataList)//车辆内饰
-          // await this.getDocumentByType('9999', this.dataList)//车辆外观
+          // await this.getDocumentByType('VICEVA027', this.dataList)//发动机细节
+          // await this.getDocumentByType('VICEVA028', this.dataList)//车辆内饰
+          // await this.getDocumentByType('VICEVA029', this.dataList)//车辆外观
           if(this.isReply) {
-            this.getDocumentByType('6666', this.dataListReply)//二手车评估报告
+            this.getDocumentByType('VICEVA002', this.dataListReply)//二手车评估报告
           }
         } catch (e) {
           console.log(e)

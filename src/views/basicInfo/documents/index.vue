@@ -24,11 +24,11 @@ export default {
       params: this.$route.query,
       isView: 1,
       types: [
-        { type: '0306', must: false, dealState: "1", label: '二手车资料' },
-        { type: '0530', must: false, dealState: "1", label: '基础资料' },
-        { type: '0531', must: false, dealState: "1", label: '房产资料' },
-        { type: '0532', must: false, dealState: "1", label: '收入资料' },
-        { type: '0534', must: false, dealState: "1", label: '担保人资料' },
+        { type: 'VICEVA001', must: false, dealState: "1", label: '二手车资料' },
+        { type: 'CUQUA019', must: false, dealState: "1", label: '基础资料' },
+        { type: 'CUQUA020', must: false, dealState: "1", label: '房产资料' },
+        { type: 'CUQUA021', must: false, dealState: "1", label: '收入资料' },
+        { type: 'CUQUA022', must: false, dealState: "1", label: '担保人资料' },
         { type: '0533', must: false, dealState: "1", label: '调查资料' },
       ]
     };

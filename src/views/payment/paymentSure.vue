@@ -429,7 +429,7 @@ export default {
                 declare: "垫款凭证", //图片描述
                 isRequire: true, //*是否必须
                 deletable: true, //是否可以操作-上传和删除
-                documentType: "0001",
+                documentType: "RECBANK02",
                 customerNum: e.id ? e.id : this.params.info.customerNum,
                 customerId: this.params.info.customerId,
                 kind: "1",
@@ -442,7 +442,7 @@ export default {
               e.time = format(new Date(e.advancesTime), "yyyy-MM-dd hh:mm");
               e.dataImg = [];
               e.advancesMoney = this.numFilter(e.advancesMoney);
-              this.getDocumentByType("0001", e);
+              this.getDocumentByType("RECBANK02", e);
             });
             setTimeout(() => {
               this.advanceList = list;
@@ -681,7 +681,7 @@ export default {
         declare: "垫款凭证", //图片描述
         isRequire: true, //*是否必须
         deletable: true, //是否可以操作-上传和删除
-        documentType: "0001",
+        documentType: "RECBANK02",
         customerNum: this.params.info.customerNum,
         customerId: this.params.info.customerId,
         kind: "1",

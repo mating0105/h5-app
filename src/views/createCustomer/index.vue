@@ -482,20 +482,20 @@ export default {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
             case "security":
-              docType = "0117";
-              docTypeBack = "0120";
+              docType = "CUIDA05";
+              docTypeBack = "CUIDB05";
               break;
             case "borrowerSpouse":
-              docType = "0105";
-              docTypeBack = "0106";
+              docType = "CUIDA02";
+              docTypeBack = "CUIDB02";
               break;
             case "joiDebtor":
-              docType = "0109";
-              docTypeBack = "0110";
+              docType = "CUIDA03";
+              docTypeBack = "CUIDB03";
               break;
             case "joiDebtorSpouse":
-              docType = "0113";
-              docTypeBack = "0114";
+              docType = "CUIDA04";
+              docTypeBack = "CUIDB04";
               break;
           }
           const params = {
@@ -522,8 +522,8 @@ export default {
                 customerNum: res.data.customerNum,
                 customerId: res.data.id
               };
-              this.uploadImg("0101", params, this.dataURLtoFile(this.src));
-              this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
+              this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src));
+              this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack));
 
               // this.$notify({
               //   type: "success",

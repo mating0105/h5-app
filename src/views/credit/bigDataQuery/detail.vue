@@ -236,7 +236,7 @@
         if(_itemList.length > 0){
           _itemList.forEach((item,index) => {
             item.dataList.forEach((ele)=> {
-              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
+              if (ele.documentType === "CRDBIGA01" && ele.fileList.length <= 0) {
                 _arr.push(item.creditPersonName)
               }
               resolve(true)

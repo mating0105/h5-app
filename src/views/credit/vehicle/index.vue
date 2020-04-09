@@ -184,7 +184,7 @@
           carLicenseLocation: '',//车牌所在地
         },
         addUsedCar: false,
-        imageTypeList: ['6700', '6701', '6702', '6703', '6704', '6705', '6706', '6707', '6708', '6709', '6710', '6711', '6712', '6713', '6714', '6715', '6716', '6717', '6718', '6719', '6720', '6721', '6722', '6723']
+        imageTypeList: ['VICEVA003', 'VICEVA004', 'VICEVA005', 'VICEVA006', 'VICEVA007', 'VICEVA008', 'VICEVA009', 'VICEVA010', 'VICEVA011', 'VICEVA012', 'VICEVA013', 'VICEVA014', 'VICEVA015', 'VICEVA016', 'VICEVA017', 'VICEVA018', 'VICEVA019', '6717', '6718', '6719', 'VICEVA023', 'VICEVA024', 'VICEVA025', 'VICEVA026']
       }
     },
     computed: {
@@ -259,10 +259,10 @@
           this.imageTypeList.forEach(item => {
             this.getDocumentByType(item)
           })
-          //6700 车架号
-          // await this.getDocumentByType('7777')//发动机细节
-          // this.getDocumentByType('8888')//车辆内饰
-          // this.getDocumentByType('9999')//车辆外观
+          //VICEVA003 车架号
+          // await this.getDocumentByType('VICEVA027')//发动机细节
+          // this.getDocumentByType('VICEVA028')//车辆内饰
+          // this.getDocumentByType('VICEVA029')//车辆外观
         } catch (e) {
           console.log(e)
         }
