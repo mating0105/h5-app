@@ -73,6 +73,10 @@ export default {
       // [{ type: "1111", must: false, dealState: "1",label:'征信' }] => type代表的是文档类型,must代表是否必传,dealState代表是否可以上传或者是查看,label当前文档的名称
       type: Array,
       default: () => []
+    },
+    roles: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -225,7 +229,17 @@ export default {
           fileList: list
         };
       } else {
-        this.noGroupList = list;
+        if(this.roles == 'khjl'){//客户经理不能查看银行征信授权书
+          let lists = [];
+          list.forEach(e =>{
+            if(e.documentType != 'CRDPBOCB01' && e.documentType !='CRDPBOCB02' && e.documentType !='CRDPBOCB03' && e.documentType != 'CRDPBOCB04' && e.documentType != 'CRDPBOCB05'){
+              lists.push(e);
+            }
+          })
+          this.noGroupList = lists;
+        }else{
+          this.noGroupList = list;
+        }
       }
       this.groupObj = group;
     }
