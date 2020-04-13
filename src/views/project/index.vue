@@ -226,8 +226,10 @@
       </van-tab>
       <van-tab title="征信信息" name="2" v-if="isCredit">
           <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-          <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-          <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+          <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+          <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+          <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+          <creditInfoTable v-if="!rg"title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3">
         <ApprovalRecord
@@ -279,11 +281,12 @@ import {
   postWindControl,
   getIsSave,
   setProcessBack,
-  setProcessStop
+  setProcessStop,
 } from "@/api/project";
-import { getCreditInfo } from "@/api/credit";
+import { getCreditInfo,getButtonOfCredit,creditQueryOf100,getCompanyName } from "@/api/credit";
 import { mapMethodGaoDe } from "@/api/map";
 import { getGPSData,nuclearOpinion,submitNuclearOpinion } from "@/api/project";
+import creditQueryInfo from '../credit/viewCompoents/creditQueryInfo'
 import { mapState } from "vuex";
 import xhBadge from "@/components/Badge/index";
 import redCard from "@/components/redCard/index";
@@ -320,7 +323,8 @@ export default {
     ApprovalRecord,
     creditInfoTable,
     radio,
-    radioItem
+    radioItem,
+    creditQueryInfo
   },
   computed: {
     // 所有字典
@@ -331,6 +335,7 @@ export default {
   watch: {
     activeName(val) {
       if (val == 2) {
+        this.loadBigDataType();
         this.getCreditInfo();
       }
     }
@@ -463,6 +468,11 @@ export default {
       array:[],
       form:{},
       optionList:[],//意见的数组
+      TYPE:'',//大数据征信类型
+      dataList:{
+        surDtlList: []
+      },
+      rg:false,//是否有人工
     };
   },
   methods: {
@@ -933,6 +943,34 @@ export default {
         this.optionList = res.data;
       })
     },
+    //获取该公司的大数据征信类型
+    async loadBigDataType(){
+      const {data} = await getButtonOfCredit();
+      // 征信回复：:5/百融征信查询：6
+      let buttonId = data[0].buttonId
+      if(buttonId){
+        this.TYPE = buttonId == 6 ? 'bairong' : '';
+        const params = {
+          lpCertificateNum: this.$route.query.certificateNum,
+        }
+        const res = await creditQueryOf100(params);
+        this.dataList = res.data.cuCreditRegister;
+      }else{
+        this.TYPE =  ''
+      }
+    },
+    lookDocs(){
+      this.activeName = '2';
+    },
+    async getCompany(){
+      const res = await getCompanyName();
+      //鑫弘 显示人工，其他不显示
+      if(res.data.companyId == '190215509218' || res.data.companyId == '190215509212'){
+        this.rg = true;
+      }else{
+        this.rg = false;
+      }
+    }
   },
   mounted() {
     let { info, dealState } = this.$route.query;
@@ -1000,12 +1038,13 @@ export default {
       this.getIsSaveObj();
     }
     this.endActive();
+    this.getCompany();
     // let datas = JSON.parse(sessionStorage.getItem("pro"));
     // if (datas) {
     //   sessionStorage.removeItem("pro");
     // }
     // this.getMapGaoDe();
-  }
+  },
 };
 </script>
 
