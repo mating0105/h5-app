@@ -751,6 +751,7 @@ export default {
       }
       console.log(this.errorMsg);
       if (num !== 0) {
+        this.$notify({ type: "danger", message: "请完善资料" });
         return;
       }
       if (this.dataList[0].fileList.length < 1) {
