@@ -10,7 +10,7 @@
         </template>
         <template v-if="active === 1">
             <!-- 百融 -->
-            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult" :showDocs="true"></creditQueryInfo>
             <div v-else>
               <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
               <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>

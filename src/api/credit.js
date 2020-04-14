@@ -155,3 +155,14 @@ export function getButtonOfCredit(params) {
     params
   })
 }
+/**
+ * 征信按钮
+ * @param params
+ */
+export function getCompanyName(params) {
+  return request({
+    url: '/user/getUserInfoByTo',
+    method: 'get',
+    params
+  })
+}

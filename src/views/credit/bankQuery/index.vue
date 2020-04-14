@@ -8,10 +8,13 @@
                 <van-tab title="审批记录"></van-tab>
             </van-tabs>
         </template>
+
         <template v-if="active === 1">
             <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-            <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-            <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+            <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+            <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+            <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="false" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -46,11 +49,12 @@
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import basicInfo from '../viewCompoents/basicInfo'
   import basicInfoCredit from '../reNewCredit/basicInfo'
+  import creditQueryInfo from '../viewCompoents/creditQueryInfo'
   import backspace from '../viewCompoents/backspace'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
-  import { getCreditInfo } from '@/api/credit'
+  import { getCreditInfo,getCompanyName,getButtonOfCredit,creditQueryOf100 } from '@/api/credit'
   import { bankReply } from '@/api/bigData'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -69,7 +73,8 @@
       backspace,
       relatedDocs,
       approvalRecord,
-      basicInfoCredit
+      basicInfoCredit,
+      creditQueryInfo
     },
     data () {
       return {
@@ -93,7 +98,9 @@
         roles:'khjl',
         recordParams: {
           businesskey: '', businesstype: '07'
-        }
+        },
+        TYPE:'',
+        rg:false,
       }
     },
     methods: {
@@ -150,7 +157,35 @@
           this.loading = false
           console.log(e)
         }
-      }
+      },
+      async getCompany(){
+        const res = await getCompanyName();
+        //鑫弘 显示人工，其他不显示
+        if(res.data.companyId == '190215509218' || res.data.companyId == '190215509212'){
+          this.rg = true;
+        }else{
+          this.rg = false;
+        }
+      },
+      //获取该公司的大数据征信类型
+      async loadBigDataType(){
+        const {data} = await getButtonOfCredit();
+        // 征信回复：:5/百融征信查询：6
+        let buttonId = data[0].buttonId
+        if(buttonId){
+          this.TYPE = buttonId == 6 ? 'bairong' : '';
+          const params = {
+            lpCertificateNum: this.$route.query.lpCertificateNum,
+          }
+          const res = await creditQueryOf100(params);
+          this.dataList = res.data.cuCreditRegister;
+        }else{
+          this.TYPE =  ''
+        }
+      },
+      lookDocs(){
+        this.active = 1;
+      },
     },
     mounted () {
       if (this.$route.query.info && this.$route.query.dealState) {
@@ -171,7 +206,9 @@
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       }
-      this.getCreditInfo()
+      this.getCreditInfo();
+      this.getCompany();
+      this.loadBigDataType();
     }
   }
 </script>
