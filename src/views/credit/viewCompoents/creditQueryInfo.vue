@@ -22,7 +22,7 @@
           <van-cell title="证件号码:" :border="false" :value="item.cpCertificateNum" />
           <van-cell title="手机号码:" :border="false" :value="item.telephone" />
           <!-- <van-cell title="银行卡号:" :border="false" value="张三"/> -->
-          <van-cell title="相关文档:" :border="false">
+          <van-cell title="相关文档:" :border="false" v-if="showDocs">
             <van-button
               slot="right-icon"
               size="mini"
@@ -134,7 +134,11 @@ export default {
       }
     },
     type: String,
-    credit100Result: String
+    credit100Result: String,
+    showDocs:{
+      type:Boolean,
+      default:false
+    }
   },
   data() {
     return {

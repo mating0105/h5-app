@@ -30,10 +30,7 @@
 
         <!-- 提交按钮 -->
         <div class="xh-submit-box">
-            <van-button size="large" @click="nextStep"
-                        class="xh-btn"
-            >发起征信查询
-            </van-button>
+            <van-button size="large" @click="nextStep" class="xh-btn">发起征信查询</van-button>
         </div>
         
     </ViewPage>
