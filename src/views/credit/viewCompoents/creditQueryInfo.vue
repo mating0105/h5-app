@@ -208,9 +208,9 @@
       return name;
     },
     lookUpResult(url){
-        if(this.roles == 'CustomerManager'){
-          this.$toast("暂无查看权限");
-        }else{
+        // if(this.roles == 'CustomerManager'){
+        //   this.$toast("暂无查看权限");
+        // }else{
           console.log(url,'url')
           this.images = ''
           this.imgTitle = null
@@ -219,7 +219,7 @@
           // this.url=['data:image/jpeg/jpg/png;base64,'+url];
           // console.log(this.url,'this.url')
           // this.showPdf=true;
-        }
+        // }
       
     },
     lookDocs(){
