@@ -48,15 +48,28 @@
             </div>
           </section>
         </div>
-        <van-image-preview v-model="showImg" :images="images">
+        <!-- 查看报告-图片 -->
+        <!-- <van-image-preview v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
-        </van-image-preview>
+        </van-image-preview> -->
+        <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
+        <van-overlay :show="showImg"  @click="showImg = false">
+          <div class="wrapper" style='overflow:auto;'>
+            <van-image width="100%" :src="images" />
+          </div>
+        </van-overlay>
+
+        <!-- 弹框 -->
+        <van-dialog v-model="showPdf" show-cancel-button width="80%">
+          <Pdf :path='url'></Pdf>
+        </van-dialog>
     </Card>
 </template>
 
 <script>
 
   import Card from '@/components/card'
+  import Pdf from './pdf.vue'
   import Vue from 'vue';
   import { getBank, getCreditInfo, saveCreditInfo } from '@/api/credit'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
@@ -69,7 +82,8 @@
   export default {
     name: "creditQueryInfo",
     components: {
-      Card
+      Card,
+      Pdf
     },
     props: {
       title: String,
@@ -87,7 +101,10 @@
         isSpread:true,
         total_result:false,
         showImg:false,
-        images:[]
+        images:[],
+        //pdf
+        url:'',
+        showPdf:false
 
       }
     },
@@ -159,14 +176,20 @@
         return name;
       },
       lookUpResult(url){
+        console.log(url,'url')
         this.images = []
         this.imgTitle = null
-        this.images = ['data:image/jpeg/jpg/png;base64,'+url]
+        this.images = 'data:image/jpeg/jpg/png;base64,'+url
         this.showImg = true
+        // this.url=['data:image/jpeg/jpg/png;base64,'+url];
+        // console.log(this.url,'this.url')
+        // this.showPdf=true;
       },
       lookDocs(){
         this.$emit('lookDocs')
       }
+    },
+    mounted(){
     }
   }
 </script>
@@ -226,4 +249,8 @@
     .credit-result .van-cell__title{
       font-weight: bold;
     }
+
+.van-overlay{
+  overflow: auto;
+}
 </style>
