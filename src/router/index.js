@@ -410,6 +410,12 @@ export const constantRoutes = [
     component: () => import('@/views/surveyInfo/list'),
     meta: {title: '调查信息', icon: 'dashboard'}
   },
+  {
+    path: '/pdf',
+    name: 'pdf',
+    component: () => import('@/views/credit/viewCompoents/pdf2'),
+    meta: {title: 'pdf'}
+  },
   // 404 page must be placed at the end !!!
   // {path: '*', redirect: '/404', hidden: true}
 ]
