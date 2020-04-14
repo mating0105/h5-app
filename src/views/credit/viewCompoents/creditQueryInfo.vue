@@ -73,12 +73,13 @@
           </van-cell>
         </div>
         <!-- 查看报告-图片 -->
-        <van-image-preview v-model="showImg" :images="images">
+        <van-image-preview ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
         </van-image-preview>
+        
         <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
         <!-- <van-overlay :show="showImg"  @click="showImg = false">
-          <div class="wrapper" style='overflow:auto;'>
+          <div style='overflow:auto;'>
             <van-image width="100%" :src="images" />
           </div>
         </van-overlay> -->
@@ -208,9 +209,9 @@
       return name;
     },
     lookUpResult(url){
-        // if(this.roles == 'CustomerManager'){
-        //   this.$toast("暂无查看权限");
-        // }else{
+        if(this.roles == 'CustomerManager'){
+          this.$toast("暂无查看权限");
+        }else{
           console.log(url,'url')
           this.images = []
           this.imgTitle = null
@@ -219,7 +220,7 @@
           // this.url=['data:image/jpeg/jpg/png;base64,'+url];
           // console.log(this.url,'this.url')
           // this.showPdf=true;
-        // }
+        }
       
     },
     lookDocs(){
@@ -352,11 +353,8 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-.van-image.van-image-preview__image{
-  overflow: scroll;
-}
-
 .van-image__error, .van-image__img, .van-image__loading{
   height: auto;
 }
+
 </style>
