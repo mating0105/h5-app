@@ -710,8 +710,8 @@ export default {
     //银行卡
     discern (e) {
       this.$bridge.callHandler('bankCodeOCR', e.value, (res) => {
-        this.$toast(res.BANK_NUM,this.form.bankCardNum)
-        this.$set(this.form, "bankCardNum", res.BANK_NUM);
+        this.$toast(res.BANK_NUM,this.dataList.bankCardNum)
+        this.$set(this.dataList, "bankCardNum", res.BANK_NUM);
       })
       this.showScan = false;
     }
