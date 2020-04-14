@@ -73,15 +73,15 @@
           </van-cell>
         </div>
         <!-- 查看报告-图片 -->
-        <!-- <van-image-preview v-model="showImg" :images="images">
+        <van-image-preview v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
-        </van-image-preview> -->
+        </van-image-preview>
         <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
-        <van-overlay :show="showImg"  @click="showImg = false">
+        <!-- <van-overlay :show="showImg"  @click="showImg = false">
           <div class="wrapper" style='overflow:auto;'>
             <van-image width="100%" :src="images" />
           </div>
-        </van-overlay>
+        </van-overlay> -->
 
         <!-- 弹框 -->
         <van-dialog v-model="showPdf" show-cancel-button width="80%">
@@ -132,7 +132,7 @@
         isSpread:true,
         total_result:false,
         showImg:false,
-        images:'',
+        images:[],
         roles:'',
         //pdf
         url:'',
@@ -212,9 +212,9 @@
         //   this.$toast("暂无查看权限");
         // }else{
           console.log(url,'url')
-          this.images = ''
+          this.images = []
           this.imgTitle = null
-          this.images = 'data:image/jpeg/jpg/png;base64,'+url
+          this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
           // this.url=['data:image/jpeg/jpg/png;base64,'+url];
           // console.log(this.url,'this.url')
@@ -351,5 +351,9 @@
 }
 .credit-result .van-cell__title {
   font-weight: bold;
+}
+
+.van-image__error, .van-image__img, .van-image__loading{
+  height: auto;
 }
 </style>
