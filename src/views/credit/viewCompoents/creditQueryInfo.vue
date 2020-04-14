@@ -72,85 +72,76 @@
             >查看报告</van-button>
           </van-cell>
         </div>
+        <!-- 查看报告-图片 -->
+        <van-image-preview ref="preview" v-model="showImg" :images="images">
+          <template v-slot:index>{{ imgTitle }}</template>
+        </van-image-preview>
+        
+        <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
+        <!-- <van-overlay :show="showImg"  @click="showImg = false">
+          <div style='overflow:auto;'>
+            <van-image width="100%" :src="images" />
+          </div>
+        </van-overlay> -->
+
+        <!-- 弹框 -->
+        <van-dialog v-model="showPdf" show-cancel-button width="80%">
+          <Pdf :path='url'></Pdf>
+        </van-dialog>
       </section>
-    </div>
-    <van-image-preview v-model="showImg" :images="images">
-      <template v-slot:index>{{ imgTitle }}</template>
-    </van-image-preview>
-  </Card>
+      </div>
+    </Card>
+    
 </template>
 
 <script>
-import Card from "@/components/card";
-import Vue from "vue";
-import { getBank, getCreditInfo, saveCreditInfo ,getCompanyName} from "@/api/credit";
-import {
-  Cell,
-  CellGroup,
-  Field,
-  Icon,
-  Button,
-  Picker,
-  Popup,
-  Toast,
-  Notify,
-  SwipeCell,
-  Dialog,
-  Tab,
-  Tabs,
-  ImagePreview
-} from "vant";
-import { format } from "@/utils/format";
-const Components = [
-  Cell,
-  CellGroup,
-  Field,
-  Icon,
-  Button,
-  Picker,
-  Popup,
-  Toast,
-  Notify,
-  SwipeCell,
-  Dialog,
-  Tab,
-  Tabs,
-  ImagePreview
-];
-Components.forEach(item => {
-  Vue.use(item);
-});
 
-export default {
-  name: "creditQueryInfo",
-  components: {
-    Card
-  },
-  props: {
-    title: String,
-    dataList: {
-      default() {
-        return [];
+  import Card from '@/components/card'
+  import Pdf from './pdf.vue'
+  import Vue from 'vue';
+  import { getBank, getCreditInfo, saveCreditInfo,getCompanyName } from '@/api/credit'
+  import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
+  import { format } from "@/utils/format";
+  const Components = [Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview]
+  Components.forEach(item => {
+    Vue.use(item)
+  })
+
+  export default {
+    name: "creditQueryInfo",
+    components: {
+      Card,
+      Pdf
+    },
+    props: {
+      title: String,
+      dataList: {
+        default () {
+          return []
+        }
+      },
+      type: String,
+      credit100Result:String,
+      showDocs:{
+        type:Boolean,
+        default:false
       }
     },
-    type: String,
-    credit100Result: String,
-    showDocs:{
-      type:Boolean,
-      default:false
-    }
-  },
-  data() {
-    return {
-      copyDataList: this.dataList,
-      isSpread: true,
-      total_result: false,
-      showImg: false,
-      images: [],
-      roles:''
-    };
-  },
-  computed: {
+    data(){
+      return {
+        copyDataList:this.dataList,
+        isSpread:true,
+        total_result:false,
+        showImg:false,
+        images:[],
+        roles:'',
+        //pdf
+        url:'',
+        showPdf:false
+
+      }
+    },
+    computed: {
     // 所有字典
     wordbook() {
       return this.$store.state.user.wordbook;
@@ -206,8 +197,8 @@ export default {
   },
   methods: {
     // 字典转换
-    returnText(val, key) {
-      let name = "";
+    returnText (val, key) {
+      let name = '';
       if (this.wordbook[key]) {
         this.wordbook[key].forEach(e => {
           if (e.value === val) {
@@ -217,18 +208,23 @@ export default {
       }
       return name;
     },
-    lookUpResult(url) {
-      if(this.roles == 'CustomerManager'){
-        this.$toast("暂无查看权限");
-      }else{
-        this.images = [];
-        this.imgTitle = null;
-        this.images = ["data:image/jpeg/jpg/png;base64," + url];
-        this.showImg = true;
-      }
+    lookUpResult(url){
+        if(this.roles == 'CustomerManager'){
+          this.$toast("暂无查看权限");
+        }else{
+          console.log(url,'url')
+          this.images = []
+          this.imgTitle = null
+          this.images = ['data:image/jpeg/jpg/png;base64,'+url]
+          this.showImg = true
+          // this.url=['data:image/jpeg/jpg/png;base64,'+url];
+          // console.log(this.url,'this.url')
+          // this.showPdf=true;
+        }
+      
     },
-    lookDocs() {
-      this.$emit("lookDocs");
+    lookDocs(){
+      this.$emit('lookDocs')
     },
     async getCompany() {
       const res = await getCompanyName();
@@ -252,7 +248,62 @@ export default {
 .xh-pass .van-cell__value {
   color: #3ece73;
 }
+    .xh-pass .van-cell__value {
+        color: #3ECE73;
+    }
 
+    .xh-no-pass .van-cell__value {
+        color: #C4252A;
+    }
+    .status{
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 2px;
+        color: #fff;
+        background-color: #E60000;
+    }
+    .status-pass{
+        background-color: #21C272;
+    }
+    .credit-arrow-wrap{
+      float: right;
+    }
+    .van-icon.credit-arrow{
+      font-size: 20px;
+      color: #ccc;
+    }
+    .credit-info-title .text{
+      color: #C4252A;
+    }
+    .credit-info-title .text:before{
+      content: '.';
+      display: inline-block;
+      height: 20px;
+      width: 5px;
+      background-color: #C4252A;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    .credit-info-title.van-cell{
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .credit-info-detail{
+      padding: 0 20px;
+    }
+    .credit-info-detail .van-cell{
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .credit-info-solid{
+      border-bottom: 0.08333rem solid #ebeeef;
+    }
+    .credit-result .van-cell__title{
+      font-weight: bold;
+    }
+
+.van-overlay{
+  overflow: auto;}
 .xh-no-pass .van-cell__value {
   color: #c4252a;
 }
@@ -302,4 +353,8 @@ export default {
 .credit-result .van-cell__title {
   font-weight: bold;
 }
+.van-image__error, .van-image__img, .van-image__loading{
+  height: auto;
+}
+
 </style>
