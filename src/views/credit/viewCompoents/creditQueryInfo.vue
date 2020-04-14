@@ -86,7 +86,7 @@
 
         <!-- 弹框 -->
         <van-dialog v-model="showPdf" show-cancel-button width="80%">
-          <Pdf :path='url'></Pdf>
+          <Pdf :path='urlSrc'></Pdf>
         </van-dialog>
       </section>
       </div>
@@ -97,7 +97,7 @@
 <script>
 
   import Card from '@/components/card'
-  import Pdf from './pdf.vue'
+  import Pdf from './pdf2.vue'
   import Vue from 'vue';
   import { getBank, getCreditInfo, saveCreditInfo,getCompanyName } from '@/api/credit'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
@@ -137,7 +137,8 @@
         roles:'',
         //pdf
         url:'',
-        showPdf:false
+        showPdf:false,
+        urlSrc:''
 
       }
     },
@@ -209,18 +210,18 @@
       return name;
     },
     lookUpResult(url){
-        if(this.roles == 'CustomerManager'){
-          this.$toast("暂无查看权限");
-        }else{
-          console.log(url,'url')
+        // if(this.roles == 'CustomerManager'){
+        //   this.$toast("暂无查看权限");
+        // }else{
+          // console.log(url,'url')
           this.images = []
           this.imgTitle = null
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
-          // this.url=['data:image/jpeg/jpg/png;base64,'+url];
-          // console.log(this.url,'this.url')
+          // this.urlSrc =window.URL.createObjectURL(new Blob([url], {type:"application/pdf;charset-UTF-8"}))+'.pdf';
+          // // console.log(this.url,'this.url')
           // this.showPdf=true;
-        }
+        // }
       
     },
     lookDocs(){
@@ -354,7 +355,7 @@
   font-weight: bold;
 }
 .van-image__error, .van-image__img, .van-image__loading{
-  height: auto;
+  height: calc(100%-50px);
 }
 
 </style>
