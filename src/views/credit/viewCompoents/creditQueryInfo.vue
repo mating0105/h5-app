@@ -352,6 +352,9 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
+.van-image.van-image-preview__image{
+  overflow: scroll;
+}
 
 .van-image__error, .van-image__img, .van-image__loading{
   height: auto;
