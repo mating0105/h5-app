@@ -552,7 +552,7 @@ export default {
       params.file = file;
       uploadsDocument(params)
         .then(res => {
-          this.$toast(this.params.credit);
+          this.$toast(this.params.credit+'ceshi');
           if (this.params.credit) {
             //征信新增客户，直接返回上一页
             this.$store.dispatch("credit/setCustomerData", {

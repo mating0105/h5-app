@@ -278,7 +278,7 @@
           <van-cell
             title="车辆品牌型号:"
             :border="false"
-            :value="nameToString(item.brndNm, item.carSeries, item.carModel)"
+            :value="nameToString(item.carBrandNm, item.carSeries, item.carModel)"
           />
           <van-cell
             v-if="item.carNature === 'old_car'"
