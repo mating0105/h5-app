@@ -59,6 +59,7 @@ import { queryAllImgs } from "@/api/document";
 import Card from "@/components/card/index";
 import Nothing from "@/components/Nothing/index";
 import ImageList from "@/components/imageList";
+import { getCompanyName } from "@/api/credit";
 import { Toast } from "vant";
 
 export default {
@@ -74,10 +75,6 @@ export default {
       type: Array,
       default: () => []
     },
-    roles: {
-      type: String,
-      default: ''
-    }
   },
   data() {
     return {
@@ -87,7 +84,9 @@ export default {
       },
       groupObj: {}, // 分组的列表
       noGroupList: [], // 没有分组的列表
-      params: {} // 请求的参数
+      params: {} ,// 请求的参数
+      creditImgCode:['CRDBIGB01','CRDBIGB02','CRDBIGB03','CRDBIGB04','CRDBIGB05','CRDPBOCB01','CRDPBOCB02','CRDPBOCB03','CRDPBOCB04','CRDPBOCB05','CRDPICCB01','CRDPICCB02','CRDPICCB03','CRDPICCB04','CRDPICCB05','CRDMANB01','CRDMANB02','CRDMANB03','CRDMANB04','CRDMANB05'],
+      roles:'',
     };
   },
   computed: {
@@ -106,6 +105,7 @@ export default {
   mounted() {
     this.initData();
     this.query();
+    this.getCompany();
   },
   methods: {
     /**
@@ -229,10 +229,11 @@ export default {
           fileList: list
         };
       } else {
-        if(this.roles == 'khjl'){//客户经理不能查看银行征信授权书
+        console.log(this.roles,1111)
+        if(this.roles == 'CustomerManager'){//客户经理不能查看银行征信授权书
           let lists = [];
           list.forEach(e =>{
-            if(e.documentType != 'CRDPBOCB01' && e.documentType !='CRDPBOCB02' && e.documentType !='CRDPBOCB03' && e.documentType != 'CRDPBOCB04' && e.documentType != 'CRDPBOCB05'){
+            if(!this.creditImgCode.includes(e.documentType)){
               lists.push(e);
             }
           })
@@ -242,6 +243,15 @@ export default {
         }
       }
       this.groupObj = group;
+    },
+    async getCompany(){
+      const res = await getCompanyName();
+      //获取该用户角色-若只是客户经理，则不显示征信报告，存在其他角色，则显示征信报告
+      res.data.roleInfoList.forEach(e => {
+          if(e.enname == 'CustomerManager' && res.data.roleInfoList.length == 1){
+            this.roles = 'CustomerManager';
+          }
+      });
     }
   }
 };

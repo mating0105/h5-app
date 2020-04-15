@@ -21,7 +21,7 @@
 <!--            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :edit="edit" :showImage="false"></basicInfo>-->
         </template>
         <template v-else-if="active === 2">
-            <relatedDocs :requestParams="requestParams" :roles="roles"></relatedDocs>
+            <relatedDocs :requestParams="requestParams" ></relatedDocs>
         </template>
         <template v-else-if="active === 3">
             <approvalRecord :requestParams="recordParams"></approvalRecord>
@@ -95,7 +95,6 @@
         requestParams: {
           customerNum: '', customerId: '', dealState: '3'
         },
-        roles:'khjl',
         recordParams: {
           businesskey: '', businesstype: '07'
         },
