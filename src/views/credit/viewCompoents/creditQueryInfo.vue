@@ -361,21 +361,12 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-.reportClass{
-  overflow: auto;
+ .reportClass{
+  overflow: auto!important;
 }
-.reportClass .van-swipe{
-  overflow: auto;
-}
-.reportClass .van-swipe .van-swipe__track{
-  overflow: auto;
-}
-.reportClass .van-swipe .van-swipe__track .van-swipe-item{
-  overflow: auto;
-}
-.reportClass .van-swipe .van-swipe__track .van-swipe-item .van-image{
-  overflow: auto;
-}
+ .reportClass div{
+   overflow: auto!important;
+ }
 .reportClass .van-image>img{
   height: auto;
 }
