@@ -210,10 +210,10 @@
       return name;
     },
     lookUpResult(url){
-        // if(this.roles == 'CustomerManager'){
-        //   this.$toast("暂无查看权限");
-        // }else{
-          // console.log(url,'url')
+        if(this.roles == 'CustomerManager'){
+          this.$toast("暂无查看权限");
+        }else{
+          console.log(url,'url')
           this.images = []
           this.imgTitle = null
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
@@ -228,7 +228,7 @@
           // this.urlSrc =window.URL.createObjectURL(new Blob([url], {type:"application/pdf;charset-UTF-8"}))+'.pdf';
           // // console.log(this.url,'this.url')
           // this.showPdf=true;
-        // }
+        }
       
     },
     lookDocs(){
@@ -361,7 +361,9 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-
+.reportClass .van-image{
+  overflow: auto;
+}
 .reportClass .van-image>img{
   height: auto;
 }
