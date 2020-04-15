@@ -104,8 +104,8 @@ export default {
   },
   mounted() {
     this.initData();
-    this.query();
     this.getCompany();
+    this.query();
   },
   methods: {
     /**
