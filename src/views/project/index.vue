@@ -379,7 +379,7 @@ export default {
         {
           name: "家庭收入",
           key: 5,
-          icon: "icon-income.png",
+          icon: "icon-pay.png",
           url: "/incomeFamily",
           show: 0
         },
