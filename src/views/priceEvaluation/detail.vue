@@ -247,7 +247,7 @@
           data.forEach(item => {
             item.declare = declare;
           })
-          let deletable = documentType === 'VICEVA002' && this.edit
+          let deletable = documentType === 'VICEVA002' && this.isReply
           arr.push({
             declare: declare,//图片描述
             isRequire: documentType === 'VICEVA002',//*是否必须
