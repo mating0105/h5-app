@@ -174,7 +174,7 @@
         if(buttonId){
           this.TYPE = buttonId == 6 ? 'bairong' : '';
           const params = {
-            lpCertificateNum: this.$route.query.lpCertificateNum,
+            lpCertificateNum: this.query.lpCertificateNum,
           }
           const res = await creditQueryOf100(params);
           this.dataList = res.data.cuCreditRegister;
