@@ -155,8 +155,15 @@ export function getButtonOfCredit(params) {
     params
   })
 }
+export function getCreditType(params) {
+  return request({
+    url: '/manage/buttonConfig/getButtonByServer/v2?serverName=big-data-credit',
+    method: 'get',
+    params
+  })
+}
 /**
- * 征信按钮
+ * 查询角色信息
  * @param params
  */
 export function getCompanyName(params) {

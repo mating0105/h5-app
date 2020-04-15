@@ -283,7 +283,7 @@ import {
   setProcessBack,
   setProcessStop,
 } from "@/api/project";
-import { getCreditInfo,getButtonOfCredit,creditQueryOf100,getCompanyName } from "@/api/credit";
+import { getCreditInfo,getButtonOfCredit,creditQueryOf100,getCompanyName,getCreditType } from "@/api/credit";
 import { mapMethodGaoDe } from "@/api/map";
 import { getGPSData,nuclearOpinion,submitNuclearOpinion } from "@/api/project";
 import creditQueryInfo from '../credit/viewCompoents/creditQueryInfo'
@@ -945,13 +945,13 @@ export default {
     },
     //获取该公司的大数据征信类型
     async loadBigDataType(){
-      const {data} = await getButtonOfCredit();
+      const {data} = await getCreditType();
       // 征信回复：:5/百融征信查询：6
       let buttonId = data[0].buttonId
       if(buttonId){
         this.TYPE = buttonId == 6 ? 'bairong' : '';
         const params = {
-          lpCertificateNum: this.$route.query.certificateNum,
+          lpCertificateNum: this.params.certificateNum,
         }
         const res = await creditQueryOf100(params);
         this.dataList = res.data.cuCreditRegister;
