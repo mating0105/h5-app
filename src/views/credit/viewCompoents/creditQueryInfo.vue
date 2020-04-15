@@ -85,9 +85,9 @@
         </van-overlay> -->
 
         <!-- 弹框 -->
-        <van-dialog v-model="showPdf" show-cancel-button width="80%">
+        <!-- <van-dialog v-model="showPdf" show-cancel-button width="80%">
           <Pdf :path='urlSrc'></Pdf>
-        </van-dialog>
+        </van-dialog> -->
       </section>
       </div>
     </Card>
@@ -218,6 +218,13 @@
           this.imgTitle = null
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
+          // let params={
+          //   images:this.images,
+          //   imgTitle:this.imgTitle,
+          //   showImg:this.showImg
+          // }
+          // this.$router.push({ path: '/img', params: params });
+
           // this.urlSrc =window.URL.createObjectURL(new Blob([url], {type:"application/pdf;charset-UTF-8"}))+'.pdf';
           // // console.log(this.url,'this.url')
           // this.showPdf=true;
@@ -355,7 +362,7 @@
   font-weight: bold;
 }
 .van-image__error, .van-image__img, .van-image__loading{
-  height: calc(100%-50px);
+  height: auto;
 }
 
 </style>
