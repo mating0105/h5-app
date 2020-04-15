@@ -725,35 +725,6 @@ export default {
     },
     //提交流程
     async submit() {
-      let num = 0;
-      for (let item in this.errorMsg) {
-        if (
-          item == "payType" ||
-          item == "payTime" ||
-          item == "payeeAccount" ||
-          item == "payeeBank" ||
-          item == "payeeSubBank" ||
-          item == "payeeFullName"
-        ) {
-          this.errorMsg[item] = this.returnMsg(
-            item,
-            this.paymentDetail.projPayInfo[item]
-          );
-        } else {
-          this.errorMsg[item] = this.returnMsg(
-            item,
-            this.paymentDetail.projBudgetList[item]
-          );
-        }
-        if (this.errorMsg[item]) {
-          num++;
-        }
-      }
-      console.log(this.errorMsg);
-      if (num !== 0) {
-        this.$notify({ type: "danger", message: "请完善资料" });
-        return;
-      }
       if (this.dataList[0].fileList.length < 1) {
         this.$notify({ type: "danger", message: "请上传垫款资料" });
       } else {
@@ -783,6 +754,7 @@ export default {
         }
         if (num !== 0) {
           this.loading = false;
+          this.$notify({ type: "danger", message: "请完善资料" });
           return;
         }
         this.loading = true;
@@ -803,6 +775,7 @@ export default {
             });
             this.peopleList = people;
             this.loadType("下一节点审批人", "people");
+            this.initData();
           })
           .catch(e => {
             this.loading = false;
