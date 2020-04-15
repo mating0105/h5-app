@@ -73,7 +73,7 @@
           </van-cell>
         </div>
         <!-- 查看报告-图片 -->
-        <van-image-preview ref="preview" v-model="showImg" :images="images">
+        <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
         </van-image-preview>
         
@@ -361,8 +361,8 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-.van-image__error, .van-image__img, .van-image__loading{
+
+.reportClass .van-image>img{
   height: auto;
 }
-
 </style>
