@@ -129,7 +129,7 @@
     },
     data(){
       return {
-        copyDataList:this.dataList,
+        copyDataList:[],
         isSpread:true,
         total_result:false,
         showImg:false,
@@ -248,6 +248,10 @@
   mounted(){
     //获取该用户角色
     this.getCompany();
+    setTimeout(()=>{
+      this.copyDataList = this.dataList;
+    },500)
+    
   }
 };
 </script>
