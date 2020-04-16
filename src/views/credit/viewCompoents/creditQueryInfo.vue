@@ -404,6 +404,9 @@
         /*height: auto;*/
         height: 1500px;
     }
+    .reportClass .van-image.van-image-preview__image{
+      height: 100%;
+    }
     .previewButton{
       position: fixed;
       right: 0;
