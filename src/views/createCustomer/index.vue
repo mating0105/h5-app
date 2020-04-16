@@ -504,10 +504,8 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(val=>{
-            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(e =>{
-              this.$toast(val , e)
-              if(val && e){
+          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
+            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
                 if (this.params.credit) {
                   //征信新增客户，直接返回上一页
                   this.$store.dispatch("credit/setCustomerData", {
@@ -529,12 +527,6 @@ export default {
                     });
                   })
                 }
-              }else{
-                this.$notify({
-                  type: "danger",
-                  message: "图片上传失败"
-                });
-              }
             }).catch(e => {
               this.loading = false;
             });
