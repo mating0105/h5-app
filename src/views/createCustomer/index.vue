@@ -506,27 +506,7 @@ export default {
           };
           this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
             this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
-                if (this.params.credit) {
-                  //征信新增客户，直接返回上一页
-                  this.$store.dispatch("credit/setCustomerData", {
-                    data: this.customerData,
-                    index: this.$route.query.index
-                  });
-                  this.loading = false;
-                  this.$router.go(-1);
-                } else {
-                  this.$notify({
-                    type: "success",
-                    message: "建档成功"
-                  });
-                  this.loading = false;
-                  // this.$router.go(-1);
-                this.$nextTick(() =>{
-                    this.$router.push({
-                      path: '/creditList',
-                    });
-                  })
-                }
+              this.goRouter();
             }).catch(e => {
               this.loading = false;
             });
@@ -553,27 +533,7 @@ export default {
               };
               this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
                 this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
-                    if (this.params.credit) {
-                      //征信新增客户，直接返回上一页
-                      this.$store.dispatch("credit/setCustomerData", {
-                        data: this.customerData,
-                        index: this.$route.query.index
-                      });
-                      this.loading = false;
-                      this.$router.go(-1);
-                    } else {
-                      this.$notify({
-                        type: "success",
-                        message: "建档成功"
-                      });
-                      this.loading = false;
-                      // this.$router.go(-1);
-                    this.$nextTick(() =>{
-                        this.$router.push({
-                          path: '/creditList',
-                        });
-                      })
-                    }
+                  this.goRouter();
                 }).catch(e => {
                   this.loading = false;
                 });
@@ -602,6 +562,30 @@ export default {
         .catch(e => {
           return Promise.resolve(false)
         });
+    },
+    //跳转处理
+    goRouter(){
+      if (this.params.credit) {
+        //征信新增客户，直接返回上一页
+        this.$store.dispatch("credit/setCustomerData", {
+          data: this.customerData,
+          index: this.$route.query.index
+        });
+        this.loading = false;
+        this.$router.go(-1);
+      } else {
+        this.$notify({
+          type: "success",
+          message: "建档成功"
+        });
+        this.loading = false;
+        // this.$router.go(-1);
+      this.$nextTick(() =>{
+          this.$router.push({
+            path: '/creditList',
+          });
+        })
+      }
     },
     //点击上传身份证图片
     loadImg(name) {
