@@ -584,8 +584,7 @@ export default {
               thisT = false;
               break;
             }
-            money =
-              parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
+            money = parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
             this.advanceList[e].documentIds = [];
             this.advanceList[e].dataImg.forEach(i => {
               i.fileList.forEach(p => {
@@ -593,9 +592,12 @@ export default {
               });
             });
           }
-          if (money != this.data.projProjectInfo.loanAmt) {
-            Toast("垫款金额需等于贷款金额时才能提交");
-            return;
+          if(thisT){
+            if (money != this.data.projProjectInfo.loanAmt) {
+              this.$notify({ type: "danger", message: "垫款金额需等于贷款金额时才能提交" });
+              thisT = false;
+              return;
+            }
           }
         }
         if (!thisT) {

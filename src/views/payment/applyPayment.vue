@@ -415,7 +415,7 @@
             <van-col :span="6" offset="1">
               <van-button size="large" class="xh-bg-subgray" @click="save" style="color:#333;">暂存</van-button>
             </van-col>
-            <van-col :span="this.params.info.activityId? '19': '15'" offset="1">
+            <van-col :span="this.params.info.activityId? '12': '15'" offset="1">
               <van-button size="large" class="xh-bg-main" @click="submit">提交</van-button>
             </van-col>
           </van-row>
