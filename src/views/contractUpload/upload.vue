@@ -10,13 +10,9 @@
       <van-tab title="项目信息" name="projectInfo">
         <ProjectInfo></ProjectInfo>
       </van-tab>
-      <van-tab title="征信信息" name="creditReportingInfo">
-          <!-- <CreditInfoTable title="银行征信" :dataList="surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
-          <CreditInfoTable title="大数据征信" :dataList="surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
-          <CreditInfoTable title="人保征信" :dataList="surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable> -->
-      
+      <van-tab title="征信信息" name="creditReportingInfo">     
           <CreditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
-          <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+          <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
           <CreditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
           <CreditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></CreditInfoTable>
           <CreditInfoTable v-if="!rg"title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable>
@@ -84,6 +80,7 @@ export default {
       phone:'',
       TYPE:'',
       dataList:{},
+      brdataList:{},//百融数据
       rg:false,//是否有人工
     };
   },
@@ -171,7 +168,7 @@ export default {
           lpCertificateNum: this.projectInfo.certificateNum
         }
         const res = await creditQueryOf100(params);
-        this.dataList = res.data.cuCreditRegister;
+        this.brdataList = res.data.cuCreditRegister;
       }else{
         this.TYPE =  ''
       }

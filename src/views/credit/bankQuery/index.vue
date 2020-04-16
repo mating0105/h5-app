@@ -11,7 +11,7 @@
 
         <template v-if="active === 1">
             <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-            <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
             <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
             <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
@@ -86,6 +86,7 @@
           carInfos: [],
           surDtlList: []
         },
+        brdataList:{},//百融的数据
         loading: false,
         form: {},
         perInfoList: [], //客户下面的其他客户数据
@@ -177,7 +178,7 @@
             lpCertificateNum: this.query.lpCertificateNum,
           }
           const res = await creditQueryOf100(params);
-          this.dataList = res.data.cuCreditRegister;
+          this.brdataList = res.data.cuCreditRegister;
         }else{
           this.TYPE =  ''
         }
