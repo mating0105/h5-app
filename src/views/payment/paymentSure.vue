@@ -233,7 +233,7 @@ import {
   managementList
 } from "@/api/payment";
 import imageList from "@/components/imageList";
-import { getDocumentByType } from "@/api/document";
+import { getDocumentByType,removeDocuments } from "@/api/document";
 import { format } from "@/utils/format";
 import { mapState } from "vuex";
 const Components = [
@@ -333,7 +333,9 @@ export default {
       manageList: [], //资方数组
       advanceList: [], //垫款记录数组
       advanceIndex: "",
-      timeIndex: ""
+      timeIndex: "",
+      signDeleteImg:true,//删除图片标记
+      documentIds:[],
     };
   },
   computed: {
@@ -628,6 +630,7 @@ export default {
               .then(res => {
                 this.loading = false;
                 this.$notify({ type: "success", message: "流程提交成功" });
+                this.signDeleteImg = false;
                 this.$router.go(-1);
               })
               .catch(e => {
@@ -643,6 +646,7 @@ export default {
             .then(res => {
               this.loading = false;
               this.$notify({ type: "success", message: "流程提交成功" });
+              this.signDeleteImg = false;
               this.$router.go(-1);
             })
             .catch(e => {
@@ -689,7 +693,7 @@ export default {
         kind: "1",
         fileList: []
       });
-    }
+    },
   },
   mounted() {
     this.params = {
@@ -701,6 +705,17 @@ export default {
     this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
     this.loadData().then(() => this.loadManagement()); //加载详情数据
+  },
+  destroyed(){
+    if(this.signDeleteImg){//未提交流程,删除上传的垫款资料
+      this.advanceList[0].dataImg[0].fileList.forEach(e =>{
+        this.documentIds.push(e.documentId)
+      })
+      console.log(this.documentIds)
+      if(this.documentIds.length>0){
+        removeDocuments({documentIds:this.documentIds}).then(res =>{})
+      }
+    }
   }
 };
 </script>

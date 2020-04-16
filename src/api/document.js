@@ -35,6 +35,12 @@ export const removeDocument = params => serviceOther({
   url: '/document/delete',
   data: params
 })
+// 照片
+export const removeDocuments = params => serviceOther({
+  method: 'post',
+  url: '/document/delDocumentForUserCar',
+  data: params
+})
 
 // app获取图片
 export const queryAllImgs = params => serviceOther({
