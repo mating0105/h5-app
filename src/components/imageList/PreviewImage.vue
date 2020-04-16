@@ -7,10 +7,12 @@
  -->
 <template>
   <div class="image-preview-box" v-show="previewView">
-    <span class="switch-close" @click="closePreview"><i class="iconfont icon-cuo"></i></span>
+    <span class="switch-close" @click="closePreview"><van-icon name="cross" /></span>
     <div ref="pageDiv" class="imgBox" @touchmove="moveHandler($event)" @touchend="moveHanEnddler($event)">
       <img ref="actionMgr" :src="currentPreviewSrc" :style="transform.template()" v-finger:pinch="pinchHandler" @touchstart="onmousedown($event)">
     </div>
+    <div class="btn" @click="downImg">下载报告</div>
+    <!-- <slot class="btn" name="btn"></slot> -->
   </div>
 </template>
 
@@ -71,6 +73,9 @@ export default {
     }
   },
   methods:{
+    downImg(){
+      this.$emit('downImg',this.previewSrc)
+    },
     pinchHandler(e){
       this.getZoom(e)
     },
@@ -264,6 +269,18 @@ export default {
       height: 44px;
       font-size: 24px;
     }
+    .btn{
+      width: 100px;
+      height: 40px;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1989fa;
+      color:#fff;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 10px;
+    }
 
     .switch-close{
       top: 10px;
@@ -275,7 +292,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: rgba(202, 202, 202, 0.8);
+      background-color: rgb(122, 122, 122);
 
       i{
         font-size: 24px;

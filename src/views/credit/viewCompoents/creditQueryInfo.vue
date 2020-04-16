@@ -79,7 +79,11 @@
             <van-button round type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
           </template>
         </van-image-preview> -->
-        <PreviewImage :previewView="previewView" :previewSrc="previewSrc[0]" :previewIndex="previewIndex" @closePreview="closePreview"></PreviewImage>
+        <PreviewImage :previewView="previewView" :previewSrc="previewSrc[0]" :previewIndex="previewIndex" @closePreview="closePreview" @downImg="downImg(urlSrc)">
+          <!-- <div slot="btn">
+            <h1>我是按钮</h1>
+          </div> -->
+        </PreviewImage>
         <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
         <!-- <van-overlay :show="showImg"  @click="showImg = false">
           <div style='overflow:auto;'>
@@ -205,6 +209,28 @@
     }
   },
   methods: {
+    downImg(images){
+      Dialog.confirm({
+        title: '下载报告',
+        message: '是否确认下载报告？',
+      })
+      .then(() => {
+        console.log('确认')
+        let para={
+          pic:images
+        }
+        this.$bridge.callHandler('savePic', para, res => {
+          if(res){
+            Toast.success('下载成功');
+          }else{
+            Toast.fail('下载失败');
+          }
+        });
+      })
+      .catch(() => {
+        // on cancel
+      });
+    },
     // 字典转换
     returnText (val, key) {
       let name = '';
@@ -411,34 +437,4 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-    .reportClass{
-      /* height: 100%; */
-      overflow: scroll;
-    }
-    .reportClass img {
-      height: inherit;
-    }
-    .reportClass div{
-      /* height: 100%; */
-      overflow: scroll;
-    }
-/* 
-    .reportClass .van-swipe.van-image-preview__swipe {
-        height: 100%;
-        overflow: scroll;
-    }
-
-    .reportClass .van-swipe__track {
-        height: 100%;
-        overflow: scroll;
-    }
-    .reportClass .van-image.van-image-preview__image{
-      height: 100%;
-      overflow: scroll;
-    } */
-    .previewButton{
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-    }
 </style>
