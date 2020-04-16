@@ -11,9 +11,17 @@
         <ProjectInfo></ProjectInfo>
       </van-tab>
       <van-tab title="征信信息" name="creditReportingInfo">
-          <CreditInfoTable title="银行征信" :dataList="surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
+          <!-- <CreditInfoTable title="银行征信" :dataList="surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
           <CreditInfoTable title="大数据征信" :dataList="surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
-          <CreditInfoTable title="人保征信" :dataList="surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable>
+          <CreditInfoTable title="人保征信" :dataList="surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable> -->
+      
+          <CreditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
+          <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+          <CreditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
+          <CreditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></CreditInfoTable>
+          <CreditInfoTable v-if="!rg"title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable>
+
+      
       </van-tab>
     </van-tabs>
   </ViewPage>
@@ -23,11 +31,11 @@
 import ViewPage from "@/layout/components/ViewPage";
 import ProjectInfo from "./projectInfo";
 import ApprovalRecord from "../basicInfo/approvalRecord/index";
-// import BigDataQuery from '../credit/viewCompoents/creditInfoTable';
 import CreditInfoTable from "../credit/viewCompoents/creditInfoTable";
+import creditQueryInfo from '../credit/viewCompoents/creditQueryInfo'
 import Cookies from "js-cookie";
 import api from "@/api/contractUpload";
-import { getCreditInfo } from "@/api/credit";
+import { getCreditInfo,getCreditType,getCompanyName,creditQueryOf100 } from "@/api/credit";
 import Vue from "vue";
 import { Tab, Tabs } from "vant";
 Vue.use(Tab).use(Tabs);
@@ -38,13 +46,13 @@ export default {
     ViewPage,
     ProjectInfo,
     ApprovalRecord,
-    CreditInfoTable
+    CreditInfoTable,
+    creditQueryInfo
   },
   data() {
     return {
       activeName: "projectInfo",
       loading: false,
-      surDtlList: [],
       rightMenuList: [
         {
           title: "项目基本信息",
@@ -73,12 +81,24 @@ export default {
       projectInfo: {},
       gpsInfo: {},
       accout: "",
-      phone:''
+      phone:'',
+      TYPE:'',
+      dataList:{},
+      rg:false,//是否有人工
     };
   },
   computed: {
     routeData() {
       return this.$route.query;
+    }
+  },
+  watch: {
+    activeName(val) {
+      console.log(val)
+      if (val == 'creditReportingInfo') {
+        this.loadBigDataType();
+        this.getCreditInfo();
+      }
     }
   },
   methods: {
@@ -89,8 +109,8 @@ export default {
           lpCertificateNum: this.projectInfo.certificateNum
         };
         const res = await getCreditInfo(params);
+        this.dataList = res.data.cuCreditRegister;
         this.loading = false;
-        this.surDtlList = res.data.cuCreditRegister.surDtlList;
       } catch (e) {
         this.loading = false;
         console.log(e);
@@ -139,12 +159,41 @@ export default {
       if (title === "creditReportingInfo") {
         this.getCreditInfo();
       }
+    },
+    //获取该公司的大数据征信类型
+    async loadBigDataType(){
+      const {data} = await getCreditType();
+      // 征信回复：:5/百融征信查询：6
+      let buttonId = data[0].buttonId
+      if(buttonId){
+        this.TYPE = buttonId == 6 ? 'bairong' : '';
+        const params = {
+          lpCertificateNum: this.projectInfo.certificateNum
+        }
+        const res = await creditQueryOf100(params);
+        this.dataList = res.data.cuCreditRegister;
+      }else{
+        this.TYPE =  ''
+      }
+    },
+    async getCompany(){
+      const res = await getCompanyName();
+      //鑫弘 显示人工，其他不显示
+      if(res.data.companyId == '190215509218' || res.data.companyId == '190215509212'){
+        this.rg = true;
+      }else{
+        this.rg = false;
+      }
+    },
+    lookDocs(){
+      this.activeName = 'creditReportingInfo';
     }
   },
   activated() {
     this.getListDetails();
     this.accout = Cookies.get("loginName");
     this.phone = Cookies.get("phone");
+    this.getCompany();
     // this.accout = "18349309486"
   }
 };
