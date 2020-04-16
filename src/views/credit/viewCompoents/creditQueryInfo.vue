@@ -378,35 +378,32 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
-/* .reportClass{*/
-/*  overflow: auto!important;*/
-/*}*/
-/* .reportClass div{*/
-/*   overflow: auto!important;*/
-/* }*/
-/*.reportClass .van-image>img{*/
-/*  height: auto;*/
-/*}*/
-
-    /*.reportClass .van-image.van-image-preview__image {*/
-    /*    overflow: scroll;*/
-    /*}*/
-
-    .reportClass .van-image__img {
-        height: auto;
+    .reportClass{
+      height: 100%;
+      overflow: scroll;
     }
-
+    .reportClass img {
+      object-fit: unset!important;
+      height: unset;
+    }
+    .reportClass div{
+      height: 100%;
+      overflow: scroll;
+    }
+/* 
     .reportClass .van-swipe.van-image-preview__swipe {
+        height: 100%;
         overflow: scroll;
     }
 
     .reportClass .van-swipe__track {
-        /*height: auto;*/
-        height: 1500px;
+        height: 100%;
+        overflow: scroll;
     }
     .reportClass .van-image.van-image-preview__image{
       height: 100%;
-    }
+      overflow: scroll;
+    } */
     .previewButton{
       position: fixed;
       right: 0;
