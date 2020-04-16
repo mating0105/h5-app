@@ -386,4 +386,8 @@
     .reportClass .van-swipe.van-image-preview__swipe {
         overflow: scroll;
     }
+
+    .reportClass .van-swipe__track {
+        height: auto;
+    }
 </style>
