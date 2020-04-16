@@ -559,9 +559,8 @@ export default {
                 customerNum: res.data.customerNum,
                 customerId: res.data.id
               };
-              this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(val =>{
-                this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(e =>{
-                  if(val && e){
+              this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
+                this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
                     if (this.params.credit) {
                       //征信新增客户，直接返回上一页
                       this.$store.dispatch("credit/setCustomerData", {
@@ -583,12 +582,6 @@ export default {
                         });
                       })
                     }
-                  }else{
-                    this.$notify({
-                      type: "danger",
-                      message: "图片上传失败"
-                    });
-                  }
                 }).catch(e => {
                   this.loading = false;
                 });
