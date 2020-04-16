@@ -77,6 +77,7 @@
           <template v-slot:index>{{ imgTitle }}</template>
           <template v-slot:cover>
             <van-button plain type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
+            <div>{{resData}}</div>
           </template>
         </van-image-preview>
         
@@ -141,7 +142,8 @@
         //pdf
         url:'',
         showPdf:false,
-        urlSrc:''
+        urlSrc:'',
+        resData:''
 
       }
     },
@@ -261,6 +263,7 @@
         }
         this.$bridge.callHandler('savePic', para, res => {
             Toast.success(res);
+            this.resData=res;
             // Toast.fail("图片保存失败，请稍后再试！");
         });
       })
