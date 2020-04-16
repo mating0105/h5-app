@@ -217,6 +217,7 @@
           this.imgTitle = null
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
+          // ImagePreview(this.images)
           // let params={
           //   images:this.images,
           //   imgTitle:this.imgTitle,
@@ -364,13 +365,21 @@
 .credit-result .van-cell__title {
   font-weight: bold;
 }
- .reportClass{
-  overflow: auto!important;
-}
- .reportClass div{
-   overflow: auto!important;
- }
-.reportClass .van-image>img{
-  height: auto;
-}
+/* .reportClass{*/
+/*  overflow: auto!important;*/
+/*}*/
+/* .reportClass div{*/
+/*   overflow: auto!important;*/
+/* }*/
+/*.reportClass .van-image>img{*/
+/*  height: auto;*/
+/*}*/
+
+    .reportClass .van-image.van-image-preview__image {
+        overflow: scroll;
+    }
+
+    .reportClass .van-image__img {
+        height: auto;
+    }
 </style>
