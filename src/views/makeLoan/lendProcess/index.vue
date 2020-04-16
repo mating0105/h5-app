@@ -630,11 +630,7 @@
           >提交</van-button>
         </div>
       </van-tab>
-      <van-tab title="征信信息" name="2" class="tabBox">
-          <!-- <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-          <creditInfoTable title="大数据征信" :dataList="creditList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-          <creditInfoTable title="人保征信" :dataList="creditList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable> -->
-      
+      <van-tab title="征信信息" name="2" class="tabBox">      
           <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
           <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
           <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
