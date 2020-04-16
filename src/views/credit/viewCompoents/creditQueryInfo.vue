@@ -375,11 +375,15 @@
 /*  height: auto;*/
 /*}*/
 
-    .reportClass .van-image.van-image-preview__image {
-        overflow: scroll;
-    }
+    /*.reportClass .van-image.van-image-preview__image {*/
+    /*    overflow: scroll;*/
+    /*}*/
 
     .reportClass .van-image__img {
         height: auto;
+    }
+
+    .reportClass .van-swipe.van-image-preview__swipe {
+        overflow: scroll;
     }
 </style>
