@@ -261,9 +261,9 @@
         }
         this.$bridge.callHandler('savePic', para, res => {
           if(res){
-            Toast.success('报告下载成功');
+            Toast.success('下载成功');
           }else{
-            Toast.fail('报告下载失败');
+            Toast.fail('下载失败');
           }
         });
       })
@@ -394,14 +394,14 @@
   font-weight: bold;
 }
     .reportClass{
-      height: 100%;
+      /* height: 100%; */
       overflow: scroll;
     }
     .reportClass img {
-      height: auto;
+      height: inherit;
     }
     .reportClass div{
-      height: 100%;
+      /* height: 100%; */
       overflow: scroll;
     }
 /* 
