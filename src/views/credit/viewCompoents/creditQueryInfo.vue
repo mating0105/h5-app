@@ -76,8 +76,7 @@
         <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
           <template v-slot:cover>
-            <van-button plain type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
-            <div>{{resData}}</div>
+            <van-button round type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
           </template>
         </van-image-preview>
         
@@ -143,7 +142,6 @@
         url:'',
         showPdf:false,
         urlSrc:'',
-        resData:''
 
       }
     },
@@ -262,9 +260,11 @@
           pic:images
         }
         this.$bridge.callHandler('savePic', para, res => {
-            Toast.success(res);
-            this.resData=res;
-            // Toast.fail("图片保存失败，请稍后再试！");
+          if(res){
+            Toast.success('报告下载成功');
+          }else{
+            Toast.fail('报告下载失败');
+          }
         });
       })
       .catch(() => {
@@ -420,7 +420,7 @@
     } */
     .previewButton{
       position: fixed;
-      right: 0;
-      bottom: 0;
+      right: 20px;
+      bottom: 20px;
     }
 </style>
