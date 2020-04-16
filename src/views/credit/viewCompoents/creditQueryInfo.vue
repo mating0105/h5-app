@@ -388,6 +388,7 @@
     }
 
     .reportClass .van-swipe__track {
-        height: auto;
+        /*height: auto;*/
+        height: 1500px;
     }
 </style>
