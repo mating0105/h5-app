@@ -478,6 +478,7 @@ export default {
             return;
           }
         }
+        this.loading = true;
         if (this.src && this.srcBack) {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
@@ -506,6 +507,7 @@ export default {
           this.uploadImg(docType, params, this.dataURLtoFile(this.src));
           this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
         } else {
+          this.loading = false;
           this.$notify({
             type: "danger",
             message: "请上传身份证正反面"
@@ -524,17 +526,6 @@ export default {
               };
               this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src));
               this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack));
-
-              // this.$notify({
-              //   type: "success",
-              //   message: "建档成功"
-              // });
-              // this.loading = false;
-              // this.$nextTick(() =>{
-              //   this.$router.push({
-              //     path: '/creditList',
-              //   });
-              // })
             })
             .catch(e => {
               this.loading = false;
@@ -560,7 +551,7 @@ export default {
               index: this.$route.query.index
             });
             this.loading = false;
-            this.$router.go(-1);
+            this.$router.back();
           } else {
             this.$notify({
               type: "success",
