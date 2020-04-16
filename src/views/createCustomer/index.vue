@@ -479,7 +479,7 @@ export default {
           }
         }
         this.loading = true;
-        // if (this.src && this.srcBack) {
+        if (this.src && this.srcBack) {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
             case "security":
@@ -504,16 +504,50 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
-            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
+          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(val=>{
+            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(e =>{
+              this.$toast(val , e)
+              if(val && e){
+                if (this.params.credit) {
+                  //征信新增客户，直接返回上一页
+                  this.$store.dispatch("credit/setCustomerData", {
+                    data: this.customerData,
+                    index: this.$route.query.index
+                  });
+                  this.loading = false;
+                  this.$router.go(-1);
+                } else {
+                  this.$notify({
+                    type: "success",
+                    message: "建档成功"
+                  });
+                  this.loading = false;
+                  // this.$router.go(-1);
+                this.$nextTick(() =>{
+                    this.$router.push({
+                      path: '/creditList',
+                    });
+                  })
+                }
+              }else{
+                this.$notify({
+                  type: "danger",
+                  message: "图片上传失败"
+                });
+              }
+            }).catch(e => {
+              this.loading = false;
+            });
+          }).catch(e => {
+            this.loading = false;
           });
-        // } else {
-        //   this.loading = false;
-        //   this.$notify({
-        //     type: "danger",
-        //     message: "请上传身份证正反面"
-        //   });
-        // }
+        } else {
+          this.loading = false;
+          this.$notify({
+            type: "danger",
+            message: "请上传身份证正反面"
+          });
+        }
       } else {
         //新建客户，走接口
         if (this.src && this.srcBack) {
@@ -557,10 +591,10 @@ export default {
                   }
                 }).catch(e => {
                   this.loading = false;
-                });;
+                });
               }).catch(e => {
                 this.loading = false;
-              });;
+              });
             })
             .catch(e => {
               this.loading = false;
@@ -573,7 +607,7 @@ export default {
         }
       }
     },
-    uploadImg(val, params, file) {
+    async uploadImg(val, params, file) {
       params.documentType = val;
       params.file = file;
       uploadsDocument(params)
