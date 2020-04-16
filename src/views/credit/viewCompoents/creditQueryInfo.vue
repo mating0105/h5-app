@@ -383,9 +383,14 @@
       overflow: scroll;
     }
     .reportClass img {
-        height: auto;
+      object-fit: unset!important;
+      height: unset;
     }
-
+    .reportClass div{
+      height: 100%;
+      overflow: scroll;
+    }
+/* 
     .reportClass .van-swipe.van-image-preview__swipe {
         height: 100%;
         overflow: scroll;
@@ -398,7 +403,7 @@
     .reportClass .van-image.van-image-preview__image{
       height: 100%;
       overflow: scroll;
-    }
+    } */
     .previewButton{
       position: fixed;
       right: 0;
