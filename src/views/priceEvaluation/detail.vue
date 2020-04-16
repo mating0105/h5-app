@@ -199,6 +199,7 @@
         isdetail: 0,
         isReply: false,
         isReplyView: false,
+        isChoose:false,
         imageTypeList: ['VICEVA003', 'VICEVA004', 'VICEVA005', 'VICEVA006', 'VICEVA007', 'VICEVA008', 'VICEVA009', 'VICEVA010', 'VICEVA011', 'VICEVA012', 'VICEVA013', 'VICEVA014', 'VICEVA015', 'VICEVA016', 'VICEVA017', 'VICEVA018', 'VICEVA019', '6717', '6718', '6719', 'VICEVA023', 'VICEVA024', 'VICEVA025', 'VICEVA026']
       }
     },
@@ -247,7 +248,7 @@
           data.forEach(item => {
             item.declare = declare;
           })
-          let deletable = documentType === 'VICEVA002' && this.isReply
+          let deletable = documentType === 'VICEVA002' && this.isReply && !this.isChoose
           arr.push({
             declare: declare,//图片描述
             isRequire: documentType === 'VICEVA002',//*是否必须
@@ -473,6 +474,8 @@
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.isReply = Boolean(this.$route.query.isReply) && this.$route.query.isReply !== 'false'
       this.isReplyView = Boolean(this.$route.query.isReplyView) && this.$route.query.isReplyView !== 'false'
+      this.isChoose = Boolean(this.$route.query.isChoose) && this.$route.query.isChoose !== 'false'
+      console.log('isChoose',this.isChoose)
       this.initData()
       this.initImage()
       this.rulesForm("order-credit-old-car-xh")
