@@ -76,7 +76,7 @@
         <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
           <template v-slot:cover>
-            <van-button plain type="info" class="previewButton" @click="download">下载报告</van-button>
+            <van-button round type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
           </template>
         </van-image-preview>
         
@@ -141,7 +141,7 @@
         //pdf
         url:'',
         showPdf:false,
-        urlSrc:''
+        urlSrc:'',
 
       }
     },
@@ -218,6 +218,7 @@
         }else{
           this.images = []
           this.imgTitle = null
+          this.urlSrc=url;
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
           // ImagePreview(this.images)
@@ -248,14 +249,28 @@
 
     },
      //下载报告
-    download(e){
-      // this.$bridge.callHandler(this.scanName, e.value, res => {
-      //   if (this.scanName == "idCardOCR") {
-      //     this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
-      //   } else {
-      //     this.$set(this.form.receiptInfo, "receiptAccount", res.BANK_NUM);
-      //   }
-      // });
+    download(images){
+      Dialog.confirm({
+        title: '下载报告',
+        message: '是否确认下载报告？',
+      })
+      .then(() => {
+        console.log('确认')
+        let para={
+          pic:images
+        }
+        this.$bridge.callHandler('savePic', para, res => {
+          if(res){
+            Toast.success('报告下载成功');
+          }else{
+            Toast.fail('报告下载失败');
+          }
+        });
+      })
+      .catch(() => {
+        // on cancel
+      });
+      
     }
   },
   mounted(){
@@ -383,8 +398,7 @@
       overflow: scroll;
     }
     .reportClass img {
-      object-fit: unset!important;
-      height: unset;
+      height: auto;
     }
     .reportClass div{
       height: 100%;
@@ -406,7 +420,7 @@
     } */
     .previewButton{
       position: fixed;
-      right: 0;
-      bottom: 0;
+      right: 20px;
+      bottom: 20px;
     }
 </style>
