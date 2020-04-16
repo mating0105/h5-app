@@ -75,6 +75,9 @@
         <!-- 查看报告-图片 -->
         <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
+          <template v-slot:cover>
+            <van-button plain type="info" class="previewButton" @click="download">下载报告</van-button>
+          </template>
         </van-image-preview>
         
         <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
@@ -244,6 +247,16 @@
       });
 
     },
+     //下载报告
+    download(e){
+      // this.$bridge.callHandler(this.scanName, e.value, res => {
+      //   if (this.scanName == "idCardOCR") {
+      //     this.$set(this.form.borrowerInfo, "mainBorrowerId", res.ID_NUM);
+      //   } else {
+      //     this.$set(this.form.receiptInfo, "receiptAccount", res.BANK_NUM);
+      //   }
+      // });
+    }
   },
   mounted(){
     //获取该用户角色
@@ -385,5 +398,18 @@
 
     .reportClass .van-swipe.van-image-preview__swipe {
         overflow: scroll;
+    }
+
+    .reportClass .van-swipe__track {
+        /*height: auto;*/
+        height: 1500px;
+    }
+    .reportClass .van-image.van-image-preview__image{
+      height: 100%;
+    }
+    .previewButton{
+      position: fixed;
+      right: 0;
+      bottom: 0;
     }
 </style>
