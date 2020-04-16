@@ -73,13 +73,13 @@
           </van-cell>
         </div>
         <!-- 查看报告-图片 -->
-        <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
+        <!-- <van-image-preview class-name="reportClass" ref="preview" v-model="showImg" :images="images">
           <template v-slot:index>{{ imgTitle }}</template>
           <template v-slot:cover>
             <van-button round type="info" class="previewButton" @click="download(urlSrc)">下载报告</van-button>
           </template>
-        </van-image-preview>
-        
+        </van-image-preview> -->
+        <PreviewImage :previewView="previewView" :previewSrc="previewSrc[0]" :previewIndex="previewIndex" @closePreview="closePreview"></PreviewImage>
         <!-- <van-image width="100%"  v-model="showImg" :src="images" /> -->
         <!-- <van-overlay :show="showImg"  @click="showImg = false">
           <div style='overflow:auto;'>
@@ -102,6 +102,7 @@
   import Card from '@/components/card'
   import Pdf from './pdf2.vue'
   import Vue from 'vue';
+  import PreviewImage from "../../../components/imageList/PreviewImage";
   import { getBank, getCreditInfo, saveCreditInfo,getCompanyName } from '@/api/credit'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs,ImagePreview } from 'vant';
   import { format } from "@/utils/format";
@@ -114,7 +115,8 @@
     name: "creditQueryInfo",
     components: {
       Card,
-      Pdf
+      Pdf,
+      PreviewImage
     },
     props: {
       title: String,
@@ -142,7 +144,10 @@
         url:'',
         showPdf:false,
         urlSrc:'',
-
+        // 图片查看器
+        previewView:false, //预览视窗
+        previewSrc:'', //预览图 src
+        previewIndex:0
       }
     },
     computed: {
@@ -221,6 +226,9 @@
           this.urlSrc=url;
           this.images = ['data:image/jpeg/jpg/png;base64,'+url]
           this.showImg = true
+          console.log('images:',this.images)
+          this.previewView = true;
+          this.previewSrc=['data:image/jpeg/jpg/png;base64,'+url]
           // ImagePreview(this.images)
           // let params={
           //   images:this.images,
@@ -234,6 +242,16 @@
           // this.showPdf=true;
         }
       
+    },
+    // 显示查看图片 view
+    openPreview(item, index){
+      this.previewView = true;
+      this.previewSrc = item.src;
+      this.previewIndex = index;
+    },
+    // 关闭 图片预览 view
+    closePreview(val){
+      this.previewView = val;
     },
     lookDocs(){
       this.$emit('lookDocs')
