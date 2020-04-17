@@ -526,8 +526,8 @@ export default {
                 customerId: res.data.id
               };
               this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
-                this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
-                  this.goRouter();
+              this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
+              this.goRouter();
                 }).catch(e => {
                   this.loading = false;
                 });
@@ -547,18 +547,25 @@ export default {
       }
     },
      uploadImg(val, params, file) {
-      params.documentType = val;
-      params.file = file;
-      uploadsDocument(params)
-        .then(res => {
-          return Promise.resolve(true)
-        })
-        .catch(e => {
-          return Promise.resolve(false)
-        });
+       return newPromise((resolve,reject) => {
+        params.documentType = val;
+        params.file = file;
+        uploadsDocument(params)
+          .then(res => {
+            resolve(true)
+          })
+          .catch(e => {
+            this.loading = false;
+            this.$notify({
+            type: "danger",
+            message: "上传失败"
+          });
+          });
+       })
     },
     //跳转处理
     goRouter(){
+      this.$toast(1111,this.params.credit)
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
         this.$store.dispatch("credit/setCustomerData", {
