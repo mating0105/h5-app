@@ -704,8 +704,8 @@ export default {
             default:
               break;
         }
-        const src = await getImg(documentType1);
-        const srcBack = await getImg(documentType2);
+        let src = this.getImg(documentType1);
+        let srcBack = this.getImg(documentType2);
         this.ceshi = JSON.stringify(src);
       }
     },
