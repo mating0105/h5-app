@@ -478,7 +478,7 @@ export default {
             return;
           }
         }
-        this.loading = true;
+        // this.loading = true;
         if (this.src && this.srcBack) {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
@@ -506,7 +506,7 @@ export default {
           };
           await uploadImg(docType, params, this.dataURLtoFile(this.src));
           await uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
-          this.goRouter();
+          await goRouter();
         } else {
           this.loading = false;
           this.$notify({
@@ -547,6 +547,7 @@ export default {
       }
     },
      uploadImg(val, params, file) {
+       alert(val);
        return newPromise((resolve,reject) => {
         params.documentType = val;
         params.file = file;
