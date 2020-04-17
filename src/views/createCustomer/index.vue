@@ -548,7 +548,7 @@ export default {
     },
      uploadImg(val, params, file) {
        alert(val);
-       return newPromise((resolve,reject) => {
+       return new Promise((resolve,reject) => {
         params.documentType = val;
         params.file = file;
         uploadsDocument(params)
