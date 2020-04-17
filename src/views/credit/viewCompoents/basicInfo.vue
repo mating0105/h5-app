@@ -74,6 +74,8 @@
                     </div>
                     <div>{{dataList.surDtlList}}</div>
                     <div>{{item.dataList}}</div>
+                    <div>----------------------</div>
+                    <div>{{arr}}</div>
                 </div>
                 <imageList :dataList="item.dataList" :view="!edit" :isGroup="true"></imageList>
             </div>
@@ -148,7 +150,8 @@
         },
         whiteList: ['CRDPICCA01', 'CUIDA04', 'CUIDA02', 'CUIDA05', 'CUIDA01', 'CUIDA03', 'CRDBIGA01', 'CUIDB04', 'CUIDB02', 'CUIDB05', 'CUIDB01', 'CUIDB03','CRDMANA01','CRDMANA02','CRDMANA03','CRDMANA04','CRDMANA05'],
         surDtlList: [],
-        isIdCard: ['CUIDA01', 'CUIDB01', 'CUIDA02', 'CUIDB02', 'CUIDB05', 'CUIDA05', 'CUIDA03', 'CUIDB03', 'CUIDA04', 'CUIDB04']//身份证分类
+        isIdCard: ['CUIDA01', 'CUIDB01', 'CUIDA02', 'CUIDB02', 'CUIDB05', 'CUIDA05', 'CUIDA03', 'CUIDB03', 'CUIDA04', 'CUIDB04'],//身份证分类
+        arr:[],//测试数据
       }
     },
     watch: {
@@ -213,8 +216,9 @@
           }
           this.dataList.surDtlList.forEach(item => {
             const arr = this.obj[item.creditObjectType]
+            this.arr = arr;
             arr.forEach(i => {
-              this.getDocumentByType(i, item, this.dataList.surDtlList)
+              this.getDocumentByType(i, item, this.dataList)
             })
           })
         }
@@ -229,6 +233,7 @@
             customerNum,
             documentType: documentType
           }
+          this.$toast('params:'+params);
           const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
 
           const isRequire = this.whiteList.includes(documentType)
