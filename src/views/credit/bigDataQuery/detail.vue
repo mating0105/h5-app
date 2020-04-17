@@ -12,8 +12,8 @@
             <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
             <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-            <creditInfoTable v-if="rgCredit" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
-            <creditInfoTable v-if="rbCredit" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+            <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+            <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -54,7 +54,7 @@
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import Vue from 'vue';
-  import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
+  import { getCreditInfo,creditQueryOf100,getButtonOfCredit,getCompanyName } from '@/api/credit'
   import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -100,7 +100,8 @@
         },
         bigData: false,
         rbCredit: false,
-        rgCredit: false
+        rgCredit: false,
+        rg:false
       }
     },
     methods: {
@@ -277,12 +278,22 @@
       },
       lookDocs(){
         this.active = 2
-      }
+      },
+      async getCompany(){
+        const res = await getCompanyName();
+        //鑫弘 显示人工，其他不显示
+        if(res.data.companySchemaName == 'xh-vloan'){
+          this.rg = true;
+        }else{
+          this.rg = false;
+        }
+      },
     },
     created(){
     },
     mounted () {
       this.getButtonOfCredit().then(() => this.getCreditInfo() )
+      this.getCompany();
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
