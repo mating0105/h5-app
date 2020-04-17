@@ -46,7 +46,7 @@
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import Vue from 'vue';
-  import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
+  import { getCreditInfo,creditQueryOf100,getButtonOfCredit,getCompanyName } from '@/api/credit'
   import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -282,6 +282,7 @@
         }else{
           this.rg = false;
         }
+        console.log(this.rg)
       },
     },
     created(){
