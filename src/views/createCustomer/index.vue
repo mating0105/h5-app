@@ -547,20 +547,17 @@ export default {
       }
     },
      uploadImg(val, params, file) {
-       alert(val);
+       this.$toast('success')
        return new Promise((resolve,reject) => {
         params.documentType = val;
         params.file = file;
         uploadsDocument(params)
           .then(res => {
-            resolve(true)
+            resolve()
           })
           .catch(e => {
             this.loading = false;
-            this.$notify({
-            type: "danger",
-            message: "上传失败"
-          });
+            reject();
           });
        })
     },
