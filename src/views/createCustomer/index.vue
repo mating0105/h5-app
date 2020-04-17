@@ -26,6 +26,8 @@
       <template slot="header">客户信息</template>
       <div>
         <div>{{this.customerData}}</div>
+        <div>==========</div>
+        <div>{{ceshi}}</div>
         <van-cell-group :border="false">
           <van-field
             v-model="customerData.customerName"
@@ -244,6 +246,7 @@ import { get } from "http";
 import { getValue } from "@/utils/session";
 import { mapState } from "vuex";
 import formValidator from "@/mixins/formValidator";
+import { queryAllImgs } from "@/api/document";
 import _ from "lodash";
 const Components = [
   Button,
@@ -323,7 +326,8 @@ export default {
       scanActions: [
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
-      ]
+      ],
+      ceshi:{}
     };
   },
   computed: {
@@ -676,7 +680,49 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
+      this.$toast(this.customerData.index);
+      if(this.customerData.index != -1){
+        let documentType1 ,documentType2;
+        switch(this.customerData.creditObjectType){
+          case 'security':
+            documentType1 = 'CUIDA05';
+            documentType2 = 'CUIDB05'
+            break;
+            case 'joiDebtor':
+            documentType1 = 'CUIDA03';
+            documentType2 = 'CUIDB03'
+            break;
+            case 'joiDebtorSpouse':
+            documentType1 = 'CUIDA04';
+            documentType2 = 'CUIDB04'
+            break;
+            case 'borrowerSpouse':
+            documentType1 = 'CUIDA02';
+            documentType2 = 'CUIDB02'
+            break;
+            default:
+              break;
+        }
+        const {src} = await getImg(documentType1);
+        const {srcBack} = await getImg(documentType2);
+        this.ceshi = JSON.stringify(src);
+      }
     },
+    //加载图片
+    async getImg(documentType){
+      queryAllImgs({
+        customerNum: this.customerData.customerNum,
+        documentType:documentType,
+        kind: "1"
+      })
+        .then(res => {
+  
+        })
+        .catch(() => {
+          Toast.clear(this.toast);
+        });
+    },
+    
     /**
      * 识别
      */
