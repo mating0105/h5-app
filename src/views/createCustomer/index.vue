@@ -676,7 +676,8 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      if(this.params.index){
+      console.log(this.params.index)
+      if(this.params.index != null && this.params.index != 'undefined'){
         let documentType1 ,documentType2;
         switch(this.customerData.creditObjectType){
           case 'security':
