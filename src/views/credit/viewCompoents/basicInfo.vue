@@ -72,6 +72,8 @@
                         <span>{{item.creditPersonName}}</span>
                         <span class="xh-danger-tag">{{returnText(item.creditObjectType, 'credit_object_type')}}</span>
                     </div>
+                    <div>{{dataList.surDtlList}}</div>
+                    <div>{{item.dataList}}</div>
                 </div>
                 <imageList :dataList="item.dataList" :view="!edit" :isGroup="true"></imageList>
             </div>
@@ -151,6 +153,7 @@
     },
     watch: {
       dataList (val) {
+        this.$toast('watch:'+val);
         this.$nextTick(() => {
           this.initData()
         })
@@ -199,6 +202,7 @@
         return [...arguments].map(item => item).join(' ')
       },
       initData () {
+        this.$toast('init')
         if (this.dataList && this.dataList.surDtlList) {
           if (this.bigData) {
             this.obj = bigData
