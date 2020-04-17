@@ -505,15 +505,20 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
-            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
-              this.goRouter();
+          if(this.params.index != null && this.params.index != 'undefined'){
+            this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
+              this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
+                this.goRouter();
+              }).catch(e => {
+                this.loading = false;
+              });
+              
             }).catch(e => {
               this.loading = false;
             });
-          }).catch(e => {
-            this.loading = false;
-          });
+          }else{
+            this.goRouter();
+          }
         } else {
           this.loading = false;
           this.$notify({
@@ -532,7 +537,6 @@ export default {
                 customerNum: res.data.customerNum,
                 customerId: res.data.id
               };
-              if(this.params.index != null && this.params.index != 'undefined'){
                 this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
                   this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
                     this.goRouter();
@@ -542,9 +546,6 @@ export default {
                 }).catch(e => {
                   this.loading = false;
                 });
-              }else{
-                this.goRouter();
-              }
             })
             .catch(e => {
               this.loading = false;
