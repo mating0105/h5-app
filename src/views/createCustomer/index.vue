@@ -704,24 +704,26 @@ export default {
             default:
               break;
         }
-        const {src} = await getImg(documentType1);
-        const {srcBack} = await getImg(documentType2);
+        const src = await getImg(documentType1);
+        const srcBack = await getImg(documentType2);
         this.ceshi = JSON.stringify(src);
       }
     },
     //加载图片
     getImg(documentType){
-      queryAllImgs({
+      return new Promise((resolve,reject)=>{
+        queryAllImgs({
         customerNum: this.customerData.customerNum,
         documentType:documentType,
         kind: "1"
       })
         .then(res => {
-  
+          resolve()
         })
         .catch(() => {
-          Toast.clear(this.toast);
+          reject();
         });
+      })
     },
     
     /**
