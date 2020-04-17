@@ -532,15 +532,19 @@ export default {
                 customerNum: res.data.customerNum,
                 customerId: res.data.id
               };
-              this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
-                this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
-                  this.goRouter();
+              if(this.params.index != null && this.params.index != 'undefined'){
+                this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
+                  this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
+                    this.goRouter();
+                  }).catch(e => {
+                    this.loading = false;
+                  });
                 }).catch(e => {
                   this.loading = false;
                 });
-              }).catch(e => {
-                this.loading = false;
-              });
+              }else{
+                this.goRouter();
+              }
             })
             .catch(e => {
               this.loading = false;
@@ -595,11 +599,17 @@ export default {
     loadImg(name) {
       this.sign = name;
       if (this[name]) {
-        this.actions = [
-          { name: "相机扫描识别", value: "scan" },
-          { name: "相册导入识别", value: "album" },
-          { name: "查看", value: "see" }
-        ];
+        if(this.params.index != null && this.params.index != 'undefined'){
+          this.actions = [
+            { name: "查看", value: "see" }
+          ];
+        }else{
+          this.actions = [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" },
+            { name: "查看", value: "see" }
+          ];
+        }
       } else {
         this.actions = [
           { name: "相机扫描识别", value: "scan" },
