@@ -676,10 +676,8 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      this.$toast(this.params.index);
-      if(this.params.index != -1){
+      if(this.params.index){
         let documentType1 ,documentType2;
-        this.$toast(this.customerData.creditObjectType)
         switch(this.customerData.creditObjectType){
           case 'security':
             documentType1 = 'CUIDA05';
@@ -711,7 +709,6 @@ export default {
         documentType:documentType,
         kind: "1"
       }).then(res => {
-          console.log(res,2222)
           if(documentType == 'CUIDA02' || documentType == 'CUIDA03' || documentType == 'CUIDA04' || documentType == 'CUIDA05'){
             this.src = res.data[0].documentRoute;
           }else{
