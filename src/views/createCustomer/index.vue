@@ -327,7 +327,7 @@ export default {
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
       ],
-      ceshi:{}
+      ceshi:''
     };
   },
   computed: {
@@ -683,6 +683,7 @@ export default {
       this.$toast(this.params.index);
       if(this.params.index != -1){
         let documentType1 ,documentType2;
+        this.$toast(this.customerData.creditObjectType)
         switch(this.customerData.creditObjectType){
           case 'security':
             documentType1 = 'CUIDA05';
