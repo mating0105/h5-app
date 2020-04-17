@@ -506,6 +506,8 @@ export default {
             customerId: this.params.customerId
           };
           if(this.params.index != null && this.params.index != 'undefined'){
+            this.goRouter();
+          }else{
             this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
               this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
                 this.goRouter();
@@ -516,8 +518,6 @@ export default {
             }).catch(e => {
               this.loading = false;
             });
-          }else{
-            this.goRouter();
           }
         } else {
           this.loading = false;
