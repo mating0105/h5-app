@@ -966,7 +966,7 @@ export default {
     async getCompany(){
       const res = await getCompanyName();
       //鑫弘 显示人工，其他不显示
-      if(res.data.companySchemaName == 'xh-vloan'){
+       if(res.data.companySchemaName == 'xh-vloan' || res.data.companySchemaName == 'ww-vloan'){
         this.rg = true;
       }else{
         this.rg = false;
