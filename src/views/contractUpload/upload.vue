@@ -12,7 +12,7 @@
       </van-tab>
       <van-tab title="征信信息" name="creditReportingInfo">     
           <CreditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></CreditInfoTable>
-          <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+          <creditQueryInfo v-if="TYPE == 'bairong' && brdataList.surDtlList.length >0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
           <CreditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></CreditInfoTable>
           <CreditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></CreditInfoTable>
           <CreditInfoTable v-if="!rg"title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></CreditInfoTable>

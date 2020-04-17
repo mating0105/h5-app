@@ -322,8 +322,8 @@
     this.getCompany();
     setTimeout(()=>{
       this.copyDataList = this.dataList;
-    },500)
-    
+      console.log(this.dataList,2222)
+    },800)
   }
 };
 </script>
