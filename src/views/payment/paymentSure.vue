@@ -307,7 +307,7 @@ export default {
       ],
       show: false,
       show2: false,
-      currentDate: "",
+      currentDate:  new Date(),
       options: [
         {
           name: "已垫款",
@@ -334,7 +334,7 @@ export default {
       advanceList: [], //垫款记录数组
       advanceIndex: "",
       timeIndex: "",
-      signDeleteImg:true,//删除图片标记
+      signDeleteImg:false,//删除图片标记
       documentIds:[],
     };
   },
@@ -603,6 +603,7 @@ export default {
           }
         }
         if (!thisT) {
+          this.signDeleteImg = false;
           return;
         }
         
@@ -635,6 +636,7 @@ export default {
               })
               .catch(e => {
                 this.loading = false;
+                this.signDeleteImg = true;
               });
           }
         } else {
@@ -651,9 +653,11 @@ export default {
             })
             .catch(e => {
               this.loading = false;
+              this.signDeleteImg = true;
             });
         }
       }
+      console.log(this.signDeleteImg,2222)
     },
     //加载图片
     async getDocumentByType(documentType, obj) {
