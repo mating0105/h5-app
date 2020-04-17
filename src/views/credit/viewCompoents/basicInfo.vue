@@ -233,7 +233,7 @@
             customerNum,
             documentType: documentType
           }
-          this.$toast('params:'+params);
+          this.$toast('params:'+JSON.stringify(params));
           const declare = this.documentType[documentType] ? this.documentType[documentType].label : '图片描述'
 
           const isRequire = this.whiteList.includes(documentType)
