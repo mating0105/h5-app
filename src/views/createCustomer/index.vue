@@ -25,6 +25,7 @@
     <card>
       <template slot="header">客户信息</template>
       <div>
+        <div>{{this.customerData}}</div>
         <van-cell-group :border="false">
           <van-field
             v-model="customerData.customerName"
