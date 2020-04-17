@@ -25,9 +25,6 @@
     <card>
       <template slot="header">客户信息</template>
       <div>
-        <div>{{this.customerData}}</div>
-        <div>==========</div>
-        <div>{{ceshi}}</div>
         <van-cell-group :border="false">
           <van-field
             v-model="customerData.customerName"
@@ -327,7 +324,6 @@ export default {
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
       ],
-      ceshi:''
     };
   },
   computed: {
@@ -714,16 +710,14 @@ export default {
         customerNum: this.params.customerNum,
         documentType:documentType,
         kind: "1"
-      })
-        .then(res => {
+      }).then(res => {
           console.log(res,2222)
           if(documentType == 'CUIDA02' || documentType == 'CUIDA03' || documentType == 'CUIDA04' || documentType == 'CUIDA05'){
-            this.src = res.data.data[0].documentRoute;
+            this.src = res.data[0].documentRoute;
           }else{
-            this.srcBack = res.data.data[0].documentRoute;
+            this.srcBack = res.data[0].documentRoute;
           }
-        })
-        .catch(() => {
+        }).catch(() => {
         });
     },
     
