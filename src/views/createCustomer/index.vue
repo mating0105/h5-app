@@ -704,26 +704,27 @@ export default {
             default:
               break;
         }
-        let src = this.getImg(documentType1);
-        let srcBack = this.getImg(documentType2);
-        this.ceshi = JSON.stringify(src);
+        this.getImg(documentType1);
+        this.getImg(documentType2);
       }
     },
     //加载图片
     getImg(documentType){
-      return new Promise((resolve,reject)=>{
         queryAllImgs({
         customerNum: this.params.customerNum,
         documentType:documentType,
         kind: "1"
       })
         .then(res => {
-          resolve()
+          console.log(res,2222)
+          if(documentType == 'CUIDA02' || documentType == 'CUIDA03' || documentType == 'CUIDA04' || documentType == 'CUIDA05'){
+            this.src = res.data.data[0].documentRoute;
+          }else{
+            this.srcBack = res.data.data[0].documentRoute;
+          }
         })
         .catch(() => {
-          reject();
         });
-      })
     },
     
     /**
