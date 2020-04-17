@@ -214,6 +214,9 @@ export default {
         returnPath(value,n){
             this.pathData[n].forEach((item,index)=>{
                 if(item.name==value){
+                    if(item.path == '/paymentSure' && this.pageData.status == '1'){
+                        this.info.signDelete = true;
+                    }
                     this.$router.push({
                         path:item.path,
                         query:item.params(JSON.stringify(this.info),this.pageData.status)

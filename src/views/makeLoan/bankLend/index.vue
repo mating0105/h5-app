@@ -326,6 +326,7 @@
             // location.href = url
           }
         } else {
+          console.log(this.projectForm,222)
           let queryData = {
             customerId: this.projectForm.projectInfo.customerId,
             customerNum: this.projectForm.projectInfo.customerNum,
@@ -335,7 +336,8 @@
             isView: 1,//  0:修改  1：查看
             projectNo: this.projectForm.projectInfo.projectNo,
           }
-          this.$router.push({path: val.url, query: item.value == 2 ? this.$route.query : queryData});
+          // this.$router.push({path: val.url, query: item.value == 2 ? this.$route.query : queryData});
+          this.$router.push({ path: val.url, query: queryData });
         }
       },
       //-----------显示选择弹框--------------
@@ -469,6 +471,7 @@
           const data = await getProjectInfo(para);
           if (data.code == 200) {
             this.form = data.data;
+            this.projectForm = data.data;
             this.initImage();
             this.listLoading = false;
           }

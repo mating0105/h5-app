@@ -334,7 +334,7 @@ export default {
       advanceList: [], //垫款记录数组
       advanceIndex: "",
       timeIndex: "",
-      signDeleteImg:false,//删除图片标记
+      signDeleteImg:true,//删除图片标记
       documentIds:[],
     };
   },
@@ -427,6 +427,7 @@ export default {
             this.advanceList = [{ dataImg: [] }];
             this.advanceList.forEach(e => {
               e.time = format(new Date(), "yyyy-MM-dd hh:mm");
+              e.advancesTime = new Date();
               e.dataImg.push({
                 declare: "垫款凭证", //图片描述
                 isRequire: true, //*是否必须
@@ -442,6 +443,7 @@ export default {
             let list = JSON.parse(JSON.stringify(this.advanceList));
             list.forEach(e => {
               e.time = format(new Date(e.advancesTime), "yyyy-MM-dd hh:mm");
+              e.advancesTime = new Date();
               e.dataImg = [];
               e.advancesMoney = this.numFilter(e.advancesMoney);
               this.getDocumentByType("RECBANK02", e);
@@ -603,7 +605,6 @@ export default {
           }
         }
         if (!thisT) {
-          this.signDeleteImg = false;
           return;
         }
         
@@ -657,7 +658,6 @@ export default {
             });
         }
       }
-      console.log(this.signDeleteImg,2222)
     },
     //加载图片
     async getDocumentByType(documentType, obj) {
@@ -712,7 +712,7 @@ export default {
     this.loadData().then(() => this.loadManagement()); //加载详情数据
   },
   destroyed(){
-    if(this.signDeleteImg){//未提交流程,删除上传的垫款资料
+    if(this.signDeleteImg && this.params.info.signDelete){//未提交流程,删除上传的垫款资料
       this.advanceList[0].dataImg[0].fileList.forEach(e =>{
         this.documentIds.push(e.documentId)
       })
