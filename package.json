@@ -21,7 +21,7 @@
     "better-scroll": "^1.15.2",
     "dayjs": "^1.8.18",
     "exif-js": "^2.3.0",
-    "file-loader": "^6.0.0",
+    "file-loader": "^2.0.0",
     "html2canvas": "^1.0.0-rc.5",
     "js-cookie": "2.2.0",
     "jspdf": "^1.5.3",
