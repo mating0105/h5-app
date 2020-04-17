@@ -450,7 +450,7 @@ export default {
     },
     cancel() {},
     //保存信息
-    async submit() {
+    submit() {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.customerData[item]);
@@ -478,7 +478,7 @@ export default {
             return;
           }
         }
-        // this.loading = true;
+        this.loading = true;
         if (this.src && this.srcBack) {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
@@ -504,9 +504,15 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          await uploadImg(docType, params, this.dataURLtoFile(this.src));
-          await uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
-          await goRouter();
+          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
+            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
+              this.goRouter();
+            }).catch(e => {
+              this.loading = false;
+            });
+          }).catch(e => {
+            this.loading = false;
+          });
         } else {
           this.loading = false;
           this.$notify({
@@ -526,8 +532,8 @@ export default {
                 customerId: res.data.id
               };
               this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
-              this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
-              this.goRouter();
+                this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
+                  this.goRouter();
                 }).catch(e => {
                   this.loading = false;
                 });
@@ -546,9 +552,8 @@ export default {
         }
       }
     },
-     uploadImg(val, params, file) {
-       this.$toast('success')
-       return new Promise((resolve,reject) => {
+    uploadImg(val, params, file) {
+      return new Promise((resolve, reject) =>{
         params.documentType = val;
         params.file = file;
         uploadsDocument(params)
@@ -556,14 +561,13 @@ export default {
             resolve()
           })
           .catch(e => {
-            this.loading = false;
-            reject();
+            reject()
           });
-       })
+      })
+      
     },
     //跳转处理
     goRouter(){
-      this.$toast(1111,this.params.credit)
       if (this.params.credit) {
         //征信新增客户，直接返回上一页
         this.$store.dispatch("credit/setCustomerData", {
