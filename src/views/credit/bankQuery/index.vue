@@ -54,7 +54,7 @@
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
-  import { getCreditInfo,getCompanyName,getButtonOfCredit,creditQueryOf100 } from '@/api/credit'
+  import { getCreditInfo,getCompanyName,getButtonOfCredit,creditQueryOf100,getCreditType } from '@/api/credit'
   import { bankReply } from '@/api/bigData'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -169,9 +169,9 @@
       },
       //获取该公司的大数据征信类型
       async loadBigDataType(){
-        const {data} = await getButtonOfCredit();
+        const {data} = await getCreditType();
         // 征信回复：:5/百融征信查询：6
-        let buttonId = data[0].buttonId
+        let buttonId = data[0].buttonId;
         if(buttonId){
           this.TYPE = buttonId == 6 ? 'bairong' : '';
           const params = {
