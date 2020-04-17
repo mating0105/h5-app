@@ -214,7 +214,7 @@
           this.dataList.surDtlList.forEach(item => {
             const arr = this.obj[item.creditObjectType]
             arr.forEach(i => {
-              this.getDocumentByType(i, item, this.dataList)
+              this.getDocumentByType(i, item, this.dataList.surDtlList)
             })
           })
         }
