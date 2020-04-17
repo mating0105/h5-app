@@ -9,13 +9,12 @@
             </van-tabs>
         </template>
         <template v-if="active === 1">
-            <!-- 百融 -->
-            <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
-            <div v-else>
-              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
-            </div>
+            <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
+            <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+            <creditInfoTable v-if="rgCredit" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+            <creditInfoTable v-if="rbCredit" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
@@ -128,7 +127,9 @@
               dataList = JSON.parse(getValue("credit"))
             } else {
               if(this.TYPE === 'bairong'){
-                res = await creditQueryOf100(params)
+                let res2 = await creditQueryOf100(params)
+                res = await getCreditInfo(params)
+                this.brdataList = res2.data.cuCreditRegister
               }else{
                 res = await getCreditInfo(params)
               }
