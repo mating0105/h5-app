@@ -552,7 +552,7 @@ export default {
         }
       }
     },
-    async uploadImg(val, params, file) {
+     uploadImg(val, params, file) {
       params.documentType = val;
       params.file = file;
       uploadsDocument(params)
