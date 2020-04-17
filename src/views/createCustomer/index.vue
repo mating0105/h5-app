@@ -680,8 +680,8 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      this.$toast(this.customerData.index);
-      if(this.customerData.index != -1){
+      this.$toast(this.params.index);
+      if(this.params.index != -1){
         let documentType1 ,documentType2;
         switch(this.customerData.creditObjectType){
           case 'security':
