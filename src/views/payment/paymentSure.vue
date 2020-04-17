@@ -432,7 +432,7 @@ export default {
                 isRequire: true, //*是否必须
                 deletable: true, //是否可以操作-上传和删除
                 documentType: "RECBANK02",
-                customerNum: e.id ? e.id : this.params.info.customerNum,
+                customerNum: this.params.info.customerNum,
                 customerId: this.params.info.customerId,
                 kind: "1",
                 fileList: []
@@ -663,8 +663,9 @@ export default {
     async getDocumentByType(documentType, obj) {
       try {
         const params = {
-          customerNum: obj.id,
-          documentType: documentType
+          customerNum: this.params.info.customerNum,
+          documentType: documentType,
+          bizNum:obj.id
         };
         const { data } = await getDocumentByType(params);
         const declare = this.documentType[documentType]
@@ -675,7 +676,7 @@ export default {
           isRequire: true, //*是否必须
           deletable: this.params.dealState != 3, //是否可以操作-上传和删除
           documentType: documentType,
-          customerNum: obj.id,
+          customerNum: this.params.info.customerNum,
           customerId: this.params.info.customerId,
           kind: "1",
           fileList: data
