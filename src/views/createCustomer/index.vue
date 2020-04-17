@@ -673,7 +673,7 @@ export default {
       return name;
     },
     //获取信息
-    loadData() {
+    async loadData() {
       for (let key in this.customerData) {
         if (this.customerData.hasOwnProperty(key)) {
           this.customerData[key] =
@@ -709,7 +709,7 @@ export default {
       }
     },
     //加载图片
-    async getImg(documentType){
+    getImg(documentType){
       queryAllImgs({
         customerNum: this.customerData.customerNum,
         documentType:documentType,
