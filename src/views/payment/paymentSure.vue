@@ -686,7 +686,7 @@ export default {
     },
     //添加垫款记录
     addCard() {
-      this.advanceList.push({ dataImg: [], time: format(new Date(), "yyyy-MM-dd hh:mm"),advancesTime: format(new Date(), "yyyy-MM-dd hh:mm") });
+      this.advanceList.push({ dataImg: [], time: format(new Date(), "yyyy-MM-dd hh:mm"),advancesTime:new Date() });
       this.advanceList[this.advanceList.length - 1].dataImg.push({
         declare: "垫款凭证", //图片描述
         isRequire: true, //*是否必须
