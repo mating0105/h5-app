@@ -231,7 +231,7 @@
         let nowDate = new Date()
         
         // 当前时间与查询时间+30天对比
-        let isRegister = this.dataList.surDtlList.some(element => {
+        let isRegister = this.brdataList.surDtlList.some(element => {
           let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
           return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
         });
