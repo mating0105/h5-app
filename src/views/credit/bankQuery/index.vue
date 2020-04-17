@@ -11,7 +11,7 @@
 
         <template v-if="active === 1">
             <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-            <creditQueryInfo v-if="TYPE == 'bairong' && dataList.surDtlList.length>0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditQueryInfo v-if="TYPE == 'bairong'" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
             <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
             <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
             <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
