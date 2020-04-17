@@ -713,7 +713,7 @@ export default {
     getImg(documentType){
       return new Promise((resolve,reject)=>{
         queryAllImgs({
-        customerNum: this.customerData.customerNum,
+        customerNum: this.params.customerNum,
         documentType:documentType,
         kind: "1"
       })
