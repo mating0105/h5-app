@@ -450,7 +450,7 @@ export default {
     },
     cancel() {},
     //保存信息
-    submit() {
+    async submit() {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.customerData[item]);
@@ -504,15 +504,9 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
-            this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
-              this.goRouter();
-            }).catch(e => {
-              this.loading = false;
-            });
-          }).catch(e => {
-            this.loading = false;
-          });
+          await uploadImg(docType, params, this.dataURLtoFile(this.src));
+          await uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
+          this.goRouter();
         } else {
           this.loading = false;
           this.$notify({
