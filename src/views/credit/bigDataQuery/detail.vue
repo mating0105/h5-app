@@ -280,10 +280,15 @@
     created(){
     },
     mounted () {
-      this.getButtonOfCredit().then(() => this.getCreditInfo() )
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      console.log(this.bigData,this.rbCredit)
+      if(this.bigData){//如果是大数据，则查询大数据类型
+        this.getButtonOfCredit().then(() => this.getCreditInfo() )
+      }else{
+        this.getCreditInfo()
+      }
     }
   }
 </script>
