@@ -209,7 +209,7 @@
     }
   },
   methods: {
-    downImg(images){
+    downImg(images) {
       Dialog.confirm({
         title: '下载报告',
         message: '是否确认下载报告？',
