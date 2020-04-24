@@ -22,11 +22,11 @@
             <van-cell label-class='labelClass' :label="errorMsg.carSpecifications" :disabled="!edit" :required="isdetail == 0?true:false"
                       :border="false" :is-link="isdetail == 0?true:false" title="车辆规格："
                       :value="returnText(carFrom.carSpecifications, 'vehicle_specifications')" @click="loadList(12, '车辆规格', carFrom.carSpecifications)"/>
-            <van-cell title="车辆品牌型号:" :disabled="!edit" :border="false" :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
-            <van-cell title="车架号:" :disabled="!edit" :border="false" :value="carFrom.chassisNumber"/>
+            <van-cell title="车辆品牌型号:" :disabled="!edit" :border="false" :required="isdetail == 0?true:false" :value="nameToString(carFrom.brndNm, carFrom.carSeries, carFrom.carModel)"/>
+            <van-cell title="车架号:" :disabled="!edit" :required="isdetail == 0?true:false" :border="false" :value="carFrom.chassisNumber"/>
             <template>
                 <van-cell label-class='labelClass' :label="errorMsg.carLicenseLocation" title="车牌所在地：" :disabled="!edit" :border="false" @click="show2Fn" required :value="carFrom.carLicenseLocation"/>
-                <van-cell label-class='labelClass' :label="errorMsg.plateDate" title=" 首次上牌日：" :disabled="!edit" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
+                <van-cell label-class='labelClass' :label="errorMsg.plateDate" title=" 首次上牌日：" :required="isdetail == 0?true:false" :disabled="!edit" :border="false" is-link :value="carFrom.plateDate" @click="showDateFn"/>
                 <van-field v-model="carFrom.roadHaul" :border="false" clearable input-align="right" label="行驶里程："
                            :disabled="!edit"
                            required
@@ -124,6 +124,8 @@
             <van-datetime-picker
                     v-model="currentDate"
                     type="date"
+                    :min-date="minDate"
+                    :max-date="maxDate"
                     @change="changeDate"
                     @confirm="confirm"
                     @cancel="carFrom.plateDate = ''; showDate = false"
@@ -191,6 +193,8 @@
         isVal: '',
         isSelected: false,
         showDate: false,
+        minDate: new Date(2000, 0, 1),
+        maxDate:new Date(),
         currentDate: new Date(),
         show3: false,
         show2: false,
