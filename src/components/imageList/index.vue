@@ -40,10 +40,10 @@
 <script>
   import Vue from 'vue';
   import imageUpload from './upload'
-  import { Uploader, Image, Icon, ImagePreview, Lazyload, Dialog } from 'vant';
+  import { Uploader, Image, Icon, ImagePreview, Lazyload, Dialog,Toast } from 'vant';
   import _ from 'lodash'
 
-  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview).use(Lazyload);
+  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview).use(Lazyload).use(Toast);
   export default {
     name: "imageList",
     props: {
