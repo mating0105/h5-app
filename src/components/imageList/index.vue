@@ -97,7 +97,7 @@
                 pic:item.base64File
               }
               _this.$bridge.callHandler('savePic', para, res => {
-                alert(res+'结果')
+                Toast('结果:' + res)
                 if(res){
                   Toast.success('下载成功');
                 }else{
