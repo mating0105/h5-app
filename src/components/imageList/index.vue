@@ -84,18 +84,20 @@
         this.index = index;
       },
       downLoadImg(val){
+        var _this=this;
         this.list.forEach((item,index)=>{
           if(item.documentRoute==val){
             Dialog.confirm({
-              title: '下载报告',
-              message: '是否确认下载报告？',
+              title: '下载图片',
+              message: '是否确认下载图片？',
             })
             .then(() => {
               console.log('确认')
               let para={
                 pic:item.base64File
               }
-              this.$bridge.callHandler('savePic', para, res => {
+              _this.$bridge.callHandler('savePic', para, res => {
+                alert(res+'结果')
                 if(res){
                   Toast.success('下载成功');
                 }else{

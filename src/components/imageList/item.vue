@@ -55,8 +55,8 @@
             index=Number(button[i].getElementsByClassName('van-image-preview__index')[0].textContent.split(' / ')[0]);
           }
           Dialog.confirm({
-            title: '下载报告',
-            message: '是否确认下载报告？',
+            title: '下载图片',
+            message: '是否确认下载图片？',
           })
           .then(() => {
             console.log('确认')
@@ -64,6 +64,7 @@
               pic:list[index-1].base64File
             }
             _this.$bridge.callHandler('savePic', para, res => {
+              alert(res+'结果')
               if(res){
                 Toast.success('下载成功');
               }else{
