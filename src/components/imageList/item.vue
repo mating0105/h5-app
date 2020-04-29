@@ -3,7 +3,7 @@
         <div class="xh-image-item-title" v-if="fileList.length || data.deletable"><span v-if="data.isRequire" class="xh-is-require">*</span>{{data.declare}}</div>
         <van-uploader multiple :after-read="upload" :deletable="data.deletable" class="xh-image-upload" :class="{'xh-image-deletable': !data.deletable}"
                       :disabled="!data.deletable"
-                      v-model="fileList" :before-delete="deleteImage"/>
+                      v-model="fileList" :before-delete="deleteImage" @click-preview='clickPreview(fileList)' @close-preview='closePreview'/>
     </div>
 </template>
 
@@ -33,10 +33,54 @@
     data () {
       return {
         fileList: [],
-        headerImage: ''
+        headerImage: '',
       }
     },
     methods: {
+      clickPreview(list){
+        var _this=this;
+        var button=document.getElementsByClassName('van-image-preview');
+        for(var i=0;i<button.length;i++){
+          if(button[i].childNodes.length==2){
+            var newDiv = document.createElement("div");
+            newDiv.id="downLoadbuttonClass";
+            newDiv.innerText = '下载图片'
+            button[i].appendChild(newDiv);
+          }
+        }
+        var buttonClass=document.getElementById('downLoadbuttonClass');
+        var index;
+        buttonClass.onclick=()=>{
+          for(var i=0;i<button.length;i++){
+            index=Number(button[i].getElementsByClassName('van-image-preview__index')[0].textContent.split(' / ')[0]);
+          }
+          Dialog.confirm({
+            title: '下载报告',
+            message: '是否确认下载报告？',
+          })
+          .then(() => {
+            console.log('确认')
+            let para={
+              pic:list[index-1].base64File
+            }
+            _this.$bridge.callHandler('savePic', para, res => {
+              if(res){
+                Toast.success('下载成功');
+              }else{
+                Toast.fail('下载失败');
+              }
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
+          
+        };
+      },
+      closePreview(){
+        var El=document.getElementById( 'downLoadbuttonClass' );
+        El.parentNode.removeChild( El );
+      },
       /**
        * 删除照片
        * @return {Promise<any>}
@@ -86,7 +130,11 @@
           })
           this.data.fileList.splice(index, 0, ...data)
           for (let i = 0; i < data.length; i++) {
-            this.fileList[index + i].documentId = data[i].documentId
+            console.log(data[i],'data[i]')
+            this.fileList[index + i].documentId = data[i].documentId;
+            this.fileList[index + i].base64File = data[i].base64File;
+            this.fileList[index + i].documentRoute = data[i].documentRoute;
+            this.fileList[index + i].url = data[i].url;
           }
           this.$emit('update:loading', false);
           this.$nextTick(() => {
@@ -285,7 +333,7 @@
     mounted () {
       if (this.data && this.data.fileList) {
         this.fileList = this.data.fileList.map(item => {
-          return {url: item.documentRoute, ...item}
+          return {url: item.documentRoute,base64File:item.base64File, ...item}
         })
       }
     }
@@ -315,5 +363,17 @@
         color: #333333;
         margin: 14.5px 0 16px 0;
         font-size: 1.2rem;
+    }
+    #downLoadbuttonClass{
+      width: 100px;
+      height:46px;
+      background-color: #1989fa;
+      border-radius: 30px;
+      position: absolute;
+      bottom:10px;
+      right:10px;
+      text-align: center;
+      line-height: 46px;
+      color:#fff;
     }
 </style>
