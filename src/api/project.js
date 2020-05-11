@@ -195,4 +195,20 @@ export function addCar(params) {
   })
 }
 
+//是否显示电核意见
+export function nuclearOpinion(params) {
+  return request({
+    url: '/manage/buttonConfig/getButtonByServer?serverName=electricity-nuclear-opinion',
+    method: 'get',
+    params
+  })
+}
 
+//提交电核意见
+export function submitNuclearOpinion(params) {
+  return request({
+    url: '/order/project/saveElectricityNuclearOpinion',
+    method: 'post',
+    data: params
+  })
+}

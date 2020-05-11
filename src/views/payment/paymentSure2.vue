@@ -36,6 +36,11 @@
           </van-row>
         </div>
         <div v-show="params.dealState == '1'">
+          <card>
+            <van-row style="padding:10px;">
+              <van-checkbox v-model="notice" @change="changeCheck">需银行审批通过后放款</van-checkbox>
+            </van-row>
+          </card>
           <van-cell-group :border="true" class="xh-conclusion">
             <van-cell title="风控意见" :value="riskConclusionDesc" is-link @click="chooseConclusion" />
           </van-cell-group>
@@ -96,7 +101,9 @@ import {
   CellGroup,
   ActionSheet,
   Picker,
-  Field
+  Field,
+  Checkbox,
+  CheckboxGroup
 } from "vant";
 import redCard from "@/components/redCard/index";
 import card from "@/components/card/index";
@@ -115,7 +122,9 @@ const Components = [
   CellGroup,
   ActionSheet,
   Picker,
-  Field
+  Field,
+  Checkbox,
+  CheckboxGroup
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -183,7 +192,8 @@ export default {
       riskConclusion:'',
       loading: false,
       accout: "",
-      phone: ""
+      phone: "",
+      notice:false,
     };
   },
   computed: {
@@ -254,6 +264,14 @@ export default {
     },
     cancel() {
       this.show = false;
+    },
+    //是否需银行审批通过后放款
+    changeCheck(val){
+      if(val){
+        this.message = this.message ? this.message:'需银行审批通过后放款';
+      }else{
+        this.message = '';
+      }
     },
     //提交流程
     submit() {

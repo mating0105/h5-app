@@ -105,6 +105,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'estimateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'estimateCharges')"
                     :error-message="errorMsg.estimateCharges"
                   >
                   <div slot="button">元</div>
@@ -121,6 +122,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'investigateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'investigateCharges')"
                     :error-message="errorMsg.investigateCharges"
                   >
                   <div slot="button">元</div>
@@ -137,6 +139,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'gpsCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'gpsCharges')"
                     :error-message="errorMsg.gpsCharges"
                   >
                   <div slot="button">元</div>
@@ -153,6 +156,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'colligateCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'colligateCharges')"
                     :error-message="errorMsg.colligateCharges"
                   >
                   <div slot="button">元</div>
@@ -169,6 +173,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'notarialFees');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'notarialFees')"
                     :error-message="errorMsg.notarialFees"
                   >
                   <div slot="button">元</div>
@@ -185,6 +190,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'allopatryCharges');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'allopatryCharges')"
                     :error-message="errorMsg.allopatryCharges"
                   >
                   <div slot="button">元</div>
@@ -201,6 +207,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'doolBail');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'doolBail')"
                     :error-message="errorMsg.doolBail"
                   >
                   <div slot="button">元</div>
@@ -217,6 +224,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'agreeBail');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'agreeBail')"
                     :error-message="errorMsg.agreeBail"
                   >
                   <div slot="button">元</div>
@@ -233,6 +241,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'collectCarDealer');ruleMessge($event)"
+                    @focus="cleanPrice(paymentDetail.projBudgetList, 'collectCarDealer')"
                     :error-message="errorMsg.collectCarDealer"
                   >
                   <div slot="button">元</div>
@@ -257,6 +266,7 @@
                     input-align="right"
                     placeholder="请输入"
                     @blur.prevent="priceFloat(paymentDetail.projBudgetList, 'dcnAmt');ruleMessge($event)"
+                     @focus="cleanPrice(paymentDetail.projBudgetList, 'dcnAmt')"
                     :error-message="errorMsg.dcnAmt"
                   >
                   <div slot="button">元</div>
@@ -640,18 +650,18 @@ export default {
           //初始化数据
           this.paymentDetail.projPayInfo.payTimeDesc = this.paymentDetail.projPayInfo.payTime?format(new Date(this.paymentDetail.projPayInfo.payTime),'yyyy-MM-dd hh:mm'):'';
           this.paymentDetail.projBudgetList.pyfDtDesc = this.paymentDetail.projBudgetList.pyfDt?format(new Date(this.paymentDetail.projBudgetList.pyfDt),'yyyy-MM-dd hh:mm'):'';
-          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'';
-          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
-          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'';
-          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'';
-          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'';
-          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'';
-          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'';
-          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'';
-          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'';
-          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'';
-          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'';
-
+          this.paymentDetail.projBudgetList.estimateCharges = this.paymentDetail.projBudgetList.estimateCharges?this.numFilter(this.paymentDetail.projBudgetList.estimateCharges):'0.00';
+          this.paymentDetail.projBudgetList.investigateCharges = this.paymentDetail.projBudgetList.investigateCharges?this.numFilter(this.paymentDetail.projBudgetList.investigateCharges):'0.00';
+          this.paymentDetail.projBudgetList.gpsCharges = this.paymentDetail.projBudgetList.gpsCharges?this.numFilter(this.paymentDetail.projBudgetList.gpsCharges):'0.00';
+          this.paymentDetail.projBudgetList.colligateCharges = this.paymentDetail.projBudgetList.colligateCharges?this.numFilter(this.paymentDetail.projBudgetList.colligateCharges):'0.00';
+          this.paymentDetail.projBudgetList.notarialFees = this.paymentDetail.projBudgetList.notarialFees?this.numFilter(this.paymentDetail.projBudgetList.notarialFees):'0.00';
+          this.paymentDetail.projBudgetList.allopatryCharges = this.paymentDetail.projBudgetList.allopatryCharges?this.numFilter(this.paymentDetail.projBudgetList.allopatryCharges):'0.00';
+          this.paymentDetail.projBudgetList.doolBail = this.paymentDetail.projBudgetList.doolBail?this.numFilter(this.paymentDetail.projBudgetList.doolBail):'0.00';
+          this.paymentDetail.projBudgetList.agreeBail = this.paymentDetail.projBudgetList.agreeBail?this.numFilter(this.paymentDetail.projBudgetList.agreeBail):'0.00';
+          this.paymentDetail.projBudgetList.collectCarDealer = this.paymentDetail.projBudgetList.collectCarDealer?this.numFilter(this.paymentDetail.projBudgetList.collectCarDealer):'0.00';
+          this.paymentDetail.projBudgetList.dcnAmt = this.paymentDetail.projBudgetList.dcnAmt?this.numFilter(this.paymentDetail.projBudgetList.dcnAmt):'0.00';
+          //详情中拿到projectId,去获取项目信息
+          this.$store.dispatch("credit/temporaryProjectId", this.paymentDetail.projPayInfo.projectId);
         })
         .catch(e => {
           this.loading = false;
@@ -959,6 +969,14 @@ export default {
     },
     cancelTime() {
       this.show2 = false;
+    },
+    //清空0.00
+    cleanPrice(obj,value){
+      if(obj[value] == '0.00'){
+        obj[value] = '';
+      }else{
+        obj[value] = obj[value];
+      }
     },
     //加载垫款图片
     loadImg() {

@@ -81,6 +81,18 @@ export const constantRoutes = [
     component: () => import('@/views/credit/bigDataQuery/bigDataCredit'),
     meta: {title: '大数据征信查询'}
   },
+  {
+    path: '/artificialDetail',
+    name: 'artificialDetail',
+    component: () => import('@/views/credit/artificialDetail/detail'),
+    meta: {title: '人工征信查询'}
+  },
+  {
+    path: '/peopleBigDataReply',
+    name: 'peopleBigDataReply',
+    component: () => import('@/views/credit/artificialDetail/bigDataReply'),
+    meta: {title: '征信回复'}
+  },
 
   {
     path: '/rbCredit',

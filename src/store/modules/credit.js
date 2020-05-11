@@ -2,6 +2,7 @@ const state = {
   carData: null,
   index: -1,
   customerData: null,
+  setProject:null
 }
 
 const mutations = {
@@ -23,6 +24,9 @@ const mutations = {
     else
     state.index = -1
   },
+  SET_PROJECT(state,data){
+    state.setProject = data
+  }
 }
 
 const actions = {
@@ -40,6 +44,10 @@ const actions = {
   removeCustomerData({commit}) {
     commit('SET_CUSTOMER_DATA', null, -1)
   },
+  temporaryProjectId({commit},data){
+    console.log('data',data)
+    commit('SET_PROJECT', data)
+  }
 }
 
 export default {

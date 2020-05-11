@@ -482,7 +482,6 @@ export default {
     confirm(row) {
       this.show4 = false;
       this.customerData[this.fieldName] = row.value;
-      console.log(this.fieldName);
       this.errorMsg[this.fieldName] = "";
     },
     cancel() {},
@@ -515,11 +514,39 @@ export default {
             return;
           }
         }
-        this.$store.dispatch("credit/setCustomerData", {
-          data: this.customerData,
-          index: this.$route.query.index
-        });
-        this.$router.go(-1);
+        if (this.src && this.srcBack) {
+          let docType, docTypeBack;
+          switch (this.customerData.creditObjectType) {
+            case "security":
+              docType = "0117";
+              docTypeBack = "0120";
+              break;
+            case "borrowerSpouse":
+              docType = "0105";
+              docTypeBack = "0106";
+              break;
+            case "joiDebtor":
+              docType = "0109";
+              docTypeBack = "0110";
+              break;
+            case "joiDebtorSpouse":
+              docType = "0113";
+              docTypeBack = "0114";
+              break;
+          }
+          const params = {
+            kind: "1",
+            customerNum: this.params.customerNum,
+            customerId: this.params.customerId
+          };
+          this.uploadImg(docType, params, this.dataURLtoFile(this.src));
+          this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
+        } else {
+          this.$notify({
+            type: "danger",
+            message: "请上传身份证正反面"
+          });
+        }
       } else {
         //新建客户，走接口
         if (this.src && this.srcBack) {
@@ -539,7 +566,11 @@ export default {
               //   message: "建档成功"
               // });
               // this.loading = false;
-              // this.$router.go(-1);
+              // this.$nextTick(() =>{
+              //   this.$router.push({
+              //     path: '/creditList',
+              //   });
+              // })
             })
             .catch(e => {
               this.loading = false;
@@ -547,7 +578,7 @@ export default {
         } else {
           this.$notify({
             type: "danger",
-            message: "请上传身份证正反面"
+            message: "请上传身份证"
           });
         }
       }
@@ -557,12 +588,27 @@ export default {
       params.file = file;
       uploadsDocument(params)
         .then(res => {
-          this.$notify({
-            type: "success",
-            message: "建档成功"
-          });
-          this.loading = false;
-          this.$router.go(-1);
+          if (this.params.credit) {
+            //征信新增客户，直接返回上一页
+            this.$store.dispatch("credit/setCustomerData", {
+              data: this.customerData,
+              index: this.$route.query.index
+            });
+            this.loading = false;
+            this.$router.go(-1);
+          } else {
+            this.$notify({
+              type: "success",
+              message: "建档成功"
+            });
+            this.loading = false;
+            // this.$router.go(-1);
+           this.$nextTick(() =>{
+              this.$router.push({
+                path: '/creditList',
+              });
+            })
+          }
         })
         .catch(e => {
           this.loading = false;
