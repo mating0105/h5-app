@@ -631,8 +631,9 @@
         </div>
       </van-tab>
       <van-tab title="征信信息" name="2" class="tabBox">
-        <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult"></creditInfoTable>
-        <creditInfoTable title="大数据查询" :dataList="creditList.surDtlList" type="bigDataResult"></creditInfoTable>
+          <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
+          <creditInfoTable title="大数据征信" :dataList="creditList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+          <creditInfoTable title="人保征信" :dataList="creditList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
       </van-tab>
       <van-tab title="审批记录" name="3" class="tabBox">
         <ApprovalRecord></ApprovalRecord>

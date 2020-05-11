@@ -739,7 +739,8 @@ export default {
         if (!this.verifyForm()) {
           return;
         }
-        this.dataList.creditTypeFlag = 1
+        // this.dataList.creditTypeFlag = 1
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
       
         let _arr = []
@@ -805,6 +806,7 @@ export default {
           return;
         }
         this.loading = true;
+        this.form.bankCardNum = this.dataList.bankCardNum;
         this.dataList.surDtlList = [this.form, ...this.perInfoList];
         this.dataList.creditSearchType=this.creditSearchType;
         this.dataList.creditSearchTypeDesc=this.creditSearchTypeDesc;
@@ -846,6 +848,7 @@ export default {
         // });
         this.submit(query);
       });
+      
     },
     /**
        * 提交
@@ -986,6 +989,7 @@ export default {
      * 保存数据到本地
      */
     save() {
+      this.form.bankCardNum = this.dataList.bankCardNum;
       this.dataList.surDtlList = [this.form, ...this.perInfoList];
       setValue("credit", JSON.stringify(this.dataList));
     },
@@ -1118,7 +1122,6 @@ export default {
     Bus.$off('creditSave')
     Bus.$on("creditSave", TYPE => {
       TYPE === 'bairong' ? this.bigDataTipOfBr() : this.nextStep(TYPE);
-      
     });
     this.rulesForm("order-credit-xh"); //新车
     
