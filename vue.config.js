@@ -48,7 +48,7 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://119.3.165.2:8085`,
         // target: `http://172.16.10.4:8085`,
-        target:`http://192.168.80.48:8103`,
+        target: `http://192.168.80.87:8103`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -57,13 +57,13 @@ module.exports = {
       '/manage': {
         // target: `http://172.16.10.4:8085`,
         // target: `http://119.3.165.2:8085`,
-        target:`http://192.168.80.48:8104`,
+        target: `http://192.168.80.87:8104`,
         changeOrigin: true
       },
       '/document': {
         // target: `http://172.16.10.4:8085`,
         // target: `http://119.3.165.2:8085`,
-        target:`http://192.168.80.48:8203`,
+        target: `http://192.168.80.87:8203`,
         changeOrigin: true
       },
       '/group1': {
@@ -80,7 +80,7 @@ module.exports = {
         // target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
-      //https://user.test.wwvas.net/userauth/oauth/token
+      // https://user.test.wwvas.net/userauth/oauth/token
       '/userauth': {
         target: `https://172.16.10.5`,
         // target: `https://user.wwvas.net`,
@@ -90,13 +90,13 @@ module.exports = {
         // target: `http://dev.wwvas.com:10000`,
         target: `http://www.wwvas.com`,
         changeOrigin: true
-      },
+      }
       /* // 百融
       '/order': {
         target: `192.168.50.102:8103`,
         changeOrigin: true
       } */
-      
+
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
