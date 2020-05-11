@@ -5,7 +5,6 @@
  -->
 <template>
   <div :loading="loading">
-<<<<<<< HEAD
     <NewCard 
     id="creditQueryBox"
     v-if="dataList"
@@ -27,122 +26,6 @@
         <!-- 退回 -->
         <div v-if="dataList.status=='02'" class="loadText">
             <div>退回原因：xxxx(以E分期接口返回为准)</div>
-=======
-    <Card>
-      <template v-slot:header>客户信息</template>
-      <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName" />
-      <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
-      <van-cell title="电话号码:" required :border="false" :value="form.telephone" />
-      <van-cell title="征信对象类型:" required :border="false" value="借款人" />
-      <van-cell
-        title="银行："
-        label-class="labelClass"
-        :label="errorMsg.investigateBankName"
-        :disabled="!edit"
-        :border="false"
-        required
-        :is-link="edit"
-        :value="dataList.investigateBankName"
-        @click="showPickerFn"
-      />
-      <van-field
-            v-model="dataList.bankCardNum"
-            required
-            clearable
-            name="bankCardNum"
-            error-message-align="right"
-            label="银行卡号："
-            input-align="right"
-            placeholder="请输入"
-            :disabled="!edit"
-            :border="false"
-            @blur.prevent="ruleMessge"
-            :error-message="errorMsg.bankCardNum"
-            :right-icon="!edit ? '' : 'scan'"
-            @click-right-icon="IdcardLoading('bankCodeOCR')"
-          />
-      <van-field
-        class="label_plus"
-        name="intentionPrice"
-        @blur.prevent="ruleMessge"
-        :error-message="errorMsg.intentionPrice"
-        :disabled="!edit"
-        :border="false"
-        v-model="dataList.intentionPrice"
-        type="tel"
-        required
-        clearable
-        @blur="checkPrice"
-        input-align="right"
-        label="意向贷款金额："
-        placeholder="请输入"
-      >
-        <div slot="button">元</div>
-      </van-field>
-      <van-field
-        v-model="dataList.remarks"
-        :border="false"
-        :disabled="!edit"
-        type="textarea"
-        placeholder="输入说明"
-        rows="1"
-        :autosize="autosize"
-        class="zh-textarea"
-      />
-    </Card>
-
-    <!-- <Card style="margin-top: 1rem;">
-            <template v-slot:header>
-                {{dataList.carInfos.length === 0 ? '新增': ''}}车辆信息
-                <div class="card-icon" @click="addVehicle" v-if="dataList.carInfos.length === 0 && edit">
-                    <van-icon name="add-o"/>
-                </div>
-            </template>
-            <div>
-                <van-swipe-cell :disabled="!edit" v-for="(item, index) in dataList.carInfos" :key="index">
-                    <van-cell title="车辆类别:" :border="false"
-                              :value="nameToString(returnText(item.carType, 'car_type'), returnText(item.carType2, 'car_type2'))"/>
-                    <van-cell title="车辆性质:" :border="false" :value="returnText(item.carNature, 'car_nature')"/>
-                    <van-cell title="车辆规格:" :border="false" :value="returnText(item.carSpecifications, 'vehicle_specifications')"/>
-                    <van-cell title="车辆来源:" :border="false" :value="returnText(item.carSource, 'CAR_SOURCE')"/>
-                    <van-cell title="车辆品牌型号:" :border="false" :value="nameToString(item.brndNm, item.carSeries, item.carModel)"/>
-                    <van-cell v-if="item.carNature === 'old_car'" title="车架号:" :border="false" :value="item.chassisNumber"/>
-                    <van-cell title="销售价:" v-if="item.carNature === 'new_car'" :border="false" :value="item.salePriceDto">
-                        <div slot="right-icon" class="xh-cell-right">元</div>
-                    </van-cell>
-                    <template v-else-if="item.carNature === 'old_car'">
-                        <van-cell title="车牌所在地:" :border="false" :value="item.carLicenseLocation"/>
-                        <van-cell title="首次上牌日:" :border="false" :value="item.plateDate"/>
-                        <van-cell title="行驶里程:" :border="false" :value="item.roadHaul">
-                            <div slot="right-icon" class="xh-cell-right">公里</div>
-                        </van-cell>
-                        <van-cell title="发动机号:" :border="false" :value="item.engineNum"/>
-                    </template>
-                    <van-cell title="备注:" :value="item.remark"/>
-                    <div slot="right" style="height: 100%">
-                        <van-button
-                                type="warning"
-                                style="height:100%;border-radius: 0;"
-                                @click="editCar(item, index)"
-                        >修改
-                        </van-button>
-                        <van-button
-                                type="danger"
-                                style="height:100%;border-radius: 0;"
-                                @click="removeCar(index)"
-                        >删除
-                        </van-button>
-                    </div>
-                </van-swipe-cell>
-            </div>
-    </Card>-->
-
-    <Card style="margin-top: 1rem;" v-if="perInfoList.length > 0 || edit">
-      <template v-slot:header>
-          {{perInfoList.length > 0 || edit ? '新增' : ''}}查询人
-        <div class="card-icon" @click="addPer" v-if="edit">
-          <van-icon name="add-o" />
->>>>>>> master
         </div>
       </div>
       <!-- 主借人信息 -->
@@ -957,7 +840,6 @@ export default {
     },
     nextStepFn() {
       this.nextStep().then(query => {
-<<<<<<< HEAD
         // this.$nextTick(() => {
         //   this.$router.push({
         //     path: "/creditNextStep",
@@ -965,16 +847,6 @@ export default {
         //   });
         // });
         this.submit(query);
-=======
-        if(query){
-          this.$nextTick(() => {
-            this.$router.push({
-              path: "/creditNextStep",
-              query
-            });
-          });
-        }
->>>>>>> master
       });
       
     },

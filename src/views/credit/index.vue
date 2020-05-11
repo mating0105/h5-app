@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <ViewPage
     :goPage="rightFn"
     iconClass="filter-o"
@@ -66,130 +65,6 @@
             </van-row>
             <template v-slot:footer>
               <div style="text-align:right; min-height: 2rem">
-=======
-    <ViewPage :goPage='rightFn' iconClass="filter-o" :rightMenuList="cuCreditStatus" :backFn="closeNativeWebView">
-        <template v-slot:head>
-            <van-search
-                    v-model="params.searchKey"
-                    placeholder="请输入搜索关键词"
-                    show-action
-                    @search="onSearch"
-                    @cancel="onCancel"
-            />
-        </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="margin-bottom: 4rem">
-            <van-list
-                    style="min-height: 80vh"
-                    v-model="loading"
-                    :finished="finished"
-                    finished-text="没有更多了"
-                    :error.sync="error"
-                    error-text="请求失败，点击重新加载"
-                    @load="onLoad"
-            >
-                <div v-for="(item,ie) in list" :key="ie" class="van-clearfix">
-                    <Card class="xh-top-10" :bodyPadding='true' @click.native="startFormFn(item, {edit: false}, '/bankQuery')" style="margin:1rem 1rem 0 1rem;">
-                        <template v-slot:header>
-                            <section class="xh-plus">
-                                <van-cell :title="item.customerNum" :value="returnText(item.status)" icon="notes-o"></van-cell>
-                            </section>
-                        </template>
-                        <van-row>
-                            <van-col span="24">客户名称：{{ item.loanPersonName }}</van-col>
-                            <van-col span="24" class="xh-top-10">身份证：{{ item.lpCertificateNum }}</van-col>
-                            <van-col span="24" class="xh-top-10">手机号码：{{ item.telephone }}</van-col>
-                            <van-col span="24" class="xh-top-10">申报人：{{ item.applicantName }}</van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.creditResult === 'pass'">
-                            <span class="xh-success-tag">
-                               银行征信通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-else-if="item.creditResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               银行征信未通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.bigDataResult === 'pass'">
-                            <span class="xh-success-tag">
-                               大数据征信通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-else-if="item.bigDataResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               大数据征信未通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.personalGuaResult === 'pass'">
-                            <span class="xh-success-tag">
-                               人保征信通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-else-if="item.personalGuaResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               人保征信未通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.artificialCreditResult === 'pass'">
-                            <span class="xh-success-tag">
-                               人工征信通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-else-if="item.artificialCreditResult === 'not_pass'">
-                            <span class="xh-danger-tag">
-                               人工征信未通过
-                            </span>
-                            </van-col>
-                            <van-col span="24" class="xh-top-10" v-if="item.credit100Result">
-                            <span :class="item.credit100Result.slice(-2) === '通过' ? 'xh-success-tag' :'xh-danger-tag'">
-                               {{item.credit100Result}}
-                            </span>
-                            </van-col>
-                        </van-row>
-                        <template v-slot:footer>
-                            <div style="text-align:right; min-height: 2rem">
-                                <span v-for="(i, index) in buttonList" style="margin-left: 0.12rem" :key='index'>
-                                  <van-button
-                                        v-if="i.buttonId !== '1'"
-                                        plain
-                                        size="small"
-                                        type="danger"
-                                        class="xh-radius"
-                                        style="border-radius: 6px;"
-                                        @click.stop="startForm(item, i)"
-                                    >{{i.buttonName}}
-                                  </van-button>
-                                  <template v-else-if="item.status === '01' || item.status === '-1' || item.status === '04' || item.status === '03'">
-                                      <van-button
-                                              v-if="item.status === '01' || item.status === '-1'"
-                                              plain
-                                              size="small"
-                                              type="danger"
-                                              class="xh-radius"
-                                              style="border-radius: 6px;"
-                                              @click.stop="startForm(item, i)"
-                                        >{{i.buttonName}}
-                                        </van-button>
-                                        <van-button
-                                                  v-else-if="item.status === '04' || item.status === '03'"
-                                                  plain
-                                                  size="small"
-                                                  type="danger"
-                                                  class="xh-radius"
-                                                  style="border-radius: 6px;"
-                                                  @click.stop="startFormAgain(item)"
-                                          >重新发起征信
-                                        </van-button>
-                                  </template>
-                                </span>
-                            </div>
-                        </template>
-                    </Card>
-                </div>
-            </van-list>
-        </van-pull-refresh>
-        <div class="xh-fixed-submit" v-if="isCreateRole">
-            <div class="xh-submit">
->>>>>>> master
                 <van-button
                   plain
                   size="small"
@@ -233,13 +108,8 @@
 
 <script>
 import Vue from "vue";
-<<<<<<< HEAD
 import { getList, checkedReregisterMob } from "@/api/credit";
 import { getUserInfoByTo, startUserCar } from "@/api/priceEvaluation";
-=======
-import { getList, getButtonList, checkedReregisterMob } from "@/api/credit";
-import { getUserInfoByTo } from "@/api/priceEvaluation";
->>>>>>> master
 // 自定义组件
 import ViewPage from "@/layout/components/ViewPage";
 import Card from "@/components/card/index";
@@ -304,36 +174,21 @@ export default {
     }),
     cuCreditStatus() {
       return (
-<<<<<<< HEAD
         [
           { label: "全部", value: "" },
           { label: "已发起", value: "2" },
           { label: "未发起", value: "1" }
         ] || []
-=======
-        [{ label: "全部", value: "" }, ...this.wordbook.cu_credit_status] || []
->>>>>>> master
       );
     },
     isCreateRole() {
       let flag = true;
       let list = ["CustomerManager"];
-<<<<<<< HEAD
       const arr = this.roleInfoList.filter(item => {
         return list.includes(item.enname);
       });
       flag = arr.length > 0;
       console.log(flag);
-=======
-      let arr = [];
-      if (this.roleInfoList) {
-        arr = this.roleInfoList.filter(item => {
-          return list.includes(item.enname);
-        });
-      }
-
-      flag = arr.length > 0;
->>>>>>> master
       return flag;
     }
   },
@@ -375,7 +230,6 @@ export default {
           this.loading = false;
         });
     },
-<<<<<<< HEAD
     //标签转变颜色
     returnColor(status) {
       let classname;
@@ -473,58 +327,6 @@ export default {
             this.startFormFn(item, { edit: item.personalGua.standardStatus == '01'?false:true, rbCredit: true,standardStatus:item.personalGua.standardStatus },"/rbCredit",item.personalGua.buttonId);
             break;
         }
-=======
-    onSearch() {
-      this.list = [];
-      this.finished = false;
-      this.params.pageIndex = 1;
-      this.params.searchKey = this.params.searchKey.replace(/\s+/g, "");
-      this.onLoad();
-    },
-    // 取消搜索
-    onCancel() {
-      this.params.searchKey = "";
-      this.params.status = "";
-      this.onSearch();
-    },
-    startFormFn(item, query = { edit: false }, path = "/bigDataQueryDetail") {
-      this.$router.push({
-        path,
-        query: {
-          lpCertificateNum: item.lpCertificateNum,
-          id: item.id,
-          ...query
-        }
-      });
-    },
-    // 发起报单
-    startForm(item, type, query = {}) {
-      removeValue("credit");
-      const goPageCredit = () => {
-        this.$router.push({
-          path: "/reNewCredit",
-          query: {
-            lpCertificateNum: item.lpCertificateNum,
-            id: item.id,
-            edit: true,
-            ...query
-          }
-        });
-      };
-      switch (type.buttonId) {
-        case "1":
-          goPageCredit();
-          break;
-        case "2":
-          this.startFormFn(item, { edit: true, bigData: true });
-          break;
-        case "3":
-          this.startFormFn(item, { edit: true, rbCredit: true }, "/rbDetail");
-          break;
-        case "21": // 人工征信查询
-          this.startFormFn(item, { edit: true, rgCredit: true }, "/artificialDetail");
-          break;
->>>>>>> master
       }
     },
     // 重新发起
@@ -559,17 +361,6 @@ export default {
         Toast.success("刷新成功");
       }, 500);
     },
-<<<<<<< HEAD
-=======
-    async getButtonList() {
-      try {
-        const { data } = await getButtonList();
-        this.buttonList = data;
-      } catch (e) {
-        console.log(e);
-      }
-    },
->>>>>>> master
     //获取用户信息
     async getUserInfoByTo() {
       try {
@@ -582,15 +373,10 @@ export default {
   },
   mounted() {
     this.onLoad();
-<<<<<<< HEAD
     this.getUserInfoByTo();
   },
   destroyed(){
     removeValue('credit');
-=======
-    this.getButtonList();
-    this.getUserInfoByTo();
->>>>>>> master
   }
 };
 </script>
