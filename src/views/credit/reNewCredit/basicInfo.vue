@@ -36,9 +36,10 @@
         <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
         <van-field name="bankCardNum" :disabled="!edit" label="银行卡号：" :placeholder="!edit?'':'请输入'" label-width="110" input-align="right" clearable :border="false" required v-model="form.bankCardNum" @blur.prevent="ruleMessge" :error-message="errorMsg.bankCardNum" :right-icon="!edit ? '' : 'scan'" @click-right-icon="IdcardLoading('bankCodeOCR')"
         />
-        <van-cell title="征信查询方式:" required :border="false" :value="creditSearchTypeDesc">
-            <radio v-if="creditTypeList.length>1" v-model="dataList.creditSearchType">
+        <van-cell title="征信查询方式:" required :border="false" :value="creditSearchTypeDesc" @change="changeSearchType">
+            <radio v-if="creditTypeList.length>1" v-model="creditSearchType">
                 <radio-item
+                    :label="item.buttonId"
                     v-for="(item,index) in creditTypeList"
                     :key="index"
                 >{{item.buttonName}}</radio-item>
@@ -54,44 +55,54 @@
             </radio>
         </van-cell>
         <!-- E分期 -->
-        <van-cell v-if="!isPeople" label-class="labelClass" :label="errorMsg.intentionCarType" title="意向车辆性质：" :border="false" required
-        >
-            <radio v-model="form.intentionCarType" @change="changeNature">
-            <radio-item
-                :label="item.value"
-                v-for="(item,index) in isQueryList"
-                :key="index"
-            >{{item.label}}</radio-item>
-            </radio>
-        </van-cell>
-        <van-field v-if="!isPeople" class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向车辆价格：" placeholder="请输入"
-        >
-            <div slot="button">元</div>
-        </van-field>
-        <van-cell v-if="!isPeople" title="身份证签发机关:" required :border="false" :value="form.issueAuthority" />
-        <van-cell v-if="!isPeople" title="身份证有效期:" required :border="false" :value="form.endDate" />
-        <van-cell v-if="!isPeople" title="身份证住址:" required :border="false" :value="form.idcardAddress" />
+        <div  v-if="!isPeople">
+          <van-cell label-class="labelClass" :label="errorMsg.intentionCarType" title="意向车辆性质：" :border="false" required
+          >
+              <radio v-model="form.intentionCarType">
+                <radio-item
+                    :label="item.value"
+                    v-for="item in EvehiNatureList"
+                    :key="item.value"
+                >
+                  {{item.label}}
+                </radio-item>
+              </radio>
+          </van-cell>
+          <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向车辆价格：" placeholder="请输入"
+          >
+              <div slot="button">元</div>
+          </van-field>
+          <van-cell title="身份证签发机关:" required :border="false" :value="form.issueAuthority" />
+          <van-cell title="身份证有效期:" required :border="false" >
+            <div slot="default">
+              <span>{{ form.startDate?form.startDate:'' }}</span>
+              <span v-if="form.startDate&&form.endDate"> ~ </span>
+              <span>{{ form.endDate?form.endDate:'' }}</span>
+            </div>
+          </van-cell>
+          <van-cell title="身份证住址:" required :border="false" :value="form.familyAddress" />
+        </div>
 
         <!-- 人工 -->
-        <van-field v-if="isPeople" class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向贷款价格：" placeholder="请输入"
-        >
-            <div slot="button">元</div>
-        </van-field>
-        <van-cell
-            v-if="isPeople"
-            title="银行："
-            label-class="labelClass"
-            :label="errorMsg.investigateBankName"
-            value-class='rightClass'
-            :disabled="!edit"
-            :border="false"
-            required
-            :is-link="edit"
-            :value="dataList.investigateBankName"
-            @click="showPickerFn('bankName')"
-        />
+        <div v-if="isPeople">
+          <van-field class="label_plus" name="intentionPrice" @blur.prevent="ruleMessge" :error-message="errorMsg.intentionPrice" :disabled="!edit" :border="false" v-model="dataList.intentionPrice" type="tel" required clearable @blur="checkPrice" input-align="right" label="意向贷款价格：" placeholder="请输入"
+          >
+              <div slot="button">元</div>
+          </van-field>
+          <van-cell
+              title="银行："
+              label-class="labelClass"
+              :label="errorMsg.investigateBankName"
+              value-class='rightClass'
+              :disabled="!edit"
+              :border="false"
+              required
+              :is-link="edit"
+              :value="dataList.investigateBankName"
+              @click="showPickerFn('bankName')"
+          />
+        </div>
         <!-- 征信授权电子签 -->
-        <!-- labelClass -->
         <van-cell 
             title="征信授权电子签" 
             required 
@@ -227,6 +238,7 @@
                     :disabled="Boolean(errorMsg.intentionPrice)"
                 >提交征信查询</van-button>
             </div>
+            <!-- E分期 -->
             <div class="xh-submit-box" v-if="!isPeople && edit && !hiddenHandle" style="margin-top:15px;">
                 <van-button
                     v-if="dataList.status=='01'|| dataList.status=='02'"
@@ -235,17 +247,18 @@
                     class="xh-btn xh-primary"
                     @click="stopTask"
                 >终止查询</van-button>
-                <van-button
+                <!-- <van-button
                     size="large"
                     style="width: 25%; flex: none"
                     class="xh-btn xh-primary"
                     @click="nextStepFn"
-                >提交征信查询</van-button>
+                >提交征信查询</van-button> -->
                 <van-button
                     size="large"
-                    @click="nextStepFn"
+                    @click="pushToEfenqi"
                     :disabled="Boolean(errorMsg.intentionPrice)"
                     class="xh-btn"
+                    :loading='E_loading'
                 >推送至E分期</van-button>
             </div>
         </div>
@@ -285,6 +298,7 @@ import {
     getUsers,
     submitCredit,
     getBankList,
+    pushToEfenqi,
 
   getBank,
   getCreditInfo,
@@ -294,6 +308,7 @@ import {
   creditSaveOf100
 } from "@/api/credit";
 import { getValue, setValue, removeValue } from "@/utils/session";
+import { getDic } from "@/api/createCustomer";
 import {
   Cell,
   CellGroup,
@@ -356,13 +371,7 @@ export default {
         // --------header------------
         cardLabel:'银行征信查询信息',//标题
 
-        isQueryList:[{
-            value:'01',
-            label:'是'
-        },{
-            value:'02',
-            label:'否'
-        }],
+        EvehiNatureList:[],
         imageListData:[],//相关文档
         creditTypeList: Array, //征信查询方式列表
         pickerSign:"",//弹框标识
@@ -405,7 +414,7 @@ export default {
       // isInternet: '',//是否为银行征信（0：银行征信；1：大数据征信；2：E分期（对应iSiSBC=1）；3：T+0（对应iSiSBC=2）
       errorMsg: {
         //必填list
-        investigateBankName: "",
+        // investigateBankName: "",
         intentionPrice: "",
         bankCardNum: ""
       },
@@ -418,6 +427,8 @@ export default {
         {name: "相机扫描识别", value: "scan"},
         {name: "相册导入识别", value: "album"}
       ],
+      dictionaryData:[],
+      E_loading:false,//推送至E分期
     };
   },
   computed: {
@@ -466,6 +477,20 @@ export default {
         imgdata.fileList = data;
       } catch (e) {}
     },
+    //获取字典数据
+    async getDictionaryData() {
+      try {
+        let arr = [
+          "E_CAR_TYPE", //意向车辆性质
+        ];
+        const data = await getDic(arr);
+        if (data.code == 200) {
+          this.EvehiNatureList=data.data['E_CAR_TYPE'];
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
     // 字典转换
     returnText(val, key) {
       let name = "";
@@ -512,6 +537,14 @@ export default {
       }
       return color;
     },
+    //改变征信查询方式
+    changeSearchType(val){
+      this.creditTypeList.forEach((item,index)=>{
+        if(item.buttonId==val){
+            this.creditSearchTypeDesc=item.buttonName;
+        }
+      })
+    },
     //改变签约方式
     changeSignMode(val){
         this.signMode=val;
@@ -537,10 +570,13 @@ export default {
                             this.creditSearchType=this.creditTypeList[0].buttonId;
                             this.creditSearchTypeDesc=this.creditTypeList[0].buttonName;
                             if(this.creditSearchTypeDesc=='人工'){
-                                this.isPeople=true
+                                this.isPeople=true;
+                                this.cardLabel='银行征信查询信息'
                                 this.getBankList();
                             }else{
-                                this.isPeople=false
+                                this.isPeople=false;
+                                this.cardLabel='银行征信查询信息 ( E分期 ) ';
+                                this.getDictionaryData();
                             }
                        };
                        break;
@@ -598,23 +634,6 @@ export default {
     //点击刷新按钮
     clickrefreshIcon(){
         console.log(1111)
-
-    },
-    changeNature(val) {
-      console.log(val);
-      return ;
-      if (val === "new_car") {
-        this.rulesForm("order-credit-car-xh");
-        delete this.errorMsg.chassisNumber;
-      } else {
-        this.$router.push({
-          path: "/priceEvaluationChoose",
-          query: {
-            type:2,
-            projectId:this.params.projectId
-          }
-        });
-      }
     },
     /*----------第二步------------------- */
     //修改信息
@@ -848,7 +867,27 @@ export default {
         // });
         this.submit(query);
       });
-      
+    },
+    //推送至E分期
+    async pushToEfenqi(){
+      try{
+        // if (!this.verifyForm()) {
+        //   return;
+        // }
+        this.E_loading = true;
+        this.dataList.bankCardNum = this.form.bankCardNum;
+        this.dataList.surDtlList = [this.form, ...this.perInfoList];
+        this.dataList.creditSearchType=this.creditSearchType;
+        this.dataList.creditSearchTypeDesc=this.creditSearchTypeDesc;
+        this.dataList.signMode=this.signMode;
+        this.dataList.signModeDesc=this.signModeDesc;
+        this.dataList.creditType=this.buttonId;
+        const data=await pushToEfenqi(this.dataList);
+        console.log(data,'data')
+
+      }catch(err){
+        console.log(err)
+      }
     },
     /**
        * 提交
@@ -1036,6 +1075,7 @@ export default {
       let num = 0;
       for (let item in this.errorMsg) {
         this.errorMsg[item] = this.returnMsg(item, this.dataList[item]);
+        console.log(item,this.errorMsg[item],'222222')
         if (this.errorMsg[item]) {
           num++;
         }

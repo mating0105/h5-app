@@ -185,3 +185,11 @@ export function getBankList(params){
         params
     })
 }
+//推送至E分期
+export function pushToEfenqi(params) {
+  return request({
+    url: '/order/eStageCreditInfo/pushEStage',
+    method: 'post',
+    data: params
+  })
+}
