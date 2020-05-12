@@ -119,7 +119,7 @@
     }
 
     .xh-no-image {
-        height: 75px;
+        height: 7.5rem;
         background: white;
         border: 1px dashed rgba(230, 230, 230, 1);
         border-radius: 6px;

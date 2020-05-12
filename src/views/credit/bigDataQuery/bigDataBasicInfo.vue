@@ -1,3 +1,9 @@
+/*
+ * @Author: wuyueqi 
+ * @Date: 2020-05-11 11:28:33 
+ * @Last Modified by: wuyueqi
+ * @Last Modified time: 2020-05-11 17:54:39
+ */
 <template>
   <div>
     <NewCard
@@ -29,7 +35,7 @@
         <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
         <van-field
           name="bankCardNum"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus"
           label="银行卡号："
           :placeholder="!edit?'':'请输入'"
           label-width="110"
@@ -47,7 +53,7 @@
           title="征信查询方式:"
           label-class="labelClass"
           :label="errorMsg.creditSearchType"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus"
           :border="false"
           required
           :is-link="edit"
@@ -58,7 +64,7 @@
           title="征信签约方式:"
           label-class="labelClass"
           :label="errorMsg.signMode"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus"
           :border="false"
           required
           :is-link="edit"
@@ -68,7 +74,7 @@
         <van-cell
           title="征信授权电子签:"
           label-class="labelClass"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus"
           :border="false"
           required
           is-link
@@ -80,7 +86,7 @@
         <imageList :dataList="mainImg"></imageList>
       </div>
       <div v-if="perInfoList.length > 0">
-        <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
+        <van-swipe-cell :disabled="!edit && dataList.standardCreditStatus" v-for="(item, index) in perInfoList" :key="index">
           <div class="card-title">{{returnText(item.creditObjectType, 'credit_object_type')}}信息</div>
           <van-cell title="姓名:" required :border="false" :value="item.creditPersonName" />
           <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
@@ -107,7 +113,7 @@
           <van-cell
             title="征信授权电子签:"
             label-class="labelClass"
-            :disabled="!edit"
+            :disabled="!edit && dataList.standardCreditStatus"
             :border="false"
             required
             is-link
@@ -133,12 +139,12 @@
       </div>
       <div class="card-title" style="margin:2rem 1rem;">
         新增关联人信息
-        <div class="card-icon" @click="addPer" v-if="edit">
+        <div class="card-icon" @click="addPer" v-if="edit && !dataList.standardCreditStatus">
           <van-icon name="add-o" size="2rem" />
         </div>
       </div>
       <div class="card-title">备注说明</div>
-      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" />
+      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" :disabled="!edit && dataList.standardCreditStatus"/>
     </NewCard>
     <div v-if="dataList.standardCreditStatus == '01'">
       <div class="xh-submit-box">
@@ -332,11 +338,11 @@ export default {
       time: "",
       remarks: "", //备注说明
       obj: {
-        joiDebtorSpouse: ["0113", "0114", "2004", "6694"], //共债人配偶
-        borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-        security: ["0120", "0117", "2005", "6692"], //担保人
-        joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-        borrower: ["0101", "0102", "2001", "6690"] //主借人
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01","CRDBIGA01"] //主借人
       },
       processedBy: "", //提交人id
       taskData: {}, //
@@ -417,11 +423,11 @@ export default {
         this.isElectronic = true;
         //如果是电子签，则没有大数据征信授权书
         this.obj = {
-          joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
-          borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
-          security: ["0120", "0117", "2005"], //担保人
-          joiDebtor: ["0109", "0110", "2003"], //共债人
-          borrower: ["0101", "0102", "2001"] //主借人
+          joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
+          borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
+          security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
+          joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
+          borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
         };
         this.dataList.surDtlList.forEach(e => {
           const arr = this.obj[e.creditObjectType];
@@ -432,11 +438,11 @@ export default {
       } else {
         this.isElectronic = false;
         this.obj = {
-          joiDebtorSpouse: ["0113", "0114", "2004", "6694"], //共债人配偶
-          borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-          security: ["0120", "0117", "2005", "6692"], //担保人
-          joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-          borrower: ["0101", "0102", "2001", "6690"] //主借人
+          joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
+          borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
+          security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
+          joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
+          borrower: ["CUIDA01", "CUIDB01", "CUCARD01", "CRDBIGA01"] //主借人
         };
         this.dataList.surDtlList.forEach(e => {
           const arr = this.obj[e.creditObjectType];
@@ -553,6 +559,7 @@ export default {
     refreshStatus() {},
     //编辑人
     editPer(per, index) {
+      console.log(per,111)
       const query = {
         customerId: this.data.customerId,
         customerNum: this.data.perInfo ? this.data.perInfo.customerNum : "",
@@ -655,7 +662,7 @@ export default {
       //验证大数据征信授权书图片是否上传 主借人必传
       let imgtost = false;
       for(let i = 0;i<this.mainImg.length;i++){
-        if(this.mainImg[i].documentType== '6690'){
+        if(this.mainImg[i].documentType== 'CRDBIGA01'){
           if(this.mainImg[i].fileList.length<1){
             Toast("请上传主借人大数据征信授权书");
             break;
@@ -670,7 +677,7 @@ export default {
       let imgArr = [];
       this.dataList.surDtlList.forEach(e =>{
         e.dataList.forEach(i =>{
-          if(i.documentType == '6690' || i.documentType == '6691' || i.documentType == '6692' || i.documentType =='6693'||i.documentType == '6694'){
+          if(i.documentType == 'CRDBIGA01' || i.documentType == 'CRDBIGA02' || i.documentType == 'CRDBIGA05' || i.documentType =='CRDBIGA03'||i.documentType == 'CRDBIGA04'){
             if(i.fileList.length<1){
               console.log(e.creditObjectType);
               imgArr.push(this.returnText(e.creditObjectType,'credit_object_type'));
@@ -678,15 +685,21 @@ export default {
           }
         })
       })
-      let nameString = imgArr.join('、');
-      Dialog.confirm({
-        title: '',
-        message: `${nameString}没有上传征信查询授权书，无法查询征信，确定吗？`
-      }).then(() => {
+      //提示是否有人没有上传征信查询授权书
+      if(imgArr.length>0){
+        let nameString = imgArr.join('、');
+        Dialog.confirm({
+          title: '',
+          message: `${nameString}没有上传征信查询授权书，无法查询征信，确定吗？`
+        }).then(() => {
+          
+        }).catch(() => {
+          // on cancel
+        });
+      }else{
         this.bigDataTipOfBr();
-      }).catch(() => {
-        // on cancel
-      });
+      }
+      
       
     },
     //提交流程
@@ -701,7 +714,7 @@ export default {
       this.$nextTick(() => {
         Toast.success("提交成功");
       });
-      if (creditTYPE == "bairong") {
+      if (this.creditTYPE == "bairong") {
         this.$router.go(-1);
       } else {
         this.$emit("reLoad");
@@ -721,6 +734,7 @@ export default {
           overlay: true
         });
         this.dataList.creditTypeFlag = 1;
+        this.dataList.creditType = this.buttonId;
         await creditSaveOf100(this.dataList);
         removeValue("credit");
         const params = {
@@ -787,6 +801,7 @@ export default {
     //终止查询
     endTask() {
       this.showDialog = true;
+      console.log(this.dataList,333)
     },
     async confirmFn() {
       if (!this.cause) {

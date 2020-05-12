@@ -217,6 +217,7 @@ export default {
       this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
       this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
+      console.log(this.dataList.id,8888)
       this.initCustomerData();
       this.loading = false;
     },

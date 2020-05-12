@@ -11,30 +11,25 @@
     >
       <div>
         <div class="card-title">主借人信息{{edit}}</div>
-        <van-cell title="客户名称:" required :border="false" :value="form.creditPersonName" />
-        <van-cell title="证件号码:" required :border="false" :value="form.cpCertificateNum" />
-        <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
+        <van-cell title="客户名称:" :border="false" :value="form.creditPersonName" />
+        <van-cell title="证件号码:" :border="false" :value="form.cpCertificateNum" />
+        <van-cell title="手机号码:" :border="false" :value="form.telephone" />
         <van-field
           name="bankCardNum"
-          :disabled="!edit"
+          disabled
           label="银行卡号："
           :placeholder="!edit?'':'请输入'"
           label-width="110"
           input-align="right"
           clearable
           :border="false"
-          required
           v-model="form.bankCardNum"
-          @blur.prevent="ruleMessge"
-          :error-message="errorMsg.bankCardNum"
-          :right-icon="!edit ? '' : 'scan'"
-          @click-right-icon="IdcardLoading('bankCodeOCR')"
         />
         <van-cell
           label-class="labelClass"
           :label="errorMsg.creditResult"
+          @blur.prevent="ruleMessge"
           title="征信结果:"
-          is-link
           :border="false"
           required
           v-if="thisCreditType == '5'"
@@ -52,8 +47,6 @@
           :value="form.investigateDate"
           @click="edit?showPopupTime('borrower'):''"
           label-class="labelClass"
-          @blur.prevent="ruleMessge"
-          :label="errorMsg.investigateDate"
           v-if="thisCreditType == '5'"
         />
         <van-cell title="相关文档:" :border="false" />
@@ -146,26 +139,7 @@
             <van-cell title="征信报告" required :border="false" />
             <imageList :dataList="item.creditList"></imageList>
           </div>
-          <div v-if="thisCreditType == '6'"></div>
-          <div slot="right" style="height: 100%">
-            <van-button
-              type="warning"
-              style="height:100%;border-radius: 0;"
-              @click="editPer(item, index)"
-            >修改</van-button>
-            <van-button
-              type="danger"
-              style="height:100%;border-radius: 0;"
-              @click="removePer(index, item)"
-            >删除</van-button>
-          </div>
         </van-swipe-cell>
-      </div>
-      <div class="card-title" style="margin:2rem 1rem;" v-if="edit">
-        新增关联人信息
-        <div class="card-icon" @click="addPer">
-          <van-icon name="add-o" size="2rem" />
-        </div>
       </div>
       <div class="card-title">备注说明</div>
       <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" />
@@ -180,21 +154,6 @@
       <van-button size="large" @click="triggerQuery" class="xh-btn">提交</van-button>
     </div>
 
-    <!-- 身份证识别/银行卡识别 -->
-    <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern" />
-    <!-- 弹出框 -->
-    <van-popup v-model="showPicker" position="bottom" get-container="#app">
-      <div class="xh-list-body">
-        <van-picker
-          :columns="columns"
-          show-toolbar
-          :value-key="valueKey"
-          title="征信查询方式"
-          @confirm="confirm"
-          @cancel="showPicker = false"
-        />
-      </div>
-    </van-popup>
     <van-action-sheet get-container="#app" v-model="showTimePicker" class="xh-list">
       <div class="xh-list-body">
         <van-datetime-picker
@@ -294,7 +253,7 @@ export default {
     },
     buttonId: String,
     creditTypeList: Array, //征信查询方式
-    thisCreditType: String,
+    thisCreditType: String,//5 百融 6 人工
     isShowTitle: Boolean
   },
   mixins: [formValidator],
@@ -308,23 +267,15 @@ export default {
   },
   data() {
     return {
-      sign: "", //征信查询状态
-      data: {},
       active: 0,
       errorMsg: {
-        bankCardNum: "",
-        creditSearchType: "",
-        creditObjectRelation: ""
+        creditResult:"",
       },
       showSign: true,
       showTime: true,
       sign: "查询中",
       signColor: "#999",
       showTimePicker: false,
-      scanActions: [
-        { name: "相机扫描识别", value: "scan" },
-        { name: "相册导入识别", value: "album" }
-      ],
       showScan: false,
       mainImg: [], //主借人相关文档
       mainCreditImg: [], //主借人征信报告
@@ -341,20 +292,20 @@ export default {
       time: "",
       remarks: "", //备注说明
       obj: {
-        joiDebtorSpouse: ["0113", "0114", "2004", "6604"], //共债人配偶
-        borrowerSpouse: ["0105", "0106", "2002", "6691"], //借款人配偶
-        security: ["0120", "0117", "2005", "6692"], //担保人
-        joiDebtor: ["0109", "0110", "2003", "6693"], //共债人
-        borrower: ["0101", "0102", "2001", "6690"] //主借人
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01", "CRDBIGA01"] //主借人
       },
       bigData: {
-        joiDebtorSpouse: ["0210"], //共债人配偶
-        borrowerSpouse: ["0208"], //借款人配偶
-        security: ["0211"], //担保人
-        borrower: ["0207"], //借款人
-        joiDebtor: ["0209"] //共债人
+        joiDebtorSpouse: ["CRDBIGB04"], //共债人配偶
+        borrowerSpouse: ["CRDBIGB02"], //借款人配偶
+        security: ["CRDBIGB05"], //担保人
+        borrower: ["CRDBIGB01"], //借款人
+        joiDebtor: ["CRDBIGB03"] //共债人
       },
-      whiteList: ["0207", "0208", "0209", "0210", "0211"],
+      whiteList: ["CRDBIGB01", "CRDBIGB02", "CRDBIGB03", "CRDBIGB04", "CRDBIGB05"],
       maxDate: new Date(),
       currentDate: new Date(), //当前时间
       peopleTime: "",
@@ -377,87 +328,6 @@ export default {
     }
   },
   methods: {
-    //识别银行卡
-    IdcardLoading() {
-      this.showScan = true;
-    },
-    //银行卡
-    discern(e) {
-      this.$bridge.callHandler("bankCodeOCR", e.value, res => {
-        this.form.bankCardNum = res.BANK_NUM || "";
-      });
-      this.showScan = false;
-    },
-    //新增关联人信息
-    addPer() {
-      const query = {
-        customerId: this.data.customerId,
-        customerNum: this.data.perInfo ? this.data.perInfo.customerNum : "",
-        credit: true
-      };
-      this.$router.push({
-        path: "/creatCustomer",
-        query
-      });
-    },
-    unFormatter(beanData) {
-      const perInfo = beanData.perInfo || {};
-      return {
-        sex: beanData.sex, //性别
-        birthday: perInfo.birthday, //出生日期
-        customerName: beanData.creditPersonName, //客户姓名
-        certificateNum: beanData.cpCertificateNum, //身份证号码
-        age: beanData.age, //年龄
-        creditObjectType: beanData.creditObjectType, //征信对象类型
-        creditObjectRelation: beanData.creditObjectRelation, //征信对象类型
-        nationName: perInfo.nationName, //民族
-        nation: perInfo.nation, //
-        familyAddress: beanData.familyAddress, //身份证住址
-        signOrg: perInfo.signOrg, //身份证签发机关
-        startDate: beanData.startDate, //起始日
-        endDate: beanData.endDate, //截止日
-        contactPhone: beanData.telephone, //手机号码
-        bankCardNum: beanData.bankCardNum, //银行卡号
-        isSearchCredit: beanData.isSearchCredit //是否查询征信
-      };
-    },
-    showPickerFn(type) {
-      if (!this.edit) {
-        return;
-      }
-      this.showPicker = true;
-      this.pickerSign = type;
-      switch (type) {
-        case "creditSearchType":
-          this.valueKey = "buttonName";
-          this.columns = this.creditTypeList;
-          break;
-        case "user":
-          if (this.changeUserList.length == 0) {
-            return;
-          }
-          this.valueKey = "label";
-          this.columns = this.changeUserList;
-          break;
-        default:
-          break;
-      }
-    },
-    confirm(value) {
-      switch (this.pickerSign) {
-        case "creditSearchType":
-          this.data.creditSearchType = value.id;
-          this.data.creditSearchTypeDesc = value.buttonName;
-          break;
-        case "user":
-          this.processedBy = value.id;
-          this.postProcess();
-          break;
-        default:
-          break;
-      }
-      this.showPicker = false;
-    },
     //标签转变颜色
     returnColor(status) {
       let color;
@@ -495,50 +365,37 @@ export default {
       }
       return name;
     },
-    //编辑人
-    editPer(per, index) {
-      const query = {
-        customerId: this.data.customerId,
-        customerNum: this.data.perInfo ? this.data.perInfo.customerNum : "",
-        index: index,
-        credit: true,
-        ...this.unFormatter(per)
-      };
-      this.$router.push({
-        path: "/creatCustomer",
-        query
-      });
-    },
-    //删除人
-    removePer(index, item) {
-      Dialog.confirm({
-        title: "删除",
-        message: "确定删除该客户"
-      })
-        .then(() => {
-          this.perInfoList.splice(index, 1);
-          this.save();
-        })
-        .catch(() => {});
-    },
-    //验证
+    //验证征信结果
     verifyForm() {
-      let num = 0;
-      for (let item in this.errorMsg) {
-        this.errorMsg[item] = this.returnMsg(item, this.data[item]);
-        if (this.errorMsg[item]) {
-          num++;
-        }
-      }
-      return num === 0;
-    },
-    //提交
-    async submit() {
-      if (!this.verifyForm()) {
+      if (!this.form.creditResult) {
+        Toast.fail("请选择征信结果");
         return;
       }
-      if (!this.remarks) {
-        Toast.fail("请在备注说明里填写退回原因");
+      this.perInfoList.forEach(e => {
+        if (!e.creditResult) {
+          Toast.fail("请选择征信结果");
+          return;
+        }
+      });
+      return true;
+    },
+    //验证征信报告
+    verifyFormReport() {
+      if (this.mainCreditImg[0].fileList.length<1) {
+        Toast.fail("请上传主借人征信报告");
+        return;
+      }
+      this.perInfoList.forEach(e => {
+        if (e.creditList.length<1) {
+          Toast.fail("请上传征信报告");
+          return;
+        }
+      });
+      return true;
+    },
+    //提交
+    submit() {
+      if (!this.verifyForm() || !this.verifyFormReport()) {
         return;
       }
       this.showDialog = true;
@@ -571,16 +428,9 @@ export default {
     },
     //提前告知征信结果
     async showResult() {
-      if (!this.form.creditResult) {
-        Toast.fail("请选择征信结果");
+      if (!this.verifyForm()) {
         return;
       }
-      this.perInfoList.forEach(e => {
-        if (!e.creditResult) {
-          Toast.fail("请选择征信结果");
-          return;
-        }
-      });
       this.loading = true;
       await informInAdvanceResult(this.dataList);
       this.loading = false;
@@ -685,11 +535,6 @@ export default {
             obj.dataList.push(imgdata);
           }
         }
-        // if(bigData.creditObjectType == 'borrower'){
-        //   this.mainCreditImg.push(imgdata);
-        // } else {
-        //   bigData.creditList.push(imgdata);
-        // }
         const { data } = await getDocumentByType(params);
         data.forEach(item => {
           item.declare = declare;
@@ -743,13 +588,12 @@ export default {
   mounted() {
     this.time = this.dataList.registerDate;
     console.log(this.dataList, 234444);
-    console.log(this.thisCreditType);
     this.obj = {
-      joiDebtorSpouse: ["0113", "0114", "2004"], //共债人配偶
-      borrowerSpouse: ["0105", "0106", "2002"], //借款人配偶
-      security: ["0120", "0117", "2005"], //担保人
-      joiDebtor: ["0109", "0110", "2003"], //共债人
-      borrower: ["0101", "0102", "2001"] //主借人
+      joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
+      borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
+      security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
+      joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
+      borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
     };
     this.mainImg = [];
     this.mainCreditImg = [];

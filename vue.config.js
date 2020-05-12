@@ -48,7 +48,7 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://119.3.165.2:8085`,
         // target: `http://172.16.10.4:8085`,
-        target:`http://192.168.80.48:8103`,
+        target:`http://192.168.80.87:8103`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -57,13 +57,13 @@ module.exports = {
       '/manage': {
         // target: `http://172.16.10.4:8085`,
         // target: `http://119.3.165.2:8085`,
-        target:`http://192.168.80.48:8104`,
+        target:`http://192.168.80.87:8104`,
         changeOrigin: true
       },
       '/document': {
         // target: `http://172.16.10.4:8085`,
         // target: `http://119.3.165.2:8085`,
-        target:`http://192.168.80.48:8203`,
+        target:`http://192.168.80.87:8203`,
         changeOrigin: true
       },
       '/group1': {
