@@ -80,7 +80,7 @@ module.exports = {
         // target: `http://119.3.165.2:8085`,
         changeOrigin: true
       },
-      //https://user.test.wwvas.net/userauth/oauth/token
+      // https://user.test.wwvas.net/userauth/oauth/token
       '/userauth': {
         target: `https://172.16.10.5`,
         // target: `https://user.wwvas.net`,
@@ -91,13 +91,13 @@ module.exports = {
         // target: `http://www.wwvas.com`,
         target: `http://172.16.10.4:8085`,
         changeOrigin: true
-      },
+      }
       /* // 百融
       '/order': {
         target: `192.168.50.102:8103`,
         changeOrigin: true
       } */
-      
+
       // '/api': {
       //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
