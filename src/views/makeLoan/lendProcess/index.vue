@@ -630,10 +630,13 @@
           >提交</van-button>
         </div>
       </van-tab>
-      <van-tab title="征信信息" name="2" class="tabBox">
+      <van-tab title="征信信息" name="2" class="tabBox">      
           <creditInfoTable title="银行征信" :dataList="creditList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-          <creditInfoTable title="大数据征信" :dataList="creditList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-          <creditInfoTable title="人保征信" :dataList="creditList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+          <creditQueryInfo v-if="TYPE == 'bairong' && brdataList.surDtlList.length >0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+          <creditInfoTable v-else title="大数据征信" :dataList="creditList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+          <creditInfoTable v-if="rg" title="人工征信" :dataList="creditList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+          <creditInfoTable v-if="!rg"title="人保征信" :dataList="creditList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+      
       </van-tab>
       <van-tab title="审批记录" name="3" class="tabBox">
         <ApprovalRecord></ApprovalRecord>
@@ -674,11 +677,12 @@ import ApprovalRecord from "@/views/basicInfo/approvalRecord/index";
 import MapSheet from "@/components/provinces/index";
 import brand from "@/components/carBrand/brand";
 import creditInfoTable from "@/views/credit/viewCompoents/creditInfoTable";
+import creditQueryInfo from '@/views/credit/viewCompoents/creditQueryInfo'
 import imageList from "@/components/imageList";
 import dayjs from "dayjs";
 import { getSex, getAge } from "@/utils/customer";
 import { getDic } from "@/api/createCustomer";
-import { getCreditInfo } from "@/api/credit";
+import { getCreditInfo,getCompanyName,getCreditType,creditQueryOf100 } from "@/api/credit";
 import { getDocumentByType } from "@/api/document";
 import { getValue } from "@/utils/session";
 import {
@@ -702,7 +706,7 @@ import {
   updateLoanInfo,
   getPeople,
   submitProcess,
-  fieldRules
+  fieldRules,
 } from "@/api/makeLoan.js";
 import formValidator from "@/mixins/formValidator";
 import Bridge from "@/utils/JSbridge";
@@ -737,7 +741,8 @@ export default {
     MapSheet,
     brand,
     creditInfoTable,
-    imageList
+    imageList,
+    creditQueryInfo
   },
   computed: {
     ...mapGetters(["name"]),
@@ -850,7 +855,10 @@ export default {
         { name: "相册导入识别", value: "album" }
       ],
       accout: "",
-      phone: ""
+      phone: "",
+      TYPE:'',
+      rg:false,
+      brdataList:{},//百融数据
     };
   },
   methods: {
@@ -1372,6 +1380,7 @@ export default {
     },
     changeTab(e) {
       if (e == 2) {
+        this.loadBigDataType();
         this.getCreditInfo();
       }
     },
@@ -1393,7 +1402,7 @@ export default {
     //------------已办--图片----------------------
     async initImage() {
       try {
-        await this.getDocumentByType("7776"); //凭证图片
+        await this.getDocumentByType("RECBANK03"); //凭证图片
       } catch (e) {
         console.log(e);
       }
@@ -1440,18 +1449,47 @@ export default {
         }
       });
       this.showScan = false;
+    },
+    async getCompany(){
+      const res = await getCompanyName();
+      //鑫弘 显示人工，其他不显示
+       if(res.data.companySchemaName == 'xh-vloan' || res.data.companySchemaName == 'ww-vloan'){
+        this.rg = true;
+      }else{
+        this.rg = false;
+      }
+    },
+    //获取该公司的大数据征信类型
+    async loadBigDataType(){
+      const {data} = await getCreditType();
+      // 征信回复：:5/百融征信查询：6
+      let buttonId = data[0].buttonId
+      if(buttonId){
+        this.TYPE = buttonId == 6 ? 'bairong' : '';
+        const params = {
+          lpCertificateNum: this.params.info.certificateNum
+        }
+        const res = await creditQueryOf100(params);
+        this.brdataList = res.data.cuCreditRegister;
+      }else{
+        this.TYPE =  ''
+      }
+    },
+    lookDocs(){
+      this.activeName = '2';
     }
   },
-  created() {},
   mounted() {
     this.params = {
       info: this.getStringToObj(this.$route.query.info),
       dealState: this.$route.query.dealState
     };
+    console.log(this.params,111)
     this.businessKey = Number(this.params.info.businesskey);
     this.dealState = this.params.dealState == 1 ? false : true;
     this.userName = Cookies.get("name");
     this.getDictionaryData();
+    this.getCompany();
     if (!this.dealState) {
       this.rulesForm("order-bankloan-zd");
     }

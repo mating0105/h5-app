@@ -233,7 +233,7 @@ import {
   managementList
 } from "@/api/payment";
 import imageList from "@/components/imageList";
-import { getDocumentByType } from "@/api/document";
+import { getDocumentByType,removeDocuments } from "@/api/document";
 import { format } from "@/utils/format";
 import { mapState } from "vuex";
 const Components = [
@@ -307,7 +307,7 @@ export default {
       ],
       show: false,
       show2: false,
-      currentDate: "",
+      currentDate:  new Date(),
       options: [
         {
           name: "已垫款",
@@ -333,7 +333,9 @@ export default {
       manageList: [], //资方数组
       advanceList: [], //垫款记录数组
       advanceIndex: "",
-      timeIndex: ""
+      timeIndex: "",
+      signDeleteImg:true,//删除图片标记
+      documentIds:[],
     };
   },
   computed: {
@@ -425,12 +427,13 @@ export default {
             this.advanceList = [{ dataImg: [] }];
             this.advanceList.forEach(e => {
               e.time = format(new Date(), "yyyy-MM-dd hh:mm");
+              e.advancesTime = new Date();
               e.dataImg.push({
                 declare: "垫款凭证", //图片描述
                 isRequire: true, //*是否必须
                 deletable: true, //是否可以操作-上传和删除
-                documentType: "0001",
-                customerNum: e.id ? e.id : this.params.info.customerNum,
+                documentType: "RECBANK02",
+                customerNum: this.params.info.customerNum,
                 customerId: this.params.info.customerId,
                 kind: "1",
                 fileList: []
@@ -440,9 +443,10 @@ export default {
             let list = JSON.parse(JSON.stringify(this.advanceList));
             list.forEach(e => {
               e.time = format(new Date(e.advancesTime), "yyyy-MM-dd hh:mm");
+              e.advancesTime = new Date();
               e.dataImg = [];
               e.advancesMoney = this.numFilter(e.advancesMoney);
-              this.getDocumentByType("0001", e);
+              this.getDocumentByType("RECBANK02", e);
             });
             setTimeout(() => {
               this.advanceList = list;
@@ -584,8 +588,7 @@ export default {
               thisT = false;
               break;
             }
-            money =
-              parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
+            money = parseFloat(money) + parseFloat(this.advanceList[e].advancesMoney);
             this.advanceList[e].documentIds = [];
             this.advanceList[e].dataImg.forEach(i => {
               i.fileList.forEach(p => {
@@ -593,9 +596,12 @@ export default {
               });
             });
           }
-          if (money != this.data.projProjectInfo.loanAmt) {
-            Toast("垫款金额需等于贷款金额时才能提交");
-            return;
+          if(thisT){
+            if (money != this.data.projProjectInfo.loanAmt) {
+              this.$notify({ type: "danger", message: "垫款金额需等于贷款金额时才能提交" });
+              thisT = false;
+              return;
+            }
           }
         }
         if (!thisT) {
@@ -626,10 +632,12 @@ export default {
               .then(res => {
                 this.loading = false;
                 this.$notify({ type: "success", message: "流程提交成功" });
+                this.signDeleteImg = false;
                 this.$router.go(-1);
               })
               .catch(e => {
                 this.loading = false;
+                this.signDeleteImg = true;
               });
           }
         } else {
@@ -641,10 +649,12 @@ export default {
             .then(res => {
               this.loading = false;
               this.$notify({ type: "success", message: "流程提交成功" });
+              this.signDeleteImg = false;
               this.$router.go(-1);
             })
             .catch(e => {
               this.loading = false;
+              this.signDeleteImg = true;
             });
         }
       }
@@ -653,8 +663,9 @@ export default {
     async getDocumentByType(documentType, obj) {
       try {
         const params = {
-          customerNum: obj.id,
-          documentType: documentType
+          customerNum: this.params.info.customerNum,
+          documentType: documentType,
+          bizNum:obj.id
         };
         const { data } = await getDocumentByType(params);
         const declare = this.documentType[documentType]
@@ -665,7 +676,7 @@ export default {
           isRequire: true, //*是否必须
           deletable: this.params.dealState != 3, //是否可以操作-上传和删除
           documentType: documentType,
-          customerNum: obj.id,
+          customerNum: this.params.info.customerNum,
           customerId: this.params.info.customerId,
           kind: "1",
           fileList: data
@@ -676,18 +687,18 @@ export default {
     },
     //添加垫款记录
     addCard() {
-      this.advanceList.push({ dataImg: [], time: format(new Date(), "yyyy-MM-dd hh:mm") });
+      this.advanceList.push({ dataImg: [], time: format(new Date(), "yyyy-MM-dd hh:mm"),advancesTime:new Date() });
       this.advanceList[this.advanceList.length - 1].dataImg.push({
         declare: "垫款凭证", //图片描述
         isRequire: true, //*是否必须
         deletable: true, //是否可以操作-上传和删除
-        documentType: "0001",
+        documentType: "RECBANK02",
         customerNum: this.params.info.customerNum,
         customerId: this.params.info.customerId,
         kind: "1",
         fileList: []
       });
-    }
+    },
   },
   mounted() {
     this.params = {
@@ -699,6 +710,17 @@ export default {
     this.phone = Cookies.get("phone");
     // this.accout = '18349309486';
     this.loadData().then(() => this.loadManagement()); //加载详情数据
+  },
+  destroyed(){
+    if(this.signDeleteImg && this.params.info.signDelete){//未提交流程,删除上传的垫款资料
+      this.advanceList[0].dataImg[0].fileList.forEach(e =>{
+        this.documentIds.push(e.documentId)
+      })
+      console.log(this.documentIds)
+      if(this.documentIds.length>0){
+        removeDocuments({documentIds:this.documentIds}).then(res =>{})
+      }
+    }
   }
 };
 </script>

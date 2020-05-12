@@ -6,16 +6,14 @@
                 <van-tab title="操作记录"></van-tab>
             </van-tabs>
         </template>
-        <!-- <template v-if="active === 1"> -->
-            <!-- 百融 -->
-            <!-- <creditQueryInfo v-if="TYPE === 'bairong'" @lookDocs="lookDocs" title="大数据征信查询信息" :credit100Result="dataList.credit100Result" :dataList="dataList.surDtlList" type="bigDataResult"></creditQueryInfo>
-            <div v-else>
-              <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-              <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-              <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
-            </div>
-        </template> -->
-        <template v-if="active === 0">
+        <template v-if="active === 1">
+            <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
+            <creditQueryInfo v-if="TYPE == 'bairong' && brdataList.surDtlList.length >0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+            <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+            <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+        </template>
+        <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
             <basicInfo ref="basicInfo" :dataList="dataList" :form="form" :perInfoList="perInfoList" :bigData="bigData" :rbCredit="rbCredit" :edit="edit"></basicInfo>
         </template>
@@ -54,7 +52,7 @@
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import { getValue, setValue, removeValue } from '@/utils/session'
   import Vue from 'vue';
-  import { getCreditInfo,creditQueryOf100,getButtonOfCredit } from '@/api/credit'
+  import { getCreditInfo,creditQueryOf100,getButtonOfCredit,getCompanyName } from '@/api/credit'
   import Bus from '@/utils/bus';
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -89,6 +87,7 @@
         },
         loading: false,
         form: {},
+        brdataList:{},
         perInfoList: [], //客户下面的其他客户数据
         edit: false,
         requestParams: {
@@ -98,7 +97,9 @@
           businesskey: '', businesstype: '07'
         },
         bigData: false,
-        rbCredit: false
+        rbCredit: false,
+        rgCredit: false,
+        rg:false
       }
     },
     methods: {
@@ -133,7 +134,9 @@
               dataList = JSON.parse(getValue("credit"))
             } else {
               if(this.TYPE === 'bairong'){
-                res = await creditQueryOf100(params)
+               let res2 = await creditQueryOf100(params)
+                res = await getCreditInfo(params)
+                this.brdataList = res2.data.cuCreditRegister
               }else{
                 res = await getCreditInfo(params)
               }
@@ -226,7 +229,7 @@
         let nowDate = new Date()
         
         // 当前时间与查询时间+30天对比
-        let isRegister = this.dataList.surDtlList.some(element => {
+        let isRegister = this.brdataList.surDtlList.some(element => {
           let dateItem = element.credit100StrategyQuerydate ? new Date(element.credit100StrategyQuerydate) : ''
           return dateItem ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate : false
         });
@@ -234,7 +237,7 @@
         if(_itemList.length > 0){
           _itemList.forEach((item,index) => {
             item.dataList.forEach((ele)=> {
-              if (ele.documentType === "6690" && ele.fileList.length <= 0) {
+              if (ele.documentType === "CRDBIGA01" && ele.fileList.length <= 0) {
                 _arr.push(item.creditPersonName)
               }
               resolve(true)
@@ -273,15 +276,26 @@
       },
       lookDocs(){
         this.active = 2
-      }
+      },
+      async getCompany(){
+        const res = await getCompanyName();
+        //鑫弘 显示人工，其他不显示
+         if(res.data.companySchemaName == 'xh-vloan' || res.data.companySchemaName == 'ww-vloan'){
+          this.rg = true;
+        }else{
+          this.rg = false;
+        }
+      },
     },
     created(){
     },
     mounted () {
       this.getButtonOfCredit().then(() => this.getCreditInfo() )
+      this.getCompany();
       this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       this.bigData = Boolean(this.$route.query.bigData) && this.$route.query.bigData !== 'false'
       this.rbCredit = Boolean(this.$route.query.rbCredit) && this.$route.query.rbCredit !== 'false'
+      this.rgCredit = Boolean(this.$route.query.rgCredit) && this.$route.query.rgCredit !== 'false'
     }
   }
 </script>

@@ -8,17 +8,20 @@
                 <van-tab title="审批记录"></van-tab>
             </van-tabs>
         </template>
+
         <template v-if="active === 1">
             <creditInfoTable title="银行征信" :dataList="dataList.surDtlList" type="creditResult" dateType="investigateDate"></creditInfoTable>
-            <creditInfoTable title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
-            <creditInfoTable title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
+            <creditQueryInfo v-if="TYPE == 'bairong' && brdataList.surDtlList.length >0" @lookDocs="lookDocs" title="大数据征信" :credit100Result="brdataList.credit100Result" :dataList="brdataList.surDtlList" type="bigDataResult"></creditQueryInfo>
+            <creditInfoTable v-else title="大数据征信" :dataList="dataList.surDtlList" type="bigDataResult" dateType="bigDataDate"></creditInfoTable>
+            <creditInfoTable v-if="rg" title="人工征信" :dataList="dataList.surDtlList" type="artificialCreditResult" dateType="investigateDate"></creditInfoTable>
+            <creditInfoTable v-if="!rg" title="人保征信" :dataList="dataList.surDtlList" type="personalGuaResult" dateType="peopleBankDate"></creditInfoTable>
         </template>
         <template v-else-if="active === 0">
             <basicInfoCredit :dataList="dataList" :edit="false" :form="form" :perInfoList="perInfoList" :hiddenHandle="true"></basicInfoCredit>
 <!--            <basicInfo :dataList="dataList" :form="form" :perInfoList="perInfoList" :edit="edit" :showImage="false"></basicInfo>-->
         </template>
         <template v-else-if="active === 2">
-            <relatedDocs :requestParams="requestParams"></relatedDocs>
+            <relatedDocs :requestParams="requestParams" ></relatedDocs>
         </template>
         <template v-else-if="active === 3">
             <approvalRecord :requestParams="recordParams"></approvalRecord>
@@ -46,11 +49,12 @@
   import creditInfoTable from '../viewCompoents/creditInfoTable'
   import basicInfo from '../viewCompoents/basicInfo'
   import basicInfoCredit from '../reNewCredit/basicInfo'
+  import creditQueryInfo from '../viewCompoents/creditQueryInfo'
   import backspace from '../viewCompoents/backspace'
   import relatedDocs from '@/views/relatedDocs/relatedDocs'
   import approvalRecord from '@/views/basicInfo/approvalRecord'
   import Vue from 'vue';
-  import { getCreditInfo } from '@/api/credit'
+  import { getCreditInfo,getCompanyName,getButtonOfCredit,creditQueryOf100,getCreditType } from '@/api/credit'
   import { bankReply } from '@/api/bigData'
   import { Cell, CellGroup, Field, Icon, Button, Picker, Popup, Toast, Notify, SwipeCell, Dialog, Tab, Tabs } from 'vant';
 
@@ -69,7 +73,8 @@
       backspace,
       relatedDocs,
       approvalRecord,
-      basicInfoCredit
+      basicInfoCredit,
+      creditQueryInfo
     },
     data () {
       return {
@@ -81,6 +86,7 @@
           carInfos: [],
           surDtlList: []
         },
+        brdataList:{},//百融的数据
         loading: false,
         form: {},
         perInfoList: [], //客户下面的其他客户数据
@@ -92,7 +98,9 @@
         },
         recordParams: {
           businesskey: '', businesstype: '07'
-        }
+        },
+        TYPE:'',
+        rg:false,
       }
     },
     methods: {
@@ -149,7 +157,35 @@
           this.loading = false
           console.log(e)
         }
-      }
+      },
+      async getCompany(){
+        const res = await getCompanyName();
+        //鑫弘 显示人工，其他不显示
+         if(res.data.companySchemaName == 'xh-vloan' || res.data.companySchemaName == 'ww-vloan'){
+          this.rg = true;
+        }else{
+          this.rg = false;
+        }
+      },
+      //获取该公司的大数据征信类型
+      async loadBigDataType(){
+        const {data} = await getCreditType();
+        // 征信回复：:5/百融征信查询：6
+        let buttonId = data[0].buttonId;
+        if(buttonId){
+          this.TYPE = buttonId == 6 ? 'bairong' : '';
+          const params = {
+            lpCertificateNum: this.query.lpCertificateNum,
+          }
+          const res = await creditQueryOf100(params);
+          this.brdataList = res.data.cuCreditRegister;
+        }else{
+          this.TYPE =  ''
+        }
+      },
+      lookDocs(){
+        this.active = 1;
+      },
     },
     mounted () {
       if (this.$route.query.info && this.$route.query.dealState) {
@@ -170,7 +206,9 @@
         this.query = this.$route.query
         this.edit = Boolean(this.$route.query.edit) && this.$route.query.edit !== 'false'
       }
-      this.getCreditInfo()
+      this.getCreditInfo();
+      this.getCompany();
+      this.loadBigDataType();
     }
   }
 </script>

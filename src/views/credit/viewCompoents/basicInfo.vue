@@ -93,25 +93,25 @@
   })
 
   const bigData = {
-    joiDebtorSpouse: ['0113', '0114', '6694', '6672', '6678', '6689'],//共债人配偶
-    borrowerSpouse: ['0105', '0106', '6691', '6668', '6674', '6686'],//借款人配偶
-    security: ['0117', '0120', '6692', '6669', '6675', '6687'],//担保人
-    borrower: ['0101', '0102', '6690', '6667', '6673', '6685'],//借款人
-    joiDebtor: ['0109', '0110', '6693', '6671', '6677', '6688'],//共债人
+    joiDebtorSpouse: ['CUIDA04', 'CUIDB04', 'CRDBIGA04', 'CUDRV04', 'CUCARD14', 'CRDOTH04'],//共债人配偶
+    borrowerSpouse: ['CUIDA02', 'CUIDB02', 'CRDBIGA02', 'CUDRV02', 'CUCARD12', 'CRDOTH02'],//借款人配偶
+    security: ['CUIDA05', 'CUIDB05', 'CRDBIGA05', 'CUDRV05', 'CUCARD15', 'CRDOTH05'],//担保人
+    borrower: ['CUIDA01', 'CUIDB01', 'CRDBIGA01', 'CUDRV01', 'CUCARD11', 'CRDOTH01'],//借款人
+    joiDebtor: ['CUIDA03', 'CUIDB03', 'CRDBIGA03', 'CUDRV03', 'CUCARD13', 'CRDOTH03'],//共债人
   }
   const rb = {
-    joiDebtorSpouse: ['0113', '0114', '6684', '6672', '6678', '6689'],//共债人配偶
-    borrowerSpouse: ['0105', '0106', '6680', '6668', '6674', '6686'],//借款人配偶
-    security: ['0117', '0120', '6681', '6669', '6675', '6687'],//担保人
-    borrower: ['0101', '0102', '6679', '6667', '6673', '6685'],//借款人
-    joiDebtor: ['0109', '0110', '6683', '6671', '6677', '6688'],//共债人
+    joiDebtorSpouse: ['CUIDA04', 'CUIDB04', 'CRDPICCA04', 'CUDRV04', 'CUCARD14', 'CRDOTH04'],//共债人配偶
+    borrowerSpouse: ['CUIDA02', 'CUIDB02', 'CRDPICCA02', 'CUDRV02', 'CUCARD12', 'CRDOTH02'],//借款人配偶
+    security: ['CUIDA05', 'CUIDB05', 'CRDPICCA05', 'CUDRV05', 'CUCARD15', 'CRDOTH05'],//担保人
+    borrower: ['CUIDA01', 'CUIDB01', 'CRDPICCA01', 'CUDRV01', 'CUCARD11', 'CRDOTH01'],//借款人
+    joiDebtor: ['CUIDA03', 'CUIDB03', 'CRDPICCA03', 'CUDRV03', 'CUCARD13', 'CRDOTH03'],//共债人
   }
   const rg = {
-    joiDebtorSpouse: ['0113', '0114', '6733', '6672', '6678', '6689'],//共债人配偶
-    borrowerSpouse: ['0105', '0106', '6730', '6668', '6674', '6686'],//借款人配偶
-    security: ['0117', '0120', '6731', '6669', '6675', '6687'],//担保人
-    borrower: ['0101', '0102', '6729', '6667', '6673', '6685'],//借款人
-    joiDebtor: ['0109', '0110', '6732', '6671', '6677', '6688'],//共债人
+    joiDebtorSpouse: ['CUIDA04', 'CUIDB04', 'CRDMANA04', 'CUDRV04', 'CUCARD14', 'CRDOTH04'],//共债人配偶
+    borrowerSpouse: ['CUIDA02', 'CUIDB02', 'CRDMANA02', 'CUDRV02', 'CUCARD12', 'CRDOTH02'],//借款人配偶
+    security: ['CUIDA05', 'CUIDB05', 'CRDMANA05', 'CUDRV05', 'CUCARD15', 'CRDOTH05'],//担保人
+    borrower: ['CUIDA01', 'CUIDB01', 'CRDMANA01', 'CUDRV01', 'CUCARD11', 'CRDOTH01'],//借款人
+    joiDebtor: ['CUIDA03', 'CUIDB03', 'CRDMANA03', 'CUDRV03', 'CUCARD13', 'CRDOTH03'],//共债人
   }
 
   export default {
@@ -138,15 +138,15 @@
       return {
         users: [],
         obj: {
-          joiDebtorSpouse: ['6684', '6672', '6678', '6689'],//共债人配偶
-          borrowerSpouse: ['6680', '6668', '6674', '6686'],//借款人配偶
-          security: ['6681', '6669', '6675', '6687'],//担保人
-          borrower: ['6679', '6667', '6673', '6685'],//借款人
-          joiDebtor: ['6683', '6671', '6677', '6688'],//共债人
+          joiDebtorSpouse: ['CRDPICCA04', 'CUDRV04', 'CUCARD14', 'CRDOTH04'],//共债人配偶
+          borrowerSpouse: ['CRDPICCA02', 'CUDRV02', 'CUCARD12', 'CRDOTH02'],//借款人配偶
+          security: ['CRDPICCA05', 'CUDRV05', 'CUCARD15', 'CRDOTH05'],//担保人
+          borrower: ['CRDPICCA01', 'CUDRV01', 'CUCARD11', 'CRDOTH01'],//借款人
+          joiDebtor: ['CRDPICCA03', 'CUDRV03', 'CUCARD13', 'CRDOTH03'],//共债人
         },
-        whiteList: ['6679', '0113', '0105', '0117', '0101', '0109', '6690', '0114', '0106', '0120', '0102', '0110'],
+        whiteList: ['CRDPICCA01', 'CUIDA04', 'CUIDA02', 'CUIDA05', 'CUIDA01', 'CUIDA03', 'CRDBIGA01', 'CUIDB04', 'CUIDB02', 'CUIDB05', 'CUIDB01', 'CUIDB03','CRDMANA01','CRDMANA02','CRDMANA03','CRDMANA04','CRDMANA05'],
         surDtlList: [],
-        isIdCard: ['0101', '0102', '0105', '0106', '0120', '0117', '0109', '0110', '0113', '0114']//身份证分类
+        isIdCard: ['CUIDA01', 'CUIDB01', 'CUIDA02', 'CUIDB02', 'CUIDB05', 'CUIDA05', 'CUIDA03', 'CUIDB03', 'CUIDA04', 'CUIDB04']//身份证分类
       }
     },
     watch: {

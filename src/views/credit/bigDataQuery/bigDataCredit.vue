@@ -177,17 +177,7 @@ export default {
     },
     //重新加载数据,更新征信状态
     async reLoad(){
-      let res;
-      let datalist = {
-          buttonId: this.params.buttonId,
-          lpCertificateNum: this.params.lpCertificateNum
-        };
-        if (this.creditTYPE == "bairong") {
-          res = await creditQueryOf100(datalist);
-        } else {
-          res = await getCreditDetail(datalist);
-        }
-        this.dataList.standardCreditStatus = res.data.standardCreditStatus;
+      this.loadData();
     },
     //大数据征信类型
     async getAnyServer(serverName, type) {

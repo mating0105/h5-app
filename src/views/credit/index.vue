@@ -98,7 +98,7 @@
         </div>
       </van-list>
     </van-pull-refresh>
-    <div class="xh-fixed-submit" v-if="isCreateRole">
+    <div class="xh-fixed-submit">
       <div class="xh-submit">
         <van-button icon="plus" size="large" class="xh-bg-main" @click="addClint">新增客户</van-button>
       </div>
@@ -181,16 +181,16 @@ export default {
         ] || []
       );
     },
-    isCreateRole() {
-      let flag = true;
-      let list = ["CustomerManager"];
-      const arr = this.roleInfoList.filter(item => {
-        return list.includes(item.enname);
-      });
-      flag = arr.length > 0;
-      console.log(flag);
-      return flag;
-    }
+    // isCreateRole() {
+    //   let flag = true;
+    //   let list = ["CustomerManager"];
+    //   const arr = this.roleInfoList.filter(item => {
+    //     return list.includes(item.enname);
+    //   });
+    //   flag = arr.length > 0;
+    //   console.log(flag);
+    //   return flag;
+    // }
   },
   watch: {
     error(value) {

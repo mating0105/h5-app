@@ -178,7 +178,8 @@ export default {
       this.onSearch();
     },
     startFormFn(item) {
-      this.startForm(item, { edit: false });
+      let query = {isReply: true, isReplyView: true,isChoose:true}
+      this.startForm(item, { edit: false,...query });
     },
     // 详情
     startForm(item, query = {}) {

@@ -59,6 +59,7 @@ import { queryAllImgs } from "@/api/document";
 import Card from "@/components/card/index";
 import Nothing from "@/components/Nothing/index";
 import ImageList from "@/components/imageList";
+import { getCompanyName } from "@/api/credit";
 import { Toast } from "vant";
 
 export default {
@@ -73,7 +74,7 @@ export default {
       // [{ type: "1111", must: false, dealState: "1",label:'征信' }] => type代表的是文档类型,must代表是否必传,dealState代表是否可以上传或者是查看,label当前文档的名称
       type: Array,
       default: () => []
-    }
+    },
   },
   data() {
     return {
@@ -83,7 +84,9 @@ export default {
       },
       groupObj: {}, // 分组的列表
       noGroupList: [], // 没有分组的列表
-      params: {} // 请求的参数
+      params: {} ,// 请求的参数
+      creditImgCode:['CRDBIGB01','CRDBIGB02','CRDBIGB03','CRDBIGB04','CRDBIGB05','CRDPBOCB01','CRDPBOCB02','CRDPBOCB03','CRDPBOCB04','CRDPBOCB05','CRDPICCB01','CRDPICCB02','CRDPICCB03','CRDPICCB04','CRDPICCB05','CRDMANB01','CRDMANB02','CRDMANB03','CRDMANB04','CRDMANB05'],
+      roles:'',
     };
   },
   computed: {
@@ -101,7 +104,9 @@ export default {
   },
   mounted() {
     this.initData();
-    this.query();
+    this.getCompany().then(() =>{
+      this.query();
+    });
   },
   methods: {
     /**
@@ -225,9 +230,29 @@ export default {
           fileList: list
         };
       } else {
-        this.noGroupList = list;
+        console.log(this.roles,1111)
+        if(this.roles == 'CustomerManager'){//客户经理不能查看银行征信授权书
+          let lists = [];
+          list.forEach(e =>{
+            if(!this.creditImgCode.includes(e.documentType)){
+              lists.push(e);
+            }
+          })
+          this.noGroupList = lists;
+        }else{
+          this.noGroupList = list;
+        }
       }
       this.groupObj = group;
+    },
+    async getCompany(){
+      const res = await getCompanyName();
+      //获取该用户角色-若只是客户经理，则不显示征信报告，存在其他角色，则显示征信报告
+      res.data.roleInfoList.forEach(e => {
+          if(e.enname == 'CustomerManager' && res.data.roleInfoList.length == 1){
+            this.roles = 'CustomerManager';
+          }
+      });
     }
   }
 };

@@ -272,6 +272,7 @@ import { mapState } from "vuex";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
 import formValidator from "@/mixins/formValidator";
+import { queryAllImgs } from "@/api/document";
 import _ from "lodash";
 const Components = [
   Button,
@@ -355,7 +356,7 @@ export default {
       scanActions: [
         { name: "相机扫描识别", value: "scan" },
         { name: "相册导入识别", value: "album" }
-      ]
+      ],
     };
   },
   computed: {
@@ -514,24 +515,25 @@ export default {
             return;
           }
         }
+        this.loading = true;
         if (this.src && this.srcBack) {
           let docType, docTypeBack;
           switch (this.customerData.creditObjectType) {
             case "security":
-              docType = "0117";
-              docTypeBack = "0120";
+              docType = "CUIDA05";
+              docTypeBack = "CUIDB05";
               break;
             case "borrowerSpouse":
-              docType = "0105";
-              docTypeBack = "0106";
+              docType = "CUIDA02";
+              docTypeBack = "CUIDB02";
               break;
             case "joiDebtor":
-              docType = "0109";
-              docTypeBack = "0110";
+              docType = "CUIDA03";
+              docTypeBack = "CUIDB03";
               break;
             case "joiDebtorSpouse":
-              docType = "0113";
-              docTypeBack = "0114";
+              docType = "CUIDA04";
+              docTypeBack = "CUIDB04";
               break;
           }
           const params = {
@@ -539,9 +541,22 @@ export default {
             customerNum: this.params.customerNum,
             customerId: this.params.customerId
           };
-          this.uploadImg(docType, params, this.dataURLtoFile(this.src));
-          this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack));
+          if(this.params.index != null && this.params.index != 'undefined'){
+            this.goRouter();
+          }else{
+            this.uploadImg(docType, params, this.dataURLtoFile(this.src)).then(()=>{
+              this.uploadImg(docTypeBack, params, this.dataURLtoFile(this.srcBack)).then(() =>{
+                this.goRouter();
+              }).catch(e => {
+                this.loading = false;
+              });
+              
+            }).catch(e => {
+              this.loading = false;
+            });
+          }
         } else {
+          this.loading = false;
           this.$notify({
             type: "danger",
             message: "请上传身份证正反面"
@@ -558,19 +573,15 @@ export default {
                 customerNum: res.data.customerNum,
                 customerId: res.data.id
               };
-              this.uploadImg("0101", params, this.dataURLtoFile(this.src));
-              this.uploadImg("0102", params, this.dataURLtoFile(this.srcBack));
-
-              // this.$notify({
-              //   type: "success",
-              //   message: "建档成功"
-              // });
-              // this.loading = false;
-              // this.$nextTick(() =>{
-              //   this.$router.push({
-              //     path: '/creditList',
-              //   });
-              // })
+                this.uploadImg("CUIDA01", params, this.dataURLtoFile(this.src)).then(() =>{
+                  this.uploadImg("CUIDB01", params, this.dataURLtoFile(this.srcBack)).then(() =>{
+                    this.goRouter();
+                  }).catch(e => {
+                    this.loading = false;
+                  });
+                }).catch(e => {
+                  this.loading = false;
+                });
             })
             .catch(e => {
               this.loading = false;
@@ -584,45 +595,58 @@ export default {
       }
     },
     uploadImg(val, params, file) {
-      params.documentType = val;
-      params.file = file;
-      uploadsDocument(params)
-        .then(res => {
-          if (this.params.credit) {
-            //征信新增客户，直接返回上一页
-            this.$store.dispatch("credit/setCustomerData", {
-              data: this.customerData,
-              index: this.$route.query.index
-            });
-            this.loading = false;
-            this.$router.go(-1);
-          } else {
-            this.$notify({
-              type: "success",
-              message: "建档成功"
-            });
-            this.loading = false;
-            // this.$router.go(-1);
-           this.$nextTick(() =>{
-              this.$router.push({
-                path: '/creditList',
-              });
-            })
-          }
-        })
-        .catch(e => {
-          this.loading = false;
+      return new Promise((resolve, reject) =>{
+        params.documentType = val;
+        params.file = file;
+        uploadsDocument(params)
+          .then(res => {
+            resolve()
+          })
+          .catch(e => {
+            reject()
+          });
+      })
+      
+    },
+    //跳转处理
+    goRouter(){
+      if (this.params.credit) {
+        //征信新增客户，直接返回上一页
+        this.$store.dispatch("credit/setCustomerData", {
+          data: this.customerData,
+          index: this.$route.query.index
         });
+        this.loading = false;
+        this.$router.go(-1);
+      } else {
+        this.$notify({
+          type: "success",
+          message: "建档成功"
+        });
+        this.loading = false;
+        // this.$router.go(-1);
+      this.$nextTick(() =>{
+          this.$router.push({
+            path: '/creditList',
+          });
+        })
+      }
     },
     //点击上传身份证图片
     loadImg(name) {
       this.sign = name;
       if (this[name]) {
-        this.actions = [
-          { name: "相机扫描识别", value: "scan" },
-          { name: "相册导入识别", value: "album" },
-          { name: "查看", value: "see" }
-        ];
+        if(this.params.index != null && this.params.index != 'undefined'){
+          this.actions = [
+            { name: "查看", value: "see" }
+          ];
+        }else{
+          this.actions = [
+            { name: "相机扫描识别", value: "scan" },
+            { name: "相册导入识别", value: "album" },
+            { name: "查看", value: "see" }
+          ];
+        }
       } else {
         this.actions = [
           { name: "相机扫描识别", value: "scan" },
@@ -697,14 +721,56 @@ export default {
       return name;
     },
     //获取信息
-    loadData() {
+    async loadData() {
       for (let key in this.customerData) {
         if (this.customerData.hasOwnProperty(key)) {
           this.customerData[key] =
             this.$route.query[key] || this.customerData[key];
         }
       }
+      console.log(this.params.index)
+      if(this.params.index != null && this.params.index != 'undefined'){
+        let documentType1 ,documentType2;
+        switch(this.customerData.creditObjectType){
+          case 'security':
+            documentType1 = 'CUIDA05';
+            documentType2 = 'CUIDB05'
+            break;
+            case 'joiDebtor':
+            documentType1 = 'CUIDA03';
+            documentType2 = 'CUIDB03'
+            break;
+            case 'joiDebtorSpouse':
+            documentType1 = 'CUIDA04';
+            documentType2 = 'CUIDB04'
+            break;
+            case 'borrowerSpouse':
+            documentType1 = 'CUIDA02';
+            documentType2 = 'CUIDB02'
+            break;
+            default:
+              break;
+        }
+        this.getImg(documentType1);
+        this.getImg(documentType2);
+      }
     },
+    //加载图片
+    getImg(documentType){
+        queryAllImgs({
+        customerNum: this.params.customerNum,
+        documentType:documentType,
+        kind: "1"
+      }).then(res => {
+          if(documentType == 'CUIDA02' || documentType == 'CUIDA03' || documentType == 'CUIDA04' || documentType == 'CUIDA05'){
+            this.src = res.data[0].documentRoute;
+          }else{
+            this.srcBack = res.data[0].documentRoute;
+          }
+        }).catch(() => {
+        });
+    },
+    
     /**
      * 识别
      */
