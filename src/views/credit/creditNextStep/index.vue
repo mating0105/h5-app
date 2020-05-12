@@ -63,38 +63,6 @@
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Picker)
 
-  //0101 主借人身份证正面
-  //0102 主借人身份证正面
-  //0103 主借人授权书
-  //0104 主借人银行征信授权书
-  //2001 主借人银行卡正反面
-  //0202 主借人征信报告
-
-  //0105 主借人配偶身份证正面
-  //0106 主借人配偶身份证反面
-  //0107 主借人配偶授权书
-  //0108 主借人配偶银行征信授权书
-  //2002 主借人配偶银行卡正反面
-  //0203 主借人配偶征信报告
-
-  //0120 担保人身份证反面
-  //0117 担保人身份证
-  //0118 担保人授权书
-  //0119 担保人银行征信授权书
-  //2005 担保人银行卡正反面
-
-  //0109 共债人身份证
-  //0110 共债人身份证反面
-  //0111 共债人授权书
-  //0112 共债人银行征信授权书
-  //2003 共债人银行卡正反面
-
-  //0113 共债人配偶身份证正面
-  //0114 共债人配偶身份证反面
-  //0115 共债人配偶授权书
-  //0116 共债人配偶银行征信授权书
-  //2004 共债人配偶银行卡正反面
-
   export default {
     name: "creditNextStep",
     components: {
@@ -113,17 +81,17 @@
         },
         users: [],
         obj: {
-          joiDebtorSpouse: ['0113', '0114', '0116', '2004'],//共债人配偶
-          borrowerSpouse: ['0105', '0106', '0108', '2002'],//借款人配偶
-          security: ['0120', '0117', '0119', '2005'],//担保人
-          borrower: ['0101', '0102', '0104', '2001'],//借款人
-          joiDebtor: ['0109', '0110', '0112', '2003'],//共债人
+          joiDebtorSpouse: ['CUIDA04', 'CUIDB04', 'CRDPBOCA04', 'CUCARD04'],//共债人配偶
+          borrowerSpouse: ['CUIDA02', 'CUIDB02', 'CRDPBOCA02', 'CUCARD02'],//借款人配偶
+          security: ['CUIDB05', 'CUIDA05', 'CRDPBOCA05', 'CUCARD05'],//担保人
+          borrower: ['CUIDA01', 'CUIDB01', 'CRDPBOCA01', 'CUCARD01'],//借款人
+          joiDebtor: ['CUIDA03', 'CUIDB03', 'CRDPBOCA03', 'CUCARD03'],//共债人
         },
         changeUserList: [],
         showUser: false,
         taskData: {},
-        whiteList: ['2001', '0119', '2005', '0108', '2002', '0112', '2003', '0116', '2004'],
-        isIdCard: ['0101', '0102', '0105', '0106', '0120', '0117', '0109', '0110', '0113', '0114']//身份证分类
+        whiteList: ['CUCARD01', 'CRDPBOCA05', 'CUCARD05', 'CRDPBOCA02', 'CUCARD02', 'CRDPBOCA03', 'CUCARD03', 'CRDPBOCA04', 'CUCARD04'],
+        isIdCard: ['CUIDA01', 'CUIDB01', 'CUIDA02', 'CUIDB02', 'CUIDB05', 'CUIDA05', 'CUIDA03', 'CUIDB03', 'CUIDA04', 'CUIDB04']//身份证分类
       }
     },
     computed: {

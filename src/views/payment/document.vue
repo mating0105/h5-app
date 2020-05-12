@@ -1,7 +1,7 @@
 // 相关文档
 <template>
     <ViewPage>
-        <Document></Document>
+        <Document :requestParams="params"></Document>
     </ViewPage>
 </template>
 <script>
@@ -13,6 +13,16 @@
     components: {
       Document,
       ViewPage
+    },
+    data(){
+      return{
+        params: {}
+      }
+    },
+    mounted(){
+      let obj = JSON.parse(this.$route.query.info);
+      obj.dealState = this.$route.query.dealState;
+      this.params = obj;
     }
   }
 </script>

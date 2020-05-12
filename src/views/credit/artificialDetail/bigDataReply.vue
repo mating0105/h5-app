@@ -49,32 +49,32 @@
 
   Vue.use(Field).use(Button).use(ActionSheet).use(Popup).use(Toast).use(Dialog)
   const bank = {
-    joiDebtorSpouse: ['0205'],//共债人配偶
-    borrowerSpouse: ['0203'],//借款人配偶
-    security: ['0206'],//担保人
-    borrower: ['0202'],//借款人
-    joiDebtor: ['0204'],//共债人
+    joiDebtorSpouse: ['CRDPBOCB04'],//共债人配偶
+    borrowerSpouse: ['CRDPBOCB02'],//借款人配偶
+    security: ['CRDPBOCB05'],//担保人
+    borrower: ['CRDPBOCB01'],//借款人
+    joiDebtor: ['CRDPBOCB03'],//共债人
   }
   const bigData = {
-    joiDebtorSpouse: ['0210'],//共债人配偶
-    borrowerSpouse: ['0208'],//借款人配偶
-    security: ['0211'],//担保人
-    borrower: ['0207'],//借款人
-    joiDebtor: ['0209'],//共债人
+    joiDebtorSpouse: ['CRDBIGB04'],//共债人配偶
+    borrowerSpouse: ['CRDBIGB02'],//借款人配偶
+    security: ['CRDBIGB05'],//担保人
+    borrower: ['CRDBIGB01'],//借款人
+    joiDebtor: ['CRDBIGB03'],//共债人
   }
   const rb = {
-    joiDebtorSpouse: ['6699'],//共债人配偶
-    borrowerSpouse: ['6696'],//借款人配偶
-    security: ['6697'],//担保人
-    borrower: ['6695'],//借款人
-    joiDebtor: ['6698'],//共债人
+    joiDebtorSpouse: ['CRDPICCB04'],//共债人配偶
+    borrowerSpouse: ['CRDPICCB02'],//借款人配偶
+    security: ['CRDPICCB05'],//担保人
+    borrower: ['CRDPICCB01'],//借款人
+    joiDebtor: ['CRDPICCB03'],//共债人
   }
   const rg = {
-    joiDebtorSpouse: ['6728'],//共债人配偶
-    borrowerSpouse: ['6725'],//借款人配偶
-    security: ['6726'],//担保人
-    borrower: ['6724'],//借款人
-    joiDebtor: ['6727'],//共债人
+    joiDebtorSpouse: ['CRDMANB04'],//共债人配偶
+    borrowerSpouse: ['CRDMANB02'],//借款人配偶
+    security: ['CRDMANB05'],//担保人
+    borrower: ['CRDMANB01'],//借款人
+    joiDebtor: ['CRDMANB03'],//共债人
   }
 
   export default {

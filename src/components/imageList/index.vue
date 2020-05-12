@@ -27,16 +27,23 @@
         <transition name="page-move">
             <imageUpload :visible.sync="showImageUpload" v-if="showImageUpload" :dataList="dataList" :isGroup="isGroup"></imageUpload>
         </transition>
+        <!-- 图片预览 -->
+        <van-image-preview v-model="showImage" :start-position='index' :images="images" @change="onChange">
+          <template v-slot:index>{{index+1+' / '+images.length}}</template>
+          <template v-slot:cover>
+            <van-button type="info" round class="imageBtn" @click="downLoadImg(images[index])">下载图片</van-button>
+          </template>
+        </van-image-preview>
     </div>
 </template>
 
 <script>
   import Vue from 'vue';
   import imageUpload from './upload'
-  import { Uploader, Image, Icon, ImagePreview, Lazyload } from 'vant';
+  import { Uploader, Image, Icon, ImagePreview, Lazyload, Dialog,Toast } from 'vant';
   import _ from 'lodash'
 
-  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview).use(Lazyload);
+  Vue.use(Uploader).use(Image).use(Icon).use(ImagePreview).use(Lazyload).use(Toast);
   export default {
     name: "imageList",
     props: {
@@ -55,16 +62,54 @@
     },
     data () {
       return {
-        showImageUpload: false
+        showImageUpload: false,
+        showImage:false,
+        images:[],
+        index:null
       }
     },
     methods: {
       openImagePreview (index) {
-        const list = this.list.map(item => item.documentRoute)
-        ImagePreview({
-          images: list,
-          startPosition: index
-        });
+        this.showImage=true;
+        console.log(this.list,'this.list')
+        // const list = this.list.map(item => item.documentRoute)
+        this.images=this.list.map(item =>item.documentRoute);
+        this.index=index;
+        // ImagePreview({
+        //   images: list,
+        //   startPosition: index,
+        // });
+      },
+      onChange(index) {
+        this.index = index;
+      },
+      downLoadImg(val){
+        var _this=this;
+        this.list.forEach((item,index)=>{
+          if(item.documentRoute==val){
+            Dialog.confirm({
+              title: '下载图片',
+              message: '是否确认下载图片？',
+            })
+            .then(() => {
+              console.log('确认')
+              let para={
+                pic:item.base64File
+              }
+              _this.$bridge.callHandler('savePic', para, res => {
+                if(res){
+                  Toast.success('下载成功');
+                }else{
+                  Toast.fail('下载失败');
+                }
+              });
+            })
+            .catch(() => {
+              // on cancel
+            });
+          }
+        })
+
       }
     }
   }
@@ -132,6 +177,11 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+    .imageBtn{
+      position: fixed;
+      right: 10px;
+      bottom:10px;
     }
 
 </style>

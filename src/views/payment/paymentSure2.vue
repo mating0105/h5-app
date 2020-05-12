@@ -240,6 +240,7 @@ export default {
       })
         .then(res => {
           this.data = res.data;
+          this.params.info.customerNum = this.data.projProjectInfo.customerNum;
           if (
             this.data.projGpsInstals[0].gpsnum > 0 &&
             this.data.projGpsInstals[0].gpsIsDone != "-1"

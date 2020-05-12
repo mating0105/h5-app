@@ -278,7 +278,7 @@
           <van-cell
             title="车辆品牌型号:"
             :border="false"
-            :value="nameToString(item.brndNm, item.carSeries, item.carModel)"
+            :value="nameToString(item.carBrandNm, item.carSeries, item.carModel)"
           />
           <van-cell
             v-if="item.carNature === 'old_car'"
@@ -894,30 +894,30 @@ export default {
       peopleList: [], //选人数组
       processedBy: "",
       imageTypeList: [
-        "6700",
-        "6701",
-        "6702",
-        "6703",
-        "6704",
-        "6705",
-        "6706",
-        "6707",
-        "6708",
-        "6709",
-        "6710",
-        "6711",
-        "6712",
-        "6713",
-        "6714",
-        "6715",
-        "6716",
+        "VICEVA003",
+        "VICEVA004",
+        "VICEVA005",
+        "VICEVA006",
+        "VICEVA007",
+        "VICEVA008",
+        "VICEVA009",
+        "VICEVA010",
+        "VICEVA011",
+        "VICEVA012",
+        "VICEVA013",
+        "VICEVA014",
+        "VICEVA015",
+        "VICEVA016",
+        "VICEVA017",
+        "VICEVA018",
+        "VICEVA019",
         "6717",
         "6718",
         "6719",
-        "6720",
-        "6721",
-        "6722",
-        "6723"
+        "VICEVA023",
+        "VICEVA024",
+        "VICEVA025",
+        "VICEVA026"
       ], //二手车照片类型
       isActive: false //是否是可以终止的订单
     };
@@ -994,7 +994,7 @@ export default {
         this.imageTypeList.forEach(item => {
           this.getDocumentByType(item, this.dataImg);
         });
-        this.getDocumentByType("6666", this.dataImg2); //二手车评估报告
+        this.getDocumentByType("VICEVA002", this.dataImg2); //二手车评估报告
       } catch (e) {}
     },
     async getDocumentByType(documentType, arr) {
@@ -1010,7 +1010,7 @@ export default {
         data.forEach(item => {
           item.declare = declare;
         });
-        let deletable = documentType === "6666" || this.isView;
+        let deletable = documentType === "VICEVA002" || this.isView;
         arr.push({
           declare: declare, //图片描述
           isRequire: false, //*是否必须
