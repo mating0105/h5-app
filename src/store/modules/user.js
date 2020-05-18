@@ -144,6 +144,7 @@ const actions = {
       "WW_GPS_IS_DONE",//gps状态
       "BANK_TYPE_JYR",//银行
       "Used_car_evaluation",//二手车辆状态
+      "E_CAR_TYPE",//E分期-意向车辆性质
     ]
     return new Promise((resolve, reject) => {
       setBookObj(list).then(response => {

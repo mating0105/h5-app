@@ -11,8 +11,16 @@
                 <van-tab title="操作记录"></van-tab>
             </van-tabs>
         </template>
-        <template v-if="active === 0">
-            <basicInfo :dataList="dataList" :edit="edit" :form="form" :perInfoList="perInfoList" :query="query" :buttonId='buttonId'></basicInfo>
+        <template v-if="active === 0&& dataList.surDtlList.length>0">
+            <basicInfo
+              :dataList="dataList" 
+              :edit="edit" 
+              :form="form" 
+              :perInfoList="perInfoList" 
+              :query="query" 
+              :buttonId='buttonId'
+              @reLoad="reLoad"
+            ></basicInfo>
         </template>
         <template v-else-if="active === 1">
             <approvalRecord :requestParams="recordParams"></approvalRecord>
@@ -215,6 +223,10 @@
           }
         }
       },
+      //重新加载数据,更新征信状态
+      async reLoad(){
+        this.getCreditInfo();
+      }
     },
     mounted () {
     //   if (this.$route.query.info && this.$route.query.dealState) {

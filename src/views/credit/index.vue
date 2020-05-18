@@ -250,7 +250,7 @@ export default {
           classname = "xh-primary-tag";
           break;
         case "06":
-          classnam = "xh-danger-tag";
+          classname = "xh-danger-tag";
           break;
       }
       return classname;
@@ -312,13 +312,26 @@ export default {
       }
     },
     //点击标签查看详情
-    clickBtn(name, status,item) {
+    clickBtn(name, status,item, query = {}) {
       console.log(name,status);
       if (status == "04" || status == "03") {
         this.$notify("暂无查看权限");
       } else {
+        const goPageCredit = () => {
+          this.$router.push({
+            path: "/reNewCredit",
+            query: {
+              lpCertificateNum: item.lpCertificateNum,
+              id: item.id,
+              buttonId:item.banCredit.buttonId,
+              edit: true,
+              ...query
+            }
+          });
+        };
         switch (name) {
           case "bank":
+            goPageCredit();
             break;
           case "bigdata":
             this.startFormFn(item, { edit: item.bigDataCredit.standardStatus == '01'?false:true, bigData: true,standardStatus:item.bigDataCredit.standardStatus },"/bigDataCredit",item.bigDataCredit.buttonId);

@@ -5,7 +5,7 @@ import request,{serviceOther} from '@/utils/request'
  * @param params
  */
 export function getBank(params) {
-  return request({
+  return serviceOther({
     url: '/cooperation/loanPlatform/getLoanPlatformTree',
     method: 'get',
     params
@@ -177,20 +177,20 @@ export function setBookObj(params) {
   })
 }
 
-//人工--查询银行
-export function getBankList(params){
-    return serviceOther({
-        url: '/cooperation/loanPlatform/getLoanPlatformTree',
-        method: 'get',
-        params
-    })
-}
 //推送至E分期
 export function pushToEfenqi(params) {
   return request({
     url: '/order/eStageCreditInfo/pushEStage',
     method: 'post',
     data: params
+  })
+}
+//E分期-终止查询
+export function stopTask_E(params) {
+  return request({
+    url: '/order/eStageCreditInfo/applyForOrder',
+    method: 'get',
+    params
   })
 }
 
