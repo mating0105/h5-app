@@ -130,7 +130,7 @@ export default {
                     {name:'业务人员待办',path:'/applyPayment',params:newParams},
                     {name:'财务垫款确认待办',path:'/paymentSure',params:newParams},
                     {name:'客户征信经理待办',path:'/reNewCredit',params:newParams},
-                    {name:'驻行人员待办',path:'/bigDataReply',params:newParams},
+                    {name:'驻行人员待办',path:'/rbReply',params:newParams},
                     {name:'合规文员待办',path:'/lendProcess',params:newParams},
                     {name:'驻行内勤待办',path:'/bankLend',params:newParams},
                 ],

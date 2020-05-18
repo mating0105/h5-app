@@ -2,7 +2,7 @@
  * @Author: wuyueqi 
  * @Date: 2020-05-11 11:28:33 
  * @Last Modified by: wuyueqi
- * @Last Modified time: 2020-05-11 17:54:39
+ * @Last Modified time: 2020-05-18 11:29:00
  */
 <template>
   <div>
@@ -35,7 +35,7 @@
         <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
         <van-field
           name="bankCardNum"
-          :disabled="!edit && dataList.standardCreditStatus"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           label="银行卡号："
           :placeholder="!edit?'':'请输入'"
           label-width="110"
@@ -53,7 +53,7 @@
           title="征信查询方式:"
           label-class="labelClass"
           :label="errorMsg.creditSearchType"
-          :disabled="!edit && dataList.standardCreditStatus"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           :border="false"
           required
           :is-link="edit"
@@ -64,29 +64,30 @@
           title="征信签约方式:"
           label-class="labelClass"
           :label="errorMsg.signMode"
-          :disabled="!edit && dataList.standardCreditStatus"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           :border="false"
           required
           :is-link="edit"
           :value="dataList.signMode"
           @click="showPickerFn('signMode')"
+          v-if="isElectronic"
         />
         <van-cell
           title="征信授权电子签:"
           label-class="labelClass"
-          :disabled="!edit && dataList.standardCreditStatus"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           :border="false"
           required
           is-link
           :value="form.electronicSignResult ? form.electronicSignResult: '待签约'"
           v-if="isElectronic"
-          @click="electronicFn(data.electronicSignResult)"
+          @click="electronicFn(data.electronicSignResult,'borrower')"
         />
         <van-cell title="相关文档:" required :border="false" />
         <imageList :dataList="mainImg"></imageList>
       </div>
       <div v-if="perInfoList.length > 0">
-        <van-swipe-cell :disabled="!edit && dataList.standardCreditStatus" v-for="(item, index) in perInfoList" :key="index">
+        <van-swipe-cell :disabled="!edit && dataList.standardCreditStatus != null" v-for="(item, index) in perInfoList" :key="index">
           <div class="card-title">{{returnText(item.creditObjectType, 'credit_object_type')}}信息</div>
           <van-cell title="姓名:" required :border="false" :value="item.creditPersonName" />
           <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
@@ -113,13 +114,13 @@
           <van-cell
             title="征信授权电子签:"
             label-class="labelClass"
-            :disabled="!edit && dataList.standardCreditStatus"
+            :disabled="!edit && dataList.standardCreditStatus != null"
             :border="false"
             required
             is-link
             :value="item.electronicSignResult ? form.electronicSignResult: '待签约'"
             v-if="isElectronic"
-            @click="electronicFn(item.electronicSignResult)"
+            @click="electronicFn(item.electronicSignResult,item.creditObjectType)"
           />
           <van-cell title="相关文档" required :border="false" />
           <imageList :dataList="item.dataList"></imageList>
@@ -144,7 +145,7 @@
         </div>
       </div>
       <div class="card-title">备注说明</div>
-      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" :disabled="!edit && dataList.standardCreditStatus"/>
+      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" :disabled="!edit && dataList.standardCreditStatus != null"/>
     </NewCard>
     <div v-if="dataList.standardCreditStatus == '01'">
       <div class="xh-submit-box">
@@ -231,7 +232,8 @@ import {
   getUsers,
   submitCredit,
   stopTask,
-  creditSaveOf100
+  creditSaveOf100,
+  signContract
 } from "@/api/credit";
 import Bus from "@/utils/bus";
 import {
@@ -337,12 +339,19 @@ export default {
       isElectronic: false, //是否征信电子签
       time: "",
       remarks: "", //备注说明
-      obj: {
+      obj: {//包括大数据授权书
         joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
         borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
         security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
         joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
         borrower: ["CUIDA01", "CUIDB01", "CUCARD01","CRDBIGA01"] //主借人
+      },
+      objun: {//没有大数据授权书
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
       },
       processedBy: "", //提交人id
       taskData: {}, //
@@ -416,36 +425,25 @@ export default {
     },
     //判断是否是电子签 加载图片
     async judge(list) {
+      let arr = [];
       this.dataList.signMode = list;
       //是否电子签
-      console.log(this.dataList.creditSearchTypeDesc,777)
-      if (list == "电子签" && this.dataList.creditSearchTypeDesc != '百融') {
+      if (list == "电子签") {
         this.isElectronic = true;
-        //如果是电子签，则没有大数据征信授权书
-        this.obj = {
-          joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
-          borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
-          security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
-          joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
-          borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
-        };
         this.dataList.surDtlList.forEach(e => {
-          const arr = this.obj[e.creditObjectType];
+          arr = this.objun[e.creditObjectType];
           arr.forEach(i => {
             this.getDocumentByType(i, e);
           });
         });
       } else {
         this.isElectronic = false;
-        this.obj = {
-          joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
-          borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
-          security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
-          joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
-          borrower: ["CUIDA01", "CUIDB01", "CUCARD01", "CRDBIGA01"] //主借人
-        };
         this.dataList.surDtlList.forEach(e => {
-          const arr = this.obj[e.creditObjectType];
+          if(e.isSearchCredit == 1 || e.creditObjectType == 'borrower'){//查询征信
+           arr = this.obj[e.creditObjectType];
+          }else{//不查询征信
+           arr = this.objun[e.creditObjectType];
+          }
           arr.forEach(i => {
             this.getDocumentByType(i, e);
           });
@@ -473,6 +471,7 @@ export default {
         isSearchCredit: beanData.isSearchCredit //是否查询征信
       };
     },
+    //显示弹框
     showPickerFn(type) {
       if (!this.edit) {
         return;
@@ -540,8 +539,22 @@ export default {
       return color;
     },
     //点击授权电子签
-    electronicFn(val) {
-      console.log(val, 9999);
+    async electronicFn(val,creditObjectType) {
+      console.log(val,creditObjectType, 9999);
+      if(val){//已签约
+
+      }else{
+        this.dataList.creditType = this.buttonId;
+        this.dataList.remarks = this.remarks;
+        this.dataList.surDtlList.forEach(e =>{
+          if(e.creditObjectType == creditObjectType){
+            e.currentElectronicSign = 1;
+          }
+        })
+        let res = await signContract(this.dataList);
+      }
+      console.log(this.dataList)
+      
     },
     // 字典转换
     returnText(val, key) {
@@ -559,10 +572,9 @@ export default {
     refreshStatus() {},
     //编辑人
     editPer(per, index) {
-      console.log(per,111)
       const query = {
-        customerId: this.data.customerId,
-        customerNum: this.data.perInfo ? this.data.perInfo.customerNum : "",
+        customerId: this.dataList.customerId,
+        customerNum: this.dataList.customerNum ,
         index: index,
         credit: true,
         ...this.unFormatter(per)
@@ -584,7 +596,7 @@ export default {
         })
         .catch(() => {});
     },
-    //验证
+    //验证字段
     verifyForm() {
       let num = 0;
       for (let item in this.errorMsg) {
@@ -593,12 +605,47 @@ export default {
           num++;
         }
       }
-      console.log("err", num);
       return num === 0;
+    },
+    //验证征信授权书图片
+    verifyImg(){
+      let borrowerImg = false,otherImg = false;
+      for(let i = 0;i<this.mainImg.length;i++){
+        if(this.mainImg[i].documentType== 'CRDBIGA01'){
+          if(this.mainImg[i].fileList.length<1){
+            Toast("请上传主借人大数据征信授权书");
+            break;
+          }else{
+            borrowerImg = true;
+          }
+        }
+      }
+      let imgArr = [];
+      this.dataList.surDtlList.forEach(e =>{
+        if(e.isSearchCredit == 1){
+          e.dataList.forEach(i =>{
+            if(i.documentType == 'CRDBIGA01' || i.documentType == 'CRDBIGA02' || i.documentType == 'CRDBIGA05' || i.documentType =='CRDBIGA03'||i.documentType == 'CRDBIGA04'){
+              if(i.fileList.length<1){
+                console.log(e.creditObjectType);
+                imgArr.push(this.returnText(e.creditObjectType,'credit_object_type'));
+              }
+            }
+          })
+        }
+      })
+      if(imgArr.length>0){
+        let nameString = imgArr.join('、');
+        Toast(`请上传${nameString}大数据征信授权书`);
+        return;
+      }else{
+        otherImg = true;
+      }
+      console.log(borrowerImg,otherImg)
+      return borrowerImg && otherImg;
     },
     //提交征信查询
     async submit() {
-      if (!this.verifyForm()) {
+      if (!this.verifyForm() || !this.verifyImg()) {
         return;
       }
       Toast.loading({
@@ -699,8 +746,6 @@ export default {
       }else{
         this.bigDataTipOfBr();
       }
-      
-      
     },
     //提交流程
     async postProcess() {
@@ -776,7 +821,7 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        const isRequire = this.edit;
+        const isRequire = Boolean(this.edit);
         const imgdata = {
           declare: declare, //图片描述
           isRequire: isRequire, //*是否必须
@@ -801,7 +846,6 @@ export default {
     //终止查询
     endTask() {
       this.showDialog = true;
-      console.log(this.dataList,333)
     },
     async confirmFn() {
       if (!this.cause) {
@@ -832,6 +876,7 @@ export default {
   },
   mounted() {
     this.getAnyServer("electronic-visa-model", "electronic");
+
   },
   destroyed() {
     this.save();

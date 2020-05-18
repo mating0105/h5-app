@@ -212,3 +212,11 @@ export function getCompanyName(params) {
     params
   })
 }
+//安心签-签合同
+export function signContract(params) {
+  return request({
+    url: '/order/eStageCreditInfo/creditElectronicCreateContract',
+    method: 'post',
+    data: params
+  })
+}

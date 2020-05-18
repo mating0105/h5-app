@@ -107,7 +107,12 @@ export const constantRoutes = [
     component: () => import('@/views/credit/bigDataQuery/bigDataReply'),
     meta: {title: '征信回复'}
   },
-
+  {
+    path: '/rbReply',
+    name: 'rbReply',
+    component: () => import('@/views/credit/bigDataQuery/rbReply'),
+    meta: {title: '征信回复'}
+  },
   {
     path: '/bankQuery',
     name: 'bankQuery',

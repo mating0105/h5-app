@@ -3,23 +3,57 @@
     <template v-slot:head>
       <van-tabs v-model="active">
         <van-tab title="基本信息"></van-tab>
+        <van-tab title="征信信息"></van-tab>
         <van-tab title="操作记录"></van-tab>
       </van-tabs>
     </template>
-    <template v-if="active === 0 && dataList.lpCertificateNum">
-      <basicInfo
+    <template v-if="active === 0 && dataList.id">
+      <basicReplyInfo
         :dataList="dataList"
-        :edit="edit"
+        :edit="true"
         :form="form"
         :perInfoList="perInfoList"
         :buttonId="buttonId"
         :hiddenHandle="true"
-        :creditTYPE="creditTYPE"
+        :showTypes="true"
+        :thisCreditType="thisCreditType"
         :creditTypeList="creditTypeList"
-        @reLoad="reLoad"
-      ></basicInfo>
+        :isShowTitle = 'true'
+      ></basicReplyInfo>
     </template>
     <template v-else-if="active === 1">
+      <!-- 百融 -->
+      <creditQueryInfo
+        v-if="thisCreditType === '6'"
+        @lookDocs="lookDocs"
+        title="大数据征信查询信息"
+        :credit100Result="dataList.credit100Result"
+        :dataList="dataList.surDtlList"
+        type="bigDataResult"
+      ></creditQueryInfo>
+      <div v-else-if="thisCreditType != '6' && creditHistoryList.length >0">
+        <collapsBox label="大数据征信查询信息" :creditList="creditHistoryList" :changeitem="changeitem">
+          <template>
+            <basicReplyInfo
+              :dataList="dataList"
+              :edit="false"
+              :form="form"
+              :perInfoList="perInfoList"
+              :buttonId="buttonId"
+              :hiddenHandle="true"
+              :showTypes="false"
+              :thisCreditType="thisCreditType"
+              :creditTypeList="creditTypeList"
+              :isShowTitle = 'false'
+            ></basicReplyInfo>
+          </template>
+        </collapsBox>
+      </div>
+      <div v-else>
+        <van-divider>暂无征信记录</van-divider>
+      </div>
+    </template>
+    <template v-else-if="active === 2">
       <approvalRecord :requestParams="recordParams"></approvalRecord>
     </template>
   </ViewPage>
@@ -37,9 +71,11 @@ import formValidator from "@/mixins/formValidator";
 import imageList from "@/components/imageList";
 import { getValue, setValue, removeValue } from "@/utils/session";
 import { getDocumentByType } from "@/api/document";
-import basicInfo from "../bigDataQuery/bigDataBasicInfo";
+import basicReplyInfo from "../bigDataQuery/rbBasicReply";
+import { format } from "@/utils/format";
 import radio from "@/components/radio";
 import radioItem from "@/components/radio/radioItem";
+import collapsBox from "@/components/collapseBox/index";
 import Vue from "vue";
 import {
   getCreditDetail,
@@ -49,7 +85,8 @@ import {
   createTask,
   getUsers,
   submitCredit,
-  creditQueryOf100
+  creditQueryOf100,
+  getCreditHistory
 } from "@/api/credit";
 import Bus from "@/utils/bus";
 import {
@@ -66,7 +103,10 @@ import {
   Dialog,
   Tab,
   Tabs,
-  ActionSheet
+  ActionSheet,
+  Collapse,
+  CollapseItem,
+  Divider
 } from "vant";
 
 const Components = [
@@ -83,7 +123,10 @@ const Components = [
   Dialog,
   Tab,
   Tabs,
-  ActionSheet
+  ActionSheet,
+  Collapse,
+  CollapseItem,
+  Divider
 ];
 Components.forEach(item => {
   Vue.use(item);
@@ -102,7 +145,8 @@ export default {
     imageList,
     radio,
     radioItem,
-    basicInfo
+    basicReplyInfo,
+    collapsBox
   },
   data() {
     return {
@@ -126,8 +170,12 @@ export default {
         businessType: "07"
       },
       buttonId: "",
-      creditTYPE: "", //征信查询方式
-      creditTypeList: [] //征信查询数组
+      thisCreditType: "", //征信查询方式  5人工 6百融
+      creditTypeList: [], //征信查询数组
+      showCreditTime: true, //卡片（显示时间）
+      showCreditSign: true, //卡片（显示标签）
+      creditSign: "通过",
+      creditHistoryList: []
     };
   },
   computed: {
@@ -137,70 +185,69 @@ export default {
     }
   },
   methods: {
+    //加载数据
     async loadData() {
       this.loading = true;
       let data, res;
-      if (getValue("credit")) {
-        data = JSON.parse(getValue("credit"));
+      let datalist = {
+        buttonId: 3,
+        lpCertificateNum: this.params.info.certificateNum
+      };
+      if (this.thisCreditType == "6") {
+        res = await creditQueryOf100(datalist);
       } else {
-        let datalist = {
-          buttonId: this.params.buttonId,
-          lpCertificateNum: this.params.lpCertificateNum
-        };
-        if (this.creditTYPE == "bairong") {
-          res = await creditQueryOf100(datalist);
-        } else {
-          res = await getCreditDetail(datalist);
-        }
-        data = res.data;
+        res = await getCreditDetail(datalist);
       }
+      data = res.data;
+      this.thisCreditType = data.creditSearchType;
       this.sign = data.standardCreditStatus;
       this.time = data.registerDate;
-      this.perInfoList = [];
       data.surDtlList.forEach(e => {
         e.dataList = [];
         if (e.creditObjectType === "borrower") {
           this.form = e;
+          this.form.investigateDate = format(new Date(), "yyyy-MM-dd hh:mm");
         } else {
+          e.investigateDate = format(new Date(), "yyyy-MM-dd hh:mm");
+          e.creditList = [];
           this.perInfoList.push(e);
         }
       });
       this.dataList = data;
-      this.dataList.reRegister = this.params.reRegister;
-      if (this.params.reRegister == 1) {
-        this.dataList.id = "";
-      }
       this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
       this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
-      console.log("更新状态1", this.dataList.standardCreditStatus);
+      console.log(this.dataList.id,8888)
       this.initCustomerData();
       this.loading = false;
     },
-    //重新加载数据,更新征信状态
-    async reLoad(){
-      this.loadData();
-    },
-    //大数据征信类型
-    async getAnyServer(serverName, type) {
-      let serverNameType = {
-        serverName: serverName
+    //加载历史数据
+    async loadHistory() {
+      let datalist = {
+        creditType: this.params.info.creditType,
+        lpCertificateNum: this.params.info.certificateNum
       };
-      let res = await getByServer(serverNameType);
-      if (type == "bigdata") {
-        //征信查询方式
-        this.creditTypeList = res.data;
-        if (this.creditTypeList.length == 1) {
-          this.creditSearchTypeDesc = this.creditTypeList[0].buttonName;
-          this.creditSearchType = this.creditTypeList[0].id;
-          if(this.creditSearchTypeDesc == '百融'){
-            this.creditTYPE = 'bairong';
-          }else{
-            this.creditTYPE = '';
-          }
+      let res = await getCreditHistory(datalist);
+      let arr = [];
+      arr = res.data;
+      arr.forEach(e => {
+        e.label = "大数据征信查询信息";
+        e.showSign = true;
+        e.showTime = true;
+        if (
+          e.status == "02" ||
+          e.status == "03" ||
+          e.status == "05" ||
+          e.status == "06"
+        ) {
+          e.signColor = "#E60000";
+        } else if (e.status == "04") {
+          e.signColor = "#00C67C";
+        } else if (e.status == "01") {
+          e.signColor = "#999";
         }
-        this.loadData();
-      }
+      });
+      this.creditHistoryList = arr;
     },
     initCustomerData() {
       let customerData = this.$store.state.credit.customerData;
@@ -209,7 +256,7 @@ export default {
         customerData = this.enFormatter(customerData);
         if (index === -1) {
           this.perInfoList.push(customerData);
-          this.dataList.surDtlList.push(customerData);
+          this.data.surDtlList.push(customerData);
         } else {
           const perInfo = this.perInfoList[index];
           if (perInfo) {
@@ -246,18 +293,17 @@ export default {
         canDel: true,
         isSearchCredit: beanData.isSearchCredit
       };
-    }
+    },
+    changeitem() {}
   },
   mounted() {
-    this.params = this.$route.query;
-    console.log(this.params, '子');
-    if (this.params.standardStatus == "01") {
-      this.edit = false;
-    } else {
-      this.edit = Boolean(this.params.edit);
-    }
-    this.buttonId = this.params.buttonId;
-    this.getAnyServer("big-data-credit", "bigdata");
+    this.params = {
+      info: this.getStringToObj(this.$route.query.info),
+      dealState: this.$route.query.dealState
+    };
+    this.edit = false;
+    this.loadData();
+    this.loadHistory();
   }
 };
 </script>

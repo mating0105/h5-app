@@ -1,7 +1,7 @@
 <template>
   <div>
     <NewCard
-      label="大数据征信查询信息"
+      label="人保征信查询信息"
       :showSign="showSign"
       :showTime="showTime"
       :sign="sign"
@@ -10,7 +10,7 @@
       :isShowTitle="isShowTitle"
     >
       <div>
-        <div class="card-title">主借人信息{{edit}}</div>
+        <div class="card-title">主借人信息</div>
         <van-cell title="客户名称:" :border="false" :value="form.creditPersonName" />
         <van-cell title="证件号码:" :border="false" :value="form.cpCertificateNum" />
         <van-cell title="手机号码:" :border="false" :value="form.telephone" />
@@ -32,7 +32,6 @@
           title="征信结果:"
           :border="false"
           required
-          v-if="thisCreditType == '5'"
         >
           <radio v-model="form.creditResult" :disabled="!edit">
             <radio-item label="pass">通过</radio-item>
@@ -47,43 +46,12 @@
           :value="form.investigateDate"
           @click="edit?showPopupTime('borrower'):''"
           label-class="labelClass"
-          v-if="thisCreditType == '5'"
         />
         <van-cell title="相关文档:" :border="false" />
         <imageList :dataList="mainImg"></imageList>
-        <div v-if="thisCreditType == '5'">
+        <div>
           <van-cell title="征信报告:" required :border="false" />
           <imageList :dataList="mainCreditImg"></imageList>
-        </div>
-        <div v-if="thisCreditType == '6'">
-          <van-row class="br-box">
-            <van-col :span="18">
-              <div>
-                <span class="br-title">贷前信息验证结果：</span>
-                <span class="br-result">通过</span>
-              </div>
-              <div class="br-time">
-                结果查询时间：2020-01-01 11:30:59
-              </div>
-            </van-col>
-            <van-col :span="6">
-              <van-button size="small">查看报告</van-button>
-            </van-col>
-          </van-row>
-          <van-row class="br-box">
-            <van-col :span="18">
-              <div>
-                <span class="br-title">贷前风险策略结果：</span>
-                <span class="br-result">通过</span>
-              </div>
-              <div class="br-time">
-                结果查询时间：2020-01-01 11:30:59
-              </div>
-            </van-col>
-            <van-col :span="6">
-              <van-button size="small">查看报告</van-button>
-            </van-col>
-          </van-row>
         </div>
       </div>
       <div v-if="perInfoList.length > 0">
@@ -111,7 +79,6 @@
             title="征信结果:"
             :border="false"
             required
-            v-if="thisCreditType == '5'"
           >
             <radio v-model="item.creditResult" @change="changeThis" :disabled="!edit">
               <radio-item label="pass">通过</radio-item>
@@ -125,16 +92,15 @@
             :border="false"
             :disabled="!edit"
             :value="item.investigateDate"
-            @click="edit?showPopupTime(''):''"
+            @click="edit?showPopupTime(item.creditObjectType,index):''"
             label-class="labelClass"
             @blur.prevent="ruleMessge"
             :label="errorMsg.investigateDate"
-            v-if="thisCreditType == '5'"
           />
 
           <van-cell title="相关文档" :border="false" />
           <imageList :dataList="item.dataList"></imageList>
-          <div v-if="thisCreditType == '5'">
+          <div>
             <van-cell title="征信报告" required :border="false" />
             <imageList :dataList="item.creditList"></imageList>
           </div>
@@ -147,10 +113,6 @@
       <van-button size="large" class="xh-btn xh-primary" @click="back">退回</van-button>
       <van-button size="large" class="xh-btn" @click="showResult">提前告知征信结果</van-button>
       <van-button size="large" class="xh-btn" @click="submit">提交</van-button>
-    </div>
-
-    <div class="xh-submit-box" v-if="thisCreditType === '6'">
-      <van-button size="large" @click="triggerQuery" class="xh-btn">提交</van-button>
     </div>
 
     <van-action-sheet get-container="#app" v-model="showTimePicker" class="xh-list">
@@ -291,23 +253,24 @@ export default {
       time: "",
       remarks: "", //备注说明
       obj: {
-        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDBIGA04"], //共债人配偶
-        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDBIGA02"], //借款人配偶
-        security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDBIGA05"], //担保人
-        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDBIGA03"], //共债人
-        borrower: ["CUIDA01", "CUIDB01", "CUCARD01", "CRDBIGA01"] //主借人
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDPICCA04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDPICCA02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDPICCA05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDPICCA03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01", "CRDPICCA01"] //主借人
       },
       bigData: {
-        joiDebtorSpouse: ["CRDBIGB04"], //共债人配偶
-        borrowerSpouse: ["CRDBIGB02"], //借款人配偶
-        security: ["CRDBIGB05"], //担保人
-        borrower: ["CRDBIGB01"], //借款人
-        joiDebtor: ["CRDBIGB03"] //共债人
+        joiDebtorSpouse: ["CRDPICCB04"], //共债人配偶
+        borrowerSpouse: ["CRDPICCB02"], //借款人配偶
+        security: ["CRDPICCB05"], //担保人
+        borrower: ["CRDPICCB01"], //借款人
+        joiDebtor: ["CRDPICCB03"] //共债人
       },
-      whiteList: ["CRDBIGB01", "CRDBIGB02", "CRDBIGB03", "CRDBIGB04", "CRDBIGB05"],
+      whiteList: ["CRDPICCB01", "CRDPICCB02", "CRDPICCB03", "CRDPICCB04", "CRDPICCB05"],
       maxDate: new Date(),
       currentDate: new Date(), //当前时间
       peopleTime: "",
+      peopleIndex:'',
       showDialog: false
     };
   },
@@ -391,7 +354,7 @@ export default {
       }
       for(let i = 0;i<this.perInfoList.length;i++){
          if(this.perInfoList[i].creditList[0].fileList.length<1 && this.perInfoList[i].isSearchCredit == '1'){
-            Toast.fail("请上传征信报告");
+            Toast.fail("请上传人保征信报告");
             sign = false;
             break;
          }
@@ -548,15 +511,17 @@ export default {
       } catch (e) {}
     },
     //时间选择
-    showPopupTime(people) {
+    showPopupTime(people,index) {
       this.showTimePicker = true;
       this.peopleTime = people;
+      this.peopleIndex = index;
     },
     confirmTime(value) {
       this.showTimePicker = false;
       if (this.peopleTime == "borrower") {
         this.form.investigateDate = format(value, "yyyy-MM-dd hh:mm");
       } else {
+        this.perInfoList[this.peopleIndex].investigateDate = format(value, "yyyy-MM-dd hh:mm");
       }
     },
     async confirmFn() {
@@ -596,13 +561,6 @@ export default {
   mounted() {
     this.time = this.dataList.registerDate;
     console.log(this.dataList, 234444);
-    this.obj = {
-      joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
-      borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
-      security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
-      joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
-      borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
-    };
     this.mainImg = [];
     this.mainCreditImg = [];
     this.dataList.surDtlList.forEach(e => {

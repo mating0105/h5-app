@@ -113,8 +113,6 @@ export default {
         creditSearchType: "",
         creditSearchTypeDesc: ""
       },
-      creditSearchTypeDesc: "",
-      creditSearchType: "",
       loading: false,
       edit: false,
       form: {},
@@ -161,9 +159,9 @@ export default {
       if (this.params.reRegister == 1) {
         this.dataList.id = "";
       }
-      this.dataList.creditSearchTypeDesc = this.creditSearchTypeDesc;
-      this.dataList.creditSearchType = this.creditSearchType;
       this.recordParams.businesskey = this.dataList.id;
+      this.dataList.creditSearchTypeDesc = '人工';
+      this.dataList.creditSearchType = 5;
       this.initCustomerData();
       this.loading = false;
     },

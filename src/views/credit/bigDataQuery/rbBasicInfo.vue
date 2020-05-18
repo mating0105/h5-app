@@ -1,3 +1,9 @@
+/*
+ * @Author: wuyueqi 
+ * @Date: 2020-05-11 11:28:33 
+ * @Last Modified by: wuyueqi
+ * @Last Modified time: 2020-05-14 14:09:57
+ */
 <template>
   <div>
     <NewCard
@@ -29,7 +35,7 @@
         <van-cell title="手机号码:" required :border="false" :value="form.telephone" />
         <van-field
           name="bankCardNum"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           label="银行卡号："
           :placeholder="!edit?'':'请输入'"
           label-width="110"
@@ -43,34 +49,44 @@
           :right-icon="!edit ? '' : 'scan'"
           @click-right-icon="IdcardLoading('bankCodeOCR')"
         />
-        <van-cell title="征信查询方式:" required :border="false" :value="dataList.creditSearchTypeDesc" />
+        <van-cell
+          title="征信查询方式:"
+          label-class="labelClass"
+          :label="errorMsg.creditSearchType"
+          :disabled="!edit && dataList.standardCreditStatus != null"
+          :border="false"
+          required
+          :is-link="edit"
+          :value="dataList.creditSearchTypeDesc"
+        />
         <van-cell
           title="征信签约方式:"
           label-class="labelClass"
           :label="errorMsg.signMode"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           :border="false"
           required
           :is-link="edit"
           :value="dataList.signMode"
           @click="showPickerFn('signMode')"
+          v-if="isElectronic"
         />
         <van-cell
           title="征信授权电子签:"
           label-class="labelClass"
-          :disabled="!edit"
+          :disabled="!edit && dataList.standardCreditStatus != null"
           :border="false"
           required
           is-link
           :value="form.electronicSignResult ? form.electronicSignResult: '待签约'"
           v-if="isElectronic"
-          @click="edit?electronicFn(data.electronicSignResult):''"
+          @click="electronicFn(data.electronicSignResult)"
         />
         <van-cell title="相关文档:" required :border="false" />
         <imageList :dataList="mainImg"></imageList>
       </div>
       <div v-if="perInfoList.length > 0">
-        <van-swipe-cell :disabled="!edit" v-for="(item, index) in perInfoList" :key="index">
+        <van-swipe-cell :disabled="!edit && dataList.standardCreditStatus != null" v-for="(item, index) in perInfoList" :key="index">
           <div class="card-title">{{returnText(item.creditObjectType, 'credit_object_type')}}信息</div>
           <van-cell title="姓名:" required :border="false" :value="item.creditPersonName" />
           <van-cell title="证件号码:" required :border="false" :value="item.cpCertificateNum" />
@@ -97,7 +113,7 @@
           <van-cell
             title="征信授权电子签:"
             label-class="labelClass"
-            :disabled="!edit"
+            :disabled="!edit && dataList.standardCreditStatus != null"
             :border="false"
             required
             is-link
@@ -123,12 +139,12 @@
       </div>
       <div class="card-title" style="margin:2rem 1rem;">
         新增关联人信息
-        <div class="card-icon" @click="addPer" v-if="edit">
+        <div class="card-icon" @click="addPer" v-if="edit && !dataList.standardCreditStatus">
           <van-icon name="add-o" size="2rem" />
         </div>
       </div>
       <div class="card-title">备注说明</div>
-      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" />
+      <van-field v-model="remarks" rows="1" autosize type="textarea" placeholder="请输入" :disabled="!edit && dataList.standardCreditStatus != null"/>
     </NewCard>
     <div v-if="dataList.standardCreditStatus == '01'">
       <div class="xh-submit-box">
@@ -150,9 +166,6 @@
         <van-button size="large" class="xh-btn" @click="submit">提交征信查询</van-button>
       </div>
     </div>
-
-
-    
 
     <!-- 身份证识别/银行卡识别 -->
     <van-action-sheet v-model="showScan" :actions="scanActions" @select="discern" />
@@ -259,7 +272,7 @@ Components.forEach(item => {
 });
 
 export default {
-  name: "rbBasicInfo",
+  name: "bigDataBasicInfo",
   mixins: [formValidator],
   components: {
     ViewPage,
@@ -279,6 +292,11 @@ export default {
       type: Boolean
     },
     buttonId: String,
+    creditTypeList: Array, //征信查询方式
+    creditTYPE: {
+      default: "",
+      type: String
+    },
     showTypes: {
       default: true,
       type: Boolean
@@ -315,22 +333,29 @@ export default {
       isElectronic: false, //是否征信电子签
       time: "",
       remarks: "", //备注说明
-      obj: {
-        joiDebtorSpouse: ["0113", "0114", "2004", "6684"], //共债人配偶
-        borrowerSpouse: ["0105", "0106", "2002", "6680"], //借款人配偶
-        security: ["0120", "0117", "2005", "6681"], //担保人
-        joiDebtor: ["0109", "0110", "2003", "6683"], //共债人
-        borrower: ["0101", "0102", "2001", "6679"] //主借人
+      obj: {//包括大数据授权书
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04", "CRDPICCA04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02", "CRDPICCA02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05", "CRDPICCA05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03", "CRDPICCA03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01","CRDPICCA01"] //主借人
+      },
+      objun: {//没有大数据授权书
+        joiDebtorSpouse: ["CUIDA04", "CUIDB04", "CUCARD04"], //共债人配偶
+        borrowerSpouse: ["CUIDA02", "CUIDB02", "CUCARD02"], //借款人配偶
+        security: ["CUIDB05", "CUIDA05", "CUCARD05"], //担保人
+        joiDebtor: ["CUIDA03", "CUIDB03", "CUCARD03"], //共债人
+        borrower: ["CUIDA01", "CUIDB01", "CUCARD01"] //主借人
       },
       processedBy: "", //提交人id
       taskData: {}, //
       electronicList: [],
-      showDialog:false,
-      cause:'',
+      showDialog: false,
+      cause: "",
       autosize: {
         maxHeight: 100,
         minHeight: 20
-      },
+      }
     };
   },
   computed: {
@@ -394,19 +419,30 @@ export default {
     },
     //判断是否是电子签 加载图片
     async judge(list) {
+      let arr = [];
       this.dataList.signMode = list;
       //是否电子签
       if (list == "电子签") {
         this.isElectronic = true;
+        this.dataList.surDtlList.forEach(e => {
+          arr = this.objun[e.creditObjectType];
+          arr.forEach(i => {
+            this.getDocumentByType(i, e);
+          });
+        });
       } else {
         this.isElectronic = false;
-      }
-      this.dataList.surDtlList.forEach(e => {
-        const arr = this.obj[e.creditObjectType];
-        arr.forEach(i => {
-          this.getDocumentByType(i, e);
+        this.dataList.surDtlList.forEach(e => {
+          if(e.isSearchCredit == 1 || e.creditObjectType == 'borrower'){//查询征信
+           arr = this.obj[e.creditObjectType];
+          }else{//不查询征信
+           arr = this.objun[e.creditObjectType];
+          }
+          arr.forEach(i => {
+            this.getDocumentByType(i, e);
+          });
         });
-      });
+      }
     },
     unFormatter(beanData) {
       const perInfo = beanData.perInfo || {};
@@ -429,6 +465,7 @@ export default {
         isSearchCredit: beanData.isSearchCredit //是否查询征信
       };
     },
+    //显示弹框
     showPickerFn(type) {
       if (!this.edit) {
         return;
@@ -436,10 +473,6 @@ export default {
       this.showPicker = true;
       this.pickerSign = type;
       switch (type) {
-        case "creditSearchType":
-          this.valueKey = "buttonName";
-          this.columns = this.creditTypeList;
-          break;
         case "signMode":
           this.valueKey = "buttonName";
           this.columns = this.electronicList;
@@ -457,10 +490,6 @@ export default {
     },
     confirm(value) {
       switch (this.pickerSign) {
-        case "creditSearchType":
-          this.data.creditSearchType = value.id;
-          this.data.creditSearchTypeDesc = value.buttonName;
-          break;
         case "user":
           this.processedBy = value.id;
           this.postProcess();
@@ -516,8 +545,8 @@ export default {
     //编辑人
     editPer(per, index) {
       const query = {
-        customerId: this.data.customerId,
-        customerNum: this.data.perInfo ? this.data.perInfo.customerNum : "",
+        customerId: this.dataList.customerId,
+        customerNum: this.dataList.customerNum ,
         index: index,
         credit: true,
         ...this.unFormatter(per)
@@ -539,7 +568,7 @@ export default {
         })
         .catch(() => {});
     },
-    //验证
+    //验证字段
     verifyForm() {
       let num = 0;
       for (let item in this.errorMsg) {
@@ -548,12 +577,47 @@ export default {
           num++;
         }
       }
-      console.log('err',num);
       return num === 0;
+    },
+    //验证征信授权书图片
+    verifyImg(){
+      let borrowerImg = false,otherImg = false;
+      for(let i = 0;i<this.mainImg.length;i++){
+        if(this.mainImg[i].documentType== 'CRDPICCA01'){
+          if(this.mainImg[i].fileList.length<1){
+            Toast("请上传主借人人保征信授权书");
+            break;
+          }else{
+            borrowerImg = true;
+          }
+        }
+      }
+      let imgArr = [];
+      this.dataList.surDtlList.forEach(e =>{
+        if(e.isSearchCredit == 1){
+          e.dataList.forEach(i =>{
+            if(i.documentType == 'CRDPICCA01' || i.documentType == 'CRDPICCA02' || i.documentType == 'CRDPICCA03' || i.documentType =='CRDPICCA04'||i.documentType == 'CRDPICCA05'){
+              if(i.fileList.length<1){
+                console.log(e.creditObjectType);
+                imgArr.push(this.returnText(e.creditObjectType,'credit_object_type'));
+              }
+            }
+          })
+        }
+      })
+      if(imgArr.length>0){
+        let nameString = imgArr.join('、');
+        Toast(`请上传${nameString}人保征信授权书`);
+        return;
+      }else{
+        otherImg = true;
+      }
+      console.log(borrowerImg,otherImg)
+      return borrowerImg && otherImg;
     },
     //提交征信查询
     async submit() {
-      if (!this.verifyForm()) {
+      if (!this.verifyForm() || !this.verifyImg()) {
         return;
       }
       Toast.loading({
@@ -597,6 +661,64 @@ export default {
         Toast.clear();
       }
     },
+    //提交百融征信查询
+    async triggerQuery() {
+      let nowDate = new Date();
+      // 当前时间与查询时间+30天对比
+      let isRegister = this.dataList.surDtlList.some(element => {
+        let dateItem = element.credit100StrategyQuerydate
+          ? new Date(element.credit100StrategyQuerydate)
+          : "";
+        return dateItem
+          ? new Date(dateItem.setDate(dateItem.getDate() + 30)) >= nowDate
+          : false;
+      });
+      console.log(isRegister);
+      if (isRegister) {
+        Toast("已查询的用户请30天后重新查询");
+        return;
+      }
+      //验证大数据征信授权书图片是否上传 主借人必传
+      let imgtost = false;
+      for(let i = 0;i<this.mainImg.length;i++){
+        if(this.mainImg[i].documentType== 'CRDBIGA01'){
+          if(this.mainImg[i].fileList.length<1){
+            Toast("请上传主借人大数据征信授权书");
+            break;
+          }else{
+            imgtost = true;
+          }
+        }
+      }
+      if(!imgtost){
+        return;
+      }
+      let imgArr = [];
+      this.dataList.surDtlList.forEach(e =>{
+        e.dataList.forEach(i =>{
+          if(i.documentType == 'CRDBIGA01' || i.documentType == 'CRDBIGA02' || i.documentType == 'CRDBIGA05' || i.documentType =='CRDBIGA03'||i.documentType == 'CRDBIGA04'){
+            if(i.fileList.length<1){
+              console.log(e.creditObjectType);
+              imgArr.push(this.returnText(e.creditObjectType,'credit_object_type'));
+            }
+          }
+        })
+      })
+      //提示是否有人没有上传征信查询授权书
+      if(imgArr.length>0){
+        let nameString = imgArr.join('、');
+        Dialog.confirm({
+          title: '',
+          message: `${nameString}没有上传征信查询授权书，无法查询征信，确定吗？`
+        }).then(() => {
+          
+        }).catch(() => {
+          // on cancel
+        });
+      }else{
+        this.bigDataTipOfBr();
+      }
+    },
     //提交流程
     async postProcess() {
       const params = {
@@ -609,8 +731,8 @@ export default {
       this.$nextTick(() => {
         Toast.success("提交成功");
       });
-      this.$emit('reLoad');    
-      console.log('更新状态',this.dataList.standardCreditStatus);
+      this.$emit("reLoad");
+      console.log("更新状态", this.dataList.standardCreditStatus);
     },
     async getDocumentByType(documentType, obj) {
       try {
@@ -621,7 +743,7 @@ export default {
         const declare = this.documentType[documentType]
           ? this.documentType[documentType].label
           : "图片描述";
-        const isRequire = this.edit;
+        const isRequire = Boolean(this.edit);
         const imgdata = {
           declare: declare, //图片描述
           isRequire: isRequire, //*是否必须
@@ -647,8 +769,8 @@ export default {
     endTask() {
       this.showDialog = true;
     },
-    async confirmFn(){
-      if(!this.cause){
+    async confirmFn() {
+      if (!this.cause) {
         this.showDialog = false;
         Toast("请输入终止原因");
         return;
@@ -662,7 +784,7 @@ export default {
       let recordParams = {
         businessKey: this.dataList.id,
         businessType: "07"
-      }
+      };
       await stopTask(recordParams);
       Toast.clear();
       this.$nextTick(() => {
@@ -670,14 +792,13 @@ export default {
       });
       this.$router.go(-1);
     },
-    cancelFn(){
+    cancelFn() {
       this.showDialog = false;
     }
   },
   mounted() {
-    this.dataList.creditSearchType = '1';
-    this.dataList.creditSearchTypeDesc = '人工';
     this.getAnyServer("electronic-visa-model", "electronic");
+
   },
   destroyed() {
     this.save();

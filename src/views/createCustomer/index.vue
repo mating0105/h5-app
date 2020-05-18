@@ -504,7 +504,7 @@ export default {
           Toast.fail("不能添加借款人!");
           return;
         }
-        if (getValue("credit") && this.$route.query.index === undefined) {
+        if (getValue("credit") && this.params.index === undefined) {
           let creditObj = JSON.parse(getValue("credit"));
           const arr = _.filter(
             creditObj.surDtlList,
@@ -662,7 +662,6 @@ export default {
     },
     //选择是否查询征信
     getRadio(val){
-      console.log(val,1111);
       this.errorMsg.isSearchCredit = '';
     },
     //选择获取图片方式
@@ -728,7 +727,6 @@ export default {
             this.$route.query[key] || this.customerData[key];
         }
       }
-      console.log(this.params.index)
       if(this.params.index != null && this.params.index != 'undefined'){
         let documentType1 ,documentType2;
         switch(this.customerData.creditObjectType){
