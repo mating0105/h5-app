@@ -1,5 +1,5 @@
 <template>
-  <div v-if="fileList.length>0">
+  <div v-if="fileList.length>0 || data.deletable">
     <div class="xh-image-item-title" v-if="fileList.length>0 || data.deletable">
       <span v-if="data.isRequire" class="xh-is-require">*</span>
       {{data.declare}}
