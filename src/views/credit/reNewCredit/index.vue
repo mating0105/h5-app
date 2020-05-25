@@ -83,21 +83,6 @@
       }
     },
     methods: {
-      selectList () {
-
-      },
-      // 字典转换
-      returnText (val, key) {
-        let name = '';
-        if (this.wordbook[key]) {
-          this.wordbook[key].forEach(e => {
-            if (e.value === val) {
-              name = e.label;
-            }
-          });
-        }
-        return name;
-      },
       //获取征信查询--详情
       async getCreditInfo () {
         try {
@@ -118,6 +103,7 @@
           }
           this.loading = false
 
+          this.perInfoList = [];
           this.dataList.surDtlList.forEach(e => {
             if (e.creditObjectType === 'borrower') {
               this.form = e;
@@ -131,25 +117,6 @@
           console.log(e)
         }
       },
-      initCar () {
-        const carData = this.$store.state.credit.carData
-        if (carData) {
-          const index = this.$store.state.credit.index
-          if (index === -1) {
-            this.dataList.carInfos.push(carData)
-          } else {
-            const carInfo = this.dataList.carInfos[index]
-            if (carInfo) {
-              for (let key in carData) {
-                if (carData.hasOwnProperty(key)) {
-                  carInfo[key] = carData[key] || carInfo[key]
-                }
-              }
-            }
-          }
-          this.$store.dispatch('credit/removeCarData')
-        }
-      },
       initCustomerData () {
         let customerData = this.$store.state.credit.customerData
         if (customerData) {
@@ -157,6 +124,7 @@
           customerData = this.enFormatter(customerData)
           if (index === -1) {
             this.perInfoList.push(customerData)
+            this.dataList.surDtlList.push(customerData);
           } else {
             const perInfo = this.perInfoList[index]
             if (perInfo) {
@@ -177,6 +145,7 @@
           "cpCertificateNum": beanData.certificateNum,//身份证号码
           "age": beanData.age,//年龄
           "creditObjectType": beanData.creditObjectType,//征信对象类型
+          creditObjectRelation: beanData.creditObjectRelation, //征信对象类型
           "perInfo": {
             "nationName": beanData.nationName,//民族
             "nation": beanData.nation,//民族
@@ -187,40 +156,10 @@
           "startDate": beanData.startDate,//起始日
           "endDate": beanData.endDate,//截止日
           "telephone": beanData.contactPhone,//手机号码
-          "bankCardNum": beanData.bankCardNum//银行卡号
-        }
-      },
-      /**
-       * 贷款金额与销售价
-       */
-      checkPrice () {
-        this.priceFloat(this.dataList, 'intentionPrice')
-        const investigateBankName = this.dataList.investigateBankName || '';
-        const intentionPrice = this.dataList.intentionPrice || 0;
-        let price = 0
-        const carInfos = this.dataList.carInfos
-        this.errorMsg.intentionPrice = ''
-
-        if (!carInfos.length)
-          return
-
-        carInfos.forEach(item => {
-          if (item.carNature === 'new_car') {
-            price += item.salePriceDto
-          }
-        })
-
-        if (!price)
-          return;
-
-        if (investigateBankName.includes('中国银行')) {
-          if (intentionPrice >= (price * 0.7)) {
-            this.errorMsg.intentionPrice = '贷款金额不能高于销售价7成！'
-          }
-        } else if (investigateBankName.includes('农业银行')) {
-          if (intentionPrice >= (price * 0.88)) {
-            this.errorMsg.intentionPrice = '贷款金额不能超过销售价的8.8成'
-          }
+          "bankCardNum": beanData.bankCardNum,//银行卡号
+          dataList: [],
+          canDel: true,
+          isPeopleBankCredit : beanData.isPeopleBankCredit 
         }
       },
       //重新加载数据,更新征信状态

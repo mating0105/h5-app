@@ -193,12 +193,44 @@ export function stopTask_E(params) {
     params
   })
 }
+//E分期-点击修改信息
+export function updateEStageStatus(params) {
+  return request({
+    url: '/order/eStageCreditInfo/updateEStageStatus',
+    method: 'get',
+    params
+  })
+}
+//查询订单状态--E分期
+export function orderStatusQuery(params) {
+  return request({
+    url: '/order/eStageCreditInfo/orderStatusQuery',
+    method: 'get',
+    params
+  })
+}
 
 export function getCreditType(params) {
   return request({
     url: '/manage/buttonConfig/getButtonByServer/v2?serverName=big-data-credit',
     method: 'get',
     params
+  })
+}
+//提前告知征信结果
+export function updateCreditResult(params) {
+  return request({
+    url: '/order/creditInfo/updateCreditResult',
+    method: 'post',
+    data: params
+  })
+}
+//银行征信回复-退回
+export function returnTask(params) {
+  return request({
+    url: '/order/creditProcess/returnTask',
+    method: 'post',
+    data: params
   })
 }
 /**

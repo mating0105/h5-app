@@ -3,7 +3,7 @@
         <div>
             <slot name="header"></slot>
         </div>
-        <div class="xh-image-list">
+        <div class="xh-image-list" v-if="list">
             <div class="image-item" v-for="(item, index) in list" :key="index" v-if="index<=3">
                 <van-image
                         lazy-load
