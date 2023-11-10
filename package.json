@@ -17,7 +17,7 @@
   "dependencies": {
     "alloyfinger": "^0.1.16",
     "async-validator": "^3.2.3",
-    "axios": "0.18.1",
+    "axios": "1.6.0",
     "better-scroll": "^1.15.2",
     "dayjs": "^1.8.18",
     "exif-js": "^2.3.0",
